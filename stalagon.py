@@ -18,14 +18,14 @@ SCREEN_TITLE = "Stalagon"
 POS_SPACE = 30
 SELECTION_RADIUS = 20
 selected = None
-# sdfsdfsdf
+
 # Generate positional coordinates:
-n = 100
-m = 100
+n = int(((SCREEN_WIDTH - (SCREEN_WIDTH % POS_SPACE)) / POS_SPACE) - 1)
+m = int(((SCREEN_HEIGHT - (SCREEN_HEIGHT % POS_SPACE)) / POS_SPACE) - 1)
 POS_COORDS = []
 for yi in range(1, m + 1):
-    for xi in range(1, n + 1):
-        POS_COORDS.append((xi * POS_SPACE - POS_SPACE / 2, yi * POS_SPACE - POS_SPACE / 2))
+    for xi in range(1, n + 1 - 4):  # Minus 4 is for the control panel.
+        POS_COORDS.append((xi * POS_SPACE, yi * POS_SPACE))
 pos_coords_dict = {}
 for x, y in POS_COORDS:
     pos_coords_dict[(x, y)] = None
