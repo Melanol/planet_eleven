@@ -546,7 +546,20 @@ class Stalagon(arcade.Window):
                                 unit.new_dest_x = x
                                 unit.new_dest_y = y
 
-
+    def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
+        if self.frame_count % 5 == 0:
+            if dx > 0:
+                self.left_view_border -= POS_SPACE
+                self.update_viewport()
+            elif dx < 0:
+                self.left_view_border += POS_SPACE
+                self.update_viewport()
+            if dy > 0:
+                self.bottom_view_border -= POS_SPACE
+                self.update_viewport()
+            elif dy < 0:
+                self.bottom_view_border += POS_SPACE
+                self.update_viewport()
 
 def main():
     game = Stalagon(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
