@@ -18,7 +18,7 @@ SCREEN_TITLE = "Stalagon"
 POS_SPACE = 30
 SELECTION_RADIUS = 20
 selected = None
-
+# sdfsdfsdf
 # Generate positional coordinates:
 n = 100
 m = 100
