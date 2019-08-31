@@ -16,16 +16,16 @@ from pprint import pprint
 SCREEN_WIDTH = 683
 SCREEN_HEIGHT = 384
 SCREEN_TITLE = "Stalagon"
-POS_SPACE = 30
+POS_SPACE = 32
 SELECTION_RADIUS = 20
 selected = None
 
 # Generate positional coordinates:
-POS_COORDS_WIDTH = 20
-POS_COORDS_HEIGHT = 15
+POS_COORDS_N_COLUMNS = 24
+POS_COORDS_N_ROWS = 15
 POS_COORDS = []
-for yi in range(1, POS_COORDS_HEIGHT + 1):
-    for xi in range(1, POS_COORDS_WIDTH + 1):
+for yi in range(1, POS_COORDS_N_ROWS + 1):
+    for xi in range(1, POS_COORDS_N_COLUMNS + 1):
         POS_COORDS.append((xi * POS_SPACE - POS_SPACE / 2, yi * POS_SPACE - POS_SPACE / 2))
 pos_coords_dict = {}
 for x, y in POS_COORDS:
@@ -38,16 +38,17 @@ def round_coords(x, y):
     sel_x = POS_SPACE / 2 * round(x / (POS_SPACE / 2))
     sel_y = POS_SPACE / 2 * round(y / (POS_SPACE / 2))
     print(sel_x, sel_y)
-    if sel_x % 2 == 0:
+    if sel_x % 32 == 0:
         if x > sel_x:
             sel_x += POS_SPACE / 2
         else:
             sel_x -= POS_SPACE / 2
-    if sel_y % 2 == 0:
+    if sel_y % 32 == 0:
         if y > sel_y:
             sel_y += POS_SPACE / 2
         else:
             sel_y -= POS_SPACE / 2
+    print(sel_x, sel_y)
     return sel_x, sel_y
 
 def round_angle(angle):
@@ -280,7 +281,7 @@ class Stalagon(arcade.Window):
         self.our_base = Base(POS_SPACE / 2, POS_SPACE / 2)
         selected = id(self.our_base)
         self.enemy_base = Base(POS_COORDS[-1][0], POS_COORDS[-1][1])
-        self.walls = arcade.SpriteList(use_spatial_hash=False)
+        '''self.walls = arcade.SpriteList(use_spatial_hash=False)
         wall_coords = [(105, 165), (105, 195), (105, 225), (105, 255), (105, 285), (105, 315), (165, 165), (165, 195),
                        (165, 225), (165, 285), (165, 315), (195, 225), (195, 285)]
         for coord in wall_coords:
@@ -288,7 +289,7 @@ class Stalagon(arcade.Window):
             y = coord[1]
             wall = arcade.Sprite(filename='sprites/wall.png', center_x=x, center_y=y)
             self.walls.append(wall)
-            pos_coords_dict[(x, y)] = id(wall)
+            pos_coords_dict[(x, y)] = id(wall)'''
 
         self.soldier_button = Button(sprite='sprites/soldier.png', center_x=570, center_y=130)
         self.tank_button = Button(sprite='sprites/tank.png', center_x=615, center_y=130)
@@ -305,7 +306,7 @@ class Stalagon(arcade.Window):
                                                 center_y=self.our_base.rally_point_y)
         self.unit_list = arcade.SpriteList(use_spatial_hash=False)
         self.control_panel = arcade.Sprite(filename='sprites/control_panel.png',
-                                           center_x=SCREEN_WIDTH - 72, center_y=SCREEN_HEIGHT / 2)
+                                           center_x=SCREEN_WIDTH - 139/2, center_y=SCREEN_HEIGHT / 2)
 
     def on_draw(self):
         """
@@ -319,7 +320,7 @@ class Stalagon(arcade.Window):
 
         projectile_list.draw()
 
-        self.walls.draw()
+        #self.walls.draw()
         self.unit_list.draw()
         self.selection_sprite.draw()
 
@@ -455,20 +456,20 @@ class Stalagon(arcade.Window):
             sys.exit()
 
     def update_viewport(self):
-        print('bottom_view_border =', self.bottom_view_border)
         # Viewport limits
         if self.left_view_border < 0:
             self.left_view_border = 0
-        elif self.left_view_border > POS_COORDS[-1][0]:
-            self.left_view_border = POS_COORDS[-1][0]
+        elif self.left_view_border > POS_COORDS_N_COLUMNS * POS_SPACE - SCREEN_WIDTH + 139:
+            self.left_view_border = POS_COORDS_N_COLUMNS * POS_SPACE - SCREEN_WIDTH + 139
         if self.bottom_view_border < 0:
             self.bottom_view_border = 0
-        elif self.bottom_view_border > POS_COORDS[-1][1]:
-            self.bottom_view_border = POS_COORDS[-1][1]
-        print('bottom_view_border =', self.bottom_view_border)
-        print(self.soldier_button.center_y)
+        elif self.bottom_view_border > POS_COORDS_N_ROWS * POS_SPACE - SCREEN_HEIGHT:
+            self.bottom_view_border = POS_COORDS_N_ROWS * POS_SPACE - SCREEN_HEIGHT
+
         arcade.set_viewport(self.left_view_border, self.left_view_border + SCREEN_WIDTH,
                             self.bottom_view_border, self.bottom_view_border + SCREEN_HEIGHT)
+        self.control_panel.center_x = SCREEN_WIDTH - 139/2 + self.left_view_border
+        self.control_panel.center_y = SCREEN_HEIGHT / 2 + self.bottom_view_border
         self.soldier_button.center_x = 570 + self.left_view_border
         self.soldier_button.center_y = 130 + self.bottom_view_border
         self.tank_button.center_x = 615 + self.left_view_border
