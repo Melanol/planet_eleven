@@ -13,6 +13,7 @@ from pprint import pprint
 # TODO: Unit following unit movement
 # TODO: Fix coordinates and UI
 # TODO: No-space spawning
+# TODO: Finalize minimap
 SCREEN_WIDTH = 683
 SCREEN_HEIGHT = 384
 SCREEN_TITLE = "Stalagon"
@@ -36,6 +37,7 @@ for x, y in POS_COORDS:
 DISTANCE_PER_JUMP = (2 * POS_SPACE ** 2) ** 0.5
 projectile_list = arcade.SpriteList()
 minimap_pixels_dict = {}
+shadows_dict = {}
 
 
 def round_coords(x, y):
@@ -181,6 +183,11 @@ class Unit(arcade.Sprite):
         self.angle = math.degrees(angle) - 90
         self.change_x = math.cos(angle) * self.speed
         self.change_y = math.sin(angle) * self.speed
+        shadow = shadows_dict[id(self)]
+        shadow.angle = math.degrees(angle) - 90
+        shadow.change_x = math.cos(angle) * self.speed
+        shadow.change_y = math.sin(angle) * self.speed
+
         pos_coords_dict[(self.target_x, self.target_y)] = id(self)
 
     def distance_to_target(self):
@@ -193,12 +200,13 @@ class Unit(arcade.Sprite):
         # Called by update to move to the next point
         print('\nupdate_movement({}, {})'.format(self.center_x, self.center_y))
         pos_coords_dict[(self.center_x, self.center_y)] = None
-
+        shadow = shadows_dict[id(self)]
         diff_x = self.destination_x - self.center_x
         diff_y = self.destination_y - self.center_y
         angle = math.atan2(diff_y, diff_x)  # Rad
         d_angle = math.degrees(angle)
         self.angle = d_angle - 90
+        shadow.angle = math.degrees(angle) - 90
         next_target = give_next_target(self.center_x, self.center_y, round_angle(d_angle))
         print('next_target =', next_target)
         if next_target:
@@ -215,6 +223,9 @@ class Unit(arcade.Sprite):
             self.angle = d_angle - 90
             self.change_x = math.cos(angle) * self.speed
             self.change_y = math.sin(angle) * self.speed
+            shadow.angle = math.degrees(angle) - 90
+            shadow.change_x = math.cos(angle) * self.speed
+            shadow.change_y = math.sin(angle) * self.speed
         else:
             pos_coords_dict[(self.center_x, self.center_y)] = id(self)
             self.destination_reached = True
@@ -330,11 +341,22 @@ class Stalagon(arcade.Window):
                                            center_x=SCREEN_WIDTH - 139/2, center_y=SCREEN_HEIGHT / 2)
         self.minimap_pixels = arcade.SpriteList(use_spatial_hash=False)
 
+        self.terrain = arcade.SpriteList(use_spatial_hash=False)
+        for coord in POS_COORDS:
+            angle = random.choice([0, 90, 180, 270])
+            filename = random.choice(['sprites/sand1.png'])
+            sand = arcade.Sprite(filename=filename, center_x=coord[0], center_y=coord[1])
+            #sand._set_angle(angle)
+            self.terrain.append(sand)
+
+        self.shadows = arcade.SpriteList(use_spatial_hash=False)
+
     def on_draw(self):
         """
         Render the screen.
         """
         arcade.start_render()
+        self.terrain.draw()
         #arcade.draw_points(POS_COORDS, arcade.color.WHITE, 2)
 
         self.our_base.draw()
@@ -343,6 +365,7 @@ class Stalagon(arcade.Window):
         projectile_list.draw()
 
         #self.walls.draw()
+        self.shadows.draw()
         self.unit_list.draw()
         self.selection_sprite.draw()
 
@@ -361,12 +384,14 @@ class Stalagon(arcade.Window):
 
         self.minimap_pixels.draw()
 
+
     def update(self, delta_time):
         global minimap_pixels_dict
         self.frame_count += 1
         # Units
         # Movement
         for unit in self.unit_list:
+            shadow = shadows_dict[id(unit)]
             # Selection
             if selected == id(unit):
                 self.selection_sprite.center_x = unit.center_x
@@ -376,11 +401,14 @@ class Stalagon(arcade.Window):
             if not unit.destination_reached:
                 if not unit.eta() <= 1:
                     unit.update()
+                    shadow.update()
                 # Jump
                 else:
                     if not unit.movement_interrupted:
                         unit.center_x = unit.target_x
                         unit.center_y = unit.target_y
+                        shadow.center_x = unit.target_x + 3
+                        shadow.center_y = unit.target_y - 3
                         pos_coords_dict[(unit.target_x, unit.target_y)] = id(unit)
                         if unit.center_x == unit.destination_x and unit.center_y == unit.destination_y:
                             unit.destination_reached = True
@@ -389,6 +417,8 @@ class Stalagon(arcade.Window):
                     else:
                         unit.center_x = unit.target_x
                         unit.center_y = unit.target_y
+                        shadow.center_x = unit.target_x + 3
+                        shadow.center_y = unit.target_y - 3
                         pos_coords_dict[(unit.target_x, unit.target_y)] = id(unit)
                         unit.destination_reached = True
                         unit.move(unit.new_dest_x, unit.new_dest_y)
@@ -428,6 +458,11 @@ class Stalagon(arcade.Window):
                                           center_y=unit.center_y)
                     self.minimap_pixels.append(pixel)
                     minimap_pixels_dict[id(unit)] = pixel
+                    shadow = arcade.Sprite(filename='sprites/vulture_shadow.png',
+                                           center_x=unit.center_x + 3,
+                                           center_y=unit.center_y - 3)
+                    self.shadows.append(shadow)
+                    shadows_dict[id(unit)] = shadow
                 else:
                     self.our_base.building_start_time += 1
                     print('No space')
