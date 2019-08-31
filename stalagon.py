@@ -20,9 +20,11 @@ POS_SPACE = 32
 SELECTION_RADIUS = 20
 selected = None
 
+MINIMAP_ZERO_COORDS = (SCREEN_WIDTH - 120, SCREEN_HEIGHT - 230)
+
 # Generate positional coordinates:
-POS_COORDS_N_COLUMNS = 24
-POS_COORDS_N_ROWS = 15
+POS_COORDS_N_COLUMNS = 100
+POS_COORDS_N_ROWS = 100
 POS_COORDS = []
 for yi in range(1, POS_COORDS_N_ROWS + 1):
     for xi in range(1, POS_COORDS_N_COLUMNS + 1):
@@ -33,6 +35,8 @@ for x, y in POS_COORDS:
 
 DISTANCE_PER_JUMP = (2 * POS_SPACE ** 2) ** 0.5
 projectile_list = arcade.SpriteList()
+minimap_pixels_dict = {}
+
 
 def round_coords(x, y):
     sel_x = POS_SPACE / 2 * round(x / (POS_SPACE / 2))
@@ -51,8 +55,10 @@ def round_coords(x, y):
     print(sel_x, sel_y)
     return sel_x, sel_y
 
+
 def round_angle(angle):
     return 45 * round(angle / 45)
+
 
 def give_next_target(x, y, angle):
     print('give_next_target:', x, y, angle)
@@ -90,6 +96,19 @@ def give_next_target(x, y, angle):
         print('target =', None)
         return None
 
+
+def convert_to_minimap(x, y):
+    x = x / POS_SPACE
+    if not x.is_integer():
+        x += 1
+    x = MINIMAP_ZERO_COORDS[0] + x
+    y = y / POS_SPACE
+    if not y.is_integer():
+        y += 1
+    y = MINIMAP_ZERO_COORDS[1] + y
+    return x, y
+
+
 class Button(arcade.Sprite):
     def __init__(self, sprite, center_x, center_y):
         super().__init__(filename=sprite, center_x=center_x, center_y=center_y)
@@ -112,6 +131,7 @@ class Base(arcade.Sprite):
         self.building_complete = True
         self.building_start_time = 0
 
+
 class Unit(arcade.Sprite):
     def __init__(self, sprite, hp, damage, cooldown, speed, center_x, center_y,
                  projectile_sprite, projectile_speed, projectile_color=(255, 255, 255)):
@@ -123,7 +143,6 @@ class Unit(arcade.Sprite):
         self.speed = speed
         self.destination_reached = True
         self.movement_interrupted = False
-
         self.cooldown = cooldown
         self.on_cooldown = False
         self.cooldown_started = None
@@ -186,6 +205,8 @@ class Unit(arcade.Sprite):
             pos_coords_dict[(self.center_x, self.center_y)] = None
             self.target_x = next_target[0]
             self.target_y = next_target[1]
+            pixel = minimap_pixels_dict[id(self)]
+            pixel.center_x, pixel.center_y = convert_to_minimap(self.target_x, self.target_y)
             pos_coords_dict[(self.target_x, self.target_y)] = id(self)
             diff_x = self.target_x - self.center_x
             diff_y = self.target_y - self.center_y
@@ -307,13 +328,14 @@ class Stalagon(arcade.Window):
         self.unit_list = arcade.SpriteList(use_spatial_hash=False)
         self.control_panel = arcade.Sprite(filename='sprites/control_panel.png',
                                            center_x=SCREEN_WIDTH - 139/2, center_y=SCREEN_HEIGHT / 2)
+        self.minimap_pixels = arcade.SpriteList(use_spatial_hash=False)
 
     def on_draw(self):
         """
         Render the screen.
         """
         arcade.start_render()
-        arcade.draw_points(POS_COORDS, arcade.color.WHITE, 2)
+        #arcade.draw_points(POS_COORDS, arcade.color.WHITE, 2)
 
         self.our_base.draw()
         self.enemy_base.draw()
@@ -337,7 +359,10 @@ class Stalagon(arcade.Window):
             self.buttons_list.draw()
             self.rally_point_sprite.draw()
 
+        self.minimap_pixels.draw()
+
     def update(self, delta_time):
+        global minimap_pixels_dict
         self.frame_count += 1
         # Units
         # Movement
@@ -346,6 +371,7 @@ class Stalagon(arcade.Window):
             if selected == id(unit):
                 self.selection_sprite.center_x = unit.center_x
                 self.selection_sprite.center_y = unit.center_y
+
             # Do not jump
             if not unit.destination_reached:
                 if not unit.eta() <= 1:
@@ -397,6 +423,11 @@ class Stalagon(arcade.Window):
                     self.our_base.building_start_time += self.our_base.current_building_time
                     self.unit_list.append(unit)
                     unit.move(self.our_base.rally_point_x, self.our_base.rally_point_y)
+                    pixel = arcade.Sprite(filename='sprites/minimap_ally.png',
+                                          center_x=unit.center_x,
+                                          center_y=unit.center_y)
+                    self.minimap_pixels.append(pixel)
+                    minimap_pixels_dict[id(unit)] = pixel
                 else:
                     self.our_base.building_start_time += 1
                     print('No space')
@@ -445,6 +476,9 @@ class Stalagon(arcade.Window):
                     self.unit_list.append(unit)
                     pos_coords_dict[key] = id(unit)
 
+        elif key == arcade.key.H:
+            print(minimap_pixels_dict)
+
         elif key == arcade.key.DELETE:
             for unit in self.unit_list:
                 if selected == id(unit):
@@ -481,7 +515,7 @@ class Stalagon(arcade.Window):
         print(self.bottom_view_border)
 
     def on_mouse_press(self, x, y, button, key_modifiers):
-        global selected
+        global selected, minimap_pixels_dict
         print(x, y)
         x += self.left_view_border
         y += self.bottom_view_border
@@ -546,7 +580,7 @@ class Stalagon(arcade.Window):
                                 unit.new_dest_x = x
                                 unit.new_dest_y = y
 
-    def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
+    '''def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
         if self.frame_count % 5 == 0:
             if dx > 0:
                 self.left_view_border -= POS_SPACE
@@ -559,7 +593,7 @@ class Stalagon(arcade.Window):
                 self.update_viewport()
             elif dy < 0:
                 self.bottom_view_border += POS_SPACE
-                self.update_viewport()
+                self.update_viewport()'''
 
 def main():
     game = Stalagon(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
