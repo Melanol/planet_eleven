@@ -12,6 +12,7 @@ from pprint import pprint
 # TODO: Waypoint shooting
 # TODO: Unit following unit movement
 # TODO: Fix coordinates and UI
+# TODO: No-space spawning
 SCREEN_WIDTH = 683
 SCREEN_HEIGHT = 384
 SCREEN_TITLE = "Stalagon"
@@ -20,39 +21,33 @@ SELECTION_RADIUS = 20
 selected = None
 
 # Generate positional coordinates:
-n = int(((SCREEN_WIDTH - (SCREEN_WIDTH % POS_SPACE)) / POS_SPACE) - 1)
-m = int(((SCREEN_HEIGHT - (SCREEN_HEIGHT % POS_SPACE)) / POS_SPACE) - 1)
+POS_COORDS_WIDTH = 20
+POS_COORDS_HEIGHT = 15
 POS_COORDS = []
-for yi in range(1, m + 1):
-    for xi in range(1, n + 1 - 4):  # Minus 4 is for the control panel.
-        POS_COORDS.append((xi * POS_SPACE, yi * POS_SPACE))
+for yi in range(1, POS_COORDS_HEIGHT + 1):
+    for xi in range(1, POS_COORDS_WIDTH + 1):
+        POS_COORDS.append((xi * POS_SPACE - POS_SPACE / 2, yi * POS_SPACE - POS_SPACE / 2))
 pos_coords_dict = {}
 for x, y in POS_COORDS:
     pos_coords_dict[(x, y)] = None
 
 DISTANCE_PER_JUMP = (2 * POS_SPACE ** 2) ** 0.5
-
-
-
 projectile_list = arcade.SpriteList()
 
 def round_coords(x, y):
-    sel_x = POS_SPACE * round(x / POS_SPACE)
-    sel_y = POS_SPACE * round(y / POS_SPACE)
-    if sel_x == 0:
-        sel_x += POS_SPACE
-    elif sel_x >= SCREEN_WIDTH:
-        sel_x -= POS_SPACE
-    if sel_x + POS_SPACE >= SCREEN_WIDTH:
-        sel_x -= POS_SPACE
-
-    if sel_y == 0:
-        sel_y += POS_SPACE
-    elif sel_y >= SCREEN_HEIGHT:
-        sel_y -= POS_SPACE
-    if sel_y + POS_SPACE >= SCREEN_HEIGHT:
-        sel_y -= POS_SPACE
-
+    sel_x = POS_SPACE / 2 * round(x / (POS_SPACE / 2))
+    sel_y = POS_SPACE / 2 * round(y / (POS_SPACE / 2))
+    print(sel_x, sel_y)
+    if sel_x % 2 == 0:
+        if x > sel_x:
+            sel_x += POS_SPACE / 2
+        else:
+            sel_x -= POS_SPACE / 2
+    if sel_y % 2 == 0:
+        if y > sel_y:
+            sel_y += POS_SPACE / 2
+        else:
+            sel_y -= POS_SPACE / 2
     return sel_x, sel_y
 
 def round_angle(angle):
@@ -109,8 +104,8 @@ class Base(arcade.Sprite):
         self.center_y = center_y
         self.hp = 100
         pos_coords_dict[(center_x, center_y)] = id(self)
-        self.rally_point_x = POS_SPACE * 2
-        self.rally_point_y = POS_SPACE * 2
+        self.rally_point_x = POS_SPACE * 2 - POS_SPACE / 2
+        self.rally_point_y = POS_SPACE * 2 - POS_SPACE / 2
         self.building_queue = []
         self.current_building_time = None
         self.building_complete = True
@@ -282,12 +277,12 @@ class Stalagon(arcade.Window):
 
     def setup(self):
         global selected
-        self.our_base = Base(0 + POS_SPACE, 0 + POS_SPACE)
+        self.our_base = Base(POS_SPACE / 2, POS_SPACE / 2)
         selected = id(self.our_base)
         self.enemy_base = Base(POS_COORDS[-1][0], POS_COORDS[-1][1])
         self.walls = arcade.SpriteList(use_spatial_hash=False)
-        wall_coords = [(120, 180), (120, 210), (120, 240), (120, 270), (120, 300), (120, 330), (180, 180), (180, 210),
-                       (180, 240), (180, 300), (180, 330), (210, 240), (210, 300)]
+        wall_coords = [(105, 165), (105, 195), (105, 225), (105, 255), (105, 285), (105, 315), (165, 165), (165, 195),
+                       (165, 225), (165, 285), (165, 315), (195, 225), (195, 285)]
         for coord in wall_coords:
             x = coord[0]
             y = coord[1]
@@ -328,7 +323,7 @@ class Stalagon(arcade.Window):
         self.unit_list.draw()
         self.selection_sprite.draw()
 
-        if selected == pos_coords_dict[(POS_SPACE, POS_SPACE)]:  # Our base
+        if selected == pos_coords_dict[(POS_SPACE / 2, POS_SPACE / 2)]:  # Our base
             self.buttons_list.draw()
             self.rally_point_sprite.draw()
 
@@ -337,7 +332,7 @@ class Stalagon(arcade.Window):
                 arcade.draw_point(key[0], key[1], color=arcade.color.RED, size = 10)'''
 
         self.control_panel.draw()
-        if selected == pos_coords_dict[(POS_SPACE, POS_SPACE)]:  # Our base
+        if selected == pos_coords_dict[(POS_SPACE / 2, POS_SPACE / 2)]:  # Our base
             self.buttons_list.draw()
             self.rally_point_sprite.draw()
 
@@ -460,17 +455,33 @@ class Stalagon(arcade.Window):
             sys.exit()
 
     def update_viewport(self):
+        print('bottom_view_border =', self.bottom_view_border)
+        # Viewport limits
+        if self.left_view_border < 0:
+            self.left_view_border = 0
+        elif self.left_view_border > POS_COORDS[-1][0]:
+            self.left_view_border = POS_COORDS[-1][0]
+        if self.bottom_view_border < 0:
+            self.bottom_view_border = 0
+        elif self.bottom_view_border > POS_COORDS[-1][1]:
+            self.bottom_view_border = POS_COORDS[-1][1]
+        print('bottom_view_border =', self.bottom_view_border)
+        print(self.soldier_button.center_y)
         arcade.set_viewport(self.left_view_border, self.left_view_border + SCREEN_WIDTH,
                             self.bottom_view_border, self.bottom_view_border + SCREEN_HEIGHT)
         self.soldier_button.center_x = 570 + self.left_view_border
-        self.soldier_button.center_y = 150 + self.bottom_view_border
+        self.soldier_button.center_y = 130 + self.bottom_view_border
         self.tank_button.center_x = 615 + self.left_view_border
-        self.tank_button.center_y = 150 + self.bottom_view_border
+        self.tank_button.center_y = 130 + self.bottom_view_border
         self.vulture_button.center_x = 660 + self.left_view_border
-        self.vulture_button.center_y = 150 + self.bottom_view_border
+        self.vulture_button.center_y = 130 + self.bottom_view_border
+        print(self.soldier_button.center_y)
+        print(self.left_view_border)
+        print(self.bottom_view_border)
 
     def on_mouse_press(self, x, y, button, key_modifiers):
         global selected
+        print(x, y)
         x += self.left_view_border
         y += self.bottom_view_border
         if button == arcade.MOUSE_BUTTON_LEFT:
@@ -514,14 +525,12 @@ class Stalagon(arcade.Window):
         elif button == arcade.MOUSE_BUTTON_RIGHT:
             x, y = round_coords(x, y)
             # Base rally point:
-            if selected == pos_coords_dict[(POS_SPACE, POS_SPACE)]:  # Our base
-                for key, value in pos_coords_dict.items():
-                    if x == key[0] and y == key[1]:
-                        self.our_base.rally_point_x = x
-                        self.our_base.rally_point_y = y
-                        self.rally_point_sprite.center_x = x
-                        self.rally_point_sprite.center_y = y
-                        print('Rally set to ({}, {})'.format(x, y))
+            if selected == id(self.our_base):  # Our base
+                self.our_base.rally_point_x = x
+                self.our_base.rally_point_y = y
+                self.rally_point_sprite.center_x = x
+                self.rally_point_sprite.center_y = y
+                print('Rally set to ({}, {})'.format(x, y))
             # A unit is selected:
             else:
                 for unit in self.unit_list:
