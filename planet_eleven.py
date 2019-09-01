@@ -12,8 +12,8 @@ from pprint import pprint
 # TODO: No-space spawning
 # TODO: Finalize minimap
 # TODO: On-sprite shadows
-SCREEN_WIDTH = 683
-SCREEN_HEIGHT = 384
+SCREEN_WIDTH = 1366
+SCREEN_HEIGHT = 768
 SCREEN_TITLE = "Planet Eleven"
 POS_SPACE = 32
 SELECTION_RADIUS = 20
@@ -111,7 +111,7 @@ def convert_to_minimap(x, y):
 
 class Button(arcade.Sprite):
     def __init__(self, sprite, center_x, center_y):
-        super().__init__(filename=sprite, center_x=center_x, center_y=center_y)
+        super().__init__(filename=sprite, center_x=center_x, center_y=center_y, scale=0.5)
 
     def click(self):
         pass
@@ -135,7 +135,7 @@ class Base(arcade.Sprite):
 class Unit(arcade.Sprite):
     def __init__(self, sprite, hp, damage, cooldown, speed, center_x, center_y,
                  projectile_sprite, projectile_speed, projectile_color=(255, 255, 255)):
-        super().__init__(filename=sprite, center_x=center_x, center_y=center_y)
+        super().__init__(filename=sprite, center_x=center_x, center_y=center_y, scale=0.5)
         self.center_x = center_x
         self.center_y = center_y
         self.hp = hp
@@ -338,22 +338,27 @@ class Planet_Eleven(arcade.Window):
                                            center_x=SCREEN_WIDTH - 139/2, center_y=SCREEN_HEIGHT / 2)
         self.minimap_pixels = arcade.SpriteList(use_spatial_hash=False)
 
-        self.terrain = arcade.SpriteList(use_spatial_hash=False)
+        '''self.terrain = arcade.SpriteList(use_spatial_hash=False)
         for coord in POS_COORDS:
             angle = random.choice([0, 90, 180, 270])
             filename = random.choice(['sprites/sand1.png'])
             sand = arcade.Sprite(filename=filename, center_x=coord[0], center_y=coord[1])
             #sand._set_angle(angle)
-            self.terrain.append(sand)
+            self.terrain.append(sand)'''
 
         self.shadows = arcade.SpriteList(use_spatial_hash=False)
+        my_map = arcade.tilemap.read_tmx('main.tmx')
+        self.tile_layer1 = arcade.tilemap.process_layer(my_map, 'tile_layer1')
+        self.tile_layer2 = arcade.tilemap.process_layer(my_map, 'tile_layer2')
 
     def on_draw(self):
         """
         Render the screen.
         """
         arcade.start_render()
-        self.terrain.draw()
+        #self.terrain.draw()
+        self.tile_layer1.draw()
+        self.tile_layer2.draw()
         #arcade.draw_points(POS_COORDS, arcade.color.WHITE, 2)
 
         self.our_base.draw()
