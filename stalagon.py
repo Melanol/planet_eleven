@@ -4,9 +4,6 @@ import sys
 import arcade
 from pprint import pprint
 
-'''TODO: Do not implement your angle-avoiding algorithm: it can create infinite loops
-(unless it prohibits from moving back)'''
-# TODO: FPS
 # TODO: Proper pathfinding
 # TODO: Diagonal movement interception
 # TODO: Waypoint shooting
@@ -14,6 +11,7 @@ from pprint import pprint
 # TODO: Fix coordinates and UI
 # TODO: No-space spawning
 # TODO: Finalize minimap
+# TODO: On-sprite shadows
 SCREEN_WIDTH = 683
 SCREEN_HEIGHT = 384
 SCREEN_TITLE = "Stalagon"
