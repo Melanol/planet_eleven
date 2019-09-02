@@ -1,8 +1,12 @@
 import math
 import random
 import sys
-import arcade
-from pprint import pprint
+
+import pyglet
+from pyglet.window import key
+from pyglet.window import mouse
+
+import resources
 
 # TODO: Proper pathfinding
 # TODO: Diagonal movement interception
@@ -12,18 +16,21 @@ from pprint import pprint
 # TODO: No-space spawning
 # TODO: Finalize minimap
 # TODO: On-sprite shadows
-SCREEN_WIDTH = 1366
-SCREEN_HEIGHT = 768
+SCREEN_WIDTH = 683
+SCREEN_HEIGHT = 384
 SCREEN_TITLE = "Planet Eleven"
-POS_SPACE = 64
-SELECTION_RADIUS = 40
+POS_SPACE = 32
+SELECTION_RADIUS = 20
 selected = None
+
+ground = pyglet.graphics.Batch()
+buttons = pyglet.graphics.Batch()
 
 MINIMAP_ZERO_COORDS = (SCREEN_WIDTH - 120, SCREEN_HEIGHT - 230)
 
 # Generate positional coordinates:
-POS_COORDS_N_COLUMNS = 100
-POS_COORDS_N_ROWS = 100
+POS_COORDS_N_COLUMNS = 10
+POS_COORDS_N_ROWS = 10
 POS_COORDS = []
 for yi in range(1, POS_COORDS_N_ROWS + 1):
     for xi in range(1, POS_COORDS_N_COLUMNS + 1):
@@ -33,9 +40,10 @@ for x, y in POS_COORDS:
     pos_coords_dict[(x, y)] = None
 
 DISTANCE_PER_JUMP = (2 * POS_SPACE ** 2) ** 0.5
-projectile_list = arcade.SpriteList()
 minimap_pixels_dict = {}
 shadows_dict = {}
+
+#projectile_list = pyglet.sprite.SpriteGroup()
 
 
 def round_coords(x, y):
@@ -109,17 +117,14 @@ def convert_to_minimap(x, y):
     return x, y
 
 
-class Button(arcade.Sprite):
-    def __init__(self, sprite, center_x, center_y):
-        super().__init__(filename=sprite, center_x=center_x, center_y=center_y)
-
-    def click(self):
-        pass
+class Button(pyglet.sprite.Sprite):
+    def __init__(self, img, x, y):
+        super().__init__(img=img, x=x, y=y, batch=buttons)
 
 
-class Base(arcade.Sprite):
+class Base(pyglet.sprite.Sprite):
     def __init__(self, center_x, center_y):
-        super().__init__(filename='sprites/base.png', center_x=center_x, center_y=center_y)
+        super().__init__(img=resources.base_image, x=center_x, y=center_y, batch=ground)
         self.center_x = center_x
         self.center_y = center_y
         self.hp = 100
@@ -132,10 +137,10 @@ class Base(arcade.Sprite):
         self.building_start_time = 0
 
 
-class Unit(arcade.Sprite):
+class Unit(pyglet.sprite.Sprite):
     def __init__(self, sprite, hp, damage, cooldown, speed, center_x, center_y,
                  projectile_sprite, projectile_speed, projectile_color=(255, 255, 255)):
-        super().__init__(filename=sprite, center_x=center_x, center_y=center_y, scale=0.5)
+        super().__init__(img=sprite, x=center_x, y=center_y)
         self.center_x = center_x
         self.center_y = center_y
         self.hp = hp
@@ -271,9 +276,9 @@ class Vulture(Unit):
                          projectile_speed=10)
 
 
-class Projectile(arcade.Sprite):
+class Projectile(pyglet.sprite.Sprite):
     def __init__(self, sprite, center_x, center_y, target_x, target_y, damage, speed, projectile_color):
-        super().__init__(filename=sprite, center_x=center_x, center_y=center_y)
+        super().__init__(img=sprite, x=center_x, y=center_y)
         self._set_color(projectile_color)
         self.damage = damage
         self.speed = speed
@@ -290,10 +295,9 @@ class Projectile(arcade.Sprite):
         projectile_list.append(self)
 
 
-class Planet_Eleven(arcade.Window):
+class Planet_Eleven(pyglet.window.Window):
     def __init__(self, width, height, title):
-        super().__init__(width, height, title, fullscreen=True, antialiasing=True, update_rate=1/60)
-        arcade.set_background_color(arcade.color.BLACK)
+        super().__init__(width, height, title, fullscreen=False)
         self.left_view_border = 0
         self.bottom_view_border = 0
 
@@ -303,7 +307,7 @@ class Planet_Eleven(arcade.Window):
         # So if the window is 1000x1000, then so will our viewport. If
         # you want something different, then use those coordinates instead.
         width, height = self.get_size()
-        self.set_viewport(0, width, 0, height)
+        #self.set_viewport(0, width, 0, height)
 
     def setup(self):
         global selected
@@ -320,23 +324,19 @@ class Planet_Eleven(arcade.Window):
             self.walls.append(wall)
             pos_coords_dict[(x, y)] = id(wall)'''
 
-        self.defiler_button = Button(sprite='sprites/defiler.png', center_x=570, center_y=130)
-        self.tank_button = Button(sprite='sprites/tank.png', center_x=615, center_y=130)
-        self.vulture_button = Button(sprite='sprites/vulture.png', center_x=660, center_y=130)
+        self.defiler_button = Button(img=resources.defiler_image, x=570, y=130)
+        self.tank_button = Button(img=resources.tank_image, x=615, y=130)
+        self.vulture_button = Button(img=resources.vulture_image, x=660, y=130)
 
-        self.selection_sprite = arcade.Sprite(filename='sprites/selection.png', center_x=self.our_base.center_x,
-                                              center_y=self.our_base.center_y)
-        self.buttons_list = arcade.SpriteList(use_spatial_hash=False)
-        self.buttons_list.append(self.defiler_button)
-        self.buttons_list.append(self.tank_button)
-        self.buttons_list.append(self.vulture_button)
-        self.rally_point_sprite = arcade.Sprite(filename='sprites/rally_point.png',
-                                                center_x=self.our_base.rally_point_x,
-                                                center_y=self.our_base.rally_point_y)
-        self.unit_list = arcade.SpriteList(use_spatial_hash=False)
-        self.control_panel = arcade.Sprite(filename='sprites/control_panel.png',
-                                           center_x=SCREEN_WIDTH - 139/2, center_y=SCREEN_HEIGHT / 2)
-        self.minimap_pixels = arcade.SpriteList(use_spatial_hash=False)
+        '''self.selection_sprite = pyglet.sprite.Sprite(img='sprites/selection.png', x=self.our_base.center_x,
+                                                     y=self.our_base.center_y)
+        self.rally_point_sprite = pyglet.sprite.Sprite(img='sprites/rally_point.png',
+                                                       x=self.our_base.rally_point_x,
+                                                       y=self.our_base.rally_point_y)
+        self.unit_list = pyglet.sprite.SpriteGroup()
+        self.control_panel = pyglet.sprite.Sprite(img='sprites/control_panel.png',
+                                                  x=SCREEN_WIDTH - 139/2, y=SCREEN_HEIGHT / 2)
+        self.minimap_pixels = pyglet.sprite.SpriteGroup()'''
 
         '''self.terrain = arcade.SpriteList(use_spatial_hash=False)
         for coord in POS_COORDS:
@@ -346,30 +346,38 @@ class Planet_Eleven(arcade.Window):
             #sand._set_angle(angle)
             self.terrain.append(sand)'''
 
-        self.shadows = arcade.SpriteList(use_spatial_hash=False)
+        '''self.shadows = pyglet.sprite.SpriteGroup()
         my_map = arcade.tilemap.read_tmx('main.tmx')
         self.tile_layer1 = arcade.tilemap.process_layer(my_map, 'tile_layer1')
-        self.tile_layer2 = arcade.tilemap.process_layer(my_map, 'tile_layer2')
+        self.tile_layer2 = arcade.tilemap.process_layer(my_map, 'tile_layer2')'''
 
     def on_draw(self):
         """
         Render the screen.
         """
-        arcade.start_render()
+        self.clear()
         #self.terrain.draw()
-        self.tile_layer1.draw()
-        self.tile_layer2.draw()
-        #arcade.draw_points(POS_COORDS, arcade.color.WHITE, 4)
 
-        self.our_base.draw()
-        self.enemy_base.draw()
+        thickness = 2
+        for x, y in POS_COORDS:
+            point_coords = []
+            point_coords.append(int(x - thickness / 2))
+            point_coords.append(int(y - thickness / 2))
+            point_coords.append(int(x + thickness / 2))
+            point_coords.append(int(y - thickness / 2))
+            point_coords.append(int(x + thickness / 2))
+            point_coords.append(int(y + thickness / 2))
+            point_coords.append(int(x - thickness / 2))
+            point_coords.append(int(y + thickness / 2))
+            pyglet.graphics.draw(4, pyglet.gl.GL_QUADS, ('v2i', point_coords))
 
-        projectile_list.draw()
+        ground.draw()
+        buttons.draw()
 
         #self.walls.draw()
-        self.shadows.draw()
+        '''self.shadows.draw()
         self.unit_list.draw()
-        self.selection_sprite.draw()
+        self.selection_sprite.draw()'''
 
         if selected == pos_coords_dict[(POS_SPACE / 2, POS_SPACE / 2)]:  # Our base
             self.buttons_list.draw()
@@ -379,12 +387,12 @@ class Planet_Eleven(arcade.Window):
             if value:
                 arcade.draw_point(key[0], key[1], color=arcade.color.RED, size = 20)'''
 
-        self.control_panel.draw()
+        '''self.control_panel.draw()
         if selected == pos_coords_dict[(POS_SPACE / 2, POS_SPACE / 2)]:  # Our base
             self.buttons_list.draw()
             self.rally_point_sprite.draw()
 
-        self.minimap_pixels.draw()
+        self.minimap_pixels.draw()'''
 
 
     def update(self, delta_time):
@@ -392,7 +400,7 @@ class Planet_Eleven(arcade.Window):
         self.frame_count += 1
         # Units
         # Movement
-        for unit in self.unit_list:
+        '''for unit in self.unit_list:
             shadow = shadows_dict[id(unit)]
             # Selection
             if selected == id(unit):
@@ -424,14 +432,10 @@ class Planet_Eleven(arcade.Window):
                         pos_coords_dict[(unit.target_x, unit.target_y)] = id(unit)
                         unit.destination_reached = True
                         unit.move(unit.new_dest_x, unit.new_dest_y)
-                        unit.movement_interrupted = False
+                        unit.movement_interrupted = False'''
 
-                    # Stop to attack enemy base:
-                    '''if ((self.enemy_base.center_x - unit.center_x) ** 2 + (
-                            self.enemy_base.center_y - unit.center_y) ** 2) ** 0.5 > 100:
-                        unit.update()'''
 
-        # Shooting at enemy base:
+        '''# Shooting at enemy base:
         projectile_list.update()
         for unit in self.unit_list:
             if not unit.on_cooldown:
@@ -467,16 +471,18 @@ class Planet_Eleven(arcade.Window):
                     shadows_dict[id(unit)] = shadow
                 else:
                     self.our_base.building_start_time += 1
-                    print('No space')
+                    print('No space')'''
 
-    def on_key_press(self, key, modifiers):
+    def on_key_press(self, symbol, modifiers):
         """Called whenever a key is pressed. """
         global selected
-        if key == arcade.key.LEFT:
+        if symbol == key.ESCAPE:
+            sys.exit()
+        '''if key == key.LEFT:
             self.left_view_border -= POS_SPACE
-            self.update_viewport()
+            self.update_viewport()'''
 
-        elif key == arcade.key.RIGHT:
+        '''elif key == arcade.key.RIGHT:
             self.left_view_border += POS_SPACE
             self.update_viewport()
 
@@ -495,20 +501,16 @@ class Planet_Eleven(arcade.Window):
                     self.unit_list.append(unit)
                     pos_coords_dict[key] = id(unit)
 
-        elif key == arcade.key.H:
-            print(minimap_pixels_dict)
-
         elif key == arcade.key.DELETE:
             for unit in self.unit_list:
                 if selected == id(unit):
                     unit.kill()
                     pos_coords_dict[(self.selection_sprite.center_x, self.selection_sprite.center_y)] = None
-                    selected = None
+                    selected = None'''
 
-        elif key == arcade.key.ESCAPE:
-            sys.exit()
 
-    def update_viewport(self):
+
+    '''def update_viewport(self):
         # Viewport limits
         if self.left_view_border < 0:
             self.left_view_border = 0
@@ -531,14 +533,15 @@ class Planet_Eleven(arcade.Window):
         self.vulture_button.center_y = 130 + self.bottom_view_border
         print(self.soldier_button.center_y)
         print(self.left_view_border)
-        print(self.bottom_view_border)
+        print(self.bottom_view_border)'''
 
-    def on_mouse_press(self, x, y, button, key_modifiers):
+
+    def on_mouse_press(self, x, y, button, modifiers):
         global selected, minimap_pixels_dict
         print(x, y)
         x += self.left_view_border
         y += self.bottom_view_border
-        if button == arcade.MOUSE_BUTTON_LEFT:
+        if button == mouse.LEFT:
             # Create defiler:
             if abs(x - self.defiler_button.center_x) <= SELECTION_RADIUS \
                     and abs(y - self.defiler_button.center_y) <= SELECTION_RADIUS:
@@ -576,7 +579,7 @@ class Planet_Eleven(arcade.Window):
                         self.selection_sprite.center_y = sel_y
                 print('SELECTED =', selected)
 
-        elif button == arcade.MOUSE_BUTTON_RIGHT:
+        '''elif button == arcade.MOUSE_BUTTON_RIGHT:
             x, y = round_coords(x, y)
             # Base rally point:
             if selected == id(self.our_base):  # Our base
@@ -597,7 +600,7 @@ class Planet_Eleven(arcade.Window):
                                 unit.destination_y = unit.target_y
                                 unit.movement_interrupted = True
                                 unit.new_dest_x = x
-                                unit.new_dest_y = y
+                                unit.new_dest_y = y'''
 
     '''def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
         if self.frame_count % 5 == 0:
@@ -615,11 +618,11 @@ class Planet_Eleven(arcade.Window):
                 self.update_viewport()'''
 
 def main():
-    game = Planet_Eleven(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
-    game.setup()
+    game_window = Planet_Eleven(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+    game_window.setup()
+    pyglet.clock.schedule_interval(game_window.update, 1/120)
 
-
-    arcade.run()
+    pyglet.app.run()
 
 
 if __name__ == "__main__":
