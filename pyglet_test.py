@@ -16,9 +16,13 @@ test_sprite = pyglet.sprite.Sprite(img=test_img, x=300, y=400)
 @window.event
 def on_key_press(symbol, modifiers):
     if symbol == key.LEFT:
-        test_sprite.rotation -= 1
+        test_sprite.rotation -= 33
     elif symbol == key.RIGHT:
-        test_sprite.rotation += 1
+        test_sprite.rotation += 33
+    elif symbol == key.UP:
+        gl.glViewport(0, 100, 800, 600)
+    elif symbol == key.DOWN:
+        gl.glViewport(0, 0, 800, 600)
 
 @window.event
 def on_draw():
