@@ -11,7 +11,11 @@ test_img.anchor_x = test_img.width // 2
 test_img.anchor_y = test_img.width // 2
 
 test_sprite = pyglet.sprite.Sprite(img=test_img, x=300, y=400)
-#test_sprite.scale = 0.5
+left_border = 0
+bottom_border = 0
+
+def update_viewport():
+    gl.glViewport(left_border, bottom_border, 800, 600)
 
 @window.event
 def on_key_press(symbol, modifiers):
