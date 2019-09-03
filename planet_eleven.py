@@ -32,8 +32,8 @@ selected = None
 MINIMAP_ZERO_COORDS = (SCREEN_WIDTH - 120, SCREEN_HEIGHT - 230)
 
 # Generate positional coordinates:
-POS_COORDS_N_COLUMNS = 30
-POS_COORDS_N_ROWS = 30
+POS_COORDS_N_COLUMNS = 13
+POS_COORDS_N_ROWS = 20
 POS_COORDS = []
 for yi in range(1, POS_COORDS_N_ROWS + 1):
     for xi in range(1, POS_COORDS_N_COLUMNS + 1):
@@ -312,7 +312,6 @@ class Planet_Eleven(pyglet.window.Window):
         super().__init__(width, height, title, fullscreen=False)
 
         self.frame_count = 0
-
         # This will get the size of the window, and set the viewport to match.
         # So if the window is 1000x1000, then so will our viewport. If
         # you want something different, then use those coordinates instead.
@@ -348,6 +347,7 @@ class Planet_Eleven(pyglet.window.Window):
         for x, y in POS_COORDS:
             dot = pyglet.sprite.Sprite(img=resources.minimap_ally_image, x=x, y=y, batch=utilities_batch)
             self.dots.append(dot)
+        print(len(self.dots))
 
         '''self.terrain = arcade.SpriteList(use_spatial_hash=False)
         for coord in POS_COORDS:
@@ -505,12 +505,10 @@ class Planet_Eleven(pyglet.window.Window):
         # Viewport limits
         if reversed_left_view_border > 0:
             reversed_left_view_border = 0
-        '''elif reversed_left_view_border > POS_COORDS_N_COLUMNS * POS_SPACE - SCREEN_WIDTH + 139:
-            reversed_left_view_border = POS_COORDS_N_COLUMNS * POS_SPACE - SCREEN_WIDTH + 139'''
         if reversed_bottom_view_border > 0:
             reversed_bottom_view_border = 0
-        '''elif reversed_bottom_view_border > POS_COORDS_N_ROWS * POS_SPACE - SCREEN_HEIGHT:
-            reversed_bottom_view_border = POS_COORDS_N_ROWS * POS_SPACE - SCREEN_HEIGHT'''
+        elif abs(reversed_bottom_view_border) > POS_COORDS_N_ROWS * POS_SPACE - SCREEN_HEIGHT:
+            reversed_bottom_view_border = -(POS_COORDS_N_ROWS * POS_SPACE - SCREEN_HEIGHT)
 
         gl.glViewport(reversed_left_view_border, reversed_bottom_view_border, SCREEN_WIDTH, SCREEN_HEIGHT)
 
