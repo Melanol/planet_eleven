@@ -347,7 +347,6 @@ class Planet_Eleven(pyglet.window.Window):
         for x, y in POS_COORDS:
             dot = pyglet.sprite.Sprite(img=resources.minimap_ally_image, x=x, y=y, batch=utilities_batch)
             self.dots.append(dot)
-        print(len(self.dots))
 
         '''self.terrain = arcade.SpriteList(use_spatial_hash=False)
         for coord in POS_COORDS:
@@ -383,8 +382,6 @@ class Planet_Eleven(pyglet.window.Window):
             y = _key[1]
             if value:
                 draw_dot(x, y, 10)
-
-
 
         #self.control_panel.blit(300, 0)
 
@@ -595,7 +592,6 @@ def main():
     game_window = Planet_Eleven(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
     game_window.setup()
     pyglet.clock.schedule_interval(game_window.update, 1/120)
-
     pyglet.app.run()
 
 
