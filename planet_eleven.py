@@ -483,17 +483,20 @@ class Planet_Eleven(pyglet.window.Window):
             self.set_fullscreen(False)
         elif symbol == key.LEFT:
             reversed_left_view_border += POS_SPACE
+            glTranslatef(POS_SPACE, 0, 0)
             self.update_viewport()
         elif symbol == key.RIGHT:
             reversed_left_view_border -= POS_SPACE
+            glTranslatef(-POS_SPACE, 0, 0)
             self.update_viewport()
         elif symbol == key.DOWN:
             reversed_bottom_view_border += POS_SPACE
+            glTranslatef(0, POS_SPACE, 0)
             self.update_viewport()
         elif symbol == key.UP:
-            glTranslatef(-300, -300, 0)
-            # reversed_bottom_view_border -= POS_SPACE
-            # self.update_viewport()
+            reversed_bottom_view_border -= POS_SPACE
+            glTranslatef(0, -POS_SPACE, 0)
+            self.update_viewport()
         elif symbol == key.DELETE:
             for unit in self.unit_list:
                 if selected == id(unit):
@@ -511,15 +514,14 @@ class Planet_Eleven(pyglet.window.Window):
 
     def update_viewport(self):
         global reversed_left_view_border, reversed_bottom_view_border
-        # Viewport limits
-        if reversed_left_view_border > 0:
-            reversed_left_view_border = 0
-        if reversed_bottom_view_border > 0:
-            reversed_bottom_view_border = 0
-        elif abs(reversed_bottom_view_border) > POS_COORDS_N_ROWS * POS_SPACE - SCREEN_HEIGHT:
-            reversed_bottom_view_border = -(POS_COORDS_N_ROWS * POS_SPACE - SCREEN_HEIGHT)
 
-        glViewport(reversed_left_view_border, reversed_bottom_view_border, SCREEN_WIDTH, SCREEN_HEIGHT)
+        # Viewport limits
+        # if reversed_left_view_border > 0:
+        #     reversed_left_view_border = 0
+        # if reversed_bottom_view_border > 0:
+        #     reversed_bottom_view_border = 0
+        # elif abs(reversed_bottom_view_border) > POS_COORDS_N_ROWS * POS_SPACE - SCREEN_HEIGHT:
+        #     reversed_bottom_view_border = -(POS_COORDS_N_ROWS * POS_SPACE - SCREEN_HEIGHT)
 
         self.control_panel.center_x = SCREEN_WIDTH - 139 / 2 + reversed_left_view_border
         self.control_panel.center_y = SCREEN_HEIGHT / 2 + reversed_bottom_view_border
