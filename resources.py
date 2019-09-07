@@ -1,4 +1,5 @@
 import pyglet
+from pyglet.gl import *
 
 
 def center_image(image):
@@ -27,6 +28,8 @@ center_image(tank_image)
 
 vulture_image = pyglet.resource.image("vulture.png")
 center_image(vulture_image)
+glTexParameteri(vulture_image.target, gl.GL_TEXTURE_MAG_FILTER, gl.GL_NEAREST)
+glTexParameteri(vulture_image.target, gl.GL_TEXTURE_MIN_FILTER, gl.GL_NEAREST)
 
 vulture_shadow_image = pyglet.resource.image("vulture_shadow.png")
 center_image(vulture_shadow_image)

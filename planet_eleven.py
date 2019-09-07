@@ -3,7 +3,7 @@ import random
 import sys
 
 import pyglet
-from pyglet import gl
+from pyglet.gl import *
 from pyglet.window import key
 from pyglet.window import mouse
 
@@ -19,8 +19,10 @@ from draw_dot import draw_dot
 # TODO: Finalize minimap
 # TODO: On-sprite shadows
 SCREEN_WIDTH = 683
-SCREEN_HEIGHT = 384
-SCREEN_TITLE = "Planet Eleven"
+SCREEN_HEIGHT = 400  # 384
+SCREEN_TITLE = "Test"
+POS_COORDS_N_COLUMNS = 30
+POS_COORDS_N_ROWS = 30
 reversed_left_view_border = 0
 reversed_bottom_view_border = 0
 POS_SPACE = 32
@@ -28,19 +30,16 @@ SELECTION_RADIUS = 20
 selected = None
 
 
-
 MINIMAP_ZERO_COORDS = (SCREEN_WIDTH - 120, SCREEN_HEIGHT - 230)
 
 # Generate positional coordinates:
-POS_COORDS_N_COLUMNS = 13
-POS_COORDS_N_ROWS = 20
 POS_COORDS = []
 for yi in range(1, POS_COORDS_N_ROWS + 1):
     for xi in range(1, POS_COORDS_N_COLUMNS + 1):
         POS_COORDS.append((xi * POS_SPACE - POS_SPACE / 2, yi * POS_SPACE - POS_SPACE / 2))
 pos_coords_dict = {}
-for x, y in POS_COORDS:
-    pos_coords_dict[(x, y)] = None
+for _x, _y in POS_COORDS:
+    pos_coords_dict[(_x, _y)] = None
 
 DISTANCE_PER_JUMP = (2 * POS_SPACE ** 2) ** 0.5
 minimap_pixels_dict = {}
@@ -153,8 +152,8 @@ class Base(pyglet.sprite.Sprite):
 
 class Unit(pyglet.sprite.Sprite):
     def __init__(self, img, hp, damage, cooldown, speed, x, y,
-                 projectile_sprite, projectile_speed, batch, projectile_color=(255, 255, 255)):
-        super().__init__(img=img, x=x, y=y, batch=batch)
+                 projectile_sprite, projectile_speed, projectile_color=(255, 255, 255)):
+        super().__init__(img=img, x=x, y=y, batch=ground_batch)
         self.x = x
         self.y = y
         self.hp = hp
@@ -162,12 +161,21 @@ class Unit(pyglet.sprite.Sprite):
         self.speed = speed
         self.destination_reached = True
         self.movement_interrupted = False
+        self.target_x = None
+        self.target_y = None
+        self.destination_x = None
+        self.destination_y = None
+        self.velocity_x = 0
+        self.velocity_y = 0
         self.cooldown = cooldown
         self.on_cooldown = False
         self.cooldown_started = None
         self.projectile_sprite = projectile_sprite
         self.projectile_speed = projectile_speed
         self.projectile_color = projectile_color
+
+    def update(self):
+        self.x, self.y = self.x + self.velocity_x, self.y + self.velocity_y
 
     def move(self, destination_x, destination_y):
         # Called once by RMB or when a unit is created
@@ -197,7 +205,7 @@ class Unit(pyglet.sprite.Sprite):
         diff_x = self.target_x - self.x
         diff_y = self.target_y - self.y
         angle = math.atan2(diff_y, diff_x)  # Rad
-        self.rotate = math.degrees(angle) - 90
+        self.rotation = math.degrees(angle) - 90
         self.velocity_x = math.cos(angle) * self.speed
         self.velocity_y = math.sin(angle) * self.speed
         shadow = shadows_dict[id(self)]
@@ -282,12 +290,12 @@ class Tank(Unit):
 
 
 class Vulture(Unit):
-    building_time = 100
+    building_time = 10
 
     def __init__(self, x, y):
         super().__init__(img=resources.vulture_image, hp=50, damage=10, cooldown=60, speed=10,
                          x=x, y=y, projectile_sprite='sprites/laserBlue01.png',
-                         projectile_speed=10, batch=ground_batch)
+                         projectile_speed=10)
 
 
 class Projectile(pyglet.sprite.Sprite):
@@ -312,10 +320,6 @@ class Planet_Eleven(pyglet.window.Window):
         super().__init__(width, height, title, fullscreen=False)
 
         self.frame_count = 0
-        # This will get the size of the window, and set the viewport to match.
-        # So if the window is 1000x1000, then so will our viewport. If
-        # you want something different, then use those coordinates instead.
-        width, height = self.get_size()
 
     def setup(self):
         global selected
@@ -368,6 +372,12 @@ class Planet_Eleven(pyglet.window.Window):
         ground_batch.draw()
         utilities_batch.draw()
 
+        for _key, value in pos_coords_dict.items():
+            x = _key[0]
+            y = _key[1]
+            if value:
+                draw_dot(x, y, 1)
+
         #self.walls.draw()
         '''self.shadows.draw()
         self.unit_list.draw()
@@ -377,11 +387,7 @@ class Planet_Eleven(pyglet.window.Window):
             buttons_batch.draw()
             self.rally_point_sprite.draw()
 
-        for _key, value in pos_coords_dict.items():
-            x = _key[0]
-            y = _key[1]
-            if value:
-                draw_dot(x, y, 10)
+
 
         #self.control_panel.blit(300, 0)
 
@@ -449,6 +455,12 @@ class Planet_Eleven(pyglet.window.Window):
             if self.frame_count - self.our_base.building_start_time == self.our_base.current_building_time:
                 if pos_coords_dict[(self.our_base.x + POS_SPACE, self.our_base.y + POS_SPACE)] is None:
                     unit = self.our_base.building_queue.pop(0)
+                    if unit == 'defiler':
+                        unit = Defiler(x=self.our_base.x + POS_SPACE, y=self.our_base.y + POS_SPACE)
+                    elif unit == 'tank':
+                        unit = Tank(x=self.our_base.x + POS_SPACE, y=self.our_base.y + POS_SPACE)
+                    elif unit == 'vulture':
+                        unit = Vulture(x=self.our_base.x + POS_SPACE, y=self.our_base.y + POS_SPACE)
                     unit_list.append(unit)
                     self.our_base.building_start_time += self.our_base.current_building_time
                     unit.move(self.our_base.rally_point_x, self.our_base.rally_point_y)
@@ -479,8 +491,9 @@ class Planet_Eleven(pyglet.window.Window):
             reversed_bottom_view_border += POS_SPACE
             self.update_viewport()
         elif symbol == key.UP:
-            reversed_bottom_view_border -= POS_SPACE
-            self.update_viewport()
+            glTranslatef(-300, -300, 0)
+            # reversed_bottom_view_border -= POS_SPACE
+            # self.update_viewport()
         elif symbol == key.DELETE:
             for unit in self.unit_list:
                 if selected == id(unit):
@@ -496,7 +509,6 @@ class Planet_Eleven(pyglet.window.Window):
                     self.unit_list.append(unit)
                     pos_coords_dict[key] = id(unit)'''
 
-
     def update_viewport(self):
         global reversed_left_view_border, reversed_bottom_view_border
         # Viewport limits
@@ -507,7 +519,7 @@ class Planet_Eleven(pyglet.window.Window):
         elif abs(reversed_bottom_view_border) > POS_COORDS_N_ROWS * POS_SPACE - SCREEN_HEIGHT:
             reversed_bottom_view_border = -(POS_COORDS_N_ROWS * POS_SPACE - SCREEN_HEIGHT)
 
-        gl.glViewport(reversed_left_view_border, reversed_bottom_view_border, SCREEN_WIDTH, SCREEN_HEIGHT)
+        glViewport(reversed_left_view_border, reversed_bottom_view_border, SCREEN_WIDTH, SCREEN_HEIGHT)
 
         self.control_panel.center_x = SCREEN_WIDTH - 139 / 2 + reversed_left_view_border
         self.control_panel.center_y = SCREEN_HEIGHT / 2 + reversed_bottom_view_border
@@ -527,26 +539,23 @@ class Planet_Eleven(pyglet.window.Window):
         print('click coords: ', x, y)
         if button == mouse.LEFT:
             # Create defiler:
-            '''if abs(x - self.defiler_button.center_x) <= SELECTION_RADIUS \
-                    and abs(y - self.defiler_button.center_y) <= SELECTION_RADIUS:
-                unit = Defiler(center_x=self.our_base.center_x + POS_SPACE, center_y=self.our_base.center_y + POS_SPACE)
-                self.our_base.building_queue.append(unit)
+            if abs(x - self.defiler_button.x) <= SELECTION_RADIUS \
+                    and abs(y - self.defiler_button.y) <= SELECTION_RADIUS:
+                self.our_base.building_queue.append('defiler')
                 self.our_base.current_building_time = Defiler.building_time
                 if len(self.our_base.building_queue) == 1:
                     self.our_base.building_start_time = self.frame_count
             # Create tank:
-            elif abs(x - self.tank_button.center_x) <= SELECTION_RADIUS \
-                    and abs(y - self.tank_button.center_y) <= SELECTION_RADIUS:
-                unit = Tank(center_x=self.our_base.center_x + POS_SPACE, center_y=self.our_base.center_y + POS_SPACE)
-                self.our_base.building_queue.append(unit)
+            elif abs(x - self.tank_button.x) <= SELECTION_RADIUS \
+                    and abs(y - self.tank_button.y) <= SELECTION_RADIUS:
+                self.our_base.building_queue.append('tank')
                 self.our_base.current_building_time = Tank.building_time
                 if len(self.our_base.building_queue) == 1:
-                    self.our_base.building_start_time = self.frame_count'''
+                    self.our_base.building_start_time = self.frame_count
             # Create vulture:
-            if abs(x - self.vulture_button.x) <= SELECTION_RADIUS \
+            elif abs(x - self.vulture_button.x) <= SELECTION_RADIUS \
                     and abs(y - self.vulture_button.y) <= SELECTION_RADIUS:
-                unit = Vulture(x=self.our_base.x + POS_SPACE, y=self.our_base.y + POS_SPACE)
-                self.our_base.building_queue.append(unit)
+                self.our_base.building_queue.append('vulture')
                 self.our_base.current_building_time = Vulture.building_time
                 if len(self.our_base.building_queue) == 1:
                     self.our_base.building_start_time = self.frame_count
