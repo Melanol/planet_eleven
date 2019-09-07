@@ -57,10 +57,10 @@ projectile_list = []
 
 def round_coords(x, y):
     global reversed_left_view_border, reversed_bottom_view_border
-    print('left_view_border =', reversed_left_view_border, 'bottom_view_border =', reversed_bottom_view_border)
+    #print('left_view_border =', reversed_left_view_border, 'bottom_view_border =', reversed_bottom_view_border)
     sel_x = POS_SPACE / 2 * round(x / (POS_SPACE / 2))
     sel_y = POS_SPACE / 2 * round(y / (POS_SPACE / 2))
-    print('sel_x =', sel_x, 'sel_y =', sel_y)
+    #print('sel_x =', sel_x, 'sel_y =', sel_y)
     if sel_x % POS_SPACE == 0:
         if x > sel_x:
             sel_x += POS_SPACE / 2
@@ -73,7 +73,7 @@ def round_coords(x, y):
             sel_y -= POS_SPACE / 2
     sel_x -= reversed_left_view_border
     sel_y -= reversed_bottom_view_border
-    print('sel_x =', sel_x, 'sel_y =', sel_y)
+    #print('sel_x =', sel_x, 'sel_y =', sel_y)
     return sel_x, sel_y
 
 
@@ -82,7 +82,7 @@ def round_angle(angle):
 
 
 def give_next_target(x, y, angle):
-    print('give_next_target:', x, y, angle)
+    print('give_next_target input:', x, y, angle)
     if angle == 0:
         target = (x + POS_SPACE, y)
         target_id = pos_coords_dict[target]
@@ -109,12 +109,9 @@ def give_next_target(x, y, angle):
         target_id = pos_coords_dict[target]
     else:
         raise Exception('bad angle')
-    print('target_id =', target_id)
     if target_id is None:
-        print('target =', target)
         return target
     else:
-        print('target =', None)
         return None
 
 
@@ -208,10 +205,10 @@ class Unit(pyglet.sprite.Sprite):
         self.rotation = math.degrees(angle) - 90
         self.velocity_x = math.cos(angle) * self.speed
         self.velocity_y = math.sin(angle) * self.speed
-        shadow = shadows_dict[id(self)]
-        shadow.angle = math.degrees(angle) - 90
-        shadow.velocity_x = math.cos(angle) * self.speed
-        shadow.velocity_y = math.sin(angle) * self.speed
+        # shadow = shadows_dict[id(self)]
+        # shadow.angle = math.degrees(angle) - 90
+        # shadow.velocity_x = math.cos(angle) * self.speed
+        # shadow.velocity_y = math.sin(angle) * self.speed
 
         pos_coords_dict[(self.target_x, self.target_y)] = id(self)
 
@@ -498,10 +495,10 @@ class Planet_Eleven(pyglet.window.Window):
             glTranslatef(0, -POS_SPACE, 0)
             self.update_viewport()
         elif symbol == key.DELETE:
-            for unit in self.unit_list:
-                if selected == id(unit):
-                    unit.kill()
-                    pos_coords_dict[(self.selection_sprite.center_x, self.selection_sprite.center_y)] = None
+            for unit in unit_list:
+                if id(unit) == selected:
+                    unit.delete()
+                    pos_coords_dict[(self.selection_sprite.x, self.selection_sprite.y)] = None
                     selected = None
         elif symbol == key.ESCAPE:
             sys.exit()
@@ -538,7 +535,8 @@ class Planet_Eleven(pyglet.window.Window):
 
     def on_mouse_press(self, x, y, button, modifiers):
         global selected, minimap_pixels_dict, unit_list
-        print('click coords: ', x, y)
+        x, y = round_coords(x, y)
+        print('\nclick coords:', x, y)
         if button == mouse.LEFT:
             # Create defiler:
             if abs(x - self.defiler_button.x) <= SELECTION_RADIUS \
@@ -564,18 +562,15 @@ class Planet_Eleven(pyglet.window.Window):
             # Selection:
             else:
                 # Closest coordinate:
-                sel_x, sel_y = round_coords(x, y)
                 selected = None
                 for key, value in pos_coords_dict.items():
-                    if sel_x == key[0] and sel_y == key[1]:
+                    if x == key[0] and y == key[1]:
                         selected = value
-                        print((sel_x, sel_y))
-                        self.selection_sprite.x = sel_x
-                        self.selection_sprite.y = sel_y
+                        self.selection_sprite.x = x
+                        self.selection_sprite.y = y
                 print('SELECTED =', selected)
 
         elif button == mouse.RIGHT:
-            x, y = round_coords(x, y)
             # Base rally point:
             if selected == id(self.our_base):  # Our base
                 self.our_base.rally_point_x = x
@@ -585,9 +580,7 @@ class Planet_Eleven(pyglet.window.Window):
                 print('Rally set to ({}, {})'.format(x, y))
             # A unit is selected:
             else:
-                print('else')
                 for unit in unit_list:
-                    print(id(unit))
                     if id(unit) == selected:
                         if (x, y) in pos_coords_dict:
                             if unit.destination_reached:
