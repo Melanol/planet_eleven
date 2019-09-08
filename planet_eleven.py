@@ -57,8 +57,14 @@ projectile_list = []
 
 
 # Modify coords
-def mc(x, y):
-    return x + left_view_border, y + bottom_view_border
+def mc(**kwargs):
+    if len(kwargs) == 1:
+        try:
+            return kwargs['x'] + left_view_border
+        except KeyError:
+            return kwargs['y'] + bottom_view_border
+    else:
+        return kwargs['x'] + left_view_border, kwargs['y'] + bottom_view_border
 
 
 def round_coords(x, y):
@@ -77,8 +83,8 @@ def round_coords(x, y):
             sel_y += POS_SPACE / 2
         else:
             sel_y -= POS_SPACE / 2
-    # return sel_x, sel_y
-    return modify_coords(sel_x, sel_y)
+    return sel_x, sel_y
+    # return mc(x=sel_x, y=sel_y)
 
 
 def round_angle(angle):
@@ -178,9 +184,11 @@ class Unit(pyglet.sprite.Sprite):
     def update(self):
         self.x, self.y = self.x + self.velocity_x, self.y + self.velocity_y
 
-    def move(self, destination_x, destination_y):
+    def move(self, destination):
         # Called once by RMB or when a unit is created
-
+        # destination_x, destination_y = mc(x=destination[0], y=destination[1])
+        destination_x, destination_y = destination[0], destination[1]
+        print('destination_x =', destination_x, 'destination_y =', destination_y)
         # Not moving: same coords
         if self.x == destination_x and self.y == destination_y:
             pos_coords_dict[(self.x, self.y)] = id(self)
@@ -196,6 +204,7 @@ class Unit(pyglet.sprite.Sprite):
         angle = math.atan2(diff_y, diff_x)  # Rad
         d_angle = math.degrees(angle)
         target = give_next_target(self.x, self.y, round_angle(d_angle))
+        print('target =', target)
         if target:
             self.target_x = target[0]
             self.target_y = target[1]
@@ -224,7 +233,7 @@ class Unit(pyglet.sprite.Sprite):
 
     def update_movement(self):
         # Called by update to move to the next point
-        print('\nupdate_movement({}, {})'.format(self.x, self.y))
+        print('\nupdate_movement: self.x = {}, self.y = {})'.format(self.x, self.y))
         pos_coords_dict[(self.x, self.y)] = None
         shadow = shadows_dict[id(self)]
         diff_x = self.destination_x - self.x
@@ -485,7 +494,7 @@ class PlanetEleven(pyglet.window.Window):
                         unit = Vulture(x=self.our_base.x + POS_SPACE, y=self.our_base.y + POS_SPACE)
                     unit_list.append(unit)
                     self.our_base.building_start_time += self.our_base.current_building_time
-                    unit.move(self.our_base.rally_point_x, self.our_base.rally_point_y)
+                    unit.move(mc(x=self.our_base.rally_point_x, y=self.our_base.rally_point_y))
                     pixel = pyglet.sprite.Sprite(img=resources.minimap_ally_image, x=unit.x, y=unit.y,
                                                  batch=minimap_pixels_batch)
                     minimap_pixels_dict[id(unit)] = pixel
@@ -562,7 +571,8 @@ class PlanetEleven(pyglet.window.Window):
     def on_mouse_press(self, x, y, button, modifiers):
         global selected, minimap_pixels_dict, unit_list
         x, y = round_coords(x, y)
-        print('\nclick coords:', x, y)
+        x, y = mc(x=x, y=y)
+        print('\nglobal click coords:', x, y)
         if button == mouse.LEFT:
             # Create defiler:
             if abs(x - self.defiler_button.x) <= SELECTION_RADIUS \
@@ -610,7 +620,7 @@ class PlanetEleven(pyglet.window.Window):
                     if id(unit) == selected:
                         if (x, y) in pos_coords_dict:
                             if unit.destination_reached:
-                                unit.move(x, y)
+                                unit.move((x, y))
                             else:  # Movement interruption
                                 unit.destination_x = unit.target_x
                                 unit.destination_y = unit.target_y
