@@ -7,7 +7,8 @@ from pyglet.gl import *
 from pyglet.window import key
 from pyglet.window import mouse
 
-import resources
+import resources as res
+from projectile import Projectile
 from draw_dot import draw_dot
 
 # TODO: Proper pathfinding
@@ -18,10 +19,10 @@ from draw_dot import draw_dot
 # TODO: Finalize minimap
 # TODO: On-sprite shadows
 SCREEN_WIDTH = 683
-SCREEN_HEIGHT = 400  # 384
+SCREEN_HEIGHT = 384
 SCREEN_TITLE = "Test"
-POS_COORDS_N_ROWS = 20
-POS_COORDS_N_COLUMNS = 25
+POS_COORDS_N_ROWS = 100  # Should be 100 for minimap to work
+POS_COORDS_N_COLUMNS = 100  # Should be 100 for minimap to work
 POS_SPACE = 32
 SELECTION_RADIUS = 20
 selected = None
@@ -30,7 +31,7 @@ left_view_border = 0
 bottom_view_border = 0
 
 
-MINIMAP_ZERO_COORDS = (SCREEN_WIDTH - 120, SCREEN_HEIGHT - 230)
+MINIMAP_ZERO_COORDS = SCREEN_WIDTH - 120, SCREEN_HEIGHT - 230
 
 # Generate positional coordinates:
 POS_COORDS = []
@@ -124,15 +125,15 @@ def give_next_target(x, y, angle):
         return None
 
 
-def convert_to_minimap(x, y):
+def to_minimap(x, y):  # unit.x and unit.y
     x = x / POS_SPACE
     if not x.is_integer():
         x += 1
-    x = MINIMAP_ZERO_COORDS[0] + x
+    x = MINIMAP_ZERO_COORDS[0] + x + left_view_border
     y = y / POS_SPACE
     if not y.is_integer():
         y += 1
-    y = MINIMAP_ZERO_COORDS[1] + y
+    y = MINIMAP_ZERO_COORDS[1] + y + bottom_view_border
     return x, y
 
 
@@ -143,7 +144,7 @@ class Button(pyglet.sprite.Sprite):
 
 class Base(pyglet.sprite.Sprite):
     def __init__(self, x, y):
-        super().__init__(img=resources.base_image, x=x, y=x, batch=ground_batch)
+        super().__init__(img=res.base_image, x=x, y=x, batch=ground_batch)
         self.center_x = x
         self.center_y = x
         self.hp = 100
@@ -207,6 +208,8 @@ class Unit(pyglet.sprite.Sprite):
         if target:
             self.target_x = target[0]
             self.target_y = target[1]
+            pixel = minimap_pixels_dict[id(self)]
+            pixel.x, pixel.y = to_minimap(self.target_x, self.target_y)
         else:
             self.destination_reached = True
             pos_coords_dict[(self.x, self.y)] = id(self)
@@ -248,7 +251,7 @@ class Unit(pyglet.sprite.Sprite):
             self.target_x = next_target[0]
             self.target_y = next_target[1]
             pixel = minimap_pixels_dict[id(self)]
-            pixel.x, pixel.x = convert_to_minimap(self.target_x, self.target_y)
+            pixel.x, pixel.y = to_minimap(self.target_x, self.target_y)
             pos_coords_dict[(self.target_x, self.target_y)] = id(self)
             diff_x = self.target_x - self.x
             diff_y = self.target_y - self.y
@@ -284,7 +287,7 @@ class Defiler(Unit):
     building_time = 60
 
     def __init__(self, x, y):
-        super().__init__(img=resources.defiler_image, hp=100, damage=10, cooldown=60, speed=3, x=x,
+        super().__init__(img=res.defiler_image, hp=100, damage=10, cooldown=60, speed=3, x=x,
                          y=y, projectile_sprite='sprites/laserBlue01.png',
                          projectile_speed=10)
 
@@ -293,7 +296,7 @@ class Tank(Unit):
     building_time = 60
 
     def __init__(self, x, y):
-        super().__init__(img=resources.tank_image, hp=100, damage=10, cooldown=60, speed=0.6, x=x,
+        super().__init__(img=res.tank_image, hp=100, damage=10, cooldown=60, speed=0.6, x=x,
                          y=y, projectile_sprite='sprites/laserBlue01.png',
                          projectile_speed=10)
 
@@ -302,26 +305,9 @@ class Vulture(Unit):
     building_time = 10
 
     def __init__(self, x, y):
-        super().__init__(img=resources.vulture_image, hp=50, damage=10, cooldown=60, speed=10,
+        super().__init__(img=res.vulture_image, hp=50, damage=10, cooldown=60, speed=10,
                          x=x, y=y, projectile_sprite='sprites/laserBlue01.png',
                          projectile_speed=10)
-
-
-class Projectile(pyglet.sprite.Sprite):
-    def __init__(self, img, x, y, target_x, target_y, damage, speed, projectile_color):
-        super().__init__(img=img, x=x, y=y)
-        self._set_color(projectile_color)
-        self.damage = damage
-        self.speed = speed
-
-        x_diff = target_x - x
-        y_diff = target_y - y
-        angle = math.atan2(y_diff, x_diff)
-        self.angle = math.degrees(angle)
-
-        # Speed:
-        self.change_x = math.cos(angle) * speed
-        self.change_y = math.sin(angle) * speed
 
 
 class PlanetEleven(pyglet.window.Window):
@@ -349,20 +335,20 @@ class PlanetEleven(pyglet.window.Window):
             self.walls.append(wall)
             pos_coords_dict[(x, y)] = id(wall)'''
 
-        self.defiler_button = Button(img=resources.defiler_image, x=570, y=130)
-        self.tank_button = Button(img=resources.tank_image, x=615, y=130)
-        self.vulture_button = Button(img=resources.vulture_image, x=660, y=130)
+        self.defiler_button = Button(img=res.defiler_image, x=570, y=130)
+        self.tank_button = Button(img=res.tank_image, x=615, y=130)
+        self.vulture_button = Button(img=res.vulture_image, x=660, y=130)
 
-        self.selection_sprite = pyglet.sprite.Sprite(img=resources.selection_image, x=self.our_base.center_x,
+        self.selection_sprite = pyglet.sprite.Sprite(img=res.selection_image, x=self.our_base.center_x,
                                                      y=self.our_base.center_y, batch=utilities_batch)
-        self.rally_point_sprite = pyglet.sprite.Sprite(img=resources.rally_point_image, x=self.our_base.rally_point_x,
+        self.rally_point_sprite = pyglet.sprite.Sprite(img=res.rally_point_image, x=self.our_base.rally_point_x,
                                                        y=self.our_base.rally_point_y)
 
-        #self.control_panel = pyglet.resource.image("control_panel.png")
+        self.control_panel_sprite = pyglet.sprite.Sprite(img=res.control_panel_image, x=SCREEN_WIDTH, y=0)
 
         self.dots = []
         for x, y in POS_COORDS:
-            dot = pyglet.sprite.Sprite(img=resources.minimap_ally_image, x=x, y=y, batch=utilities_batch)
+            dot = pyglet.sprite.Sprite(img=res.utility_dot_image, x=x, y=y, batch=utilities_batch)
             self.dots.append(dot)
 
         '''self.terrain = arcade.SpriteList(use_spatial_hash=False)
@@ -399,6 +385,7 @@ class PlanetEleven(pyglet.window.Window):
 
         ground_batch.draw()
         utilities_batch.draw()
+        self.control_panel_sprite.draw()
 
         for _key, value in pos_coords_dict.items():
             x = _key[0]
@@ -414,10 +401,6 @@ class PlanetEleven(pyglet.window.Window):
         if selected == id(self.our_base):  # Our base
             buttons_batch.draw()
             self.rally_point_sprite.draw()
-
-
-
-        #self.control_panel.blit(300, 0)
 
         minimap_pixels_batch.draw()
 
@@ -494,10 +477,12 @@ class PlanetEleven(pyglet.window.Window):
                     unit_list.append(unit)
                     self.our_base.building_start_time += self.our_base.current_building_time
                     unit.move(mc(x=self.our_base.rally_point_x, y=self.our_base.rally_point_y))
-                    pixel = pyglet.sprite.Sprite(img=resources.minimap_ally_image, x=unit.x, y=unit.y,
+                    pixel_minimap_coords = to_minimap(unit.x, unit.y)
+                    pixel = pyglet.sprite.Sprite(img=res.minimap_ally_image, x=pixel_minimap_coords[0],
+                                                 y=pixel_minimap_coords[1],
                                                  batch=minimap_pixels_batch)
                     minimap_pixels_dict[id(unit)] = pixel
-                    shadow = pyglet.sprite.Sprite(img=resources.vulture_shadow_image, x=unit.x + 3, y=unit.y - 3,
+                    shadow = pyglet.sprite.Sprite(img=res.vulture_shadow_image, x=unit.x + 3, y=unit.y - 3,
                                                   batch=shadows_batch)
                     shadows_dict[id(unit)] = shadow
                 else:
@@ -560,14 +545,17 @@ class PlanetEleven(pyglet.window.Window):
         elif bottom_view_border > POS_COORDS_N_ROWS * POS_SPACE - SCREEN_HEIGHT + POS_SPACE / 2:
             bottom_view_border = POS_COORDS_N_ROWS * POS_SPACE - SCREEN_HEIGHT + POS_SPACE / 2
 
-        # self.control_panel.x = SCREEN_WIDTH - 139 / 2 + left_view_border
-        # self.control_panel.y = SCREEN_HEIGHT / 2 + bottom_view_border
+        self.control_panel_sprite.x = SCREEN_WIDTH + left_view_border
+        self.control_panel_sprite.y = bottom_view_border
         self.defiler_button.x = 570 + left_view_border
         self.defiler_button.y = 130 + bottom_view_border
         self.tank_button.x = 615 + left_view_border
         self.tank_button.y = 130 + bottom_view_border
         self.vulture_button.x = 660 + left_view_border
         self.vulture_button.y = 130 + bottom_view_border
+        for unit in unit_list:
+            pixel = minimap_pixels_dict[id(unit)]
+            pixel.x, pixel.y = to_minimap(unit.x, unit.y)
 
 
     def on_mouse_press(self, x, y, button, modifiers):

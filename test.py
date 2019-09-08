@@ -1,4 +1,6 @@
-def myf(**kwargs):
-    print(kwargs['x'])
+_dict = {'a': 1}
 
-myf(x=1)
+for key, value in _dict.items():
+    _dict[key] = 2
+
+print(_dict)
