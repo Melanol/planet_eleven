@@ -460,7 +460,7 @@ class PlanetEleven(pyglet.window.Window):
                         shadow.y = unit.target_y - 3
                         pos_coords_dict[(unit.target_x, unit.target_y)] = id(unit)
                         unit.destination_reached = True
-                        unit.move(unit.new_dest_x, unit.new_dest_y)
+                        unit.move((unit.new_dest_x, unit.new_dest_y))
                         unit.movement_interrupted = False
 
 
