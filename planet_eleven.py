@@ -23,11 +23,12 @@ SCREEN_HEIGHT = 400  # 384
 SCREEN_TITLE = "Test"
 POS_COORDS_N_COLUMNS = 30
 POS_COORDS_N_ROWS = 30
-reversed_left_view_border = 0
-reversed_bottom_view_border = 0
 POS_SPACE = 32
 SELECTION_RADIUS = 20
 selected = None
+
+left_view_border = 0
+bottom_view_border = 0
 
 
 MINIMAP_ZERO_COORDS = (SCREEN_WIDTH - 120, SCREEN_HEIGHT - 230)
@@ -55,12 +56,13 @@ unit_list = []
 projectile_list = []
 
 
-def modify_coords(x, y):
-    return x - reversed_left_view_border, y - reversed_bottom_view_border
+# Modify coords
+def mc(x, y):
+    return x + left_view_border, y + bottom_view_border
 
 
 def round_coords(x, y):
-    global reversed_left_view_border, reversed_bottom_view_border
+    global left_view_border, bottom_view_border
     #print('left_view_border =', reversed_left_view_border, 'bottom_view_border =', reversed_bottom_view_border)
     sel_x = POS_SPACE / 2 * round(x / (POS_SPACE / 2))
     sel_y = POS_SPACE / 2 * round(y / (POS_SPACE / 2))
@@ -75,6 +77,7 @@ def round_coords(x, y):
             sel_y += POS_SPACE / 2
         else:
             sel_y -= POS_SPACE / 2
+    # return sel_x, sel_y
     return modify_coords(sel_x, sel_y)
 
 
@@ -313,9 +316,13 @@ class Projectile(pyglet.sprite.Sprite):
         self.change_y = math.sin(angle) * speed
 
 
-class Planet_Eleven(pyglet.window.Window):
+class PlanetEleven(pyglet.window.Window):
     def __init__(self, width, height, title):
-        super().__init__(width, height, title, fullscreen=False)
+        conf = Config(sample_buffers=1,
+                      samples=4,
+                      depth_size=16,
+                      double_buffer=True)
+        super().__init__(width, height, title,  config=conf, fullscreen=False)
 
         self.frame_count = 0
 
@@ -362,7 +369,22 @@ class Planet_Eleven(pyglet.window.Window):
         """
         Render the screen.
         """
-        self.clear()
+        # Initialize Projection matrix
+        glMatrixMode(GL_PROJECTION)
+        glLoadIdentity()
+
+        # Initialize Modelview matrix
+        glMatrixMode(GL_MODELVIEW)
+        glLoadIdentity()
+        # Save the default modelview matrix
+        glPushMatrix()
+
+        # Clear window with ClearColor
+        glClear(GL_COLOR_BUFFER_BIT)
+
+        # Set orthographic projection matrix
+        glOrtho(left_view_border, left_view_border + SCREEN_WIDTH, bottom_view_border,
+                bottom_view_border + SCREEN_HEIGHT, 1, -1)
 
         '''for x, y in POS_COORDS:
             draw_dot(x, y, 2)'''
@@ -391,6 +413,8 @@ class Planet_Eleven(pyglet.window.Window):
 
         minimap_pixels_batch.draw()
 
+        # Remove default modelview matrix
+        glPopMatrix()
 
     def update(self, delta_time):
         global minimap_pixels_dict
@@ -472,29 +496,30 @@ class Planet_Eleven(pyglet.window.Window):
                     self.our_base.building_start_time += 1
                     print('No space')
 
+    # def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
+    #     # Move camera
+    #     left -= dx
+    #     right -= dx
+    #     bottom -= dy
+    #     top -= dy
+
     def on_key_press(self, symbol, modifiers):
         """Called whenever a key is pressed. """
-        global selected, reversed_left_view_border, reversed_bottom_view_border
+        global selected, left_view_border, bottom_view_border
         if symbol == key.F:
             self.set_fullscreen(True)
         elif symbol == key.W:
             self.set_fullscreen(False)
         elif symbol == key.LEFT:
-            reversed_left_view_border += POS_SPACE
-            glTranslatef(POS_SPACE, 0, 0)
-            self.update_viewport()
+            left_view_border -= POS_SPACE
         elif symbol == key.RIGHT:
-            reversed_left_view_border -= POS_SPACE
-            glTranslatef(-POS_SPACE, 0, 0)
-            self.update_viewport()
+            left_view_border += POS_SPACE
         elif symbol == key.DOWN:
-            reversed_bottom_view_border += POS_SPACE
-            glTranslatef(0, POS_SPACE, 0)
-            self.update_viewport()
+            bottom_view_border -= POS_SPACE
         elif symbol == key.UP:
-            reversed_bottom_view_border -= POS_SPACE
-            glTranslatef(0, -POS_SPACE, 0)
-            self.update_viewport()
+            bottom_view_border += POS_SPACE
+        elif symbol == key.H:
+            print(self.our_base.y)
         elif symbol == key.DELETE:
             for unit in unit_list:
                 if id(unit) == selected:
@@ -594,7 +619,7 @@ class Planet_Eleven(pyglet.window.Window):
                                 unit.new_dest_y = y
 
 def main():
-    game_window = Planet_Eleven(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+    game_window = PlanetEleven(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
     game_window.setup()
     pyglet.clock.schedule_interval(game_window.update, 1/120)
     pyglet.app.run()

@@ -16,26 +16,11 @@ class App(pyglet.window.Window):
         self.right = width
         self.bottom = 0
         self.top = height
+
         pyglet.resource.path = ['sprites']
         pyglet.resource.reindex()
         tank_image = pyglet.resource.image("tank.png")
         self.tank_sprite = pyglet.sprite.Sprite(img=tank_image, x=300, y=300)
-
-    def init_gl(self, width, height):
-        # Set clear color
-        glClearColor(0 / 255, 0 / 255, 0 / 255, 0 / 255)
-
-        # Set antialiasing
-        glEnable(GL_LINE_SMOOTH)
-        glEnable(GL_POLYGON_SMOOTH)
-        glHint(GL_LINE_SMOOTH_HINT, GL_NICEST)
-
-        # Set alpha blending
-        glEnable(GL_BLEND)
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
-
-        # Set viewport
-        glViewport(0, 0, width, height)
 
     def on_key_press(self, symbol, modifiers):
         if symbol == pyglet.window.key.H:
