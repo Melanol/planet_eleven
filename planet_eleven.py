@@ -574,30 +574,30 @@ class PlanetEleven(pyglet.window.Window):
         x, y = mc(x=x, y=y)
         print('\nglobal click coords:', x, y)
         if button == mouse.LEFT:
-            # Create defiler:
+            # Create defiler
             if abs(x - self.defiler_button.x) <= SELECTION_RADIUS \
                     and abs(y - self.defiler_button.y) <= SELECTION_RADIUS:
                 self.our_base.building_queue.append('defiler')
                 self.our_base.current_building_time = Defiler.building_time
                 if len(self.our_base.building_queue) == 1:
                     self.our_base.building_start_time = self.frame_count
-            # Create tank:
+            # Create tank
             elif abs(x - self.tank_button.x) <= SELECTION_RADIUS \
                     and abs(y - self.tank_button.y) <= SELECTION_RADIUS:
                 self.our_base.building_queue.append('tank')
                 self.our_base.current_building_time = Tank.building_time
                 if len(self.our_base.building_queue) == 1:
                     self.our_base.building_start_time = self.frame_count
-            # Create vulture:
+            # Create vulture
             elif abs(x - self.vulture_button.x) <= SELECTION_RADIUS \
                     and abs(y - self.vulture_button.y) <= SELECTION_RADIUS:
                 self.our_base.building_queue.append('vulture')
                 self.our_base.current_building_time = Vulture.building_time
                 if len(self.our_base.building_queue) == 1:
                     self.our_base.building_start_time = self.frame_count
-            # Selection:
+            # Selection
             else:
-                # Closest coordinate:
+                # Closest coordinate
                 selected = None
                 for key, value in pos_coords_dict.items():
                     if x == key[0] and y == key[1]:
@@ -607,14 +607,14 @@ class PlanetEleven(pyglet.window.Window):
                 print('SELECTED =', selected)
 
         elif button == mouse.RIGHT:
-            # Base rally point:
+            # Base rally point
             if selected == id(self.our_base):  # Our base
                 self.our_base.rally_point_x = x
                 self.our_base.rally_point_y = y
                 self.rally_point_sprite.x = x
                 self.rally_point_sprite.y = y
                 print('Rally set to ({}, {})'.format(x, y))
-            # A unit is selected:
+            # A unit is selected
             else:
                 for unit in unit_list:
                     if id(unit) == selected:
