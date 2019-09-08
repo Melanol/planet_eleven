@@ -55,6 +55,10 @@ unit_list = []
 projectile_list = []
 
 
+def modify_coords(x, y):
+    return x - reversed_left_view_border, y - reversed_bottom_view_border
+
+
 def round_coords(x, y):
     global reversed_left_view_border, reversed_bottom_view_border
     #print('left_view_border =', reversed_left_view_border, 'bottom_view_border =', reversed_bottom_view_border)
@@ -71,10 +75,7 @@ def round_coords(x, y):
             sel_y += POS_SPACE / 2
         else:
             sel_y -= POS_SPACE / 2
-    sel_x -= reversed_left_view_border
-    sel_y -= reversed_bottom_view_border
-    #print('sel_x =', sel_x, 'sel_y =', sel_y)
-    return sel_x, sel_y
+    return modify_coords(sel_x, sel_y)
 
 
 def round_angle(angle):
