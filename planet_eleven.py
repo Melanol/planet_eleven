@@ -12,17 +12,16 @@ from draw_dot import draw_dot
 
 # TODO: Proper pathfinding
 # TODO: Diagonal movement interception
-# TODO: Waypoint shooting
 # TODO: Unit following unit movement
-# TODO: Fix coordinates and UI
 # TODO: No-space spawning
+# TODO: Something is wrong with default rally spawning when the viewport is moved
 # TODO: Finalize minimap
 # TODO: On-sprite shadows
 SCREEN_WIDTH = 683
 SCREEN_HEIGHT = 400  # 384
 SCREEN_TITLE = "Test"
-POS_COORDS_N_COLUMNS = 30
-POS_COORDS_N_ROWS = 30
+POS_COORDS_N_ROWS = 20
+POS_COORDS_N_COLUMNS = 25
 POS_SPACE = 32
 SELECTION_RADIUS = 20
 selected = None
@@ -521,12 +520,16 @@ class PlanetEleven(pyglet.window.Window):
             self.set_fullscreen(False)
         elif symbol == key.LEFT:
             left_view_border -= POS_SPACE
+            self.update_viewport()
         elif symbol == key.RIGHT:
             left_view_border += POS_SPACE
+            self.update_viewport()
         elif symbol == key.DOWN:
             bottom_view_border -= POS_SPACE
+            self.update_viewport()
         elif symbol == key.UP:
             bottom_view_border += POS_SPACE
+            self.update_viewport()
         elif symbol == key.H:
             print(self.our_base.y)
         elif symbol == key.DELETE:
@@ -545,27 +548,26 @@ class PlanetEleven(pyglet.window.Window):
                     pos_coords_dict[key] = id(unit)'''
 
     def update_viewport(self):
-        global reversed_left_view_border, reversed_bottom_view_border
+        global left_view_border, bottom_view_border
 
         # Viewport limits
-        # if reversed_left_view_border > 0:
-        #     reversed_left_view_border = 0
-        # if reversed_bottom_view_border > 0:
-        #     reversed_bottom_view_border = 0
-        # elif abs(reversed_bottom_view_border) > POS_COORDS_N_ROWS * POS_SPACE - SCREEN_HEIGHT:
-        #     reversed_bottom_view_border = -(POS_COORDS_N_ROWS * POS_SPACE - SCREEN_HEIGHT)
+        if left_view_border < 0:
+            left_view_border = 0
+        elif left_view_border > POS_COORDS_N_COLUMNS * POS_SPACE - SCREEN_WIDTH:
+            left_view_border = POS_COORDS_N_COLUMNS * POS_SPACE - SCREEN_WIDTH
+        if bottom_view_border < 0:
+            bottom_view_border = 0
+        elif bottom_view_border > POS_COORDS_N_ROWS * POS_SPACE - SCREEN_HEIGHT + POS_SPACE / 2:
+            bottom_view_border = POS_COORDS_N_ROWS * POS_SPACE - SCREEN_HEIGHT + POS_SPACE / 2
 
-        self.control_panel.center_x = SCREEN_WIDTH - 139 / 2 + reversed_left_view_border
-        self.control_panel.center_y = SCREEN_HEIGHT / 2 + reversed_bottom_view_border
-        self.soldier_button.center_x = 570 + reversed_left_view_border
-        self.soldier_button.center_y = 130 + reversed_bottom_view_border
-        self.tank_button.center_x = 615 + reversed_left_view_border
-        self.tank_button.center_y = 130 + reversed_bottom_view_border
-        self.vulture_button.center_x = 660 + reversed_left_view_border
-        self.vulture_button.center_y = 130 + reversed_bottom_view_border
-        print(self.soldier_button.center_y)
-        print(self.left_view_border)
-        print(self.bottom_view_border)
+        # self.control_panel.x = SCREEN_WIDTH - 139 / 2 + left_view_border
+        # self.control_panel.y = SCREEN_HEIGHT / 2 + bottom_view_border
+        self.defiler_button.x = 570 + left_view_border
+        self.defiler_button.y = 130 + bottom_view_border
+        self.tank_button.x = 615 + left_view_border
+        self.tank_button.y = 130 + bottom_view_border
+        self.vulture_button.x = 660 + left_view_border
+        self.vulture_button.y = 130 + bottom_view_border
 
 
     def on_mouse_press(self, x, y, button, modifiers):
@@ -597,7 +599,6 @@ class PlanetEleven(pyglet.window.Window):
                     self.our_base.building_start_time = self.frame_count
             # Selection
             else:
-                # Closest coordinate
                 selected = None
                 for key, value in pos_coords_dict.items():
                     if x == key[0] and y == key[1]:
