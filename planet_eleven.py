@@ -186,7 +186,6 @@ class Unit(pyglet.sprite.Sprite):
 
     def move(self, destination):
         # Called once by RMB or when a unit is created
-        # destination_x, destination_y = mc(x=destination[0], y=destination[1])
         destination_x, destination_y = destination[0], destination[1]
         print('destination_x =', destination_x, 'destination_y =', destination_y)
         # Not moving: same coords
@@ -217,11 +216,11 @@ class Unit(pyglet.sprite.Sprite):
         diff_x = self.target_x - self.x
         diff_y = self.target_y - self.y
         angle = math.atan2(diff_y, diff_x)  # Rad
-        self.rotation = math.degrees(angle) - 90
+        self.rotation = -math.degrees(angle) + 90
         self.velocity_x = math.cos(angle) * self.speed
         self.velocity_y = math.sin(angle) * self.speed
         # shadow = shadows_dict[id(self)]
-        # shadow.angle = math.degrees(angle) - 90
+        # shadow.angle = math.degrees(angle)
         # shadow.velocity_x = math.cos(angle) * self.speed
         # shadow.velocity_y = math.sin(angle) * self.speed
 
@@ -242,8 +241,8 @@ class Unit(pyglet.sprite.Sprite):
         diff_y = self.destination_y - self.y
         angle = math.atan2(diff_y, diff_x)  # Rad
         d_angle = math.degrees(angle)
-        self.rotate = d_angle - 90
-        shadow.angle = math.degrees(angle) - 90
+        self.rotation = -d_angle + 90
+        shadow.angle = math.degrees(angle)
         next_target = give_next_target(self.x, self.y, round_angle(d_angle))
         print('next_target =', next_target)
         if next_target:
@@ -257,10 +256,10 @@ class Unit(pyglet.sprite.Sprite):
             diff_y = self.target_y - self.y
             angle = math.atan2(diff_y, diff_x)  # Rad
             d_angle = math.degrees(angle)
-            self.rotate = d_angle - 90
+            self.rotation = -d_angle + 90
             self.velocity_x = math.cos(angle) * self.speed
             self.velocity_y = math.sin(angle) * self.speed
-            shadow.angle = math.degrees(angle) - 90
+            shadow.angle = math.degrees(angle)
             shadow.change_x = math.cos(angle) * self.speed
             shadow.change_y = math.sin(angle) * self.speed
         else:
@@ -278,7 +277,7 @@ class Unit(pyglet.sprite.Sprite):
                                 damage=self.damage, speed=self.projectile_speed, projectile_color=self.projectile_color)
         x_diff = enemy_base_x - self.x
         y_diff = enemy_base_y - self.y
-        self.rotate = math.degrees(math.atan2(y_diff, x_diff)) - 90
+        self.rotation = -math.degrees(math.atan2(y_diff, x_diff)) + 90
         self.on_cooldown = True
         self.cooldown_started = frame_count
 
@@ -500,9 +499,10 @@ class PlanetEleven(pyglet.window.Window):
         """Called whenever a key is pressed. """
         global selected, left_view_border, bottom_view_border
         if symbol == key.F:
-            self.set_fullscreen(True)
-        elif symbol == key.W:
-            self.set_fullscreen(False)
+            if self.fullscreen:
+                self.set_fullscreen(False)
+            else:
+                self.set_fullscreen(True)
         elif symbol == key.LEFT:
             left_view_border -= POS_SPACE
             self.update_viewport()
@@ -516,7 +516,9 @@ class PlanetEleven(pyglet.window.Window):
             bottom_view_border += POS_SPACE
             self.update_viewport()
         elif symbol == key.H:
-            print(self.our_base.y)
+            for unit in unit_list:
+                if selected == id(unit):
+                    print(unit._rotation)
         elif symbol == key.DELETE:
             for unit in unit_list:
                 if id(unit) == selected:
@@ -560,6 +562,9 @@ class PlanetEleven(pyglet.window.Window):
 
     def on_mouse_press(self, x, y, button, modifiers):
         global selected, minimap_pixels_dict, unit_list
+        if self.fullscreen:
+            x /= 2
+            y /= 2
         x, y = round_coords(x, y)
         x, y = mc(x=x, y=y)
         print('\nglobal click coords:', x, y)

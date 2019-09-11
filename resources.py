@@ -21,12 +21,16 @@ center_anchor(rally_point_image)
 
 control_panel_image = pyglet.resource.image("control_panel.png")
 right_bottom_anchor(control_panel_image)
+glTexParameteri(control_panel_image.target, gl.GL_TEXTURE_MAG_FILTER, gl.GL_NEAREST)
+glTexParameteri(control_panel_image.target, gl.GL_TEXTURE_MIN_FILTER, gl.GL_NEAREST)
 
 utility_dot_image = pyglet.resource.image("utility_dot.png")
 center_anchor(utility_dot_image)
 
 minimap_ally_image = pyglet.resource.image("minimap_ally.png")
 center_anchor(minimap_ally_image)
+glTexParameteri(minimap_ally_image.target, gl.GL_TEXTURE_MAG_FILTER, gl.GL_NEAREST)
+glTexParameteri(minimap_ally_image.target, gl.GL_TEXTURE_MIN_FILTER, gl.GL_NEAREST)
 
 base_image = pyglet.resource.image("base.png")
 center_anchor(base_image)
