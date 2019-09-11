@@ -29,6 +29,8 @@ right_bottom_anchor(control_panel_image)
 utility_dot_image = pyglet.resource.image("utility_dot.png")
 center_anchor(utility_dot_image)
 
+minimap_cam_frame_image = pyglet.resource.image("minimap_cam_frame.png")
+
 minimap_ally_image = pyglet.resource.image("minimap_ally.png")
 center_anchor(minimap_ally_image)
 

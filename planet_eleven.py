@@ -318,21 +318,18 @@ class PlanetEleven(pyglet.window.Window):
         super().__init__(width, height, title,  config=conf, fullscreen=False)
 
         self.frame_count = 0
+        self.dx = 0
+        self.dy = 0
 
     def setup(self):
         global selected
+        self.control_panel_sprite = pyglet.sprite.Sprite(img=res.control_panel_image, x=SCREEN_WIDTH, y=0)
+        self.minimap_cam_frame_sprite = pyglet.sprite.Sprite(img=res.minimap_cam_frame_image, x=MINIMAP_ZERO_COORDS[0],
+                                                             y=MINIMAP_ZERO_COORDS[1])
+
         self.our_base = Base(POS_SPACE / 2 + POS_SPACE, POS_SPACE / 2 + POS_SPACE)
         selected = id(self.our_base)
         self.enemy_base = Base(POS_SPACE / 2 + POS_SPACE * 8, POS_SPACE / 2 + POS_SPACE * 8)
-        '''self.walls = arcade.SpriteList(use_spatial_hash=False)
-        wall_coords = [(105, 165), (105, 195), (105, 225), (105, 255), (105, 285), (105, 315), (165, 165), (165, 195),
-                       (165, 225), (165, 285), (165, 315), (195, 225), (195, 285)]
-        for coord in wall_coords:
-            x = coord[0]
-            y = coord[1]
-            wall = arcade.Sprite(filename='sprites/wall.png', center_x=x, center_y=y)
-            self.walls.append(wall)
-            pos_coords_dict[(x, y)] = id(wall)'''
 
         self.defiler_button = Button(img=res.defiler_image, x=570, y=130)
         self.tank_button = Button(img=res.tank_image, x=615, y=130)
@@ -385,6 +382,7 @@ class PlanetEleven(pyglet.window.Window):
         ground_batch.draw()
         utilities_batch.draw()
         self.control_panel_sprite.draw()
+        self.minimap_cam_frame_sprite.draw()
 
         for _key, value in pos_coords_dict.items():
             x = _key[0]
@@ -489,13 +487,6 @@ class PlanetEleven(pyglet.window.Window):
                     self.our_base.building_start_time += 1
                     print('No space')
 
-    # def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
-    #     # Move camera
-    #     left -= dx
-    #     right -= dx
-    #     bottom -= dy
-    #     top -= dy
-
     def on_key_press(self, symbol, modifiers):
         """Called whenever a key is pressed. """
         global selected, left_view_border, bottom_view_border
@@ -559,7 +550,8 @@ class PlanetEleven(pyglet.window.Window):
         for unit in unit_list:
             pixel = minimap_pixels_dict[id(unit)]
             pixel.x, pixel.y = to_minimap(unit.x, unit.y)
-
+        self.minimap_cam_frame_sprite.x, self.minimap_cam_frame_sprite.y = to_minimap(left_view_border,
+                                                                                      bottom_view_border)
 
     def on_mouse_press(self, x, y, button, modifiers):
         global selected, minimap_pixels_dict, unit_list
@@ -622,6 +614,30 @@ class PlanetEleven(pyglet.window.Window):
                                 unit.movement_interrupted = True
                                 unit.new_dest_x = x
                                 unit.new_dest_y = y
+
+    def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
+        global left_view_border, bottom_view_border
+        self.dx += dx
+        self.dy += dy
+        if buttons in [1, 2]:
+            if abs(self.dx) >= POS_SPACE:
+                if self.dx < 0:
+                    left_view_border += abs(self.dx)
+                    self.update_viewport()
+                    self.dx -= self.dx
+                else:
+                    left_view_border -= abs(self.dx)
+                    self.update_viewport()
+                    self.dx -= self.dx
+            if abs(self.dy) >= POS_SPACE:
+                if self.dy < 0:
+                    bottom_view_border += abs(self.dy)
+                    self.update_viewport()
+                    self.dy -= self.dy
+                else:
+                    bottom_view_border -= abs(self.dy)
+                    self.update_viewport()
+                    self.dy -= self.dy
 
 def main():
     game_window = PlanetEleven(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
