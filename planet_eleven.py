@@ -622,20 +622,20 @@ class PlanetEleven(pyglet.window.Window):
         if buttons in [1, 2]:
             if abs(self.dx) >= POS_SPACE:
                 if self.dx < 0:
-                    left_view_border += abs(self.dx)
+                    left_view_border += POS_SPACE
                     self.update_viewport()
                     self.dx -= self.dx
                 else:
-                    left_view_border -= abs(self.dx)
+                    left_view_border -= POS_SPACE
                     self.update_viewport()
                     self.dx -= self.dx
             if abs(self.dy) >= POS_SPACE:
                 if self.dy < 0:
-                    bottom_view_border += abs(self.dy)
+                    bottom_view_border += POS_SPACE
                     self.update_viewport()
                     self.dy -= self.dy
                 else:
-                    bottom_view_border -= abs(self.dy)
+                    bottom_view_border -= POS_SPACE
                     self.update_viewport()
                     self.dy -= self.dy
 
