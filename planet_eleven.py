@@ -475,12 +475,13 @@ class PlanetEleven(pyglet.window.Window):
                         unit = Vulture(x=self.our_base.x + POS_SPACE, y=self.our_base.y + POS_SPACE)
                     unit_list.append(unit)
                     self.our_base.building_start_time += self.our_base.current_building_time
-                    unit.move(mc(x=self.our_base.rally_point_x, y=self.our_base.rally_point_y))
+
                     pixel_minimap_coords = to_minimap(unit.x, unit.y)
                     pixel = pyglet.sprite.Sprite(img=res.minimap_ally_image, x=pixel_minimap_coords[0],
                                                  y=pixel_minimap_coords[1],
                                                  batch=minimap_pixels_batch)
                     minimap_pixels_dict[id(unit)] = pixel
+                    unit.move(mc(x=self.our_base.rally_point_x, y=self.our_base.rally_point_y))
                     shadow = pyglet.sprite.Sprite(img=res.vulture_shadow_image, x=unit.x + 3, y=unit.y - 3,
                                                   batch=shadows_batch)
                     shadows_dict[id(unit)] = shadow
