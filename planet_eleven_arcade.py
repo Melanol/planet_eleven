@@ -249,7 +249,7 @@ class Defiler(Unit):
 
     def __init__(self, center_x, center_y):
         super().__init__(sprite='sprites/defiler.png', hp=100, damage=10, cooldown=60, speed=3, center_x=center_x,
-                         center_y=center_y, projectile_sprite='sprites/laserBlue01.png',
+                         center_y=center_y, projectile_sprite='sprites/blue_laser.png',
                          projectile_speed=10)
 
 
@@ -258,7 +258,7 @@ class Tank(Unit):
 
     def __init__(self, center_x, center_y):
         super().__init__(sprite='sprites/tank.png', hp=100, damage=10, cooldown=60, speed=0.6, center_x=center_x,
-                         center_y=center_y, projectile_sprite='sprites/laserBlue01.png',
+                         center_y=center_y, projectile_sprite='sprites/blue_laser.png',
                          projectile_speed=10)
 
 
@@ -267,7 +267,7 @@ class Vulture(Unit):
 
     def __init__(self, center_x, center_y):
         super().__init__(sprite='sprites/vulture.png', hp=50, damage=10, cooldown=60, speed=10,
-                         center_x=center_x, center_y=center_y, projectile_sprite='sprites/laserBlue01.png',
+                         center_x=center_x, center_y=center_y, projectile_sprite='sprites/blue_laser.png',
                          projectile_speed=10)
 
 

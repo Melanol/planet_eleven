@@ -7,6 +7,7 @@ from pyglet.gl import *
 from pyglet.window import key
 from pyglet.window import mouse
 
+from movable import Movable
 import resources as res
 from projectile import Projectile
 from draw_dot import draw_dot
@@ -219,10 +220,10 @@ class Unit(pyglet.sprite.Sprite):
         self.rotation = -math.degrees(angle) + 90
         self.velocity_x = math.cos(angle) * self.speed
         self.velocity_y = math.sin(angle) * self.speed
-        # shadow = shadows_dict[id(self)]
-        # shadow.angle = math.degrees(angle)
-        # shadow.velocity_x = math.cos(angle) * self.speed
-        # shadow.velocity_y = math.sin(angle) * self.speed
+        shadow = shadows_dict[id(self)]
+        shadow.rotation = -math.degrees(angle) + 90
+        shadow.velocity_x = math.cos(angle) * self.speed
+        shadow.velocity_y = math.sin(angle) * self.speed
 
         pos_coords_dict[(self.target_x, self.target_y)] = id(self)
 
@@ -242,7 +243,7 @@ class Unit(pyglet.sprite.Sprite):
         angle = math.atan2(diff_y, diff_x)  # Rad
         d_angle = math.degrees(angle)
         self.rotation = -d_angle + 90
-        shadow.angle = math.degrees(angle)
+        shadow.rotation = -math.degrees(angle) + 90
         next_target = give_next_target(self.x, self.y, round_angle(d_angle))
         print('next_target =', next_target)
         if next_target:
@@ -259,9 +260,9 @@ class Unit(pyglet.sprite.Sprite):
             self.rotation = -d_angle + 90
             self.velocity_x = math.cos(angle) * self.speed
             self.velocity_y = math.sin(angle) * self.speed
-            shadow.angle = math.degrees(angle)
-            shadow.change_x = math.cos(angle) * self.speed
-            shadow.change_y = math.sin(angle) * self.speed
+            shadow.rotation = -math.degrees(angle) + 90
+            shadow.velocity_x = math.cos(angle) * self.speed
+            shadow.velocity_y = math.sin(angle) * self.speed
         else:
             pos_coords_dict[(self.x, self.y)] = id(self)
             self.destination_reached = True
@@ -278,7 +279,10 @@ class Unit(pyglet.sprite.Sprite):
                                 damage=self.damage, speed=self.projectile_speed)
         x_diff = enemy_base_x - self.x
         y_diff = enemy_base_y - self.y
-        self.rotation = -math.degrees(math.atan2(y_diff, x_diff)) + 90
+        angle = -math.degrees(math.atan2(y_diff, x_diff)) + 90
+        self.rotation = angle
+        shadow = shadows_dict[id(self)]
+        shadow.rotation = angle
         self.on_cooldown = True
         self.cooldown_started = frame_count
         projectile_list.append(projectile)
@@ -289,8 +293,9 @@ class Defiler(Unit):
 
     def __init__(self, x, y):
         super().__init__(img=res.defiler_image, hp=100, damage=10, cooldown=60, speed=3, x=x,
-                         y=y, projectile_sprite='sprites/laserBlue01.png',
+                         y=y, projectile_sprite='sprites/blue_laser.png',
                          projectile_speed=5)
+        self.shadow_sprite = res.defiler_shadow_image
 
 
 class Tank(Unit):
@@ -298,8 +303,9 @@ class Tank(Unit):
 
     def __init__(self, x, y):
         super().__init__(img=res.tank_image, hp=100, damage=10, cooldown=60, speed=0.6, x=x,
-                         y=y, projectile_sprite='sprites/laserBlue01.png',
+                         y=y, projectile_sprite='sprites/blue_laser.png',
                          projectile_speed=5)
+        self.shadow_sprite = res.tank_shadow_image
 
 
 class Vulture(Unit):
@@ -307,8 +313,9 @@ class Vulture(Unit):
 
     def __init__(self, x, y):
         super().__init__(img=res.vulture_image, hp=50, damage=10, cooldown=60, speed=10,
-                         x=x, y=y, projectile_sprite='sprites/laserBlue01.png',
+                         x=x, y=y, projectile_sprite='sprites/blue_laser.png',
                          projectile_speed=5)
+        self.shadow_sprite = res.vulture_shadow_image
 
 
 class PlanetEleven(pyglet.window.Window):
@@ -376,6 +383,7 @@ class PlanetEleven(pyglet.window.Window):
             draw_dot(x, y, 2)'''
 
         self.background.draw()
+        shadows_batch.draw()
         ground_batch.draw()
         utilities_batch.draw()
         self.control_panel_sprite.draw()
@@ -388,15 +396,13 @@ class PlanetEleven(pyglet.window.Window):
         #         draw_dot(x, y, 1)
 
         #self.walls.draw()
-        '''self.shadows.draw()
-        self.unit_list.draw()
-        self.selection_sprite.draw()'''
 
         if selected == id(self.our_base):  # Our base
             buttons_batch.draw()
             self.rally_point_sprite.draw()
 
         minimap_pixels_batch.draw()
+
 
         for projectile in projectile_list:
             projectile.draw()
@@ -471,8 +477,8 @@ class PlanetEleven(pyglet.window.Window):
                                                  batch=minimap_pixels_batch)
                     minimap_pixels_dict[id(unit)] = pixel
                     unit.move((self.our_base.rally_point_x, self.our_base.rally_point_y))
-                    shadow = pyglet.sprite.Sprite(img=res.vulture_shadow_image, x=unit.x + 3, y=unit.y - 3,
-                                                  batch=shadows_batch)
+                    shadow = Movable(img=unit.shadow_sprite, x=unit.x + 3, y=unit.y - 3)
+                    shadow.batch = shadows_batch
                     shadows_dict[id(unit)] = shadow
                 else:
                     self.our_base.building_start_time += 1
@@ -488,7 +494,7 @@ class PlanetEleven(pyglet.window.Window):
     def on_key_press(self, symbol, modifiers):
         """Called whenever a key is pressed. """
         global selected, left_view_border, bottom_view_border
-        if symbol == key.F1:
+        if symbol == key.F:
             if self.fullscreen:
                 self.set_fullscreen(False)
             else:

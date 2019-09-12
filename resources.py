@@ -42,15 +42,18 @@ center_anchor(base_image)
 
 tank_image = pyglet.resource.image("tank.png")
 center_anchor(tank_image)
+tank_shadow_image = pyglet.resource.image("tank_shadow.png")
+center_anchor(tank_shadow_image)
 
 vulture_image = pyglet.resource.image("vulture.png")
 center_anchor(vulture_image)
-
 vulture_shadow_image = pyglet.resource.image("vulture_shadow.png")
 center_anchor(vulture_shadow_image)
 
 defiler_image = pyglet.resource.image("defiler.png")
 center_anchor(defiler_image)
+defiler_shadow_image = pyglet.resource.image("defiler_shadow.png")
+center_anchor(defiler_shadow_image)
 
-projectile_image = pyglet.resource.image("laserBlue01.png")
+projectile_image = pyglet.resource.image("blue_laser.png")
 center_anchor(projectile_image)
