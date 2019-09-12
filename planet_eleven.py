@@ -272,14 +272,16 @@ class Unit(pyglet.sprite.Sprite):
         print()
 
     def shoot(self, frame_count, enemy_base_x, enemy_base_y):
-        projectile = Projectile(img=self.projectile_sprite, x=self.x, y=self.y,
+        global projectile_list
+        projectile = Projectile(x=self.x, y=self.y,
                                 target_x=enemy_base_x, target_y=enemy_base_y,
-                                damage=self.damage, speed=self.projectile_speed, projectile_color=self.projectile_color)
+                                damage=self.damage, speed=self.projectile_speed)
         x_diff = enemy_base_x - self.x
         y_diff = enemy_base_y - self.y
         self.rotation = -math.degrees(math.atan2(y_diff, x_diff)) + 90
         self.on_cooldown = True
         self.cooldown_started = frame_count
+        projectile_list.append(projectile)
 
 
 class Defiler(Unit):
@@ -347,14 +349,6 @@ class PlanetEleven(pyglet.window.Window):
             dot = pyglet.sprite.Sprite(img=res.utility_dot_image, x=x, y=y, batch=utilities_batch)
             self.dots.append(dot)
 
-        '''self.terrain = arcade.SpriteList(use_spatial_hash=False)
-        for coord in POS_COORDS:
-            angle = random.choice([0, 90, 180, 270])
-            filename = random.choice(['sprites/sand1.png'])
-            sand = arcade.Sprite(filename=filename, center_x=coord[0], center_y=coord[1])
-            #sand._set_angle(angle)
-            self.terrain.append(sand)'''
-
     def on_draw(self):
         """
         Render the screen.
@@ -401,6 +395,9 @@ class PlanetEleven(pyglet.window.Window):
 
         minimap_pixels_batch.draw()
 
+        for projectile in projectile_list:
+            projectile.draw()
+
         # Remove default modelview matrix
         glPopMatrix()
 
@@ -415,7 +412,6 @@ class PlanetEleven(pyglet.window.Window):
             if selected == id(unit):
                 self.selection_sprite.x = unit.x
                 self.selection_sprite.y = unit.y
-
             # Do not jump
             if not unit.destination_reached:
                 if not unit.eta() <= 1:
@@ -443,22 +439,14 @@ class PlanetEleven(pyglet.window.Window):
                         unit.move((unit.new_dest_x, unit.new_dest_y))
                         unit.movement_interrupted = False
 
-
-        '''# Shooting at enemy base:
-        projectile_list.update()
-        for unit in self.unit_list:
+        # Shooting at enemy base:
+        for unit in unit_list:
             if not unit.on_cooldown:
-                if ((self.enemy_base.center_x - unit.center_x) ** 2 +
-                    (self.enemy_base.center_y - unit.center_y) ** 2) ** 0.5 <= 100:
-                    unit.shoot(self.frame_count, self.enemy_base.center_x, self.enemy_base.center_y)
+                if ((self.enemy_base.x - unit.x) ** 2 + (self.enemy_base.y - unit.y) ** 2) ** 0.5 <= 100:
+                    unit.shoot(self.frame_count, self.enemy_base.x, self.enemy_base.y)
             else:
                 if (self.frame_count - unit.cooldown_started) % unit.cooldown == 0:
                     unit.on_cooldown = False
-        projectile_hit_list = arcade.check_for_collision_with_list(self.enemy_base, projectile_list)
-        for projectile in projectile_hit_list:
-            projectile.kill()
-            projectile_list.update()
-            self.enemy_base.hp -= projectile.damage'''
 
         # Building units
         if self.our_base.building_queue:
@@ -479,13 +467,16 @@ class PlanetEleven(pyglet.window.Window):
                                                  y=pixel_minimap_coords[1],
                                                  batch=minimap_pixels_batch)
                     minimap_pixels_dict[id(unit)] = pixel
-                    unit.move(mc(x=self.our_base.rally_point_x, y=self.our_base.rally_point_y))
+                    unit.move((self.our_base.rally_point_x, self.our_base.rally_point_y))
                     shadow = pyglet.sprite.Sprite(img=res.vulture_shadow_image, x=unit.x + 3, y=unit.y - 3,
                                                   batch=shadows_batch)
                     shadows_dict[id(unit)] = shadow
                 else:
                     self.our_base.building_start_time += 1
                     print('No space')
+
+        for projectile in projectile_list:
+            projectile.update()
 
     def on_key_press(self, symbol, modifiers):
         """Called whenever a key is pressed. """
@@ -508,9 +499,7 @@ class PlanetEleven(pyglet.window.Window):
             bottom_view_border += POS_SPACE
             self.update_viewport()
         elif symbol == key.H:
-            for unit in unit_list:
-                if selected == id(unit):
-                    print(unit._rotation)
+            print(self.our_base.rally_point_x, self.our_base.rally_point_y)
         elif symbol == key.DELETE:
             for unit in unit_list:
                 if id(unit) == selected:
@@ -554,14 +543,68 @@ class PlanetEleven(pyglet.window.Window):
                                                                                       bottom_view_border)
 
     def on_mouse_press(self, x, y, button, modifiers):
-        global selected, minimap_pixels_dict, unit_list
+        global selected, minimap_pixels_dict, unit_list, left_view_border, bottom_view_border
         if self.fullscreen:
             x /= 2
             y /= 2
-        x, y = round_coords(x, y)
-        x, y = mc(x=x, y=y)
-        print('\nglobal click coords:', x, y)
-        if button == mouse.LEFT:
+        if x < SCREEN_WIDTH - 139:
+            x, y = round_coords(x, y)
+            x, y = mc(x=x, y=y)
+            print('\nglobal click coords:', x, y)
+            if button == mouse.LEFT:
+                # Selection
+                selected = None
+                for key, value in pos_coords_dict.items():
+                    if x == key[0] and y == key[1]:
+                        selected = value
+                        self.selection_sprite.x = x
+                        self.selection_sprite.y = y
+                print('SELECTED =', selected)
+            elif button == mouse.RIGHT:
+                # Base rally point
+                if selected == id(self.our_base):  # Our base
+                    self.our_base.rally_point_x = x
+                    self.our_base.rally_point_y = y
+                    self.rally_point_sprite.x = x
+                    self.rally_point_sprite.y = y
+                    print('Rally set to ({}, {})'.format(x, y))
+                # A unit is selected
+                else:
+                    for unit in unit_list:
+                        if id(unit) == selected:
+                            if (x, y) in pos_coords_dict:
+                                if unit.destination_reached:
+                                    unit.move((x, y))
+                                else:  # Movement interruption
+                                    unit.destination_x = unit.target_x
+                                    unit.destination_y = unit.target_y
+                                    unit.movement_interrupted = True
+                                    unit.new_dest_x = x
+                                    unit.new_dest_y = y
+        elif MINIMAP_ZERO_COORDS[0] <= x <= MINIMAP_ZERO_COORDS[0] + 100 and \
+                MINIMAP_ZERO_COORDS[1] <= y <= MINIMAP_ZERO_COORDS[1] + 100:
+            if button == mouse.LEFT:
+                left_view_border = (x - MINIMAP_ZERO_COORDS[0]) * POS_SPACE
+                bottom_view_border = (y - MINIMAP_ZERO_COORDS[1]) * POS_SPACE
+                self.update_viewport()
+            elif button == mouse.RIGHT:
+                x = (x - MINIMAP_ZERO_COORDS[0]) * POS_SPACE
+                y = (y - MINIMAP_ZERO_COORDS[1]) * POS_SPACE
+                x, y = round_coords(x, y)
+                # A unit is selected
+                for unit in unit_list:
+                    if id(unit) == selected:
+                        if (x, y) in pos_coords_dict:
+                            if unit.destination_reached:
+                                unit.move((x, y))
+                            else:  # Movement interruption
+                                unit.destination_x = unit.target_x
+                                unit.destination_y = unit.target_y
+                                unit.movement_interrupted = True
+                                unit.new_dest_x = x
+                                unit.new_dest_y = y
+        else:
+            x, y = mc(x=x, y=y)
             # Create defiler
             if abs(x - self.defiler_button.x) <= SELECTION_RADIUS \
                     and abs(y - self.defiler_button.y) <= SELECTION_RADIUS:
@@ -583,43 +626,12 @@ class PlanetEleven(pyglet.window.Window):
                 self.our_base.current_building_time = Vulture.building_time
                 if len(self.our_base.building_queue) == 1:
                     self.our_base.building_start_time = self.frame_count
-            # Selection
-            else:
-                selected = None
-                for key, value in pos_coords_dict.items():
-                    if x == key[0] and y == key[1]:
-                        selected = value
-                        self.selection_sprite.x = x
-                        self.selection_sprite.y = y
-                print('SELECTED =', selected)
-
-        elif button == mouse.RIGHT:
-            # Base rally point
-            if selected == id(self.our_base):  # Our base
-                self.our_base.rally_point_x = x
-                self.our_base.rally_point_y = y
-                self.rally_point_sprite.x = x
-                self.rally_point_sprite.y = y
-                print('Rally set to ({}, {})'.format(x, y))
-            # A unit is selected
-            else:
-                for unit in unit_list:
-                    if id(unit) == selected:
-                        if (x, y) in pos_coords_dict:
-                            if unit.destination_reached:
-                                unit.move((x, y))
-                            else:  # Movement interruption
-                                unit.destination_x = unit.target_x
-                                unit.destination_y = unit.target_y
-                                unit.movement_interrupted = True
-                                unit.new_dest_x = x
-                                unit.new_dest_y = y
 
     def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
         global left_view_border, bottom_view_border
-        self.dx += dx
-        self.dy += dy
-        if buttons in [1, 2]:
+        if x < SCREEN_WIDTH - 139 and buttons == 2:
+            self.dx += dx
+            self.dy += dy
             if abs(self.dx) >= POS_SPACE:
                 if self.dx < 0:
                     left_view_border += POS_SPACE
@@ -638,6 +650,11 @@ class PlanetEleven(pyglet.window.Window):
                     bottom_view_border -= POS_SPACE
                     self.update_viewport()
                     self.dy -= self.dy
+        elif MINIMAP_ZERO_COORDS[0] <= x <= MINIMAP_ZERO_COORDS[0] + 100 and \
+                MINIMAP_ZERO_COORDS[1] <= y <= MINIMAP_ZERO_COORDS[1] + 100 and buttons in [1, 2]:
+            left_view_border += dx * POS_SPACE
+            bottom_view_border += dy * POS_SPACE
+            self.update_viewport()
 
 def main():
     game_window = PlanetEleven(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)

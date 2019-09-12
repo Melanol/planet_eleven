@@ -30,6 +30,7 @@ utility_dot_image = pyglet.resource.image("utility_dot.png")
 center_anchor(utility_dot_image)
 
 minimap_cam_frame_image = pyglet.resource.image("minimap_cam_frame.png")
+# center_anchor(minimap_cam_frame_image)
 
 minimap_ally_image = pyglet.resource.image("minimap_ally.png")
 center_anchor(minimap_ally_image)
@@ -48,3 +49,6 @@ center_anchor(vulture_shadow_image)
 
 defiler_image = pyglet.resource.image("defiler.png")
 center_anchor(defiler_image)
+
+projectile_image = pyglet.resource.image("laserBlue01.png")
+center_anchor(projectile_image)
