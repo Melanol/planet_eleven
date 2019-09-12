@@ -17,6 +17,8 @@ def right_bottom_anchor(image):
 pyglet.resource.path = ['sprites']
 pyglet.resource.reindex()
 
+background_image = pyglet.resource.image("background.png")
+
 selection_image = pyglet.resource.image("selection.png")
 center_anchor(selection_image)
 
@@ -35,7 +37,7 @@ minimap_cam_frame_image = pyglet.resource.image("minimap_cam_frame.png")
 minimap_ally_image = pyglet.resource.image("minimap_ally.png")
 center_anchor(minimap_ally_image)
 
-base_image = pyglet.resource.image("base.png")
+base_image = pyglet.resource.image("base1.png")
 center_anchor(base_image)
 
 tank_image = pyglet.resource.image("tank.png")

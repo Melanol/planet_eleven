@@ -290,7 +290,7 @@ class Defiler(Unit):
     def __init__(self, x, y):
         super().__init__(img=res.defiler_image, hp=100, damage=10, cooldown=60, speed=3, x=x,
                          y=y, projectile_sprite='sprites/laserBlue01.png',
-                         projectile_speed=10)
+                         projectile_speed=5)
 
 
 class Tank(Unit):
@@ -299,7 +299,7 @@ class Tank(Unit):
     def __init__(self, x, y):
         super().__init__(img=res.tank_image, hp=100, damage=10, cooldown=60, speed=0.6, x=x,
                          y=y, projectile_sprite='sprites/laserBlue01.png',
-                         projectile_speed=10)
+                         projectile_speed=5)
 
 
 class Vulture(Unit):
@@ -308,7 +308,7 @@ class Vulture(Unit):
     def __init__(self, x, y):
         super().__init__(img=res.vulture_image, hp=50, damage=10, cooldown=60, speed=10,
                          x=x, y=y, projectile_sprite='sprites/laserBlue01.png',
-                         projectile_speed=10)
+                         projectile_speed=5)
 
 
 class PlanetEleven(pyglet.window.Window):
@@ -325,6 +325,8 @@ class PlanetEleven(pyglet.window.Window):
 
     def setup(self):
         global selected
+        self.background = pyglet.sprite.Sprite(img=res.background_image, x=0, y=0)
+
         self.control_panel_sprite = pyglet.sprite.Sprite(img=res.control_panel_image, x=SCREEN_WIDTH, y=0)
         self.minimap_cam_frame_sprite = pyglet.sprite.Sprite(img=res.minimap_cam_frame_image, x=MINIMAP_ZERO_COORDS[0],
                                                              y=MINIMAP_ZERO_COORDS[1])
@@ -344,10 +346,10 @@ class PlanetEleven(pyglet.window.Window):
 
         self.control_panel_sprite = pyglet.sprite.Sprite(img=res.control_panel_image, x=SCREEN_WIDTH, y=0)
 
-        self.dots = []
-        for x, y in POS_COORDS:
-            dot = pyglet.sprite.Sprite(img=res.utility_dot_image, x=x, y=y, batch=utilities_batch)
-            self.dots.append(dot)
+        # self.dots = []
+        # for x, y in POS_COORDS:
+        #     dot = pyglet.sprite.Sprite(img=res.utility_dot_image, x=x, y=y, batch=utilities_batch)
+        #     self.dots.append(dot)
 
     def on_draw(self):
         """
@@ -373,16 +375,17 @@ class PlanetEleven(pyglet.window.Window):
         '''for x, y in POS_COORDS:
             draw_dot(x, y, 2)'''
 
+        self.background.draw()
         ground_batch.draw()
         utilities_batch.draw()
         self.control_panel_sprite.draw()
         self.minimap_cam_frame_sprite.draw()
 
-        for _key, value in pos_coords_dict.items():
-            x = _key[0]
-            y = _key[1]
-            if value:
-                draw_dot(x, y, 1)
+        # for _key, value in pos_coords_dict.items():
+        #     x = _key[0]
+        #     y = _key[1]
+        #     if value:
+        #         draw_dot(x, y, 1)
 
         #self.walls.draw()
         '''self.shadows.draw()
@@ -475,27 +478,31 @@ class PlanetEleven(pyglet.window.Window):
                     self.our_base.building_start_time += 1
                     print('No space')
 
-        for projectile in projectile_list:
-            projectile.update()
+        for i, projectile in enumerate(projectile_list):
+            if not projectile.eta() <= 1:
+                projectile.update()
+            else:
+                projectile.delete()
+                del projectile_list[i]
 
     def on_key_press(self, symbol, modifiers):
         """Called whenever a key is pressed. """
         global selected, left_view_border, bottom_view_border
-        if symbol == key.F:
+        if symbol == key.F1:
             if self.fullscreen:
                 self.set_fullscreen(False)
             else:
                 self.set_fullscreen(True)
-        elif symbol == key.LEFT:
+        elif symbol in [key.LEFT, key.A]:
             left_view_border -= POS_SPACE
             self.update_viewport()
-        elif symbol == key.RIGHT:
+        elif symbol in [key.RIGHT, key.D]:
             left_view_border += POS_SPACE
             self.update_viewport()
-        elif symbol == key.DOWN:
+        elif symbol in [key.DOWN, key.S]:
             bottom_view_border -= POS_SPACE
             self.update_viewport()
-        elif symbol == key.UP:
+        elif symbol in [key.UP, key.W]:
             bottom_view_border += POS_SPACE
             self.update_viewport()
         elif symbol == key.H:
@@ -508,12 +515,12 @@ class PlanetEleven(pyglet.window.Window):
                     selected = None
         elif symbol == key.ESCAPE:
             sys.exit()
-        '''elif symbol == key.Z:
-            for key, value in pos_coords_dict.items():
-                if value is None:
-                    unit = Vulture(key[0], key[1])
-                    self.unit_list.append(unit)
-                    pos_coords_dict[key] = id(unit)'''
+        # elif symbol == key.Z:
+        #     for _key, value in pos_coords_dict.items():
+        #         if value is None:
+        #             unit = Vulture(_key[0], _key[1])
+        #             unit_list.append(unit)
+        #             pos_coords_dict[_key] = id(unit)
 
     def update_viewport(self):
         global left_view_border, bottom_view_border
@@ -629,6 +636,9 @@ class PlanetEleven(pyglet.window.Window):
 
     def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
         global left_view_border, bottom_view_border
+        if self.fullscreen:
+            x /= 2
+            y /= 2
         if x < SCREEN_WIDTH - 139 and buttons == 2:
             self.dx += dx
             self.dy += dy
@@ -659,7 +669,7 @@ class PlanetEleven(pyglet.window.Window):
 def main():
     game_window = PlanetEleven(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
     game_window.setup()
-    pyglet.clock.schedule_interval(game_window.update, 1/120)
+    pyglet.clock.schedule_interval(game_window.update, 1/60)
     pyglet.app.run()
 
 

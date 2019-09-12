@@ -9,6 +9,8 @@ class Projectile(pyglet.sprite.Sprite):
         super().__init__(img=img, x=x, y=y)
         self.damage = damage
         self.speed = speed
+        self.target_x = target_x
+        self.target_y = target_y
         x_diff = target_x - x
         y_diff = target_y - y
         angle = math.atan2(y_diff, x_diff)
@@ -18,3 +20,9 @@ class Projectile(pyglet.sprite.Sprite):
 
     def update(self):
         self.x, self.y = self.x + self.velocity_x, self.y + self.velocity_y
+
+    def distance_to_target(self):
+        return ((self.target_x - self.x) ** 2 + (self.target_y - self.y) ** 2) ** 0.5
+
+    def eta(self):
+        return self.distance_to_target() / self.speed
