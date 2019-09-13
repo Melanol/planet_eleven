@@ -167,8 +167,8 @@ class Base(pyglet.sprite.Sprite):
 
 class Unit(pyglet.sprite.Sprite):
     def __init__(self, img, hp, damage, cooldown, speed, x, y,
-                 projectile_sprite, projectile_speed, projectile_color=(255, 255, 255)):
-        super().__init__(img=img, x=x, y=y, batch=ground_batch)
+                 projectile_sprite, projectile_speed, projectile_color=(255, 255, 255), batch=ground_batch):
+        super().__init__(img=img, x=x, y=y, batch=batch)
         self.x = x
         self.y = y
         self.hp = hp
@@ -325,7 +325,7 @@ class Defiler(Unit):
     def __init__(self, x, y):
         super().__init__(img=res.defiler_image, hp=100, damage=10, cooldown=60, speed=3, x=x,
                          y=y, projectile_sprite='sprites/blue_laser.png',
-                         projectile_speed=5)
+                         projectile_speed=5, batch=air_batch)
         self.flying = True
         self.shadow_sprite = res.defiler_shadow_image
 
