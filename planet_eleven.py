@@ -190,6 +190,21 @@ class Unit(pyglet.sprite.Sprite):
         self.projectile_speed = projectile_speed
         self.projectile_color = projectile_color
 
+    def spawn(self):
+        unit_list.append(self)
+        pixel_minimap_coords = to_minimap(self.x, self.y)
+        pixel = pyglet.sprite.Sprite(img=res.minimap_ally_image, x=pixel_minimap_coords[0],
+                                     y=pixel_minimap_coords[1],
+                                     batch=minimap_pixels_batch)
+        minimap_pixels_dict[id(self)] = pixel
+        if self.flying:
+            shadow = Movable(img=self.shadow_sprite, x=self.x + 10, y=self.y - 10)
+            shadow.batch = air_shadows_batch
+        else:
+            shadow = Movable(img=self.shadow_sprite, x=self.x + 3, y=self.y - 3)
+            shadow.batch = shadows_batch
+        shadows_dict[id(self)] = shadow
+
     def update(self):
         self.x, self.y = self.x + self.velocity_x, self.y + self.velocity_y
 
@@ -519,26 +534,15 @@ class PlanetEleven(pyglet.window.Window):
                     unit = self.our_base.building_queue.pop(0)
                     if unit == 'defiler':
                         unit = Defiler(x=self.our_base.x + POS_SPACE, y=self.our_base.y + POS_SPACE)
+                        unit.spawn()
                     elif unit == 'tank':
                         unit = Tank(x=self.our_base.x + POS_SPACE, y=self.our_base.y + POS_SPACE)
+                        unit.spawn()
                     elif unit == 'vulture':
                         unit = Vulture(x=self.our_base.x + POS_SPACE, y=self.our_base.y + POS_SPACE)
-                    unit_list.append(unit)
+                        unit.spawn()
+
                     self.our_base.building_start_time += self.our_base.current_building_time
-
-                    pixel_minimap_coords = to_minimap(unit.x, unit.y)
-                    pixel = pyglet.sprite.Sprite(img=res.minimap_ally_image, x=pixel_minimap_coords[0],
-                                                 y=pixel_minimap_coords[1],
-                                                 batch=minimap_pixels_batch)
-                    minimap_pixels_dict[id(unit)] = pixel
-
-                    if unit.flying:
-                        shadow = Movable(img=unit.shadow_sprite, x=unit.x + 10, y=unit.y - 10)
-                        shadow.batch = air_shadows_batch
-                    else:
-                        shadow = Movable(img=unit.shadow_sprite, x=unit.x + 3, y=unit.y - 3)
-                        shadow.batch = shadows_batch
-                    shadows_dict[id(unit)] = shadow
                     unit.move((self.our_base.rally_point_x, self.our_base.rally_point_y))
                 else:
                     self.our_base.building_start_time += 1
