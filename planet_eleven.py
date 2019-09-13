@@ -13,12 +13,10 @@ from projectile import Projectile
 from draw_dot import draw_dot
 
 # TODO: Proper pathfinding
-# TODO: Diagonal movement interception
+# TODO: Diagonal movement interception?
 # TODO: Unit following unit movement
 # TODO: No-space spawning
-# TODO: Something is wrong with default rally spawning when the viewport is moved
 # TODO: Finalize minimap
-# TODO: On-sprite shadows
 SCREEN_WIDTH = 683
 SCREEN_HEIGHT = 384
 SCREEN_TITLE = "Test"
@@ -295,6 +293,7 @@ class Defiler(Unit):
         super().__init__(img=res.defiler_image, hp=100, damage=10, cooldown=60, speed=3, x=x,
                          y=y, projectile_sprite='sprites/blue_laser.png',
                          projectile_speed=5)
+        self.flying = True
         self.shadow_sprite = res.defiler_shadow_image
 
 
@@ -305,6 +304,7 @@ class Tank(Unit):
         super().__init__(img=res.tank_image, hp=100, damage=10, cooldown=60, speed=0.6, x=x,
                          y=y, projectile_sprite='sprites/blue_laser.png',
                          projectile_speed=5)
+        self.flying = False
         self.shadow_sprite = res.tank_shadow_image
 
 
@@ -315,6 +315,7 @@ class Vulture(Unit):
         super().__init__(img=res.vulture_image, hp=50, damage=10, cooldown=60, speed=10,
                          x=x, y=y, projectile_sprite='sprites/blue_laser.png',
                          projectile_speed=5)
+        self.flying = False
         self.shadow_sprite = res.vulture_shadow_image
 
 
@@ -476,10 +477,10 @@ class PlanetEleven(pyglet.window.Window):
                                                  y=pixel_minimap_coords[1],
                                                  batch=minimap_pixels_batch)
                     minimap_pixels_dict[id(unit)] = pixel
-                    unit.move((self.our_base.rally_point_x, self.our_base.rally_point_y))
                     shadow = Movable(img=unit.shadow_sprite, x=unit.x + 3, y=unit.y - 3)
                     shadow.batch = shadows_batch
                     shadows_dict[id(unit)] = shadow
+                    unit.move((self.our_base.rally_point_x, self.our_base.rally_point_y))
                 else:
                     self.our_base.building_start_time += 1
                     print('No space')
