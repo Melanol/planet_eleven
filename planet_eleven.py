@@ -54,6 +54,7 @@ buttons_batch = pyglet.graphics.Batch()
 utilities_batch = pyglet.graphics.Batch()
 minimap_pixels_batch = pyglet.graphics.Batch()
 shadows_batch = pyglet.graphics.Batch()
+air_shadows_batch = pyglet.graphics.Batch()
 
 unit_list = []
 projectile_list = []
@@ -419,6 +420,7 @@ class PlanetEleven(pyglet.window.Window):
         self.background.draw()
         shadows_batch.draw()
         ground_batch.draw()
+        air_shadows_batch.draw()
         air_batch.draw()
         utilities_batch.draw()
         self.control_panel_sprite.draw()
@@ -532,9 +534,10 @@ class PlanetEleven(pyglet.window.Window):
 
                     if unit.flying:
                         shadow = Movable(img=unit.shadow_sprite, x=unit.x + 10, y=unit.y - 10)
+                        shadow.batch = air_shadows_batch
                     else:
                         shadow = Movable(img=unit.shadow_sprite, x=unit.x + 3, y=unit.y - 3)
-                    shadow.batch = shadows_batch
+                        shadow.batch = shadows_batch
                     shadows_dict[id(unit)] = shadow
                     unit.move((self.our_base.rally_point_x, self.our_base.rally_point_y))
                 else:
