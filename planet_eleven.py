@@ -191,6 +191,10 @@ class Unit(pyglet.sprite.Sprite):
         self.projectile_color = projectile_color
 
     def spawn(self):
+        if not self.flying:
+            pos_coords_dict[(self.x, self.y)] = id(self)
+        else:
+            air_pos_coords_dict[(self.x, self.y)] = id(self)
         unit_list.append(self)
         pixel_minimap_coords = to_minimap(self.x, self.y)
         pixel = pyglet.sprite.Sprite(img=res.minimap_ally_image, x=pixel_minimap_coords[0],
@@ -204,6 +208,11 @@ class Unit(pyglet.sprite.Sprite):
             shadow = Movable(img=self.shadow_sprite, x=self.x + 3, y=self.y - 3)
             shadow.batch = shadows_batch
         shadows_dict[id(self)] = shadow
+
+    def kill(self):
+        shadows_dict[id(self)].delete()
+        minimap_pixels_dict[id(self)].delete()
+        self.delete()
 
     def update(self):
         self.x, self.y = self.x + self.velocity_x, self.y + self.velocity_y
@@ -339,7 +348,7 @@ class Defiler(Unit):
     building_time = 60
 
     def __init__(self, x, y):
-        super().__init__(img=res.defiler_image, hp=100, damage=10, cooldown=60, speed=3, x=x,
+        super().__init__(img=res.defiler_image, hp=100, damage=10, cooldown=60, speed=6, x=x,
                          y=y, projectile_sprite='sprites/blue_laser.png',
                          projectile_speed=5, batch=air_batch)
         self.flying = True
@@ -541,7 +550,6 @@ class PlanetEleven(pyglet.window.Window):
                     elif unit == 'vulture':
                         unit = Vulture(x=self.our_base.x + POS_SPACE, y=self.our_base.y + POS_SPACE)
                         unit.spawn()
-
                     self.our_base.building_start_time += self.our_base.current_building_time
                     unit.move((self.our_base.rally_point_x, self.our_base.rally_point_y))
                 else:
@@ -580,7 +588,7 @@ class PlanetEleven(pyglet.window.Window):
         elif symbol == key.DELETE:
             for unit in unit_list:
                 if id(unit) == selected:
-                    unit.delete()
+                    unit.kill()
                     if unit.flying:
                         air_pos_coords_dict[(self.selection_sprite.x, self.selection_sprite.y)] = None
                     else:
@@ -588,12 +596,11 @@ class PlanetEleven(pyglet.window.Window):
                     selected = None
         elif symbol == key.ESCAPE:
             sys.exit()
-        # elif symbol == key.Z:
-        #     for _key, value in pos_coords_dict.items():
-        #         if value is None:
-        #             unit = Vulture(_key[0], _key[1])
-        #             unit_list.append(unit)
-        #             pos_coords_dict[_key] = id(unit)
+        elif symbol == key.Z:
+            for _key, value in pos_coords_dict.items():
+                if value is None:
+                    unit = Vulture(_key[0], _key[1])
+                    unit.spawn()
 
     def update_viewport(self):
         global left_view_border, bottom_view_border
@@ -627,7 +634,7 @@ class PlanetEleven(pyglet.window.Window):
         if self.fullscreen:
             x /= 2
             y /= 2
-        if x < SCREEN_WIDTH - 139:
+        if x < SCREEN_WIDTH - 139:  # Game field
             x, y = round_coords(x, y)
             x, y = mc(x=x, y=y)
             print('\nglobal click coords:', x, y)
@@ -672,7 +679,7 @@ class PlanetEleven(pyglet.window.Window):
                                 unit.new_dest_x = x
                                 unit.new_dest_y = y
         elif MINIMAP_ZERO_COORDS[0] <= x <= MINIMAP_ZERO_COORDS[0] + 100 and \
-                MINIMAP_ZERO_COORDS[1] <= y <= MINIMAP_ZERO_COORDS[1] + 100:
+                MINIMAP_ZERO_COORDS[1] <= y <= MINIMAP_ZERO_COORDS[1] + 100:  # Minimap
             if button == mouse.LEFT:
                 left_view_border = (x - MINIMAP_ZERO_COORDS[0]) * POS_SPACE
                 bottom_view_border = (y - MINIMAP_ZERO_COORDS[1]) * POS_SPACE
@@ -694,6 +701,7 @@ class PlanetEleven(pyglet.window.Window):
                             unit.new_dest_y = y
         else:
             x, y = mc(x=x, y=y)
+            print('x =', x, 'y =', y)
             # Create defiler
             if abs(x - self.defiler_button.x) <= SELECTION_RADIUS \
                     and abs(y - self.defiler_button.y) <= SELECTION_RADIUS:
