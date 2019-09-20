@@ -542,8 +542,14 @@ class PlanetEleven(pyglet.window.Window):
 
         # Building units
         if self.our_base.building_queue:
+            unit = self.our_base.building_queue[0]
+            if unit == 'defiler':
+                self.our_base.current_building_time = Defiler.building_time
+            elif unit == 'tank':
+                self.our_base.current_building_time = Tank.building_time
+            elif unit == 'vulture':
+                self.our_base.current_building_time = Vulture.building_time
             if self.frame_count - self.our_base.building_start_time == self.our_base.current_building_time:
-                print('sdfsdf')
                 if self.our_base.building_queue[0] not in LIST_OF_FLYING:
                     dict_to_check = pos_coords_dict
                 else:
@@ -712,21 +718,18 @@ class PlanetEleven(pyglet.window.Window):
             if abs(x - self.defiler_button.x) <= SELECTION_RADIUS \
                     and abs(y - self.defiler_button.y) <= SELECTION_RADIUS:
                 self.our_base.building_queue.append('defiler')
-                self.our_base.current_building_time = Defiler.building_time
                 if len(self.our_base.building_queue) == 1:
                     self.our_base.building_start_time = self.frame_count
             # Create tank
             elif abs(x - self.tank_button.x) <= SELECTION_RADIUS \
                     and abs(y - self.tank_button.y) <= SELECTION_RADIUS:
                 self.our_base.building_queue.append('tank')
-                self.our_base.current_building_time = Tank.building_time
                 if len(self.our_base.building_queue) == 1:
                     self.our_base.building_start_time = self.frame_count
             # Create vulture
             elif abs(x - self.vulture_button.x) <= SELECTION_RADIUS \
                     and abs(y - self.vulture_button.y) <= SELECTION_RADIUS:
                 self.our_base.building_queue.append('vulture')
-                self.our_base.current_building_time = Vulture.building_time
                 if len(self.our_base.building_queue) == 1:
                     self.our_base.building_start_time = self.frame_count
 
