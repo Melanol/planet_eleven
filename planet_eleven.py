@@ -10,6 +10,7 @@ from pyglet.window import mouse
 from movable import Movable
 import resources as res
 from projectile import Projectile
+from utilities import *
 from draw_dot import draw_dot
 
 # TODO: Proper pathfinding
@@ -25,12 +26,13 @@ POS_COORDS_N_COLUMNS = 100  # Should be 100 for minimap to work
 POS_SPACE = 32
 SELECTION_RADIUS = 20
 selected = None
+PAN_SPEED = 4
 
 left_view_border = 0
 bottom_view_border = 0
 
 
-MINIMAP_ZERO_COORDS = SCREEN_WIDTH - 120, SCREEN_HEIGHT - 230
+MINIMAP_ZERO_COORDS = SCREEN_WIDTH - 121, SCREEN_HEIGHT - 230
 
 # Generate positional coordinates:
 POS_COORDS = []
@@ -58,10 +60,11 @@ air_shadows_batch = pyglet.graphics.Batch()
 
 unit_list = []
 projectile_list = []
+enemies_list = []
 LIST_OF_FLYING = ['defiler']
 
 
-# Modify coords
+# Modify coords for different viewports
 def mc(**kwargs):
     if len(kwargs) == 1:
         try:
@@ -74,10 +77,8 @@ def mc(**kwargs):
 
 def round_coords(x, y):
     global left_view_border, bottom_view_border
-    #print('left_view_border =', reversed_left_view_border, 'bottom_view_border =', reversed_bottom_view_border)
     sel_x = POS_SPACE / 2 * round(x / (POS_SPACE / 2))
     sel_y = POS_SPACE / 2 * round(y / (POS_SPACE / 2))
-    #print('sel_x =', sel_x, 'sel_y =', sel_y)
     if sel_x % POS_SPACE == 0:
         if x > sel_x:
             sel_x += POS_SPACE / 2
@@ -88,12 +89,11 @@ def round_coords(x, y):
             sel_y += POS_SPACE / 2
         else:
             sel_y -= POS_SPACE / 2
+    if sel_x < 0:
+        sel_x += POS_SPACE
+    if sel_y < 0:
+        sel_y += POS_SPACE
     return sel_x, sel_y
-    # return mc(x=sel_x, y=sel_y)
-
-
-def round_angle(angle):
-    return 45 * round(angle / 45)
 
 
 def give_next_target(x, y, angle, flying):
@@ -152,7 +152,7 @@ class Button(pyglet.sprite.Sprite):
 
 
 class Base(pyglet.sprite.Sprite):
-    def __init__(self, x, y):
+    def __init__(self, x, y, enemy=False):
         super().__init__(img=res.base_image, x=x, y=x, batch=ground_batch)
         self.center_x = x
         self.center_y = x
@@ -164,6 +164,7 @@ class Base(pyglet.sprite.Sprite):
         self.current_building_time = None
         self.building_complete = True
         self.building_start_time = 0
+        self.enemy = enemy
 
     def kill(self):
         # minimap_pixels_dict[id(self)].delete()
@@ -212,11 +213,6 @@ class Unit(pyglet.sprite.Sprite):
             shadow = Movable(img=self.shadow_sprite, x=self.x + 3, y=self.y - 3)
             shadow.batch = shadows_batch
         shadows_dict[id(self)] = shadow
-
-    def kill(self):
-        shadows_dict[id(self)].delete()
-        minimap_pixels_dict[id(self)].delete()
-        self.delete()
 
     def update(self):
         self.x, self.y = self.x + self.velocity_x, self.y + self.velocity_y
@@ -347,6 +343,12 @@ class Unit(pyglet.sprite.Sprite):
         self.cooldown_started = frame_count
         projectile_list.append(projectile)
 
+    def kill(self):
+        shadows_dict[id(self)].delete()
+        minimap_pixels_dict[id(self)].delete()
+        del unit_list[unit_list.index(self)]
+        self.delete()
+
 
 class Defiler(Unit):
     building_time = 60
@@ -396,14 +398,16 @@ class PlanetEleven(pyglet.window.Window):
     def setup(self):
         global selected
         self.background = pyglet.sprite.Sprite(img=res.background_image, x=0, y=0)
-
-        self.control_panel_sprite = pyglet.sprite.Sprite(img=res.control_panel_image, x=SCREEN_WIDTH, y=0)
+        self.minimap_black_background = pyglet.sprite.Sprite(img=res.minimap_black_background_image,
+                                                             x=MINIMAP_ZERO_COORDS[0], y=MINIMAP_ZERO_COORDS[1])
         self.minimap_cam_frame_sprite = pyglet.sprite.Sprite(img=res.minimap_cam_frame_image, x=MINIMAP_ZERO_COORDS[0],
                                                              y=MINIMAP_ZERO_COORDS[1])
 
+        # Spawn
         self.our_base = Base(POS_SPACE / 2 + POS_SPACE, POS_SPACE / 2 + POS_SPACE)
         selected = id(self.our_base)
         self.enemy_base = Base(POS_SPACE / 2 + POS_SPACE * 8, POS_SPACE / 2 + POS_SPACE * 8)
+        enemies_list.append(self.enemy_base)
 
         self.defiler_button = Button(img=res.defiler_image, x=570, y=130)
         self.tank_button = Button(img=res.tank_image, x=615, y=130)
@@ -413,7 +417,6 @@ class PlanetEleven(pyglet.window.Window):
                                                      y=self.our_base.center_y, batch=utilities_batch)
         self.rally_point_sprite = pyglet.sprite.Sprite(img=res.rally_point_image, x=self.our_base.rally_point_x,
                                                        y=self.our_base.rally_point_y)
-
         self.control_panel_sprite = pyglet.sprite.Sprite(img=res.control_panel_image, x=SCREEN_WIDTH, y=0)
 
         # self.dots = []
@@ -451,8 +454,10 @@ class PlanetEleven(pyglet.window.Window):
         air_shadows_batch.draw()
         air_batch.draw()
         utilities_batch.draw()
+        self.minimap_black_background.draw()
+        minimap_pixels_batch.draw()
         self.control_panel_sprite.draw()
-        self.minimap_cam_frame_sprite.draw()
+
 
         # for _key, value in pos_coords_dict.items():
         #     x = _key[0]
@@ -466,8 +471,8 @@ class PlanetEleven(pyglet.window.Window):
             buttons_batch.draw()
             self.rally_point_sprite.draw()
 
-        minimap_pixels_batch.draw()
 
+        self.minimap_cam_frame_sprite.draw()
 
         for projectile in projectile_list:
             projectile.draw()
@@ -527,14 +532,16 @@ class PlanetEleven(pyglet.window.Window):
                         unit.move((unit.new_dest_x, unit.new_dest_y))
                         unit.movement_interrupted = False
 
-        # Shooting at enemy base:
+        # Shooting
         for unit in unit_list:
-            if not unit.on_cooldown:
-                if ((self.enemy_base.x - unit.x) ** 2 + (self.enemy_base.y - unit.y) ** 2) ** 0.5 <= 100:
-                    unit.shoot(self.frame_count, self.enemy_base.x, self.enemy_base.y, self.enemy_base)
-            else:
-                if (self.frame_count - unit.cooldown_started) % unit.cooldown == 0:
-                    unit.on_cooldown = False
+            if unit.destination_reached:
+                if not unit.on_cooldown:
+                    for enemy in enemies_list:
+                        if ((enemy.x - unit.x) ** 2 + (enemy.y - unit.y) ** 2) ** 0.5 <= 100:
+                            unit.shoot(self.frame_count, enemy.x, enemy.y, enemy)
+                else:
+                    if (self.frame_count - unit.cooldown_started) % unit.cooldown == 0:
+                        unit.on_cooldown = False
 
         # Projectiles
         for i, projectile in enumerate(projectile_list):
@@ -598,6 +605,28 @@ class PlanetEleven(pyglet.window.Window):
             self.update_viewport()
         elif symbol == key.H:
             print(self.enemy_base.hp)
+        elif symbol == key.Z:
+            i = 0
+            for _key, value in pos_coords_dict.items():
+                if i % 1 == 0:
+                    if value is None:
+                        unit = Vulture(_key[0], _key[1])
+                        unit.spawn()
+                i += 1
+        elif symbol == key.X:
+            coords_to_delete = []
+            yi = bottom_view_border + POS_SPACE // 2
+            for y in range(yi, yi + 12 * POS_SPACE, POS_SPACE):
+                xi = left_view_border + POS_SPACE // 2
+                for x in range(xi, xi + 17 * POS_SPACE, POS_SPACE):
+                    coords_to_delete.append((x, y))
+            for coord in coords_to_delete:
+                unit_id = pos_coords_dict[coord]
+                pos_coords_dict[coord] = None
+                for unit in unit_list:
+                    if unit_id == id(unit):
+                        unit.kill()
+            print(len(unit_list))
         elif symbol == key.DELETE:
             for unit in unit_list:
                 if id(unit) == selected:
@@ -609,25 +638,23 @@ class PlanetEleven(pyglet.window.Window):
                     selected = None
         elif symbol == key.ESCAPE:
             sys.exit()
-        elif symbol == key.Z:
-            for _key, value in pos_coords_dict.items():
-                if value is None:
-                    unit = Vulture(_key[0], _key[1])
-                    unit.spawn()
 
     def update_viewport(self):
         global left_view_border, bottom_view_border
 
         # Viewport limits
+        a = POS_COORDS_N_COLUMNS * POS_SPACE - SCREEN_WIDTH // POS_SPACE * POS_SPACE + POS_SPACE * 4
         if left_view_border < 0:
             left_view_border = 0
-        elif left_view_border > POS_COORDS_N_COLUMNS * POS_SPACE - SCREEN_WIDTH // POS_SPACE * POS_SPACE:
-            left_view_border = POS_COORDS_N_COLUMNS * POS_SPACE - SCREEN_WIDTH // POS_SPACE * POS_SPACE
+        elif left_view_border > a:
+            left_view_border = a
         if bottom_view_border < 0:
             bottom_view_border = 0
         elif bottom_view_border > POS_COORDS_N_ROWS * POS_SPACE - SCREEN_HEIGHT:
             bottom_view_border = POS_COORDS_N_ROWS * POS_SPACE - SCREEN_HEIGHT
 
+        self.minimap_black_background.x = MINIMAP_ZERO_COORDS[0] + left_view_border
+        self.minimap_black_background.y = MINIMAP_ZERO_COORDS[1] + bottom_view_border
         self.control_panel_sprite.x = SCREEN_WIDTH + left_view_border
         self.control_panel_sprite.y = bottom_view_border
         self.defiler_button.x = 570 + left_view_border
@@ -743,8 +770,8 @@ class PlanetEleven(pyglet.window.Window):
             x /= 2
             y /= 2
         if x < SCREEN_WIDTH - 139 and buttons == 2:
-            self.dx += dx
-            self.dy += dy
+            self.dx += dx * PAN_SPEED
+            self.dy += dy * PAN_SPEED
             if abs(self.dx) >= POS_SPACE:
                 if self.dx < 0:
                     left_view_border += POS_SPACE

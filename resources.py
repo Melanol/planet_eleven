@@ -25,6 +25,8 @@ center_anchor(selection_image)
 rally_point_image = pyglet.resource.image("rally_point.png")
 center_anchor(rally_point_image)
 
+minimap_black_background_image = pyglet.resource.image("minimap_black_background.png")
+
 control_panel_image = pyglet.resource.image("control_panel.png")
 right_bottom_anchor(control_panel_image)
 
