@@ -532,9 +532,18 @@ class PlanetEleven(pyglet.window.Window):
                 if (self.frame_count - unit.cooldown_started) % unit.cooldown == 0:
                     unit.on_cooldown = False
 
+        # Projectiles
+        for i, projectile in enumerate(projectile_list):
+            if not projectile.eta() <= 1:
+                projectile.update()
+            else:
+                projectile.delete()
+                del projectile_list[i]
+
         # Building units
         if self.our_base.building_queue:
             if self.frame_count - self.our_base.building_start_time == self.our_base.current_building_time:
+                print('sdfsdf')
                 if self.our_base.building_queue[0] not in LIST_OF_FLYING:
                     dict_to_check = pos_coords_dict
                 else:
@@ -555,13 +564,6 @@ class PlanetEleven(pyglet.window.Window):
                 else:
                     self.our_base.building_start_time += 1
                     print('No space')
-
-        for i, projectile in enumerate(projectile_list):
-            if not projectile.eta() <= 1:
-                projectile.update()
-            else:
-                projectile.delete()
-                del projectile_list[i]
 
     def on_key_press(self, symbol, modifiers):
         """Called whenever a key is pressed. """
@@ -584,7 +586,8 @@ class PlanetEleven(pyglet.window.Window):
             bottom_view_border += POS_SPACE
             self.update_viewport()
         elif symbol == key.H:
-            print(self.our_base.rally_point_x, self.our_base.rally_point_y)
+            print(self.our_base.current_building_time)
+            print(self.our_base.building_queue)
         elif symbol == key.DELETE:
             for unit in unit_list:
                 if id(unit) == selected:
@@ -634,7 +637,8 @@ class PlanetEleven(pyglet.window.Window):
         if self.fullscreen:
             x /= 2
             y /= 2
-        if x < SCREEN_WIDTH - 139:  # Game field
+        # Game field
+        if x < SCREEN_WIDTH - 139:
             x, y = round_coords(x, y)
             x, y = mc(x=x, y=y)
             print('\nglobal click coords:', x, y)
@@ -678,8 +682,9 @@ class PlanetEleven(pyglet.window.Window):
                                 unit.movement_interrupted = True
                                 unit.new_dest_x = x
                                 unit.new_dest_y = y
+        # Minimap
         elif MINIMAP_ZERO_COORDS[0] <= x <= MINIMAP_ZERO_COORDS[0] + 100 and \
-                MINIMAP_ZERO_COORDS[1] <= y <= MINIMAP_ZERO_COORDS[1] + 100:  # Minimap
+                MINIMAP_ZERO_COORDS[1] <= y <= MINIMAP_ZERO_COORDS[1] + 100:
             if button == mouse.LEFT:
                 left_view_border = (x - MINIMAP_ZERO_COORDS[0]) * POS_SPACE
                 bottom_view_border = (y - MINIMAP_ZERO_COORDS[1]) * POS_SPACE
@@ -699,6 +704,7 @@ class PlanetEleven(pyglet.window.Window):
                             unit.movement_interrupted = True
                             unit.new_dest_x = x
                             unit.new_dest_y = y
+        # Control panel other
         else:
             x, y = mc(x=x, y=y)
             print('x =', x, 'y =', y)
