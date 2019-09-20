@@ -5,7 +5,7 @@ import resources as res
 
 
 class Projectile(Movable):
-    def __init__(self, x, y, target_x, target_y, damage, speed):
+    def __init__(self, x, y, target_x, target_y, damage, speed, target_id):
         img = res.projectile_image
         super().__init__(img=img, x=x, y=y)
         self.damage = damage
@@ -18,3 +18,4 @@ class Projectile(Movable):
         self.rotation = -math.degrees(angle)
         self.velocity_x = math.cos(angle) * speed
         self.velocity_y = math.sin(angle) * speed
+        self.target_id = target_id

@@ -165,6 +165,10 @@ class Base(pyglet.sprite.Sprite):
         self.building_complete = True
         self.building_start_time = 0
 
+    def kill(self):
+        # minimap_pixels_dict[id(self)].delete()
+        self.delete()
+
 
 class Unit(pyglet.sprite.Sprite):
     def __init__(self, img, hp, damage, cooldown, speed, x, y,
@@ -328,13 +332,13 @@ class Unit(pyglet.sprite.Sprite):
             print('self.destination_reached =', self.destination_reached)
         print()
 
-    def shoot(self, frame_count, enemy_base_x, enemy_base_y):
+    def shoot(self, frame_count, target_x, target_y, target_id):
         global projectile_list
         projectile = Projectile(x=self.x, y=self.y,
-                                target_x=enemy_base_x, target_y=enemy_base_y,
-                                damage=self.damage, speed=self.projectile_speed)
-        x_diff = enemy_base_x - self.x
-        y_diff = enemy_base_y - self.y
+                                target_x=target_x, target_y=target_y,
+                                damage=self.damage, speed=self.projectile_speed, target_id=target_id)
+        x_diff = target_x - self.x
+        y_diff = target_y - self.y
         angle = -math.degrees(math.atan2(y_diff, x_diff)) + 90
         self.rotation = angle
         shadow = shadows_dict[id(self)]
@@ -527,7 +531,7 @@ class PlanetEleven(pyglet.window.Window):
         for unit in unit_list:
             if not unit.on_cooldown:
                 if ((self.enemy_base.x - unit.x) ** 2 + (self.enemy_base.y - unit.y) ** 2) ** 0.5 <= 100:
-                    unit.shoot(self.frame_count, self.enemy_base.x, self.enemy_base.y)
+                    unit.shoot(self.frame_count, self.enemy_base.x, self.enemy_base.y, self.enemy_base)
             else:
                 if (self.frame_count - unit.cooldown_started) % unit.cooldown == 0:
                     unit.on_cooldown = False
@@ -537,6 +541,7 @@ class PlanetEleven(pyglet.window.Window):
             if not projectile.eta() <= 1:
                 projectile.update()
             else:
+                projectile.target_id.hp -= projectile.damage
                 projectile.delete()
                 del projectile_list[i]
 
@@ -592,8 +597,7 @@ class PlanetEleven(pyglet.window.Window):
             bottom_view_border += POS_SPACE
             self.update_viewport()
         elif symbol == key.H:
-            print(self.our_base.current_building_time)
-            print(self.our_base.building_queue)
+            print(self.enemy_base.hp)
         elif symbol == key.DELETE:
             for unit in unit_list:
                 if id(unit) == selected:
@@ -617,12 +621,12 @@ class PlanetEleven(pyglet.window.Window):
         # Viewport limits
         if left_view_border < 0:
             left_view_border = 0
-        elif left_view_border > POS_COORDS_N_COLUMNS * POS_SPACE - SCREEN_WIDTH:
-            left_view_border = POS_COORDS_N_COLUMNS * POS_SPACE - SCREEN_WIDTH
+        elif left_view_border > POS_COORDS_N_COLUMNS * POS_SPACE - SCREEN_WIDTH // POS_SPACE * POS_SPACE:
+            left_view_border = POS_COORDS_N_COLUMNS * POS_SPACE - SCREEN_WIDTH // POS_SPACE * POS_SPACE
         if bottom_view_border < 0:
             bottom_view_border = 0
-        elif bottom_view_border > POS_COORDS_N_ROWS * POS_SPACE - SCREEN_HEIGHT + POS_SPACE / 2:
-            bottom_view_border = POS_COORDS_N_ROWS * POS_SPACE - SCREEN_HEIGHT + POS_SPACE / 2
+        elif bottom_view_border > POS_COORDS_N_ROWS * POS_SPACE - SCREEN_HEIGHT:
+            bottom_view_border = POS_COORDS_N_ROWS * POS_SPACE - SCREEN_HEIGHT
 
         self.control_panel_sprite.x = SCREEN_WIDTH + left_view_border
         self.control_panel_sprite.y = bottom_view_border
