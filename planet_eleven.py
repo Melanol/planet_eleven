@@ -18,6 +18,8 @@ from draw_dot import draw_dot
 # TODO: Unit following unit movement
 # TODO: No-space spawning
 # TODO: Finalize minimap
+# TODO: Right-click minimap rally point reposition
+
 SCREEN_WIDTH = 683
 SCREEN_HEIGHT = 384
 SCREEN_TITLE = "Test"
