@@ -159,7 +159,7 @@ class Building(pyglet.sprite.Sprite):
     def __init__(self, img, x, y, hp, is_enemy):
         super().__init__(img=img, x=x, y=y, batch=ground_batch)
         self.hp = hp
-        ground_pos_coords_dict[(x, y)] = id(self)
+        ground_pos_coords_dict[(x, y)] = self
         self.rally_point_x = x
         self.rally_point_y = y
         self.building_queue = []
@@ -206,9 +206,9 @@ class Unit(pyglet.sprite.Sprite):
 
     def spawn(self):
         if not self.flying:
-            ground_pos_coords_dict[(self.x, self.y)] = id(self)
+            ground_pos_coords_dict[(self.x, self.y)] = self
         else:
-            air_pos_coords_dict[(self.x, self.y)] = id(self)
+            air_pos_coords_dict[(self.x, self.y)] = self
         our_units_list.append(self)
         pixel_minimap_coords = to_minimap(self.x, self.y)
         pixel = pyglet.sprite.Sprite(img=res.minimap_ally_image, x=pixel_minimap_coords[0],
@@ -233,9 +233,9 @@ class Unit(pyglet.sprite.Sprite):
         # Not moving: same coords
         if self.x == destination_x and self.y == destination_y:
             if not self.flying:
-                ground_pos_coords_dict[(self.x, self.y)] = id(self)
+                ground_pos_coords_dict[(self.x, self.y)] = self
             else:
-                air_pos_coords_dict[(self.x, self.y)] = id(self)
+                air_pos_coords_dict[(self.x, self.y)] = self
             self.destination_reached = True
             return
 
@@ -260,9 +260,9 @@ class Unit(pyglet.sprite.Sprite):
         else:
             self.destination_reached = True
             if not self.flying:
-                ground_pos_coords_dict[(self.x, self.y)] = id(self)
+                ground_pos_coords_dict[(self.x, self.y)] = self
             else:
-                air_pos_coords_dict[(self.x, self.y)] = id(self)
+                air_pos_coords_dict[(self.x, self.y)] = self
             return
         diff_x = self.target_x - self.x
         diff_y = self.target_y - self.y
@@ -276,9 +276,9 @@ class Unit(pyglet.sprite.Sprite):
         shadow.velocity_y = math.sin(angle) * self.speed
 
         if not self.flying:
-            ground_pos_coords_dict[(self.target_x, self.target_y)] = id(self)
+            ground_pos_coords_dict[(self.target_x, self.target_y)] = self
         else:
-            air_pos_coords_dict[(self.target_x, self.target_y)] = id(self)
+            air_pos_coords_dict[(self.target_x, self.target_y)] = self
 
     def distance_to_target(self):
         return ((self.target_x - self.x) ** 2 + (self.target_y - self.y) ** 2) ** 0.5
@@ -312,9 +312,9 @@ class Unit(pyglet.sprite.Sprite):
             pixel = minimap_pixels_dict[id(self)]
             pixel.x, pixel.y = to_minimap(self.target_x, self.target_y)
             if not self.flying:
-                ground_pos_coords_dict[(self.target_x, self.target_y)] = id(self)
+                ground_pos_coords_dict[(self.target_x, self.target_y)] = self
             else:
-                air_pos_coords_dict[(self.target_x, self.target_y)] = id(self)
+                air_pos_coords_dict[(self.target_x, self.target_y)] = self
             diff_x = self.target_x - self.x
             diff_y = self.target_y - self.y
             angle = math.atan2(diff_y, diff_x)  # Rad
@@ -327,9 +327,9 @@ class Unit(pyglet.sprite.Sprite):
             shadow.velocity_y = math.sin(angle) * self.speed
         else:
             if not self.flying:
-                ground_pos_coords_dict[(self.x, self.y)] = id(self)
+                ground_pos_coords_dict[(self.x, self.y)] = self
             else:
-                air_pos_coords_dict[(self.x, self.y)] = id(self)
+                air_pos_coords_dict[(self.x, self.y)] = self
             self.destination_reached = True
         if self.x == self.destination_x and self.y == self.destination_y:
             print('Destination reached')
@@ -415,7 +415,7 @@ class PlanetEleven(pyglet.window.Window):
         # Spawn
         self.our_1st_base = Base(POS_SPACE / 2 + POS_SPACE, POS_SPACE / 2 + POS_SPACE)
         our_buildings_list.append(self.our_1st_base)
-        selected = id(self.our_1st_base)
+        selected = self.our_1st_base
         Base(POS_SPACE / 2 + POS_SPACE * 8, POS_SPACE / 2 + POS_SPACE * 8, is_enemy=True)
         Base(POS_SPACE / 2 + POS_SPACE * 10, POS_SPACE / 2 + POS_SPACE * 8, is_enemy=True)
         Base(POS_SPACE / 2 + POS_SPACE * 10, POS_SPACE / 2 + POS_SPACE * 6, is_enemy=True)
@@ -479,7 +479,7 @@ class PlanetEleven(pyglet.window.Window):
 
         #self.walls.draw()
 
-        if selected == id(self.our_1st_base):  # Our base
+        if selected == self.our_1st_base:  # Our base
             buttons_batch.draw()
             self.rally_point_sprite.draw()
 
@@ -500,7 +500,7 @@ class PlanetEleven(pyglet.window.Window):
         for unit in our_units_list:
             shadow = shadows_dict[id(unit)]
             # Selection
-            if selected == id(unit):
+            if selected == unit:
                 self.selection_sprite.x = unit.x
                 self.selection_sprite.y = unit.y
             # Do not jump
@@ -520,9 +520,9 @@ class PlanetEleven(pyglet.window.Window):
                             shadow.x = unit.target_x + 3
                             shadow.y = unit.target_y - 3
                         if not unit.flying:
-                            ground_pos_coords_dict[(unit.target_x, unit.target_y)] = id(unit)
+                            ground_pos_coords_dict[(unit.target_x, unit.target_y)] = unit
                         else:
-                            air_pos_coords_dict[(unit.target_x, unit.target_y)] = id(unit)
+                            air_pos_coords_dict[(unit.target_x, unit.target_y)] = unit
                         if unit.x == unit.destination_x and unit.y == unit.destination_y:
                             unit.destination_reached = True
                         else:
@@ -537,9 +537,9 @@ class PlanetEleven(pyglet.window.Window):
                             shadow.x = unit.target_x + 3
                             shadow.y = unit.target_y - 3
                         if not unit.flying:
-                            ground_pos_coords_dict[(unit.target_x, unit.target_y)] = id(unit)
+                            ground_pos_coords_dict[(unit.target_x, unit.target_y)] = unit
                         else:
-                            air_pos_coords_dict[(unit.target_x, unit.target_y)] = id(unit)
+                            air_pos_coords_dict[(unit.target_x, unit.target_y)] = unit
                         unit.destination_reached = True
                         unit.move((unit.new_dest_x, unit.new_dest_y))
                         unit.movement_interrupted = False
@@ -642,7 +642,7 @@ class PlanetEleven(pyglet.window.Window):
             print(len(our_units_list))
         elif symbol == key.DELETE:
             for unit in our_units_list:
-                if id(unit) == selected:
+                if unit == selected:
                     unit.kill()
                     if unit.flying:
                         air_pos_coords_dict[(self.selection_sprite.x, self.selection_sprite.y)] = None
@@ -714,7 +714,7 @@ class PlanetEleven(pyglet.window.Window):
                 print('SELECTED =', selected)
             elif button == mouse.RIGHT:
                 # Base rally point
-                if selected == id(self.our_1st_base):  # Our base
+                if selected == self.our_1st_base:  # Our base
                     self.our_1st_base.rally_point_x = x
                     self.our_1st_base.rally_point_y = y
                     self.rally_point_sprite.x = x
@@ -723,7 +723,7 @@ class PlanetEleven(pyglet.window.Window):
                 # A unit is selected
                 else:
                     for unit in our_units_list:
-                        if id(unit) == selected:
+                        if unit == selected:
                             if unit.destination_reached:
                                 unit.move((x, y))
                             else:  # Movement interruption
@@ -745,7 +745,7 @@ class PlanetEleven(pyglet.window.Window):
                 x, y = round_coords(x, y)
                 # A unit is selected
                 for unit in our_units_list:
-                    if id(unit) == selected:
+                    if unit == selected:
                         if unit.destination_reached:
                             unit.move((x, y))
                         else:  # Movement interruption
