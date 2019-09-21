@@ -41,9 +41,9 @@ POS_COORDS = []
 for yi in range(1, POS_COORDS_N_ROWS + 1):
     for xi in range(1, POS_COORDS_N_COLUMNS + 1):
         POS_COORDS.append((xi * POS_SPACE - POS_SPACE / 2, yi * POS_SPACE - POS_SPACE / 2))
-pos_coords_dict = {}
+ground_pos_coords_dict = {}
 for _x, _y in POS_COORDS:
-    pos_coords_dict[(_x, _y)] = None
+    ground_pos_coords_dict[(_x, _y)] = None
 air_pos_coords_dict = {}
 for _x, _y in POS_COORDS:
     air_pos_coords_dict[(_x, _y)] = None
@@ -101,7 +101,7 @@ def round_coords(x, y):
 def give_next_target(x, y, angle, flying):
     print('give_next_target input:', x, y, angle)
     if not flying:
-        dict_to_check = pos_coords_dict
+        dict_to_check = ground_pos_coords_dict
     else:
         dict_to_check = air_pos_coords_dict
     if angle == 0:
@@ -153,24 +153,29 @@ class Button(pyglet.sprite.Sprite):
         super().__init__(img=img, x=x, y=y, batch=buttons_batch)
 
 
-class Base(pyglet.sprite.Sprite):
-    def __init__(self, x, y, enemy=False):
-        super().__init__(img=res.base_image, x=x, y=x, batch=ground_batch)
-        self.center_x = x
-        self.center_y = x
-        self.hp = 100
-        pos_coords_dict[(x, y)] = id(self)
-        self.rally_point_x = POS_SPACE * 2 - POS_SPACE / 2
-        self.rally_point_y = POS_SPACE * 2 - POS_SPACE / 2
+class Building(pyglet.sprite.Sprite):
+    def __init__(self, img, x, y, hp, is_enemy):
+        super().__init__(img=img, x=x, y=y, batch=ground_batch)
+        self.hp = hp
+        ground_pos_coords_dict[(x, y)] = id(self)
+        self.rally_point_x = x
+        self.rally_point_y = y
         self.building_queue = []
         self.current_building_time = None
         self.building_complete = True
         self.building_start_time = 0
-        self.enemy = enemy
+        self.is_enemy = is_enemy
+        if self.is_enemy:
+            enemies_list.append(self)
 
     def kill(self):
         # minimap_pixels_dict[id(self)].delete()
         self.delete()
+
+
+class Base(Building):
+    def __init__(self, x, y, is_enemy=False):
+        super().__init__(img=res.base_image, x=x, y=y, hp=100, is_enemy=is_enemy)
 
 
 class Unit(pyglet.sprite.Sprite):
@@ -199,7 +204,7 @@ class Unit(pyglet.sprite.Sprite):
 
     def spawn(self):
         if not self.flying:
-            pos_coords_dict[(self.x, self.y)] = id(self)
+            ground_pos_coords_dict[(self.x, self.y)] = id(self)
         else:
             air_pos_coords_dict[(self.x, self.y)] = id(self)
         unit_list.append(self)
@@ -226,14 +231,14 @@ class Unit(pyglet.sprite.Sprite):
         # Not moving: same coords
         if self.x == destination_x and self.y == destination_y:
             if not self.flying:
-                pos_coords_dict[(self.x, self.y)] = id(self)
+                ground_pos_coords_dict[(self.x, self.y)] = id(self)
             else:
                 air_pos_coords_dict[(self.x, self.y)] = id(self)
             self.destination_reached = True
             return
 
         if not self.flying:
-            pos_coords_dict[(self.x, self.y)] = None
+            ground_pos_coords_dict[(self.x, self.y)] = None
         else:
             air_pos_coords_dict[(self.x, self.y)] = None
         self.destination_reached = False
@@ -253,7 +258,7 @@ class Unit(pyglet.sprite.Sprite):
         else:
             self.destination_reached = True
             if not self.flying:
-                pos_coords_dict[(self.x, self.y)] = id(self)
+                ground_pos_coords_dict[(self.x, self.y)] = id(self)
             else:
                 air_pos_coords_dict[(self.x, self.y)] = id(self)
             return
@@ -269,7 +274,7 @@ class Unit(pyglet.sprite.Sprite):
         shadow.velocity_y = math.sin(angle) * self.speed
 
         if not self.flying:
-            pos_coords_dict[(self.target_x, self.target_y)] = id(self)
+            ground_pos_coords_dict[(self.target_x, self.target_y)] = id(self)
         else:
             air_pos_coords_dict[(self.target_x, self.target_y)] = id(self)
 
@@ -283,7 +288,7 @@ class Unit(pyglet.sprite.Sprite):
         # Called by update to move to the next point
         print('\nupdate_movement: self.x = {}, self.y = {})'.format(self.x, self.y))
         if not self.flying:
-            pos_coords_dict[(self.x, self.y)] = None
+            ground_pos_coords_dict[(self.x, self.y)] = None
         else:
             air_pos_coords_dict[(self.x, self.y)] = None
         shadow = shadows_dict[id(self)]
@@ -297,7 +302,7 @@ class Unit(pyglet.sprite.Sprite):
         print('next_target =', next_target)
         if next_target:
             if not self.flying:
-                pos_coords_dict[(self.x, self.y)] = None
+                ground_pos_coords_dict[(self.x, self.y)] = None
             else:
                 air_pos_coords_dict[(self.x, self.y)] = None
             self.target_x = next_target[0]
@@ -305,7 +310,7 @@ class Unit(pyglet.sprite.Sprite):
             pixel = minimap_pixels_dict[id(self)]
             pixel.x, pixel.y = to_minimap(self.target_x, self.target_y)
             if not self.flying:
-                pos_coords_dict[(self.target_x, self.target_y)] = id(self)
+                ground_pos_coords_dict[(self.target_x, self.target_y)] = id(self)
             else:
                 air_pos_coords_dict[(self.target_x, self.target_y)] = id(self)
             diff_x = self.target_x - self.x
@@ -320,7 +325,7 @@ class Unit(pyglet.sprite.Sprite):
             shadow.velocity_y = math.sin(angle) * self.speed
         else:
             if not self.flying:
-                pos_coords_dict[(self.x, self.y)] = id(self)
+                ground_pos_coords_dict[(self.x, self.y)] = id(self)
             else:
                 air_pos_coords_dict[(self.x, self.y)] = id(self)
             self.destination_reached = True
@@ -408,15 +413,14 @@ class PlanetEleven(pyglet.window.Window):
         # Spawn
         self.our_base = Base(POS_SPACE / 2 + POS_SPACE, POS_SPACE / 2 + POS_SPACE)
         selected = id(self.our_base)
-        self.enemy_base = Base(POS_SPACE / 2 + POS_SPACE * 8, POS_SPACE / 2 + POS_SPACE * 8)
-        enemies_list.append(self.enemy_base)
+        self.enemy_base = Base(POS_SPACE / 2 + POS_SPACE * 8, POS_SPACE / 2 + POS_SPACE * 8, is_enemy=True)
 
         self.defiler_button = Button(img=res.defiler_image, x=570, y=130)
         self.tank_button = Button(img=res.tank_image, x=615, y=130)
         self.vulture_button = Button(img=res.vulture_image, x=660, y=130)
 
-        self.selection_sprite = pyglet.sprite.Sprite(img=res.selection_image, x=self.our_base.center_x,
-                                                     y=self.our_base.center_y, batch=utilities_batch)
+        self.selection_sprite = pyglet.sprite.Sprite(img=res.selection_image, x=self.our_base.x,
+                                                     y=self.our_base.y, batch=utilities_batch)
         self.rally_point_sprite = pyglet.sprite.Sprite(img=res.rally_point_image, x=self.our_base.rally_point_x,
                                                        y=self.our_base.rally_point_y)
         self.control_panel_sprite = pyglet.sprite.Sprite(img=res.control_panel_image, x=SCREEN_WIDTH, y=0)
@@ -510,7 +514,7 @@ class PlanetEleven(pyglet.window.Window):
                             shadow.x = unit.target_x + 3
                             shadow.y = unit.target_y - 3
                         if not unit.flying:
-                            pos_coords_dict[(unit.target_x, unit.target_y)] = id(unit)
+                            ground_pos_coords_dict[(unit.target_x, unit.target_y)] = id(unit)
                         else:
                             air_pos_coords_dict[(unit.target_x, unit.target_y)] = id(unit)
                         if unit.x == unit.destination_x and unit.y == unit.destination_y:
@@ -527,7 +531,7 @@ class PlanetEleven(pyglet.window.Window):
                             shadow.x = unit.target_x + 3
                             shadow.y = unit.target_y - 3
                         if not unit.flying:
-                            pos_coords_dict[(unit.target_x, unit.target_y)] = id(unit)
+                            ground_pos_coords_dict[(unit.target_x, unit.target_y)] = id(unit)
                         else:
                             air_pos_coords_dict[(unit.target_x, unit.target_y)] = id(unit)
                         unit.destination_reached = True
@@ -565,7 +569,7 @@ class PlanetEleven(pyglet.window.Window):
                 self.our_base.current_building_time = Vulture.building_time
             if self.frame_count - self.our_base.building_start_time == self.our_base.current_building_time:
                 if self.our_base.building_queue[0] not in LIST_OF_FLYING:
-                    dict_to_check = pos_coords_dict
+                    dict_to_check = ground_pos_coords_dict
                 else:
                     dict_to_check = air_pos_coords_dict
                 if dict_to_check[(self.our_base.x + POS_SPACE, self.our_base.y + POS_SPACE)] is None:
@@ -609,7 +613,7 @@ class PlanetEleven(pyglet.window.Window):
             print(self.enemy_base.hp)
         elif symbol == key.Z:
             i = 0
-            for _key, value in pos_coords_dict.items():
+            for _key, value in ground_pos_coords_dict.items():
                 if i % 1 == 0:
                     if value is None:
                         unit = Vulture(_key[0], _key[1])
@@ -623,8 +627,8 @@ class PlanetEleven(pyglet.window.Window):
                 for x in range(xi, xi + 17 * POS_SPACE, POS_SPACE):
                     coords_to_delete.append((x, y))
             for coord in coords_to_delete:
-                unit_id = pos_coords_dict[coord]
-                pos_coords_dict[coord] = None
+                unit_id = ground_pos_coords_dict[coord]
+                ground_pos_coords_dict[coord] = None
                 for unit in unit_list:
                     if unit_id == id(unit):
                         unit.kill()
@@ -636,7 +640,7 @@ class PlanetEleven(pyglet.window.Window):
                     if unit.flying:
                         air_pos_coords_dict[(self.selection_sprite.x, self.selection_sprite.y)] = None
                     else:
-                        pos_coords_dict[(self.selection_sprite.x, self.selection_sprite.y)] = None
+                        ground_pos_coords_dict[(self.selection_sprite.x, self.selection_sprite.y)] = None
                     selected = None
         elif symbol == key.ESCAPE:
             sys.exit()
@@ -694,7 +698,7 @@ class PlanetEleven(pyglet.window.Window):
                         self.selection_sprite.y = y
                         break
                 if not air_found:
-                    for _key, value in pos_coords_dict.items():
+                    for _key, value in ground_pos_coords_dict.items():
                         if x == _key[0] and y == _key[1]:
                             selected = value
                             self.selection_sprite.x = x
@@ -771,6 +775,7 @@ class PlanetEleven(pyglet.window.Window):
         if self.fullscreen:
             x /= 2
             y /= 2
+        # Game field
         if x < SCREEN_WIDTH - 139 and buttons == 2:
             self.dx += dx * PAN_SPEED
             self.dy += dy * PAN_SPEED
@@ -792,6 +797,7 @@ class PlanetEleven(pyglet.window.Window):
                     bottom_view_border -= POS_SPACE
                     self.update_viewport()
                     self.dy -= self.dy
+        # Minimap
         elif MINIMAP_ZERO_COORDS[0] <= x <= MINIMAP_ZERO_COORDS[0] + 100 and \
                 MINIMAP_ZERO_COORDS[1] <= y <= MINIMAP_ZERO_COORDS[1] + 100 and buttons in [1, 2]:
             left_view_border += dx * POS_SPACE

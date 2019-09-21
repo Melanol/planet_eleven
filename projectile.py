@@ -1,5 +1,4 @@
 import math
-import pyglet
 from movable import Movable
 import resources as res
 
