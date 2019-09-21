@@ -39,8 +39,14 @@ minimap_cam_frame_image = pyglet.resource.image("minimap_cam_frame.png")
 minimap_ally_image = pyglet.resource.image("minimap_ally.png")
 center_anchor(minimap_ally_image)
 
-base_image = pyglet.resource.image("base1.png")
+minimap_enemy_image = pyglet.resource.image("minimap_enemy.png")
+center_anchor(minimap_enemy_image)
+
+base_image = pyglet.resource.image("base.png")
 center_anchor(base_image)
+
+enemy_base_image = pyglet.resource.image("enemy_base.png")
+center_anchor(enemy_base_image)
 
 tank_image = pyglet.resource.image("tank.png")
 center_anchor(tank_image)

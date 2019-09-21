@@ -156,8 +156,7 @@ class Button(pyglet.sprite.Sprite):
 
 
 class Building(pyglet.sprite.Sprite):
-    def __init__(self, img, x, y, hp, is_enemy):
-        super().__init__(img=img, x=x, y=y, batch=ground_batch)
+    def __init__(self, ally_img, enemy_img, x, y, hp, is_enemy):
         self.hp = hp
         ground_pos_coords_dict[(x, y)] = self
         self.rally_point_x = x
@@ -169,6 +168,18 @@ class Building(pyglet.sprite.Sprite):
         self.is_enemy = is_enemy
         if self.is_enemy:
             enemies_list.append(self)
+            img = enemy_img
+            minimap_pixel = res.minimap_enemy_image
+        else:
+            our_buildings_list.append(self)
+            img = ally_img
+            minimap_pixel = res.minimap_ally_image
+        super().__init__(img=img, x=x, y=y, batch=ground_batch)
+        pixel_minimap_coords = to_minimap(self.x, self.y)
+        pixel = pyglet.sprite.Sprite(img=minimap_pixel, x=pixel_minimap_coords[0],
+                                     y=pixel_minimap_coords[1],
+                                     batch=minimap_pixels_batch)
+        minimap_pixels_dict[id(self)] = pixel
 
     def kill(self):
         # minimap_pixels_dict[id(self)].delete()
@@ -177,7 +188,7 @@ class Building(pyglet.sprite.Sprite):
 
 class Base(Building):
     def __init__(self, x, y, is_enemy=False):
-        super().__init__(img=res.base_image, x=x, y=y, hp=100, is_enemy=is_enemy)
+        super().__init__(ally_img=res.base_image, enemy_img=res.enemy_base_image, x=x, y=y, hp=100, is_enemy=is_enemy)
 
 
 class Unit(pyglet.sprite.Sprite):
@@ -414,11 +425,10 @@ class PlanetEleven(pyglet.window.Window):
 
         # Spawn
         self.our_1st_base = Base(POS_SPACE / 2 + POS_SPACE, POS_SPACE / 2 + POS_SPACE)
-        our_buildings_list.append(self.our_1st_base)
         selected = self.our_1st_base
-        Base(POS_SPACE / 2 + POS_SPACE * 8, POS_SPACE / 2 + POS_SPACE * 8, is_enemy=True)
+        Base(POS_SPACE / 2 + POS_SPACE * 4, POS_SPACE / 2 + POS_SPACE * 6, is_enemy=True)
         Base(POS_SPACE / 2 + POS_SPACE * 10, POS_SPACE / 2 + POS_SPACE * 8, is_enemy=True)
-        Base(POS_SPACE / 2 + POS_SPACE * 10, POS_SPACE / 2 + POS_SPACE * 6, is_enemy=True)
+        Base(POS_SPACE / 2 + POS_SPACE * 12, POS_SPACE / 2 + POS_SPACE * 8, is_enemy=True)
         Base(POS_SPACE / 2 + POS_SPACE * 8, POS_SPACE / 2 + POS_SPACE * 6, is_enemy=True)
 
         self.defiler_button = Button(img=res.defiler_image, x=570, y=130)
@@ -551,6 +561,7 @@ class PlanetEleven(pyglet.window.Window):
                     for enemy in enemies_list:
                         if ((enemy.x - unit.x) ** 2 + (enemy.y - unit.y) ** 2) ** 0.5 <= 100:
                             unit.shoot(self.frame_count, enemy.x, enemy.y, enemy)
+                            break
                 else:
                     if (self.frame_count - unit.cooldown_started) % unit.cooldown == 0:
                         unit.on_cooldown = False
@@ -679,6 +690,12 @@ class PlanetEleven(pyglet.window.Window):
         for unit in our_units_list:
             pixel = minimap_pixels_dict[id(unit)]
             pixel.x, pixel.y = to_minimap(unit.x, unit.y)
+        for building in our_buildings_list:
+            pixel = minimap_pixels_dict[id(building)]
+            pixel.x, pixel.y = to_minimap(building.x, building.y)
+        for enemy in enemies_list:
+            pixel = minimap_pixels_dict[id(enemy)]
+            pixel.x, pixel.y = to_minimap(enemy.x, enemy.y)
         self.minimap_cam_frame_sprite.x, self.minimap_cam_frame_sprite.y = to_minimap(left_view_border,
                                                                                       bottom_view_border)
 
