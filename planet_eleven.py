@@ -19,6 +19,7 @@ from draw_dot import draw_dot
 # TODO: No-space spawning
 # TODO: Finalize minimap
 # TODO: Right-click minimap rally point reposition
+# TODO: Change "selected" to use actual objects instead of ids
 
 SCREEN_WIDTH = 683
 SCREEN_HEIGHT = 384
@@ -60,10 +61,11 @@ minimap_pixels_batch = pyglet.graphics.Batch()
 shadows_batch = pyglet.graphics.Batch()
 air_shadows_batch = pyglet.graphics.Batch()
 
-unit_list = []
-projectile_list = []
-enemies_list = []
 LIST_OF_FLYING = ['defiler']
+our_units_list = []
+our_buildings_list = []
+enemies_list = []
+projectile_list = []
 
 
 # Modify coords for different viewports
@@ -207,7 +209,7 @@ class Unit(pyglet.sprite.Sprite):
             ground_pos_coords_dict[(self.x, self.y)] = id(self)
         else:
             air_pos_coords_dict[(self.x, self.y)] = id(self)
-        unit_list.append(self)
+        our_units_list.append(self)
         pixel_minimap_coords = to_minimap(self.x, self.y)
         pixel = pyglet.sprite.Sprite(img=res.minimap_ally_image, x=pixel_minimap_coords[0],
                                      y=pixel_minimap_coords[1],
@@ -353,7 +355,7 @@ class Unit(pyglet.sprite.Sprite):
     def kill(self):
         shadows_dict[id(self)].delete()
         minimap_pixels_dict[id(self)].delete()
-        del unit_list[unit_list.index(self)]
+        del our_units_list[our_units_list.index(self)]
         self.delete()
 
 
@@ -411,18 +413,22 @@ class PlanetEleven(pyglet.window.Window):
                                                              y=MINIMAP_ZERO_COORDS[1])
 
         # Spawn
-        self.our_base = Base(POS_SPACE / 2 + POS_SPACE, POS_SPACE / 2 + POS_SPACE)
-        selected = id(self.our_base)
-        self.enemy_base = Base(POS_SPACE / 2 + POS_SPACE * 8, POS_SPACE / 2 + POS_SPACE * 8, is_enemy=True)
+        self.our_1st_base = Base(POS_SPACE / 2 + POS_SPACE, POS_SPACE / 2 + POS_SPACE)
+        our_buildings_list.append(self.our_1st_base)
+        selected = id(self.our_1st_base)
+        Base(POS_SPACE / 2 + POS_SPACE * 8, POS_SPACE / 2 + POS_SPACE * 8, is_enemy=True)
+        Base(POS_SPACE / 2 + POS_SPACE * 10, POS_SPACE / 2 + POS_SPACE * 8, is_enemy=True)
+        Base(POS_SPACE / 2 + POS_SPACE * 10, POS_SPACE / 2 + POS_SPACE * 6, is_enemy=True)
+        Base(POS_SPACE / 2 + POS_SPACE * 8, POS_SPACE / 2 + POS_SPACE * 6, is_enemy=True)
 
         self.defiler_button = Button(img=res.defiler_image, x=570, y=130)
         self.tank_button = Button(img=res.tank_image, x=615, y=130)
         self.vulture_button = Button(img=res.vulture_image, x=660, y=130)
 
-        self.selection_sprite = pyglet.sprite.Sprite(img=res.selection_image, x=self.our_base.x,
-                                                     y=self.our_base.y, batch=utilities_batch)
-        self.rally_point_sprite = pyglet.sprite.Sprite(img=res.rally_point_image, x=self.our_base.rally_point_x,
-                                                       y=self.our_base.rally_point_y)
+        self.selection_sprite = pyglet.sprite.Sprite(img=res.selection_image, x=self.our_1st_base.x,
+                                                     y=self.our_1st_base.y, batch=utilities_batch)
+        self.rally_point_sprite = pyglet.sprite.Sprite(img=res.rally_point_image, x=self.our_1st_base.rally_point_x,
+                                                       y=self.our_1st_base.rally_point_y)
         self.control_panel_sprite = pyglet.sprite.Sprite(img=res.control_panel_image, x=SCREEN_WIDTH, y=0)
 
         # self.dots = []
@@ -473,7 +479,7 @@ class PlanetEleven(pyglet.window.Window):
 
         #self.walls.draw()
 
-        if selected == id(self.our_base):  # Our base
+        if selected == id(self.our_1st_base):  # Our base
             buttons_batch.draw()
             self.rally_point_sprite.draw()
 
@@ -491,7 +497,7 @@ class PlanetEleven(pyglet.window.Window):
         self.frame_count += 1
         # Units
         # Movement
-        for unit in unit_list:
+        for unit in our_units_list:
             shadow = shadows_dict[id(unit)]
             # Selection
             if selected == id(unit):
@@ -539,7 +545,7 @@ class PlanetEleven(pyglet.window.Window):
                         unit.movement_interrupted = False
 
         # Shooting
-        for unit in unit_list:
+        for unit in our_units_list:
             if unit.destination_reached:
                 if not unit.on_cooldown:
                     for enemy in enemies_list:
@@ -559,35 +565,36 @@ class PlanetEleven(pyglet.window.Window):
                 del projectile_list[i]
 
         # Building units
-        if self.our_base.building_queue:
-            unit = self.our_base.building_queue[0]
-            if unit == 'defiler':
-                self.our_base.current_building_time = Defiler.building_time
-            elif unit == 'tank':
-                self.our_base.current_building_time = Tank.building_time
-            elif unit == 'vulture':
-                self.our_base.current_building_time = Vulture.building_time
-            if self.frame_count - self.our_base.building_start_time == self.our_base.current_building_time:
-                if self.our_base.building_queue[0] not in LIST_OF_FLYING:
-                    dict_to_check = ground_pos_coords_dict
-                else:
-                    dict_to_check = air_pos_coords_dict
-                if dict_to_check[(self.our_base.x + POS_SPACE, self.our_base.y + POS_SPACE)] is None:
-                    unit = self.our_base.building_queue.pop(0)
-                    if unit == 'defiler':
-                        unit = Defiler(x=self.our_base.x + POS_SPACE, y=self.our_base.y + POS_SPACE)
-                        unit.spawn()
-                    elif unit == 'tank':
-                        unit = Tank(x=self.our_base.x + POS_SPACE, y=self.our_base.y + POS_SPACE)
-                        unit.spawn()
-                    elif unit == 'vulture':
-                        unit = Vulture(x=self.our_base.x + POS_SPACE, y=self.our_base.y + POS_SPACE)
-                        unit.spawn()
-                    self.our_base.building_start_time += self.our_base.current_building_time
-                    unit.move((self.our_base.rally_point_x, self.our_base.rally_point_y))
-                else:
-                    self.our_base.building_start_time += 1
-                    print('No space')
+        for building in our_buildings_list:
+            if building.building_queue:
+                unit = building.building_queue[0]
+                if unit == 'defiler':
+                    building.current_building_time = Defiler.building_time
+                elif unit == 'tank':
+                    building.current_building_time = Tank.building_time
+                elif unit == 'vulture':
+                    building.current_building_time = Vulture.building_time
+                if self.frame_count - building.building_start_time == building.current_building_time:
+                    if building.building_queue[0] not in LIST_OF_FLYING:
+                        dict_to_check = ground_pos_coords_dict
+                    else:
+                        dict_to_check = air_pos_coords_dict
+                    if dict_to_check[(building.x + POS_SPACE, building.y + POS_SPACE)] is None:
+                        unit = building.building_queue.pop(0)
+                        if unit == 'defiler':
+                            unit = Defiler(x=building.x + POS_SPACE, y=building.y + POS_SPACE)
+                            unit.spawn()
+                        elif unit == 'tank':
+                            unit = Tank(x=building.x + POS_SPACE, y=building.y + POS_SPACE)
+                            unit.spawn()
+                        elif unit == 'vulture':
+                            unit = Vulture(x=building.x + POS_SPACE, y=building.y + POS_SPACE)
+                            unit.spawn()
+                        building.building_start_time += building.current_building_time
+                        unit.move((building.rally_point_x, building.rally_point_y))
+                    else:
+                        building.building_start_time += 1
+                        print('No space')
 
     def on_key_press(self, symbol, modifiers):
         """Called whenever a key is pressed. """
@@ -629,12 +636,12 @@ class PlanetEleven(pyglet.window.Window):
             for coord in coords_to_delete:
                 unit_id = ground_pos_coords_dict[coord]
                 ground_pos_coords_dict[coord] = None
-                for unit in unit_list:
+                for unit in our_units_list:
                     if unit_id == id(unit):
                         unit.kill()
-            print(len(unit_list))
+            print(len(our_units_list))
         elif symbol == key.DELETE:
-            for unit in unit_list:
+            for unit in our_units_list:
                 if id(unit) == selected:
                     unit.kill()
                     if unit.flying:
@@ -669,14 +676,14 @@ class PlanetEleven(pyglet.window.Window):
         self.tank_button.y = 130 + bottom_view_border
         self.vulture_button.x = 660 + left_view_border
         self.vulture_button.y = 130 + bottom_view_border
-        for unit in unit_list:
+        for unit in our_units_list:
             pixel = minimap_pixels_dict[id(unit)]
             pixel.x, pixel.y = to_minimap(unit.x, unit.y)
         self.minimap_cam_frame_sprite.x, self.minimap_cam_frame_sprite.y = to_minimap(left_view_border,
                                                                                       bottom_view_border)
 
     def on_mouse_press(self, x, y, button, modifiers):
-        global selected, minimap_pixels_dict, unit_list, left_view_border, bottom_view_border
+        global selected, minimap_pixels_dict, our_units_list, left_view_border, bottom_view_border
         if self.fullscreen:
             x /= 2
             y /= 2
@@ -707,15 +714,15 @@ class PlanetEleven(pyglet.window.Window):
                 print('SELECTED =', selected)
             elif button == mouse.RIGHT:
                 # Base rally point
-                if selected == id(self.our_base):  # Our base
-                    self.our_base.rally_point_x = x
-                    self.our_base.rally_point_y = y
+                if selected == id(self.our_1st_base):  # Our base
+                    self.our_1st_base.rally_point_x = x
+                    self.our_1st_base.rally_point_y = y
                     self.rally_point_sprite.x = x
                     self.rally_point_sprite.y = y
                     print('Rally set to ({}, {})'.format(x, y))
                 # A unit is selected
                 else:
-                    for unit in unit_list:
+                    for unit in our_units_list:
                         if id(unit) == selected:
                             if unit.destination_reached:
                                 unit.move((x, y))
@@ -737,7 +744,7 @@ class PlanetEleven(pyglet.window.Window):
                 y = (y - MINIMAP_ZERO_COORDS[1]) * POS_SPACE
                 x, y = round_coords(x, y)
                 # A unit is selected
-                for unit in unit_list:
+                for unit in our_units_list:
                     if id(unit) == selected:
                         if unit.destination_reached:
                             unit.move((x, y))
@@ -754,21 +761,21 @@ class PlanetEleven(pyglet.window.Window):
             # Create defiler
             if abs(x - self.defiler_button.x) <= SELECTION_RADIUS \
                     and abs(y - self.defiler_button.y) <= SELECTION_RADIUS:
-                self.our_base.building_queue.append('defiler')
-                if len(self.our_base.building_queue) == 1:
-                    self.our_base.building_start_time = self.frame_count
+                self.our_1st_base.building_queue.append('defiler')
+                if len(self.our_1st_base.building_queue) == 1:
+                    self.our_1st_base.building_start_time = self.frame_count
             # Create tank
             elif abs(x - self.tank_button.x) <= SELECTION_RADIUS \
                     and abs(y - self.tank_button.y) <= SELECTION_RADIUS:
-                self.our_base.building_queue.append('tank')
-                if len(self.our_base.building_queue) == 1:
-                    self.our_base.building_start_time = self.frame_count
+                self.our_1st_base.building_queue.append('tank')
+                if len(self.our_1st_base.building_queue) == 1:
+                    self.our_1st_base.building_start_time = self.frame_count
             # Create vulture
             elif abs(x - self.vulture_button.x) <= SELECTION_RADIUS \
                     and abs(y - self.vulture_button.y) <= SELECTION_RADIUS:
-                self.our_base.building_queue.append('vulture')
-                if len(self.our_base.building_queue) == 1:
-                    self.our_base.building_start_time = self.frame_count
+                self.our_1st_base.building_queue.append('vulture')
+                if len(self.our_1st_base.building_queue) == 1:
+                    self.our_1st_base.building_start_time = self.frame_count
 
     def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
         global left_view_border, bottom_view_border
