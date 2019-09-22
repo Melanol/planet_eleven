@@ -36,8 +36,8 @@ center_anchor(utility_dot_image)
 minimap_cam_frame_image = pyglet.resource.image("minimap_cam_frame.png")
 # center_anchor(minimap_cam_frame_image)
 
-minimap_ally_image = pyglet.resource.image("minimap_ally.png")
-center_anchor(minimap_ally_image)
+minimap_our_image = pyglet.resource.image("minimap_our.png")
+center_anchor(minimap_our_image)
 
 minimap_enemy_image = pyglet.resource.image("minimap_enemy.png")
 center_anchor(minimap_enemy_image)

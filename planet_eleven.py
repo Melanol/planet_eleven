@@ -156,7 +156,7 @@ class Button(pyglet.sprite.Sprite):
 
 
 class Building(pyglet.sprite.Sprite):
-    def __init__(self, ally_img, enemy_img, x, y, hp, is_enemy):
+    def __init__(self, our_img, enemy_img, x, y, hp, is_enemy):
         self.hp = hp
         ground_pos_coords_dict[(x, y)] = self
         self.rally_point_x = x
@@ -166,14 +166,14 @@ class Building(pyglet.sprite.Sprite):
         self.building_complete = True
         self.building_start_time = 0
         self.is_enemy = is_enemy
-        if self.is_enemy:
+        if not self.is_enemy:
+            our_buildings_list.append(self)
+            img = our_img
+            minimap_pixel = res.minimap_our_image
+        else:
             enemies_list.append(self)
             img = enemy_img
             minimap_pixel = res.minimap_enemy_image
-        else:
-            our_buildings_list.append(self)
-            img = ally_img
-            minimap_pixel = res.minimap_ally_image
         super().__init__(img=img, x=x, y=y, batch=ground_batch)
         pixel_minimap_coords = to_minimap(self.x, self.y)
         pixel = pyglet.sprite.Sprite(img=minimap_pixel, x=pixel_minimap_coords[0],
@@ -188,7 +188,7 @@ class Building(pyglet.sprite.Sprite):
 
 class Base(Building):
     def __init__(self, x, y, is_enemy=False):
-        super().__init__(ally_img=res.base_image, enemy_img=res.enemy_base_image, x=x, y=y, hp=100, is_enemy=is_enemy)
+        super().__init__(our_img=res.base_image, enemy_img=res.enemy_base_image, x=x, y=y, hp=100, is_enemy=is_enemy)
 
 
 class Unit(pyglet.sprite.Sprite):
@@ -221,11 +221,15 @@ class Unit(pyglet.sprite.Sprite):
         else:
             air_pos_coords_dict[(self.x, self.y)] = self
         our_units_list.append(self)
+
+        # Minimap pixel
         pixel_minimap_coords = to_minimap(self.x, self.y)
-        pixel = pyglet.sprite.Sprite(img=res.minimap_ally_image, x=pixel_minimap_coords[0],
+        pixel = pyglet.sprite.Sprite(img=res.minimap_our_image, x=pixel_minimap_coords[0],
                                      y=pixel_minimap_coords[1],
                                      batch=minimap_pixels_batch)
         minimap_pixels_dict[id(self)] = pixel
+
+        # Shadow
         if self.flying:
             shadow = Movable(img=self.shadow_sprite, x=self.x + 10, y=self.y - 10)
             shadow.batch = air_shadows_batch
@@ -426,6 +430,7 @@ class PlanetEleven(pyglet.window.Window):
         # Spawn
         self.our_1st_base = Base(POS_SPACE / 2 + POS_SPACE, POS_SPACE / 2 + POS_SPACE)
         selected = self.our_1st_base
+        Base(POS_SPACE / 2 + POS_SPACE * 3, POS_SPACE / 2 + POS_SPACE)
         Base(POS_SPACE / 2 + POS_SPACE * 4, POS_SPACE / 2 + POS_SPACE * 6, is_enemy=True)
         Base(POS_SPACE / 2 + POS_SPACE * 10, POS_SPACE / 2 + POS_SPACE * 8, is_enemy=True)
         Base(POS_SPACE / 2 + POS_SPACE * 12, POS_SPACE / 2 + POS_SPACE * 8, is_enemy=True)
@@ -489,7 +494,7 @@ class PlanetEleven(pyglet.window.Window):
 
         #self.walls.draw()
 
-        if selected == self.our_1st_base:  # Our base
+        if selected in our_buildings_list:  # Our base
             buttons_batch.draw()
             self.rally_point_sprite.draw()
 
@@ -585,6 +590,8 @@ class PlanetEleven(pyglet.window.Window):
                     building.current_building_time = Tank.building_time
                 elif unit == 'vulture':
                     building.current_building_time = Vulture.building_time
+                print(building.building_start_time)
+                print(building.current_building_time)
                 if self.frame_count - building.building_start_time == building.current_building_time:
                     if building.building_queue[0] not in LIST_OF_FLYING:
                         dict_to_check = ground_pos_coords_dict
@@ -628,7 +635,8 @@ class PlanetEleven(pyglet.window.Window):
             bottom_view_border += POS_SPACE
             self.update_viewport()
         elif symbol == key.H:
-            print(self.enemy_base.hp)
+            for building in our_buildings_list:
+                print(building.building_queue)
         elif symbol == key.Z:
             i = 0
             for _key, value in ground_pos_coords_dict.items():
@@ -652,14 +660,13 @@ class PlanetEleven(pyglet.window.Window):
                         unit.kill()
             print(len(our_units_list))
         elif symbol == key.DELETE:
-            for unit in our_units_list:
-                if unit == selected:
-                    unit.kill()
-                    if unit.flying:
-                        air_pos_coords_dict[(self.selection_sprite.x, self.selection_sprite.y)] = None
-                    else:
-                        ground_pos_coords_dict[(self.selection_sprite.x, self.selection_sprite.y)] = None
-                    selected = None
+            if selected in our_units_list:
+                selected.kill()
+                if selected.flying:
+                    air_pos_coords_dict[(self.selection_sprite.x, self.selection_sprite.y)] = None
+                else:
+                    ground_pos_coords_dict[(self.selection_sprite.x, self.selection_sprite.y)] = None
+                selected = None
         elif symbol == key.ESCAPE:
             sys.exit()
 
@@ -727,13 +734,16 @@ class PlanetEleven(pyglet.window.Window):
                             selected = value
                             self.selection_sprite.x = x
                             self.selection_sprite.y = y
+                            if selected in our_buildings_list:
+                                self.rally_point_sprite.x = selected.rally_point_x
+                                self.rally_point_sprite.y = selected.rally_point_y
                             break
                 print('SELECTED =', selected)
             elif button == mouse.RIGHT:
-                # Base rally point
-                if selected == self.our_1st_base:  # Our base
-                    self.our_1st_base.rally_point_x = x
-                    self.our_1st_base.rally_point_y = y
+                # Rally point
+                if selected in our_buildings_list:
+                    selected.rally_point_x = x
+                    selected.rally_point_y = y
                     self.rally_point_sprite.x = x
                     self.rally_point_sprite.y = y
                     print('Rally set to ({}, {})'.format(x, y))
@@ -775,24 +785,25 @@ class PlanetEleven(pyglet.window.Window):
         else:
             x, y = mc(x=x, y=y)
             print('x =', x, 'y =', y)
-            # Create defiler
-            if abs(x - self.defiler_button.x) <= SELECTION_RADIUS \
-                    and abs(y - self.defiler_button.y) <= SELECTION_RADIUS:
-                self.our_1st_base.building_queue.append('defiler')
-                if len(self.our_1st_base.building_queue) == 1:
-                    self.our_1st_base.building_start_time = self.frame_count
-            # Create tank
-            elif abs(x - self.tank_button.x) <= SELECTION_RADIUS \
-                    and abs(y - self.tank_button.y) <= SELECTION_RADIUS:
-                self.our_1st_base.building_queue.append('tank')
-                if len(self.our_1st_base.building_queue) == 1:
-                    self.our_1st_base.building_start_time = self.frame_count
-            # Create vulture
-            elif abs(x - self.vulture_button.x) <= SELECTION_RADIUS \
-                    and abs(y - self.vulture_button.y) <= SELECTION_RADIUS:
-                self.our_1st_base.building_queue.append('vulture')
-                if len(self.our_1st_base.building_queue) == 1:
-                    self.our_1st_base.building_start_time = self.frame_count
+            if selected in our_buildings_list:
+                # Create defiler
+                if abs(x - self.defiler_button.x) <= SELECTION_RADIUS \
+                        and abs(y - self.defiler_button.y) <= SELECTION_RADIUS:
+                    selected.building_queue.append('defiler')
+                    if len(selected.building_queue) == 1:
+                        selected.building_start_time = self.frame_count
+                # Create tank
+                elif abs(x - self.tank_button.x) <= SELECTION_RADIUS \
+                        and abs(y - self.tank_button.y) <= SELECTION_RADIUS:
+                    selected.building_queue.append('tank')
+                    if len(selected.building_queue) == 1:
+                        selected.building_start_time = self.frame_count
+                # Create vulture
+                elif abs(x - self.vulture_button.x) <= SELECTION_RADIUS \
+                        and abs(y - self.vulture_button.y) <= SELECTION_RADIUS:
+                    selected.building_queue.append('vulture')
+                    if len(selected.building_queue) == 1:
+                        selected.building_start_time = self.frame_count
 
     def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
         global left_view_border, bottom_view_border

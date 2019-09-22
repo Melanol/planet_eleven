@@ -24,7 +24,7 @@ class Planet_Eleven(pyglet.window.Window):
     def setup(self):
         self.dots = []
         for x, y in POS_COORDS:
-            self.dots.append(pyglet.sprite.Sprite(img=resources.minimap_ally_image, x=x, y=y, batch=utilities_batch))
+            self.dots.append(pyglet.sprite.Sprite(img=resources.minimap_our_image, x=x, y=y, batch=utilities_batch))
         print(len(self.dots))
 
     def on_draw(self):

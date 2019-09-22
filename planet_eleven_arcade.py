@@ -455,7 +455,7 @@ class Planet_Eleven(arcade.Window):
                     self.our_base.building_start_time += self.our_base.current_building_time
                     self.unit_list.append(unit)
                     unit.move(self.our_base.rally_point_x, self.our_base.rally_point_y)
-                    pixel = arcade.Sprite(filename='sprites/minimap_ally.png',
+                    pixel = arcade.Sprite(filename='sprites/minimap_our.png',
                                           center_x=unit.center_x,
                                           center_y=unit.center_y)
                     self.minimap_pixels.append(pixel)
