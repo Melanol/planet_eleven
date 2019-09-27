@@ -42,6 +42,15 @@ center_anchor(minimap_our_image)
 minimap_enemy_image = pyglet.resource.image("minimap_enemy.png")
 center_anchor(minimap_enemy_image)
 
+move_image = pyglet.resource.image("move.png")
+center_anchor(move_image)
+
+stop_image = pyglet.resource.image("stop.png")
+center_anchor(stop_image)
+
+attack_image = pyglet.resource.image("attack.png")
+center_anchor(attack_image)
+
 base_image = pyglet.resource.image("base.png")
 center_anchor(base_image)
 
@@ -62,6 +71,11 @@ defiler_image = pyglet.resource.image("defiler.png")
 center_anchor(defiler_image)
 defiler_shadow_image = pyglet.resource.image("defiler_shadow.png")
 center_anchor(defiler_shadow_image)
+
+builder_image = pyglet.resource.image("builder.png")
+center_anchor(builder_image)
+builder_shadow_image = pyglet.resource.image("builder_shadow.png")
+center_anchor(builder_shadow_image)
 
 projectile_image = pyglet.resource.image("blue_laser.png")
 center_anchor(projectile_image)
