@@ -20,7 +20,6 @@ from draw_dot import draw_dot
 # TODO: Finalize minimap
 # TODO: Right-click minimap rally point reposition
 # TODO: Change "selected" to use actual objects instead of ids
-# TODO: Try converting GUI sprites to images
 
 SCREEN_WIDTH = 683
 SCREEN_HEIGHT = 384
@@ -496,6 +495,7 @@ class PlanetEleven(pyglet.window.Window):
         #     dot = pyglet.sprite.Sprite(img=res.utility_dot_image, x=x, y=y, batch=utilities_batch)
         #     self.dots.append(dot)
 
+
     def on_draw(self):
         """
         Render the screen.
@@ -751,12 +751,20 @@ class PlanetEleven(pyglet.window.Window):
         self.minimap_black_background.y = MINIMAP_ZERO_COORDS[1] + bottom_view_border
         self.control_panel_sprite.x = SCREEN_WIDTH + left_view_border
         self.control_panel_sprite.y = bottom_view_border
+        self.move_button.x = CONTROL_BUTTONS_COORDS[0][0] + left_view_border
+        self.move_button.y = CONTROL_BUTTONS_COORDS[0][1] + bottom_view_border
+        self.stop_button.x = CONTROL_BUTTONS_COORDS[1][0] + left_view_border
+        self.stop_button.y = CONTROL_BUTTONS_COORDS[1][1] + bottom_view_border
+        self.attack_button.x = CONTROL_BUTTONS_COORDS[2][0] + left_view_border
+        self.attack_button.y = CONTROL_BUTTONS_COORDS[2][1] + bottom_view_border
         self.defiler_button.x = CONTROL_BUTTONS_COORDS[0][0] + left_view_border
         self.defiler_button.y = CONTROL_BUTTONS_COORDS[0][1] + bottom_view_border
         self.tank_button.x = CONTROL_BUTTONS_COORDS[1][0] + left_view_border
         self.tank_button.y = CONTROL_BUTTONS_COORDS[1][1] + bottom_view_border
         self.vulture_button.x = CONTROL_BUTTONS_COORDS[2][0] + left_view_border
         self.vulture_button.y = CONTROL_BUTTONS_COORDS[2][1] + bottom_view_border
+        self.builder_button.x = CONTROL_BUTTONS_COORDS[3][0] + left_view_border
+        self.builder_button.y = CONTROL_BUTTONS_COORDS[3][1] + bottom_view_border
         for unit in our_units_list:
             pixel = minimap_pixels_dict[id(unit)]
             pixel.x, pixel.y = to_minimap(unit.x, unit.y)
