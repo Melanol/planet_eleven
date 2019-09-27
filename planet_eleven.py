@@ -468,6 +468,15 @@ class PlanetEleven(pyglet.window.Window):
         Base(POS_SPACE / 2 + POS_SPACE * 12, POS_SPACE / 2 + POS_SPACE * 8, is_enemy=True)
         Base(POS_SPACE / 2 + POS_SPACE * 8, POS_SPACE / 2 + POS_SPACE * 6, is_enemy=True)
 
+        # Buttons
+        self.base_button = Button(img=res.base_image, x=CONTROL_BUTTONS_COORDS[3][0],
+                                  y=CONTROL_BUTTONS_COORDS[3][1], batch=unit_control_batch)
+        self.move_button = Button(img=res.move_image, x=CONTROL_BUTTONS_COORDS[0][0],
+                                  y=CONTROL_BUTTONS_COORDS[0][1], batch=unit_control_batch)
+        self.stop_button = Button(img=res.stop_image, x=CONTROL_BUTTONS_COORDS[1][0],
+                                  y=CONTROL_BUTTONS_COORDS[1][1], batch=unit_control_batch)
+        self.attack_button = Button(img=res.attack_image, x=CONTROL_BUTTONS_COORDS[2][0],
+                                    y=CONTROL_BUTTONS_COORDS[2][1], batch=unit_control_batch)
         self.defiler_button = Button(img=res.defiler_image, x=CONTROL_BUTTONS_COORDS[0][0],
                                      y=CONTROL_BUTTONS_COORDS[0][1], batch=base_control_batch)
         self.tank_button = Button(img=res.tank_image, x=CONTROL_BUTTONS_COORDS[1][0], y=CONTROL_BUTTONS_COORDS[1][1],
@@ -477,12 +486,6 @@ class PlanetEleven(pyglet.window.Window):
         self.builder_button = Button(img=res.builder_image, x=CONTROL_BUTTONS_COORDS[3][0],
                                      y=CONTROL_BUTTONS_COORDS[3][1], batch=base_control_batch)
 
-        self.move_button = Button(img=res.move_image, x=CONTROL_BUTTONS_COORDS[0][0],
-                                  y=CONTROL_BUTTONS_COORDS[0][1], batch=unit_control_batch)
-        self.stop_button = Button(img=res.stop_image, x=CONTROL_BUTTONS_COORDS[1][0],
-                                  y=CONTROL_BUTTONS_COORDS[1][1], batch=unit_control_batch)
-        self.attack_button = Button(img=res.attack_image, x=CONTROL_BUTTONS_COORDS[2][0],
-                                    y=CONTROL_BUTTONS_COORDS[2][1], batch=unit_control_batch)
 
         self.selection_sprite = pyglet.sprite.Sprite(img=res.selection_image, x=self.our_1st_base.x,
                                                      y=self.our_1st_base.y, batch=utilities_batch)
@@ -535,8 +538,6 @@ class PlanetEleven(pyglet.window.Window):
         #     y = _key[1]
         #     if value:
         #         draw_dot(x, y, 1)
-
-        # self.walls.draw()
 
         if selected in our_buildings_list:  # Our base
             base_control_batch.draw()
@@ -757,6 +758,8 @@ class PlanetEleven(pyglet.window.Window):
         self.stop_button.y = CONTROL_BUTTONS_COORDS[1][1] + bottom_view_border
         self.attack_button.x = CONTROL_BUTTONS_COORDS[2][0] + left_view_border
         self.attack_button.y = CONTROL_BUTTONS_COORDS[2][1] + bottom_view_border
+        self.base_button.x = CONTROL_BUTTONS_COORDS[3][0] + left_view_border
+        self.base_button.y = CONTROL_BUTTONS_COORDS[3][1] + bottom_view_border
         self.defiler_button.x = CONTROL_BUTTONS_COORDS[0][0] + left_view_border
         self.defiler_button.y = CONTROL_BUTTONS_COORDS[0][1] + bottom_view_border
         self.tank_button.x = CONTROL_BUTTONS_COORDS[1][0] + left_view_border
