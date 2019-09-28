@@ -67,15 +67,11 @@ shadows_dict = {}
 
 ground_batch = pyglet.graphics.Batch()
 air_batch = pyglet.graphics.Batch()
-base_control_batch = pyglet.graphics.Batch()
 utilities_batch = pyglet.graphics.Batch()
 minimap_pixels_batch = pyglet.graphics.Batch()
 shadows_batch = pyglet.graphics.Batch()
 air_shadows_batch = pyglet.graphics.Batch()
-unit_control_batch = pyglet.graphics.Batch()
 
-control_batch_to_render = base_control_batch
-batches_dict = {}
 
 LIST_OF_FLYING = ['defiler']
 our_units_list = []
@@ -167,8 +163,8 @@ def to_minimap(x, y):  # unit.x and unit.y
 
 
 class Button(pyglet.sprite.Sprite):
-    def __init__(self, img, x, y, batch):
-        super().__init__(img=img, x=x, y=y, batch=batch)
+    def __init__(self, img, x, y):
+        super().__init__(img=img, x=x, y=y)
 
 
 class Building(pyglet.sprite.Sprite):
@@ -474,22 +470,21 @@ class PlanetEleven(pyglet.window.Window):
 
         # Buttons
         self.base_button = Button(img=res.base_image, x=CONTROL_BUTTONS_COORDS[3][0],
-                                  y=CONTROL_BUTTONS_COORDS[3][1], batch=unit_control_batch)
+                                  y=CONTROL_BUTTONS_COORDS[3][1])
         self.move_button = Button(img=res.move_image, x=CONTROL_BUTTONS_COORDS[0][0],
-                                  y=CONTROL_BUTTONS_COORDS[0][1], batch=unit_control_batch)
+                                  y=CONTROL_BUTTONS_COORDS[0][1])
         self.stop_button = Button(img=res.stop_image, x=CONTROL_BUTTONS_COORDS[1][0],
-                                  y=CONTROL_BUTTONS_COORDS[1][1], batch=unit_control_batch)
+                                  y=CONTROL_BUTTONS_COORDS[1][1])
         self.attack_button = Button(img=res.attack_image, x=CONTROL_BUTTONS_COORDS[2][0],
-                                    y=CONTROL_BUTTONS_COORDS[2][1], batch=unit_control_batch)
+                                    y=CONTROL_BUTTONS_COORDS[2][1])
         self.defiler_button = Button(img=res.defiler_image, x=CONTROL_BUTTONS_COORDS[0][0],
-                                     y=CONTROL_BUTTONS_COORDS[0][1], batch=base_control_batch)
-        self.tank_button = Button(img=res.tank_image, x=CONTROL_BUTTONS_COORDS[1][0], y=CONTROL_BUTTONS_COORDS[1][1],
-                                  batch=base_control_batch)
+                                     y=CONTROL_BUTTONS_COORDS[0][1])
+        self.tank_button = Button(img=res.tank_image, x=CONTROL_BUTTONS_COORDS[1][0], y=CONTROL_BUTTONS_COORDS[1][1])
         self.vulture_button = Button(img=res.vulture_image, x=CONTROL_BUTTONS_COORDS[2][0],
-                                     y=CONTROL_BUTTONS_COORDS[2][1], batch=base_control_batch)
+                                     y=CONTROL_BUTTONS_COORDS[2][1])
         self.builder_button = Button(img=res.builder_image, x=CONTROL_BUTTONS_COORDS[3][0],
-                                     y=CONTROL_BUTTONS_COORDS[3][1], batch=base_control_batch)
-
+                                     y=CONTROL_BUTTONS_COORDS[3][1])
+        # Utilities
         self.selection_sprite = pyglet.sprite.Sprite(img=res.selection_image, x=self.our_1st_base.x,
                                                      y=self.our_1st_base.y, batch=utilities_batch)
         self.rally_point_sprite = pyglet.sprite.Sprite(img=res.rally_point_image, x=self.our_1st_base.rally_point_x,
@@ -500,6 +495,15 @@ class PlanetEleven(pyglet.window.Window):
         # for x, y in POS_COORDS:
         #     dot = pyglet.sprite.Sprite(img=res.utility_dot_image, x=x, y=y, batch=utilities_batch)
         #     self.dots.append(dot)
+
+        self.basic_unit_control_buttons = [self.move_button, self.stop_button, self.attack_button]
+        self.controls_dict = {"<class '__main__.Base'>": [self.defiler_button, self.tank_button, self.vulture_button,
+                                                          self.builder_button],
+                        "<class '__main__.Defiler'>": self.basic_unit_control_buttons,
+                        "<class '__main__.Tank'>": self.basic_unit_control_buttons,
+                        "<class '__main__.Vulture'>": self.basic_unit_control_buttons,
+                        "<class '__main__.Builder'>": self.basic_unit_control_buttons + [self.base_button]}
+        self.control_buttons_to_render = self.controls_dict["<class '__main__.Base'>"]
 
     def on_draw(self):
         """
@@ -541,7 +545,8 @@ class PlanetEleven(pyglet.window.Window):
         #     if value:
         #         draw_dot(x, y, 1)
 
-        control_batch_to_render.draw()
+        for button in self.control_buttons_to_render:
+            button.draw()
         if selected in our_buildings_list:
             self.rally_point_sprite.draw()
 
@@ -781,8 +786,7 @@ class PlanetEleven(pyglet.window.Window):
                                                                                       bottom_view_border)
 
     def on_mouse_press(self, x, y, button, modifiers):
-        global selected, minimap_pixels_dict, our_units_list, left_view_border, bottom_view_border, \
-            control_batch_to_render
+        global selected, minimap_pixels_dict, our_units_list, left_view_border, bottom_view_border
         if self.fullscreen:
             x /= 2
             y /= 2
@@ -813,10 +817,7 @@ class PlanetEleven(pyglet.window.Window):
                                 self.rally_point_sprite.x = selected.rally_point_x
                                 self.rally_point_sprite.y = selected.rally_point_y
                             break
-                if selected in our_units_list:
-                    control_batch_to_render = unit_control_batch
-                elif selected in our_buildings_list:
-                    control_batch_to_render = base_control_batch
+                self.control_buttons_to_render = self.controls_dict[str(type(selected))]
                 print('SELECTED CLASS =', type(selected))
             elif button == mouse.RIGHT:
                 # Rally point
