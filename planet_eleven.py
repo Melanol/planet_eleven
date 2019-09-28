@@ -43,7 +43,8 @@ _x = 580
 _y = 47
 x_space = 34
 y_space = 34
-CONTROL_BUTTONS_COORDS = [(_x, _y + y_space * 2), (_x + x_space, _y + y_space * 2), (_x + x_space * 2, _y + y_space * 2),
+CONTROL_BUTTONS_COORDS = [(_x, _y + y_space * 2), (_x + x_space, _y + y_space * 2),
+                          (_x + x_space * 2, _y + y_space * 2),
                           (_x, _y + y_space), (_x + x_space, _y + y_space), (_x + x_space * 2, _y + y_space),
                           (_x, _y), (_x + x_space, _y), (_x + x_space * 2, _y)
                           ]
@@ -72,6 +73,9 @@ minimap_pixels_batch = pyglet.graphics.Batch()
 shadows_batch = pyglet.graphics.Batch()
 air_shadows_batch = pyglet.graphics.Batch()
 unit_control_batch = pyglet.graphics.Batch()
+
+control_batch_to_render = base_control_batch
+batches_dict = {}
 
 LIST_OF_FLYING = ['defiler']
 our_units_list = []
@@ -420,7 +424,7 @@ class Vulture(Unit):
     building_time = 10
 
     def __init__(self, x, y):
-        super().__init__(img=res.vulture_image, hp=50, damage=10, shooting_range=50, cooldown=60, speed=10,
+        super().__init__(img=res.vulture_image, hp=50, damage=10, shooting_range=100, cooldown=60, speed=10,
                          x=x, y=y, projectile_sprite='sprites/blue_laser.png',
                          projectile_speed=5)
         self.flying = False
@@ -486,7 +490,6 @@ class PlanetEleven(pyglet.window.Window):
         self.builder_button = Button(img=res.builder_image, x=CONTROL_BUTTONS_COORDS[3][0],
                                      y=CONTROL_BUTTONS_COORDS[3][1], batch=base_control_batch)
 
-
         self.selection_sprite = pyglet.sprite.Sprite(img=res.selection_image, x=self.our_1st_base.x,
                                                      y=self.our_1st_base.y, batch=utilities_batch)
         self.rally_point_sprite = pyglet.sprite.Sprite(img=res.rally_point_image, x=self.our_1st_base.rally_point_x,
@@ -497,7 +500,6 @@ class PlanetEleven(pyglet.window.Window):
         # for x, y in POS_COORDS:
         #     dot = pyglet.sprite.Sprite(img=res.utility_dot_image, x=x, y=y, batch=utilities_batch)
         #     self.dots.append(dot)
-
 
     def on_draw(self):
         """
@@ -539,11 +541,9 @@ class PlanetEleven(pyglet.window.Window):
         #     if value:
         #         draw_dot(x, y, 1)
 
-        if selected in our_buildings_list:  # Our base
-            base_control_batch.draw()
+        control_batch_to_render.draw()
+        if selected in our_buildings_list:
             self.rally_point_sprite.draw()
-        elif selected in our_units_list:
-            unit_control_batch.draw()
 
         self.minimap_cam_frame_sprite.draw()
 
@@ -781,7 +781,8 @@ class PlanetEleven(pyglet.window.Window):
                                                                                       bottom_view_border)
 
     def on_mouse_press(self, x, y, button, modifiers):
-        global selected, minimap_pixels_dict, our_units_list, left_view_border, bottom_view_border
+        global selected, minimap_pixels_dict, our_units_list, left_view_border, bottom_view_border, \
+            control_batch_to_render
         if self.fullscreen:
             x /= 2
             y /= 2
@@ -813,8 +814,10 @@ class PlanetEleven(pyglet.window.Window):
                                 self.rally_point_sprite.y = selected.rally_point_y
                             break
                 if selected in our_units_list:
-                    pass
-                print('SELECTED =', selected)
+                    control_batch_to_render = unit_control_batch
+                elif selected in our_buildings_list:
+                    control_batch_to_render = base_control_batch
+                print('SELECTED CLASS =', type(selected))
             elif button == mouse.RIGHT:
                 # Rally point
                 if selected in our_buildings_list:
