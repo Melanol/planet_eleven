@@ -817,7 +817,10 @@ class PlanetEleven(pyglet.window.Window):
                                 self.rally_point_sprite.x = selected.rally_point_x
                                 self.rally_point_sprite.y = selected.rally_point_y
                             break
-                self.control_buttons_to_render = self.controls_dict[str(type(selected))]
+                try:
+                    self.control_buttons_to_render = self.controls_dict[str(type(selected))]
+                except KeyError:
+                    pass
                 print('SELECTED CLASS =', type(selected))
             elif button == mouse.RIGHT:
                 # Rally point
