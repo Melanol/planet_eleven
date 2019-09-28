@@ -450,14 +450,15 @@ class PlanetEleven(pyglet.window.Window):
         self.frame_count = 0
         self.dx = 0
         self.dy = 0
+        self.minimap_drugging = False
 
     def setup(self):
         global selected
         self.background = pyglet.sprite.Sprite(img=res.background_image, x=0, y=0)
         self.minimap_black_background = pyglet.sprite.Sprite(img=res.minimap_black_background_image,
                                                              x=MINIMAP_ZERO_COORDS[0], y=MINIMAP_ZERO_COORDS[1])
-        self.minimap_cam_frame_sprite = pyglet.sprite.Sprite(img=res.minimap_cam_frame_image, x=MINIMAP_ZERO_COORDS[0],
-                                                             y=MINIMAP_ZERO_COORDS[1])
+        self.minimap_cam_frame_sprite = pyglet.sprite.Sprite(img=res.minimap_cam_frame_image, x=MINIMAP_ZERO_COORDS[0]-1,
+                                                             y=MINIMAP_ZERO_COORDS[1]-1)
 
         # Spawn
         self.our_1st_base = Base(POS_SPACE / 2 + POS_SPACE, POS_SPACE / 2 + POS_SPACE)
@@ -535,9 +536,10 @@ class PlanetEleven(pyglet.window.Window):
         air_shadows_batch.draw()
         air_batch.draw()
         utilities_batch.draw()
+        self.control_panel_sprite.draw()
         self.minimap_black_background.draw()
         minimap_pixels_batch.draw()
-        self.control_panel_sprite.draw()
+
 
         # for _key, value in pos_coords_dict.items():
         #     x = _key[0]
@@ -782,8 +784,8 @@ class PlanetEleven(pyglet.window.Window):
         for enemy in enemies_list:
             pixel = minimap_pixels_dict[id(enemy)]
             pixel.x, pixel.y = to_minimap(enemy.x, enemy.y)
-        self.minimap_cam_frame_sprite.x, self.minimap_cam_frame_sprite.y = to_minimap(left_view_border,
-                                                                                      bottom_view_border)
+        self.minimap_cam_frame_sprite.x, self.minimap_cam_frame_sprite.y = to_minimap(left_view_border-2,
+                                                                                      bottom_view_border-2)
 
     def on_mouse_press(self, x, y, button, modifiers):
         global selected, minimap_pixels_dict, our_units_list, left_view_border, bottom_view_border
@@ -846,6 +848,8 @@ class PlanetEleven(pyglet.window.Window):
         elif MINIMAP_ZERO_COORDS[0] <= x <= MINIMAP_ZERO_COORDS[0] + 100 and \
                 MINIMAP_ZERO_COORDS[1] <= y <= MINIMAP_ZERO_COORDS[1] + 100:
             if button == mouse.LEFT:
+                x -= 17 / 2
+                y -= 12 / 2
                 left_view_border = (x - MINIMAP_ZERO_COORDS[0]) * POS_SPACE
                 bottom_view_border = (y - MINIMAP_ZERO_COORDS[1]) * POS_SPACE
                 self.update_viewport()
@@ -906,34 +910,53 @@ class PlanetEleven(pyglet.window.Window):
         if self.fullscreen:
             x /= 2
             y /= 2
-        # Game field
-        if x < SCREEN_WIDTH - 139 and buttons == 2:
-            self.dx += dx * PAN_SPEED
-            self.dy += dy * PAN_SPEED
-            if abs(self.dx) >= POS_SPACE:
-                if self.dx < 0:
-                    left_view_border += POS_SPACE
-                    self.update_viewport()
-                    self.dx -= self.dx
-                else:
-                    left_view_border -= POS_SPACE
-                    self.update_viewport()
-                    self.dx -= self.dx
-            if abs(self.dy) >= POS_SPACE:
-                if self.dy < 0:
-                    bottom_view_border += POS_SPACE
-                    self.update_viewport()
-                    self.dy -= self.dy
-                else:
-                    bottom_view_border -= POS_SPACE
-                    self.update_viewport()
-                    self.dy -= self.dy
-        # Minimap
-        elif MINIMAP_ZERO_COORDS[0] <= x <= MINIMAP_ZERO_COORDS[0] + 100 and \
-                MINIMAP_ZERO_COORDS[1] <= y <= MINIMAP_ZERO_COORDS[1] + 100 and buttons in [1, 2]:
+            dx /= 2
+            dy /= 2
+        if not self.minimap_drugging:
+            # Game field
+            if x < SCREEN_WIDTH - 139 and buttons == 2:
+                self.dx += dx * PAN_SPEED
+                self.dy += dy * PAN_SPEED
+                if abs(self.dx) >= POS_SPACE:
+                    if self.dx < 0:
+                        left_view_border += POS_SPACE
+                        self.update_viewport()
+                        self.dx -= self.dx
+                    else:
+                        left_view_border -= POS_SPACE
+                        self.update_viewport()
+                        self.dx -= self.dx
+                if abs(self.dy) >= POS_SPACE:
+                    if self.dy < 0:
+                        bottom_view_border += POS_SPACE
+                        self.update_viewport()
+                        self.dy -= self.dy
+                    else:
+                        bottom_view_border -= POS_SPACE
+                        self.update_viewport()
+                        self.dy -= self.dy
+            # Minimap
+            elif MINIMAP_ZERO_COORDS[0] <= x <= MINIMAP_ZERO_COORDS[0] + 100 and \
+                    MINIMAP_ZERO_COORDS[1] <= y <= MINIMAP_ZERO_COORDS[1] + 100 and buttons in [1, 2]:
+                self.minimap_drugging = True
+                left_view_border += dx * POS_SPACE
+                bottom_view_border += dy * POS_SPACE
+                self.update_viewport()
+        else:
+            if x < MINIMAP_ZERO_COORDS[0]:
+                x = MINIMAP_ZERO_COORDS[0]
+            elif x > MINIMAP_ZERO_COORDS[0] + 100:
+                x = MINIMAP_ZERO_COORDS[0] + 100
+            if y < MINIMAP_ZERO_COORDS[1]:
+                y = MINIMAP_ZERO_COORDS[1]
+            elif y > MINIMAP_ZERO_COORDS[1] + 100:
+                y = MINIMAP_ZERO_COORDS[1] + 100
             left_view_border += dx * POS_SPACE
             bottom_view_border += dy * POS_SPACE
             self.update_viewport()
+
+    def on_mouse_release(self, x, y, button, modifiers):
+        self.minimap_drugging = False
 
 
 def main():

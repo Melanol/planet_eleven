@@ -17,6 +17,7 @@ def right_bottom_anchor(image):
 pyglet.resource.path = ['sprites']
 pyglet.resource.reindex()
 
+# Utilities
 background_image = pyglet.resource.image("background.png")
 
 selection_image = pyglet.resource.image("selection.png")
@@ -25,10 +26,10 @@ center_anchor(selection_image)
 rally_point_image = pyglet.resource.image("rally_point.png")
 center_anchor(rally_point_image)
 
-minimap_black_background_image = pyglet.resource.image("minimap_black_background.png")
-
 control_panel_image = pyglet.resource.image("control_panel.png")
 right_bottom_anchor(control_panel_image)
+
+minimap_black_background_image = pyglet.resource.image("minimap_black_background.png")
 
 utility_dot_image = pyglet.resource.image("utility_dot.png")
 center_anchor(utility_dot_image)
@@ -42,6 +43,7 @@ center_anchor(minimap_our_image)
 minimap_enemy_image = pyglet.resource.image("minimap_enemy.png")
 center_anchor(minimap_enemy_image)
 
+# Controls
 move_image = pyglet.resource.image("move.png")
 center_anchor(move_image)
 
@@ -51,12 +53,14 @@ center_anchor(stop_image)
 attack_image = pyglet.resource.image("attack.png")
 center_anchor(attack_image)
 
+# Buildings
 base_image = pyglet.resource.image("base.png")
 center_anchor(base_image)
 
 enemy_base_image = pyglet.resource.image("enemy_base.png")
 center_anchor(enemy_base_image)
 
+# Units
 tank_image = pyglet.resource.image("tank.png")
 center_anchor(tank_image)
 tank_shadow_image = pyglet.resource.image("tank_shadow.png")
@@ -77,5 +81,6 @@ center_anchor(builder_image)
 builder_shadow_image = pyglet.resource.image("builder_shadow.png")
 center_anchor(builder_shadow_image)
 
+# Other
 projectile_image = pyglet.resource.image("blue_laser.png")
 center_anchor(projectile_image)
