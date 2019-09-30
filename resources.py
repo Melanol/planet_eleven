@@ -29,7 +29,12 @@ center_anchor(rally_point_image)
 control_panel_image = pyglet.resource.image("control_panel.png")
 right_bottom_anchor(control_panel_image)
 
+control_panel_buttons_background_image = pyglet.resource.image("control_panel_buttons_background.png")
+center_anchor(control_panel_buttons_background_image)
+
 minimap_black_background_image = pyglet.resource.image("minimap_black_background.png")
+
+minimap_textured_background_image = pyglet.resource.image("minimap_textured_background.png")
 
 utility_dot_image = pyglet.resource.image("utility_dot.png")
 center_anchor(utility_dot_image)
