@@ -1,5 +1,6 @@
 import pyglet
 from screeninfo import get_monitors
+import png
 
 
 SCREEN_WIDTH = get_monitors()[0].width // 2
@@ -30,6 +31,23 @@ CONTROL_BUTTONS_COORDS = [(center_x - x_space, center_y + y_space), (center_x, c
                           (center_x - x_space, center_y - y_space), (center_x, center_y - y_space), (center_x + x_space, center_y - y_space)
                           ]
 
+# Generate minimap_cam_frame
+fully_visible_width = (SCREEN_WIDTH - 139) // POS_SPACE
+fully_visible_height = SCREEN_HEIGHT // POS_SPACE
+arr = []
+non_transparent_row = []
+for _ in range(fully_visible_width + 2):
+    non_transparent_row += [255, 255]
+arr.append(non_transparent_row)
+for _ in range(fully_visible_height):
+    row = [255, 255]
+    for _ in range(fully_visible_width):
+        row += [255, 0]
+    row += [255, 255]
+    arr.append(row)
+arr.append(non_transparent_row)
+image = png.from_array(arr, mode='LA')
+image.save('sprites/minimap_cam_frame.png')
 
 # Generate positional coords
 POS_COORDS = []
@@ -43,6 +61,7 @@ air_pos_coords_dict = {}
 for _x, _y in POS_COORDS:
     air_pos_coords_dict[(_x, _y)] = None
 
+
 DISTANCE_PER_JUMP = (2 * POS_SPACE ** 2) ** 0.5
 minimap_pixels_dict = {}
 shadows_dict = {}
@@ -53,6 +72,7 @@ utilities_batch = pyglet.graphics.Batch()
 minimap_pixels_batch = pyglet.graphics.Batch()
 shadows_batch = pyglet.graphics.Batch()
 air_shadows_batch = pyglet.graphics.Batch()
+black_batch = pyglet.graphics.Batch()
 
 LIST_OF_FLYING = ['defiler']
 our_units_list = []

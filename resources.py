@@ -39,6 +39,9 @@ minimap_textured_background_image = pyglet.resource.image("minimap_textured_back
 utility_dot_image = pyglet.resource.image("utility_dot.png")
 center_anchor(utility_dot_image)
 
+black_image = pyglet.resource.image("black.png")
+center_anchor(black_image)
+
 minimap_cam_frame_image = pyglet.resource.image("minimap_cam_frame.png")
 # center_anchor(minimap_cam_frame_image)
 

@@ -335,8 +335,8 @@ class PlanetEleven(pyglet.window.Window):
         global selected
         self.background = pyglet.sprite.Sprite(img=res.background_image, x=0, y=0)
         self.control_panel_sprite = pyglet.sprite.Sprite(img=res.control_panel_image, x=SCREEN_WIDTH, y=0)
-        self.control_panel_buttons_background_image = pyglet.sprite.Sprite(img=res.control_panel_buttons_background_image,
-                                                                           x=center_x, y=center_y)
+        self.control_panel_buttons_background = pyglet.sprite.Sprite(img=res.control_panel_buttons_background_image,
+                                                                     x=center_x, y=center_y)
         self.minimap_black_background = pyglet.sprite.Sprite(img=res.minimap_black_background_image,
                                                              x=MINIMAP_ZERO_COORDS[0], y=MINIMAP_ZERO_COORDS[1])
         self.minimap_textured_background = pyglet.sprite.Sprite(img=res.minimap_textured_background_image,
@@ -392,6 +392,10 @@ class PlanetEleven(pyglet.window.Window):
         self.base_building_sprite = pyglet.sprite.Sprite(img=res.base_image, x=-100, y=-100)
         self.base_building_sprite.color = (0, 255, 0)
 
+        self.blacks_dict = {}
+        for x, y in POS_COORDS:
+            self.blacks_dict[(x, y)] = (pyglet.sprite.Sprite(img=res.black_image, x=x, y=y, batch=black_batch))
+
     def on_draw(self):
         """
         Render the screen.
@@ -422,10 +426,11 @@ class PlanetEleven(pyglet.window.Window):
         air_shadows_batch.draw()
         air_batch.draw()
         utilities_batch.draw()
+        black_batch.draw()
         if self.building_location_selection_phase:
             self.base_building_sprite.draw()
         self.control_panel_sprite.draw()
-        self.control_panel_buttons_background_image.draw()
+        self.control_panel_buttons_background.draw()
         self.minimap_black_background.draw()
         self.minimap_textured_background.draw()
         minimap_pixels_batch.draw()
@@ -541,6 +546,9 @@ class PlanetEleven(pyglet.window.Window):
                             unit.destination_reached = True
                             unit.move((unit.new_dest_x, unit.new_dest_y))
                             unit.movement_interrupted = False
+                        self.delete_black(unit)
+                else:
+                    self.delete_black(unit)
             # Shooting
             for unit in our_units_list:
                 if unit.has_weapon:
@@ -568,6 +576,28 @@ class PlanetEleven(pyglet.window.Window):
                 if enemy.hp <= 0:
                     enemy.kill()
 
+            # FOW
+            # for building in our_buildings_list:
+            #     for black in self.black_sprites:
+            #         if building.x == black.x and building.y == black.y:
+            #             black.visible = False
+            #
+            # for unit in our_units_list:
+            #     for black in self.black_sprites:
+            #         if unit.x == black.x and unit.y == black.y:
+            #             black.visible = False
+
+    def delete_black(self, unit):
+        x, y = unit.x, unit.y
+        blacks_to_delete = [(x - 32, y + 32), (x, y + 32), (x + 32, y + 32),
+                            (x - 32, y), (x, y), (x + 32, y),
+                            (x - 32, y - 32), (x, y - 32), (x + 32, y - 32)]
+        for coord in blacks_to_delete:
+            try:
+                self.blacks_dict[coord].delete()
+                del self.blacks_dict[coord]
+            except KeyError:
+                pass
 
     def on_key_press(self, symbol, modifiers):
         """Called whenever a key is pressed. """
@@ -654,6 +684,8 @@ class PlanetEleven(pyglet.window.Window):
         self.minimap_textured_background.y = MINIMAP_ZERO_COORDS[1] + bottom_view_border
         self.control_panel_sprite.x = SCREEN_WIDTH + left_view_border
         self.control_panel_sprite.y = bottom_view_border
+        self.control_panel_buttons_background.x = center_x + left_view_border
+        self.control_panel_buttons_background.y = center_y + bottom_view_border
         self.move_button.x = CONTROL_BUTTONS_COORDS[0][0] + left_view_border
         self.move_button.y = CONTROL_BUTTONS_COORDS[0][1] + bottom_view_border
         self.stop_button.x = CONTROL_BUTTONS_COORDS[1][0] + left_view_border
