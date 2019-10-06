@@ -60,6 +60,7 @@ class Building(pyglet.sprite.Sprite):
             our_buildings_list.append(self)
             img = our_img
             minimap_pixel = res.minimap_our_image
+            delete_black(x, y)
         else:
             enemies_list.append(self)
             img = enemy_img
@@ -343,6 +344,14 @@ class PlanetEleven(pyglet.window.Window):
                                                              x=MINIMAP_ZERO_COORDS[0], y=MINIMAP_ZERO_COORDS[1])
         self.minimap_cam_frame_sprite = pyglet.sprite.Sprite(img=res.minimap_cam_frame_image, x=MINIMAP_ZERO_COORDS[0]-1,
                                                              y=MINIMAP_ZERO_COORDS[1]-1)
+        self.minimap_fow_image = pyglet.image.load('sprites/minimap_fow.png')
+        self.minimap_fow_ImageData = self.minimap_fow_image.get_image_data()
+        self.minimap_fow_bytearray = bytearray(self.minimap_fow_ImageData.get_data('RGBA', self.minimap_fow_ImageData.width * 4))
+
+        for x, y in POS_COORDS:
+            blacks_dict[(x, y)] = pyglet.sprite.Sprite(img=res.black_image, x=x, y=y, batch=black_batch)
+            x, y = to_minimap(x, y)
+            black_pixels.append(pyglet.sprite.Sprite(img=res.black_pixel_image, x=x, y=y, batch=black_pixels_batch))
 
         # Spawn
         self.our_1st_base = Base(POS_SPACE / 2 + POS_SPACE, POS_SPACE / 2 + POS_SPACE)
@@ -392,9 +401,6 @@ class PlanetEleven(pyglet.window.Window):
         self.base_building_sprite = pyglet.sprite.Sprite(img=res.base_image, x=-100, y=-100)
         self.base_building_sprite.color = (0, 255, 0)
 
-        self.blacks_dict = {}
-        for x, y in POS_COORDS:
-            self.blacks_dict[(x, y)] = (pyglet.sprite.Sprite(img=res.black_image, x=x, y=y, batch=black_batch))
 
     def on_draw(self):
         """
@@ -412,6 +418,9 @@ class PlanetEleven(pyglet.window.Window):
 
         # Clear window with ClearColor
         glClear(GL_COLOR_BUFFER_BIT)
+
+        # Me playing with OpenGL
+        # glViewport(0, 0, SCREEN_WIDTH - 179, SCREEN_HEIGHT)
 
         # Set orthographic projection matrix
         glOrtho(left_view_border, left_view_border + SCREEN_WIDTH, bottom_view_border,
@@ -435,13 +444,6 @@ class PlanetEleven(pyglet.window.Window):
         self.minimap_textured_background.draw()
         minimap_pixels_batch.draw()
 
-
-        # for _key, value in pos_coords_dict.items():
-        #     x = _key[0]
-        #     y = _key[1]
-        #     if value:
-        #         draw_dot(x, y, 1)
-
         for button in self.control_buttons_to_render:
             button.draw()
         if selected in our_buildings_list:
@@ -452,7 +454,12 @@ class PlanetEleven(pyglet.window.Window):
         for projectile in projectile_list:
             projectile.draw()
 
+        # black_pixels_batch.draw()
 
+        # Blitting goes here. Also turning on alpha channel for images
+        glEnable(GL_BLEND)
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
+        self.minimap_fow_image.blit(MINIMAP_ZERO_COORDS[0], MINIMAP_ZERO_COORDS[1])
 
         # Remove default modelview matrix
         glPopMatrix()
@@ -546,9 +553,16 @@ class PlanetEleven(pyglet.window.Window):
                             unit.destination_reached = True
                             unit.move((unit.new_dest_x, unit.new_dest_y))
                             unit.movement_interrupted = False
-                        self.delete_black(unit)
+                        delete_black(unit.x, unit.y)
+                        x = ((unit.x - 16) / 32 + 1) * 4 - 1
+                        y = (unit.y - 16) / 32 * 400
+                        i = int(x + y)
+                        self.minimap_fow_bytearray[i] = 0
+                        self.minimap_fow_ImageData.set_data('RGBA', self.minimap_fow_ImageData.width * 4,
+                                                            data=bytes(self.minimap_fow_bytearray))
+
                 else:
-                    self.delete_black(unit)
+                    delete_black(unit.x, unit.y)
             # Shooting
             for unit in our_units_list:
                 if unit.has_weapon:
@@ -587,18 +601,6 @@ class PlanetEleven(pyglet.window.Window):
             #         if unit.x == black.x and unit.y == black.y:
             #             black.visible = False
 
-    def delete_black(self, unit):
-        x, y = unit.x, unit.y
-        blacks_to_delete = [(x - 32, y + 32), (x, y + 32), (x + 32, y + 32),
-                            (x - 32, y), (x, y), (x + 32, y),
-                            (x - 32, y - 32), (x, y - 32), (x + 32, y - 32)]
-        for coord in blacks_to_delete:
-            try:
-                self.blacks_dict[coord].delete()
-                del self.blacks_dict[coord]
-            except KeyError:
-                pass
-
     def on_key_press(self, symbol, modifiers):
         """Called whenever a key is pressed. """
         global selected, left_view_border, bottom_view_border
@@ -622,7 +624,9 @@ class PlanetEleven(pyglet.window.Window):
             bottom_view_border += POS_SPACE
             self.update_viewport()
         elif symbol == key.H:
-            print(CONTROL_BUTTONS_COORDS)
+            self.minimap_fow_bytearray[7] = 0
+            self.minimap_fow_ImageData.set_data('RGBA', self.minimap_fow_ImageData.width * 4,
+                                                data=bytes(self.minimap_fow_bytearray))
         elif symbol == key.Z:
             i = 0
             for _key, value in ground_pos_coords_dict.items():
