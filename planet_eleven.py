@@ -332,6 +332,7 @@ class PlanetEleven(pyglet.window.Window):
         self.dy = 0
         self.minimap_drugging = False
         self.building_location_selection_phase = False
+        self.fps_display = pyglet.window.FPSDisplay(window=self)
 
     def setup(self):
         global selected
@@ -460,7 +461,7 @@ class PlanetEleven(pyglet.window.Window):
         for projectile in projectile_list:
             projectile.draw()
 
-        # black_pixels_batch.draw()
+        self.fps_display.draw()
 
         # Remove default modelview matrix
         glPopMatrix()
@@ -555,9 +556,6 @@ class PlanetEleven(pyglet.window.Window):
                             unit.move((unit.new_dest_x, unit.new_dest_y))
                             unit.movement_interrupted = False
                         self.update_fow(unit.x, unit.y, unit.vision_radius)
-                # Destination reached
-                else:
-                    self.update_fow(unit.x, unit.y, unit.vision_radius)
             # Shooting
             for unit in our_units_list:
                 if unit.has_weapon:
