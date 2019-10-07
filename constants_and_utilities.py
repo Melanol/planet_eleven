@@ -78,6 +78,8 @@ our_units_list = []
 our_buildings_list = []
 enemies_list = []
 projectile_list = []
+minimap_fow_x = MINIMAP_ZERO_COORDS[0] - 1
+minimap_fow_y = MINIMAP_ZERO_COORDS[1] - 1
 
 
 def round_angle(angle):

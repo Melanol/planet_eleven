@@ -88,16 +88,17 @@ class Base(Building):
 
 
 class Unit(pyglet.sprite.Sprite):
-    def __init__(self, img, hp, damage, shooting_range, cooldown, speed, x, y,
+    def __init__(self, img, hp, vision_radius, damage, cooldown, speed, x, y,
                  projectile_sprite, projectile_speed, has_weapon=True, projectile_color=(255, 255, 255),
                  batch=ground_batch):
         super().__init__(img=img, x=x, y=y, batch=batch)
         self.x = x
         self.y = y
         self.hp = hp
+        self.vision_radius = vision_radius
         self.has_weapon = has_weapon
         self.damage = damage
-        self.shooting_range = shooting_range
+        self.shooting_radius = vision_radius * 32
         self.speed = speed
         self.destination_reached = True
         self.movement_interrupted = False
@@ -277,7 +278,7 @@ class Defiler(Unit):
     building_time = 60
 
     def __init__(self, x, y):
-        super().__init__(img=res.defiler_image, hp=100, damage=10, shooting_range=100, cooldown=60, speed=6, x=x,
+        super().__init__(img=res.defiler_image, hp=100, vision_radius=6, damage=10, cooldown=60, speed=6, x=x,
                          y=y, projectile_sprite='sprites/blue_laser.png',
                          projectile_speed=5, batch=air_batch)
         self.flying = True
@@ -288,7 +289,7 @@ class Tank(Unit):
     building_time = 60
 
     def __init__(self, x, y):
-        super().__init__(img=res.tank_image, hp=100, damage=10, shooting_range=150, cooldown=60, speed=0.6, x=x,
+        super().__init__(img=res.tank_image, hp=100, vision_radius=6, damage=10, cooldown=60, speed=0.6, x=x,
                          y=y, projectile_sprite='sprites/blue_laser.png',
                          projectile_speed=5)
         self.flying = False
@@ -299,7 +300,7 @@ class Vulture(Unit):
     building_time = 10
 
     def __init__(self, x, y):
-        super().__init__(img=res.vulture_image, hp=50, damage=10, shooting_range=100, cooldown=60, speed=10,
+        super().__init__(img=res.vulture_image, hp=50, vision_radius=3, damage=10, cooldown=60, speed=10,
                          x=x, y=y, projectile_sprite='sprites/blue_laser.png',
                          projectile_speed=5)
         self.flying = False
@@ -310,7 +311,7 @@ class Builder(Unit):
     building_time = 10
 
     def __init__(self, x, y):
-        super().__init__(img=res.builder_image, hp=50, damage=0, shooting_range=0, cooldown=60, speed=2,
+        super().__init__(img=res.builder_image, hp=50, vision_radius=2, damage=0, cooldown=60, speed=2,
                          x=x, y=y, has_weapon=False, projectile_sprite='sprites/blue_laser.png',
                          projectile_speed=5)
         self.flying = False
@@ -346,11 +347,9 @@ class PlanetEleven(pyglet.window.Window):
                                                              y=MINIMAP_ZERO_COORDS[1]-1)
         self.minimap_fow_image = pyglet.image.load('sprites/minimap_fow.png')
         self.minimap_fow_ImageData = self.minimap_fow_image.get_image_data()
-        self.minimap_fow_bytearray = bytearray(self.minimap_fow_ImageData.get_data('RGBA', self.minimap_fow_ImageData.width * 4))
         self.npa = np.fromstring(self.minimap_fow_ImageData.get_data('RGBA', self.minimap_fow_ImageData.width * 4), dtype=np.uint8)
-        self.npa = self.npa.reshape((100, 100, 4))
-        # self.npa.setflags(write=1)
-        print(self.npa.flags)
+        self.npa = self.npa.reshape((102, 102, 4))
+
         # Spawn
         self.our_1st_base = Base(POS_SPACE / 2 + POS_SPACE, POS_SPACE / 2 + POS_SPACE)
         selected = self.our_1st_base
@@ -435,9 +434,9 @@ class PlanetEleven(pyglet.window.Window):
         glEnable(GL_BLEND)
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
         self.texture = self.minimap_fow_image.get_texture()
-        self.texture.width = 3200
-        self.texture.height = 3200
-        self.texture.blit(0, 0)
+        self.texture.width = 3264
+        self.texture.height = 3264
+        self.texture.blit(-32, -32)
         utilities_batch.draw()
         if self.building_location_selection_phase:
             self.base_building_sprite.draw()
@@ -452,21 +451,16 @@ class PlanetEleven(pyglet.window.Window):
         if selected in our_buildings_list:
             self.rally_point_sprite.draw()
 
+        self.texture.width = 102
+        self.texture.height = 102
+        self.texture.blit(minimap_fow_x, minimap_fow_y)
+
         self.minimap_cam_frame_sprite.draw()
 
         for projectile in projectile_list:
             projectile.draw()
 
         # black_pixels_batch.draw()
-
-        # Blitting goes here. Also turning on alpha channel for images
-
-
-        self.texture.width = 100
-        self.texture.height = 100
-        self.texture.blit(MINIMAP_ZERO_COORDS[0], MINIMAP_ZERO_COORDS[1])
-
-        # self.minimap_fow_image.blit(0, 0)
 
         # Remove default modelview matrix
         glPopMatrix()
@@ -560,25 +554,17 @@ class PlanetEleven(pyglet.window.Window):
                             unit.destination_reached = True
                             unit.move((unit.new_dest_x, unit.new_dest_y))
                             unit.movement_interrupted = False
-                        x = int((unit.x - 16) / 32)
-                        y = int((unit.y - 16) / 32)
-                        radius = 3
-                        for yi in range(-radius + y, radius + 1 + y):
-                            for xi in range(-radius + x, radius + 1 + x):
-                                if ((xi - x)**2 + (yi - y)**2) ** 0.5 <= radius:
-                                    self.npa[yi, xi, 3] = 0
-                        self.minimap_fow_ImageData.set_data('RGBA', self.minimap_fow_ImageData.width * 4,
-                                                            data=self.npa.tobytes())
-
+                        self.update_fow(unit.x, unit.y, unit.vision_radius)
+                # Destination reached
                 else:
-                    pass
+                    self.update_fow(unit.x, unit.y, unit.vision_radius)
             # Shooting
             for unit in our_units_list:
                 if unit.has_weapon:
                     if unit.destination_reached:
                         if not unit.on_cooldown:
                             for enemy in enemies_list:
-                                if ((enemy.x - unit.x) ** 2 + (enemy.y - unit.y) ** 2) ** 0.5 <= unit.shooting_range:
+                                if ((enemy.x - unit.x) ** 2 + (enemy.y - unit.y) ** 2) ** 0.5 <= unit.shooting_radius:
                                     unit.shoot(self.frame_count, enemy.x, enemy.y, enemy)
                                     break
                         else:
@@ -599,16 +585,17 @@ class PlanetEleven(pyglet.window.Window):
                 if enemy.hp <= 0:
                     enemy.kill()
 
-            # FOW
-            # for building in our_buildings_list:
-            #     for black in self.black_sprites:
-            #         if building.x == black.x and building.y == black.y:
-            #             black.visible = False
-            #
-            # for unit in our_units_list:
-            #     for black in self.black_sprites:
-            #         if unit.x == black.x and unit.y == black.y:
-            #             black.visible = False
+    def update_fow(self, x, y, radius):
+        x = int((x - 16) / 32) + 1
+        y = int((y - 16) / 32) + 1
+        for yi in range(-radius + y, radius + 1 + y):
+            if 0 <= yi <= 101:
+                for xi in range(-radius + x, radius + 1 + x):
+                    if 0 <= xi <= 101:
+                        if ((xi - x) ** 2 + (yi - y) ** 2) ** 0.5 <= radius:
+                            self.npa[yi, xi, 3] = 0
+        self.minimap_fow_ImageData.set_data('RGBA', self.minimap_fow_ImageData.width * 4,
+                                            data=self.npa.tobytes())
 
     def on_key_press(self, symbol, modifiers):
         """Called whenever a key is pressed. """
@@ -678,7 +665,7 @@ class PlanetEleven(pyglet.window.Window):
             sys.exit()
 
     def update_viewport(self):
-        global left_view_border, bottom_view_border
+        global left_view_border, bottom_view_border, minimap_fow_x, minimap_fow_y
 
         # Viewport limits
         a = POS_COORDS_N_COLUMNS * POS_SPACE - SCREEN_WIDTH // POS_SPACE * POS_SPACE + POS_SPACE * 4
@@ -726,6 +713,8 @@ class PlanetEleven(pyglet.window.Window):
             pixel.x, pixel.y = to_minimap(enemy.x, enemy.y)
         self.minimap_cam_frame_sprite.x, self.minimap_cam_frame_sprite.y = to_minimap(left_view_border-2,
                                                                                       bottom_view_border-2)
+        minimap_fow_x = MINIMAP_ZERO_COORDS[0] - 1 + left_view_border
+        minimap_fow_y = MINIMAP_ZERO_COORDS[1] - 1 + bottom_view_border
 
     def on_mouse_press(self, x, y, button, modifiers):
         global selected, minimap_pixels_dict, our_units_list, left_view_border, bottom_view_border
