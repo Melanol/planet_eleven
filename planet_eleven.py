@@ -1,6 +1,7 @@
 import math
 import random
 import sys
+import numpy as np
 
 import pyglet
 from pyglet.gl import *
@@ -60,7 +61,6 @@ class Building(pyglet.sprite.Sprite):
             our_buildings_list.append(self)
             img = our_img
             minimap_pixel = res.minimap_our_image
-            delete_black(x, y)
         else:
             enemies_list.append(self)
             img = enemy_img
@@ -347,12 +347,10 @@ class PlanetEleven(pyglet.window.Window):
         self.minimap_fow_image = pyglet.image.load('sprites/minimap_fow.png')
         self.minimap_fow_ImageData = self.minimap_fow_image.get_image_data()
         self.minimap_fow_bytearray = bytearray(self.minimap_fow_ImageData.get_data('RGBA', self.minimap_fow_ImageData.width * 4))
-
-        for x, y in POS_COORDS:
-            blacks_dict[(x, y)] = pyglet.sprite.Sprite(img=res.black_image, x=x, y=y, batch=black_batch)
-            x, y = to_minimap(x, y)
-            black_pixels.append(pyglet.sprite.Sprite(img=res.black_pixel_image, x=x, y=y, batch=black_pixels_batch))
-
+        self.npa = np.fromstring(self.minimap_fow_ImageData.get_data('RGBA', self.minimap_fow_ImageData.width * 4), dtype=np.uint8)
+        self.npa = self.npa.reshape((100, 100, 4))
+        # self.npa.setflags(write=1)
+        print(self.npa.flags)
         # Spawn
         self.our_1st_base = Base(POS_SPACE / 2 + POS_SPACE, POS_SPACE / 2 + POS_SPACE)
         selected = self.our_1st_base
@@ -434,8 +432,13 @@ class PlanetEleven(pyglet.window.Window):
         ground_batch.draw()
         air_shadows_batch.draw()
         air_batch.draw()
+        glEnable(GL_BLEND)
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
+        self.texture = self.minimap_fow_image.get_texture()
+        self.texture.width = 3200
+        self.texture.height = 3200
+        self.texture.blit(0, 0)
         utilities_batch.draw()
-        black_batch.draw()
         if self.building_location_selection_phase:
             self.base_building_sprite.draw()
         self.control_panel_sprite.draw()
@@ -457,9 +460,13 @@ class PlanetEleven(pyglet.window.Window):
         # black_pixels_batch.draw()
 
         # Blitting goes here. Also turning on alpha channel for images
-        glEnable(GL_BLEND)
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
-        self.minimap_fow_image.blit(MINIMAP_ZERO_COORDS[0], MINIMAP_ZERO_COORDS[1])
+
+
+        self.texture.width = 100
+        self.texture.height = 100
+        self.texture.blit(MINIMAP_ZERO_COORDS[0], MINIMAP_ZERO_COORDS[1])
+
+        # self.minimap_fow_image.blit(0, 0)
 
         # Remove default modelview matrix
         glPopMatrix()
@@ -553,16 +560,18 @@ class PlanetEleven(pyglet.window.Window):
                             unit.destination_reached = True
                             unit.move((unit.new_dest_x, unit.new_dest_y))
                             unit.movement_interrupted = False
-                        delete_black(unit.x, unit.y)
-                        x = ((unit.x - 16) / 32 + 1) * 4 - 1
-                        y = (unit.y - 16) / 32 * 400
-                        i = int(x + y)
-                        self.minimap_fow_bytearray[i] = 0
+                        x = int((unit.x - 16) / 32)
+                        y = int((unit.y - 16) / 32)
+                        radius = 3
+                        for yi in range(-radius + y, radius + 1 + y):
+                            for xi in range(-radius + x, radius + 1 + x):
+                                if ((xi - x)**2 + (yi - y)**2) ** 0.5 <= radius:
+                                    self.npa[yi, xi, 3] = 0
                         self.minimap_fow_ImageData.set_data('RGBA', self.minimap_fow_ImageData.width * 4,
-                                                            data=bytes(self.minimap_fow_bytearray))
+                                                            data=self.npa.tobytes())
 
                 else:
-                    delete_black(unit.x, unit.y)
+                    pass
             # Shooting
             for unit in our_units_list:
                 if unit.has_weapon:

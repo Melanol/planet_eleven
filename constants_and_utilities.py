@@ -72,16 +72,12 @@ utilities_batch = pyglet.graphics.Batch()
 minimap_pixels_batch = pyglet.graphics.Batch()
 shadows_batch = pyglet.graphics.Batch()
 air_shadows_batch = pyglet.graphics.Batch()
-black_batch = pyglet.graphics.Batch()
-black_pixels_batch = pyglet.graphics.Batch()
 
 LIST_OF_FLYING = ['defiler']
 our_units_list = []
 our_buildings_list = []
 enemies_list = []
 projectile_list = []
-blacks_dict = {}
-black_pixels = []
 
 
 def round_angle(angle):
@@ -145,15 +141,3 @@ def give_next_target(x, y, angle, flying):
         return target
     else:
         return None
-
-
-def delete_black(x, y):
-    blacks_to_delete = [(x - 32, y + 32), (x, y + 32), (x + 32, y + 32),
-                        (x - 32, y), (x, y), (x + 32, y),
-                        (x - 32, y - 32), (x, y - 32), (x + 32, y - 32)]
-    for coord in blacks_to_delete:
-        try:
-            blacks_dict[coord].delete()
-            del blacks_dict[coord]
-        except KeyError:
-            pass
