@@ -46,46 +46,6 @@ class Button(pyglet.sprite.Sprite):
         super().__init__(img=img, x=x, y=y)
 
 
-class Building(pyglet.sprite.Sprite):
-    def __init__(self, our_img, enemy_img, x, y, hp, is_enemy):
-        self.hp = hp
-        ground_pos_coords_dict[(x, y)] = self
-        self.rally_point_x = x
-        self.rally_point_y = y
-        self.building_queue = []
-        self.current_building_time = None
-        self.building_complete = True
-        self.building_start_time = 0
-        self.is_enemy = is_enemy
-        if not self.is_enemy:
-            our_buildings_list.append(self)
-            img = our_img
-            minimap_pixel = res.minimap_our_image
-        else:
-            enemies_list.append(self)
-            img = enemy_img
-            minimap_pixel = res.minimap_enemy_image
-        super().__init__(img=img, x=x, y=y, batch=ground_batch)
-        pixel_minimap_coords = to_minimap(self.x, self.y)
-        pixel = pyglet.sprite.Sprite(img=minimap_pixel, x=pixel_minimap_coords[0],
-                                     y=pixel_minimap_coords[1],
-                                     batch=minimap_pixels_batch)
-        minimap_pixels_dict[id(self)] = pixel
-
-    def kill(self):
-        ground_pos_coords_dict[(self.x, self.y)] = None
-        minimap_pixels_dict[id(self)].delete()
-        if not self.is_enemy:
-            del our_buildings_list[our_buildings_list.index(self)]
-        else:
-            del enemies_list[enemies_list.index(self)]
-        self.delete()
-
-
-class Base(Building):
-    def __init__(self, x, y, is_enemy=False):
-        super().__init__(our_img=res.base_image, enemy_img=res.enemy_base_image, x=x, y=y, hp=100, is_enemy=is_enemy)
-
 
 class Unit(pyglet.sprite.Sprite):
     def __init__(self, img, hp, vision_radius, damage, cooldown, speed, x, y,
@@ -333,6 +293,46 @@ class PlanetEleven(pyglet.window.Window):
         self.minimap_drugging = False
         self.building_location_selection_phase = False
 
+    class Building(pyglet.sprite.Sprite):
+        def __init__(self, our_img, enemy_img, x, y, hp, is_enemy):
+            self.hp = hp
+            ground_pos_coords_dict[(x, y)] = self
+            self.rally_point_x = x
+            self.rally_point_y = y
+            self.building_queue = []
+            self.current_building_time = None
+            self.building_complete = True
+            self.building_start_time = 0
+            self.is_enemy = is_enemy
+            if not self.is_enemy:
+                our_buildings_list.append(self)
+                img = our_img
+                minimap_pixel = res.minimap_our_image
+            else:
+                enemies_list.append(self)
+                img = enemy_img
+                minimap_pixel = res.minimap_enemy_image
+            super().__init__(img=img, x=x, y=y, batch=ground_batch)
+            pixel_minimap_coords = to_minimap(self.x, self.y)
+            pixel = pyglet.sprite.Sprite(img=minimap_pixel, x=pixel_minimap_coords[0],
+                                         y=pixel_minimap_coords[1],
+                                         batch=minimap_pixels_batch)
+            minimap_pixels_dict[id(self)] = pixel
+
+        def kill(self):
+            ground_pos_coords_dict[(self.x, self.y)] = None
+            minimap_pixels_dict[id(self)].delete()
+            if not self.is_enemy:
+                del our_buildings_list[our_buildings_list.index(self)]
+            else:
+                del enemies_list[enemies_list.index(self)]
+            self.delete()
+
+    class Base(Building):
+        def __init__(self, x, y, is_enemy=False):
+            super().__init__(our_img=res.base_image, enemy_img=res.enemy_base_image, x=x, y=y, hp=100,
+                             is_enemy=is_enemy)
+
     def setup(self):
         global selected
         self.background = pyglet.sprite.Sprite(img=res.background_image, x=0, y=0)
@@ -351,13 +351,13 @@ class PlanetEleven(pyglet.window.Window):
         self.npa = self.npa.reshape((102, 102, 4))
 
         # Spawn
-        self.our_1st_base = Base(POS_SPACE / 2 + POS_SPACE, POS_SPACE / 2 + POS_SPACE)
+        self.our_1st_base = self.Base(POS_SPACE / 2 + POS_SPACE, POS_SPACE / 2 + POS_SPACE)
         selected = self.our_1st_base
-        Base(POS_SPACE / 2 + POS_SPACE * 3, POS_SPACE / 2 + POS_SPACE)
-        Base(POS_SPACE / 2 + POS_SPACE * 4, POS_SPACE / 2 + POS_SPACE * 6, is_enemy=True)
-        Base(POS_SPACE / 2 + POS_SPACE * 10, POS_SPACE / 2 + POS_SPACE * 8, is_enemy=True)
-        Base(POS_SPACE / 2 + POS_SPACE * 12, POS_SPACE / 2 + POS_SPACE * 8, is_enemy=True)
-        Base(POS_SPACE / 2 + POS_SPACE * 8, POS_SPACE / 2 + POS_SPACE * 6, is_enemy=True)
+        self.Base(POS_SPACE / 2 + POS_SPACE * 3, POS_SPACE / 2 + POS_SPACE)
+        self.Base(POS_SPACE / 2 + POS_SPACE * 4, POS_SPACE / 2 + POS_SPACE * 6, is_enemy=True)
+        self.Base(POS_SPACE / 2 + POS_SPACE * 10, POS_SPACE / 2 + POS_SPACE * 8, is_enemy=True)
+        self.Base(POS_SPACE / 2 + POS_SPACE * 12, POS_SPACE / 2 + POS_SPACE * 8, is_enemy=True)
+        self.Base(POS_SPACE / 2 + POS_SPACE * 8, POS_SPACE / 2 + POS_SPACE * 6, is_enemy=True)
 
         # Buttons
         self.base_button = Button(img=res.base_image, x=CONTROL_BUTTONS_COORDS[3][0],
@@ -844,7 +844,7 @@ class PlanetEleven(pyglet.window.Window):
                 x, y = mc(x=x, y=y)
                 if button == mouse.LEFT:
                     if not ground_pos_coords_dict[self.base_building_sprite.x, self.base_building_sprite.y]:
-                        Base(self.base_building_sprite.x, self.base_building_sprite.y)
+                        self.Base(self.base_building_sprite.x, self.base_building_sprite.y)
                 elif button == mouse.RIGHT:
                     self.building_location_selection_phase = False
 
