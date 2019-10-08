@@ -89,10 +89,11 @@ class Base(Building):
                          hp=100, is_enemy=is_enemy)
 
 class Unit(pyglet.sprite.Sprite):
-    def __init__(self, img, hp, vision_radius, damage, cooldown, speed, x, y,
+    def __init__(self, outer_instance, img, hp, vision_radius, damage, cooldown, speed, x, y,
                  projectile_sprite, projectile_speed, has_weapon=True, projectile_color=(255, 255, 255),
                  batch=ground_batch):
         super().__init__(img=img, x=x, y=y, batch=batch)
+        self.outer_instance = outer_instance
         self.x = x
         self.y = y
         self.hp = hp
@@ -138,6 +139,7 @@ class Unit(pyglet.sprite.Sprite):
             shadow = Movable(img=self.shadow_sprite, x=self.x + 3, y=self.y - 3)
             shadow.batch = shadows_batch
         shadows_dict[id(self)] = shadow
+        self.outer_instance.update_fow(self.x, self.y, self.vision_radius)
 
     def update(self):
         self.x, self.y = self.x + self.velocity_x, self.y + self.velocity_y
@@ -278,8 +280,8 @@ class Unit(pyglet.sprite.Sprite):
 class Defiler(Unit):
     building_time = 60
 
-    def __init__(self, x, y):
-        super().__init__(img=res.defiler_image, hp=100, vision_radius=6, damage=10, cooldown=60, speed=6, x=x,
+    def __init__(self, outer_instance, x, y):
+        super().__init__(img=res.defiler_image, outer_instance=outer_instance, hp=100, vision_radius=6, damage=10, cooldown=60, speed=6, x=x,
                          y=y, projectile_sprite='sprites/blue_laser.png',
                          projectile_speed=5, batch=air_batch)
         self.flying = True
@@ -289,8 +291,8 @@ class Defiler(Unit):
 class Tank(Unit):
     building_time = 60
 
-    def __init__(self, x, y):
-        super().__init__(img=res.tank_image, hp=100, vision_radius=6, damage=10, cooldown=60, speed=0.6, x=x,
+    def __init__(self, outer_instance, x, y):
+        super().__init__(img=res.tank_image, outer_instance=outer_instance, hp=100, vision_radius=6, damage=10, cooldown=60, speed=0.6, x=x,
                          y=y, projectile_sprite='sprites/blue_laser.png',
                          projectile_speed=5)
         self.flying = False
@@ -300,8 +302,8 @@ class Tank(Unit):
 class Vulture(Unit):
     building_time = 10
 
-    def __init__(self, x, y):
-        super().__init__(img=res.vulture_image, hp=50, vision_radius=3, damage=10, cooldown=60, speed=10,
+    def __init__(self, outer_instance, x, y):
+        super().__init__(img=res.vulture_image, outer_instance=outer_instance, hp=50, vision_radius=3, damage=10, cooldown=60, speed=10,
                          x=x, y=y, projectile_sprite='sprites/blue_laser.png',
                          projectile_speed=5)
         self.flying = False
@@ -311,8 +313,8 @@ class Vulture(Unit):
 class Builder(Unit):
     building_time = 10
 
-    def __init__(self, x, y):
-        super().__init__(img=res.builder_image, hp=50, vision_radius=2, damage=0, cooldown=60, speed=2,
+    def __init__(self, outer_instance, x, y):
+        super().__init__(img=res.builder_image, outer_instance=outer_instance, hp=50, vision_radius=2, damage=0, cooldown=60, speed=2,
                          x=x, y=y, has_weapon=False, projectile_sprite='sprites/blue_laser.png',
                          projectile_speed=5)
         self.flying = False
@@ -492,16 +494,16 @@ class PlanetEleven(pyglet.window.Window):
                         if dict_to_check[(building.x + POS_SPACE, building.y + POS_SPACE)] is None:
                             unit = building.building_queue.pop(0)
                             if unit == 'defiler':
-                                unit = Defiler(x=building.x + POS_SPACE, y=building.y + POS_SPACE)
+                                unit = Defiler(self, x=building.x + POS_SPACE, y=building.y + POS_SPACE)
                                 unit.spawn()
                             elif unit == 'tank':
-                                unit = Tank(x=building.x + POS_SPACE, y=building.y + POS_SPACE)
+                                unit = Tank(self, x=building.x + POS_SPACE, y=building.y + POS_SPACE)
                                 unit.spawn()
                             elif unit == 'vulture':
-                                unit = Vulture(x=building.x + POS_SPACE, y=building.y + POS_SPACE)
+                                unit = Vulture(self, x=building.x + POS_SPACE, y=building.y + POS_SPACE)
                                 unit.spawn()
                             elif unit == 'builder':
-                                unit = Builder(x=building.x + POS_SPACE, y=building.y + POS_SPACE)
+                                unit = Builder(self, x=building.x + POS_SPACE, y=building.y + POS_SPACE)
                                 unit.spawn()
                             building.building_start_time += building.current_building_time
                             unit.move((building.rally_point_x, building.rally_point_y))
@@ -594,22 +596,27 @@ class PlanetEleven(pyglet.window.Window):
             else:
                 self.set_mouse_cursor(cursor_fullscreen)
                 self.set_fullscreen(True)
-        elif symbol in [key.LEFT, key.A]:
+        elif symbol == key.S:
+            if selected in our_units_list:
+                selected.destination_x = selected.target_x
+                selected.destination_y = selected.target_y
+                # selected.movement_interrupted = True
+                # selected.new_dest_x = selected.target_x
+                # selected.new_dest_y = selected.target_y
+        elif symbol == key.LEFT:
             left_view_border -= POS_SPACE
             self.update_viewport()
-        elif symbol in [key.RIGHT, key.D]:
+        elif symbol == key.RIGHT:
             left_view_border += POS_SPACE
             self.update_viewport()
-        elif symbol in [key.DOWN, key.S]:
+        elif symbol == key.DOWN:
             bottom_view_border -= POS_SPACE
             self.update_viewport()
-        elif symbol in [key.UP, key.W]:
+        elif symbol == key.UP:
             bottom_view_border += POS_SPACE
             self.update_viewport()
         elif symbol == key.H:
-            self.minimap_fow_bytearray[7] = 0
-            self.minimap_fow_ImageData.set_data('RGBA', self.minimap_fow_ImageData.width * 4,
-                                                data=bytes(self.minimap_fow_bytearray))
+            pass
         elif symbol == key.Z:
             i = 0
             for _key, value in ground_pos_coords_dict.items():
@@ -778,19 +785,24 @@ class PlanetEleven(pyglet.window.Window):
                 x, y = round_coords(x, y)
                 x, y = mc(x=x, y=y)
                 if button == mouse.LEFT:
-                    if not ground_pos_coords_dict[self.base_building_sprite.x, self.base_building_sprite.y]:
+                    x = int((x - 16) / 32) + 1
+                    y = int((y - 16) / 32) + 1
+                    if not ground_pos_coords_dict[self.base_building_sprite.x, self.base_building_sprite.y] and self.npa[y, x, 3] == 0:
                         Base(self, self.base_building_sprite.x, self.base_building_sprite.y)
                 elif button == mouse.RIGHT:
                     self.building_location_selection_phase = False
 
     def on_mouse_motion(self, x, y, dx, dy):
         if self.building_location_selection_phase:
-            x, y = round_coords(x, y)
             if self.fullscreen:
                 x /= 2
                 y /= 2
+            x, y = round_coords(x, y)
             self.base_building_sprite.x, self.base_building_sprite.y = x + left_view_border, y + bottom_view_border
-            if ground_pos_coords_dict[self.base_building_sprite.x, self.base_building_sprite.y]:
+            x, y = mc(x=x, y=y)
+            x = int((x - 16) / 32) + 1
+            y = int((y - 16) / 32) + 1
+            if ground_pos_coords_dict[self.base_building_sprite.x, self.base_building_sprite.y] or self.npa[y, x, 3] != 0:
                 self.base_building_sprite.color = (255, 0, 0)
             else:
                 self.base_building_sprite.color = (0, 255, 0)
