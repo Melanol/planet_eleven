@@ -47,7 +47,8 @@ class Button(pyglet.sprite.Sprite):
 
 
 class Building(pyglet.sprite.Sprite):
-    def __init__(self, our_img, enemy_img, x, y, hp, is_enemy):
+    def __init__(self, outer_instance, our_img, enemy_img, x, y, hp, is_enemy):
+        self.outer_instance = outer_instance
         self.hp = hp
         ground_pos_coords_dict[(x, y)] = self
         self.rally_point_x = x
@@ -61,6 +62,7 @@ class Building(pyglet.sprite.Sprite):
             our_buildings_list.append(self)
             img = our_img
             minimap_pixel = res.minimap_our_image
+            outer_instance.update_fow(x=x, y=y, radius=3)
         else:
             enemies_list.append(self)
             img = enemy_img
@@ -81,11 +83,10 @@ class Building(pyglet.sprite.Sprite):
             del enemies_list[enemies_list.index(self)]
         self.delete()
 
-
 class Base(Building):
-    def __init__(self, x, y, is_enemy=False):
-        super().__init__(our_img=res.base_image, enemy_img=res.enemy_base_image, x=x, y=y, hp=100, is_enemy=is_enemy)
-
+    def __init__(self, outer_instance, x, y, is_enemy=False):
+        super().__init__(outer_instance, our_img=res.base_image, enemy_img=res.enemy_base_image, x=x, y=y,
+                         hp=100, is_enemy=is_enemy)
 
 class Unit(pyglet.sprite.Sprite):
     def __init__(self, img, hp, vision_radius, damage, cooldown, speed, x, y,
@@ -352,13 +353,13 @@ class PlanetEleven(pyglet.window.Window):
         self.npa = self.npa.reshape((102, 102, 4))
 
         # Spawn
-        self.our_1st_base = Base(POS_SPACE / 2 + POS_SPACE, POS_SPACE / 2 + POS_SPACE)
+        self.our_1st_base = Base(self, POS_SPACE / 2 + POS_SPACE, POS_SPACE / 2 + POS_SPACE)
         selected = self.our_1st_base
-        Base(POS_SPACE / 2 + POS_SPACE * 3, POS_SPACE / 2 + POS_SPACE)
-        Base(POS_SPACE / 2 + POS_SPACE * 4, POS_SPACE / 2 + POS_SPACE * 6, is_enemy=True)
-        Base(POS_SPACE / 2 + POS_SPACE * 10, POS_SPACE / 2 + POS_SPACE * 8, is_enemy=True)
-        Base(POS_SPACE / 2 + POS_SPACE * 12, POS_SPACE / 2 + POS_SPACE * 8, is_enemy=True)
-        Base(POS_SPACE / 2 + POS_SPACE * 8, POS_SPACE / 2 + POS_SPACE * 6, is_enemy=True)
+        Base(self, POS_SPACE / 2 + POS_SPACE * 3, POS_SPACE / 2 + POS_SPACE)
+        Base(self, POS_SPACE / 2 + POS_SPACE * 4, POS_SPACE / 2 + POS_SPACE * 6, is_enemy=True)
+        Base(self, POS_SPACE / 2 + POS_SPACE * 10, POS_SPACE / 2 + POS_SPACE * 8, is_enemy=True)
+        Base(self, POS_SPACE / 2 + POS_SPACE * 12, POS_SPACE / 2 + POS_SPACE * 8, is_enemy=True)
+        Base(self, POS_SPACE / 2 + POS_SPACE * 8, POS_SPACE / 2 + POS_SPACE * 6, is_enemy=True)
 
         # Buttons
         self.base_button = Button(img=res.base_image, x=CONTROL_BUTTONS_COORDS[3][0],
@@ -583,18 +584,6 @@ class PlanetEleven(pyglet.window.Window):
                 if enemy.hp <= 0:
                     enemy.kill()
 
-    def update_fow(self, x, y, radius):
-        x = int((x - 16) / 32) + 1
-        y = int((y - 16) / 32) + 1
-        for yi in range(-radius + y, radius + 1 + y):
-            if 0 <= yi <= 101:
-                for xi in range(-radius + x, radius + 1 + x):
-                    if 0 <= xi <= 101:
-                        if ((xi - x) ** 2 + (yi - y) ** 2) ** 0.5 <= radius:
-                            self.npa[yi, xi, 3] = 0
-        self.minimap_fow_ImageData.set_data('RGBA', self.minimap_fow_ImageData.width * 4,
-                                            data=self.npa.tobytes())
-
     def on_key_press(self, symbol, modifiers):
         """Called whenever a key is pressed. """
         global selected, left_view_border, bottom_view_border
@@ -661,58 +650,6 @@ class PlanetEleven(pyglet.window.Window):
                 self.paused = False
         elif symbol == key.ESCAPE:
             sys.exit()
-
-    def update_viewport(self):
-        global left_view_border, bottom_view_border, minimap_fow_x, minimap_fow_y
-
-        # Viewport limits
-        a = POS_COORDS_N_COLUMNS * POS_SPACE - SCREEN_WIDTH // POS_SPACE * POS_SPACE + POS_SPACE * 4
-        if left_view_border < 0:
-            left_view_border = 0
-        elif left_view_border > a:
-            left_view_border = a
-        if bottom_view_border < 0:
-            bottom_view_border = 0
-        elif bottom_view_border > POS_COORDS_N_ROWS * POS_SPACE - SCREEN_HEIGHT:
-            bottom_view_border = POS_COORDS_N_ROWS * POS_SPACE - SCREEN_HEIGHT
-
-        self.minimap_black_background.x = MINIMAP_ZERO_COORDS[0] + left_view_border
-        self.minimap_black_background.y = MINIMAP_ZERO_COORDS[1] + bottom_view_border
-        self.minimap_textured_background.x = MINIMAP_ZERO_COORDS[0] + left_view_border
-        self.minimap_textured_background.y = MINIMAP_ZERO_COORDS[1] + bottom_view_border
-        self.control_panel_sprite.x = SCREEN_WIDTH + left_view_border
-        self.control_panel_sprite.y = bottom_view_border
-        self.control_panel_buttons_background.x = center_x + left_view_border
-        self.control_panel_buttons_background.y = center_y + bottom_view_border
-        self.move_button.x = CONTROL_BUTTONS_COORDS[0][0] + left_view_border
-        self.move_button.y = CONTROL_BUTTONS_COORDS[0][1] + bottom_view_border
-        self.stop_button.x = CONTROL_BUTTONS_COORDS[1][0] + left_view_border
-        self.stop_button.y = CONTROL_BUTTONS_COORDS[1][1] + bottom_view_border
-        self.attack_button.x = CONTROL_BUTTONS_COORDS[2][0] + left_view_border
-        self.attack_button.y = CONTROL_BUTTONS_COORDS[2][1] + bottom_view_border
-        self.base_button.x = CONTROL_BUTTONS_COORDS[3][0] + left_view_border
-        self.base_button.y = CONTROL_BUTTONS_COORDS[3][1] + bottom_view_border
-        self.defiler_button.x = CONTROL_BUTTONS_COORDS[0][0] + left_view_border
-        self.defiler_button.y = CONTROL_BUTTONS_COORDS[0][1] + bottom_view_border
-        self.tank_button.x = CONTROL_BUTTONS_COORDS[1][0] + left_view_border
-        self.tank_button.y = CONTROL_BUTTONS_COORDS[1][1] + bottom_view_border
-        self.vulture_button.x = CONTROL_BUTTONS_COORDS[2][0] + left_view_border
-        self.vulture_button.y = CONTROL_BUTTONS_COORDS[2][1] + bottom_view_border
-        self.builder_button.x = CONTROL_BUTTONS_COORDS[3][0] + left_view_border
-        self.builder_button.y = CONTROL_BUTTONS_COORDS[3][1] + bottom_view_border
-        for unit in our_units_list:
-            pixel = minimap_pixels_dict[id(unit)]
-            pixel.x, pixel.y = to_minimap(unit.x, unit.y)
-        for building in our_buildings_list:
-            pixel = minimap_pixels_dict[id(building)]
-            pixel.x, pixel.y = to_minimap(building.x, building.y)
-        for enemy in enemies_list:
-            pixel = minimap_pixels_dict[id(enemy)]
-            pixel.x, pixel.y = to_minimap(enemy.x, enemy.y)
-        self.minimap_cam_frame_sprite.x, self.minimap_cam_frame_sprite.y = to_minimap(left_view_border-2,
-                                                                                      bottom_view_border-2)
-        minimap_fow_x = MINIMAP_ZERO_COORDS[0] - 1 + left_view_border
-        minimap_fow_y = MINIMAP_ZERO_COORDS[1] - 1 + bottom_view_border
 
     def on_mouse_press(self, x, y, button, modifiers):
         global selected, minimap_pixels_dict, our_units_list, left_view_border, bottom_view_border
@@ -842,7 +779,7 @@ class PlanetEleven(pyglet.window.Window):
                 x, y = mc(x=x, y=y)
                 if button == mouse.LEFT:
                     if not ground_pos_coords_dict[self.base_building_sprite.x, self.base_building_sprite.y]:
-                        Base(self.base_building_sprite.x, self.base_building_sprite.y)
+                        Base(self, self.base_building_sprite.x, self.base_building_sprite.y)
                 elif button == mouse.RIGHT:
                     self.building_location_selection_phase = False
 
@@ -852,7 +789,7 @@ class PlanetEleven(pyglet.window.Window):
             if self.fullscreen:
                 x /= 2
                 y /= 2
-            self.base_building_sprite.x, self.base_building_sprite.y = x, y
+            self.base_building_sprite.x, self.base_building_sprite.y = x + left_view_border, y + bottom_view_border
             if ground_pos_coords_dict[self.base_building_sprite.x, self.base_building_sprite.y]:
                 self.base_building_sprite.color = (255, 0, 0)
             else:
@@ -919,6 +856,70 @@ class PlanetEleven(pyglet.window.Window):
     #         bottom_view_border += POS_SPACE
     #         self.update_viewport()
 
+    def update_fow(self, x, y, radius):
+        x = int((x - 16) / 32) + 1
+        y = int((y - 16) / 32) + 1
+        for yi in range(-radius + y, radius + 1 + y):
+            if 0 <= yi <= 101:
+                for xi in range(-radius + x, radius + 1 + x):
+                    if 0 <= xi <= 101:
+                        if ((xi - x) ** 2 + (yi - y) ** 2) ** 0.5 <= radius:
+                            self.npa[yi, xi, 3] = 0
+        self.minimap_fow_ImageData.set_data('RGBA', self.minimap_fow_ImageData.width * 4,
+                                            data=self.npa.tobytes())
+
+
+    def update_viewport(self):
+        global left_view_border, bottom_view_border, minimap_fow_x, minimap_fow_y
+
+        # Viewport limits
+        a = POS_COORDS_N_COLUMNS * POS_SPACE - SCREEN_WIDTH // POS_SPACE * POS_SPACE + POS_SPACE * 4
+        if left_view_border < 0:
+            left_view_border = 0
+        elif left_view_border > a:
+            left_view_border = a
+        if bottom_view_border < 0:
+            bottom_view_border = 0
+        elif bottom_view_border > POS_COORDS_N_ROWS * POS_SPACE - SCREEN_HEIGHT:
+            bottom_view_border = POS_COORDS_N_ROWS * POS_SPACE - SCREEN_HEIGHT
+
+        self.minimap_black_background.x = MINIMAP_ZERO_COORDS[0] + left_view_border
+        self.minimap_black_background.y = MINIMAP_ZERO_COORDS[1] + bottom_view_border
+        self.minimap_textured_background.x = MINIMAP_ZERO_COORDS[0] + left_view_border
+        self.minimap_textured_background.y = MINIMAP_ZERO_COORDS[1] + bottom_view_border
+        self.control_panel_sprite.x = SCREEN_WIDTH + left_view_border
+        self.control_panel_sprite.y = bottom_view_border
+        self.control_panel_buttons_background.x = center_x + left_view_border
+        self.control_panel_buttons_background.y = center_y + bottom_view_border
+        self.move_button.x = CONTROL_BUTTONS_COORDS[0][0] + left_view_border
+        self.move_button.y = CONTROL_BUTTONS_COORDS[0][1] + bottom_view_border
+        self.stop_button.x = CONTROL_BUTTONS_COORDS[1][0] + left_view_border
+        self.stop_button.y = CONTROL_BUTTONS_COORDS[1][1] + bottom_view_border
+        self.attack_button.x = CONTROL_BUTTONS_COORDS[2][0] + left_view_border
+        self.attack_button.y = CONTROL_BUTTONS_COORDS[2][1] + bottom_view_border
+        self.base_button.x = CONTROL_BUTTONS_COORDS[3][0] + left_view_border
+        self.base_button.y = CONTROL_BUTTONS_COORDS[3][1] + bottom_view_border
+        self.defiler_button.x = CONTROL_BUTTONS_COORDS[0][0] + left_view_border
+        self.defiler_button.y = CONTROL_BUTTONS_COORDS[0][1] + bottom_view_border
+        self.tank_button.x = CONTROL_BUTTONS_COORDS[1][0] + left_view_border
+        self.tank_button.y = CONTROL_BUTTONS_COORDS[1][1] + bottom_view_border
+        self.vulture_button.x = CONTROL_BUTTONS_COORDS[2][0] + left_view_border
+        self.vulture_button.y = CONTROL_BUTTONS_COORDS[2][1] + bottom_view_border
+        self.builder_button.x = CONTROL_BUTTONS_COORDS[3][0] + left_view_border
+        self.builder_button.y = CONTROL_BUTTONS_COORDS[3][1] + bottom_view_border
+        for unit in our_units_list:
+            pixel = minimap_pixels_dict[id(unit)]
+            pixel.x, pixel.y = to_minimap(unit.x, unit.y)
+        for building in our_buildings_list:
+            pixel = minimap_pixels_dict[id(building)]
+            pixel.x, pixel.y = to_minimap(building.x, building.y)
+        for enemy in enemies_list:
+            pixel = minimap_pixels_dict[id(enemy)]
+            pixel.x, pixel.y = to_minimap(enemy.x, enemy.y)
+        self.minimap_cam_frame_sprite.x, self.minimap_cam_frame_sprite.y = to_minimap(left_view_border-2,
+                                                                                      bottom_view_border-2)
+        minimap_fow_x = MINIMAP_ZERO_COORDS[0] - 1 + left_view_border
+        minimap_fow_y = MINIMAP_ZERO_COORDS[1] - 1 + bottom_view_border
 
 def main():
     game_window = PlanetEleven(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)

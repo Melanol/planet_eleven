@@ -1,6 +1,16 @@
-from PIL import Image
-im = Image.open('sprites/test_image.png')
-px = im.load()
-print (px[4,4])
-px[4,4] = (0,0,0)
-print (px[4,4])
+class Outer(object):
+    def __init__(self):
+        Outer.Inner(self)
+
+    def somemethod(self):
+        print('hkhj')
+
+    class Inner(object):
+        def __init__(self, outer_instance):
+            self.outer_instance = outer_instance
+            self.outer_instance.somemethod()
+
+        def inner_method(self):
+            self.outer_instance.anothermethod()
+
+Outer()
