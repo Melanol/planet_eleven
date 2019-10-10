@@ -329,16 +329,26 @@ class PlanetEleven(pyglet.window.Window):
                       double_buffer=True)
         super().__init__(width, height, title, config=conf, fullscreen=False)
         self.set_mouse_cursor(cursor)
+        self.fps_display = pyglet.window.FPSDisplay(window=self)
+
+    def setup(self):
+        global selected, minimap_pixels_dict, shadows_dict, our_units_list, our_buildings_list, enemies_list, \
+            projectile_list, left_view_border, bottom_view_border
+        minimap_pixels_dict = {}
+        shadows_dict = {}
+        our_units_list = []
+        our_buildings_list = []
+        enemies_list = []
+        projectile_list = []
+        left_view_border = 0
+        bottom_view_border = 0
         self.paused = False
         self.frame_count = 0
         self.dx = 0
         self.dy = 0
         self.minimap_drugging = False
         self.building_location_selection_phase = False
-        self.fps_display = pyglet.window.FPSDisplay(window=self)
 
-    def setup(self):
-        global selected
         self.background = pyglet.sprite.Sprite(img=res.background_image, x=0, y=0)
         self.control_panel_sprite = pyglet.sprite.Sprite(img=res.control_panel_image, x=SCREEN_WIDTH, y=0)
         self.control_panel_buttons_background = pyglet.sprite.Sprite(img=res.control_panel_buttons_background_image,
@@ -600,9 +610,8 @@ class PlanetEleven(pyglet.window.Window):
             if selected in our_units_list:
                 selected.destination_x = selected.target_x
                 selected.destination_y = selected.target_y
-                # selected.movement_interrupted = True
-                # selected.new_dest_x = selected.target_x
-                # selected.new_dest_y = selected.target_y
+        elif symbol == key.F1:
+            self.setup()
         elif symbol == key.LEFT:
             left_view_border -= POS_SPACE
             self.update_viewport()
@@ -730,8 +739,10 @@ class PlanetEleven(pyglet.window.Window):
                     y = (y - MINIMAP_ZERO_COORDS[1]) * POS_SPACE
                     x, y = round_coords(x, y)
                     # A unit is selected
+                    unit_found = False
                     for unit in our_units_list:
                         if unit == selected:
+                            unit_found = True
                             if unit.destination_reached:
                                 unit.move((x, y))
                             else:  # Movement interruption
@@ -740,6 +751,14 @@ class PlanetEleven(pyglet.window.Window):
                                 unit.movement_interrupted = True
                                 unit.new_dest_x = x
                                 unit.new_dest_y = y
+                    if not unit_found:
+                        if selected in our_buildings_list:
+                            selected.rally_point_x = x
+                            selected.rally_point_y = y
+                            self.rally_point_sprite.x = x
+                            self.rally_point_sprite.y = y
+                            print('Rally set to ({}, {})'.format(x, y))
+
             # Control panel other
             else:
                 x, y = mc(x=x, y=y)

@@ -11,10 +11,10 @@ POS_COORDS_N_COLUMNS = 100  # Should be 100 for the minimap to work
 POS_SPACE = 32
 selected = None
 MMB_PAN_SPEED = 4
-LEFT_SCREEN_SCROLL_ZONE = (0, POS_SPACE)
-BOTTOM_SCREEN_SCROLL_ZONE = (0, POS_SPACE)
-RIGHT_SCREEN_SCROLL_ZONE = (16 * POS_SPACE, 17 * POS_SPACE)
-TOP_SCREEN_SCROLL_ZONE = (11 * POS_SPACE, 12 * POS_SPACE)
+# LEFT_SCREEN_SCROLL_ZONE = (0, POS_SPACE)
+# BOTTOM_SCREEN_SCROLL_ZONE = (0, POS_SPACE)
+# RIGHT_SCREEN_SCROLL_ZONE = (16 * POS_SPACE, 17 * POS_SPACE)
+# TOP_SCREEN_SCROLL_ZONE = (11 * POS_SPACE, 12 * POS_SPACE)
 
 cursor = pyglet.window.ImageMouseCursor(pyglet.image.load('sprites/cursor.png'), 0, 16)
 cursor_fullscreen = pyglet.window.ImageMouseCursor(pyglet.image.load('sprites/cursor_fullscreen.png'), 0, 32)
@@ -78,6 +78,7 @@ our_units_list = []
 our_buildings_list = []
 enemies_list = []
 projectile_list = []
+
 minimap_fow_x = MINIMAP_ZERO_COORDS[0] - 1
 minimap_fow_y = MINIMAP_ZERO_COORDS[1] - 1
 

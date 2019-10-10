@@ -1,16 +1,44 @@
-class Outer(object):
+import pickle
+import pyglet
+from pyglet.window import key
+
+
+arr = [1, 2, 3]
+
+
+class TestGame(pyglet.window.Window):
     def __init__(self):
-        Outer.Inner(self)
+        super().__init__()
 
-    def somemethod(self):
-        print('hkhj')
+    def setup(self):
+        pass
 
-    class Inner(object):
-        def __init__(self, outer_instance):
-            self.outer_instance = outer_instance
-            self.outer_instance.somemethod()
+    def on_draw(self):
+        self.clear()
 
-        def inner_method(self):
-            self.outer_instance.anothermethod()
+    def update(self, delta_time):
+        pass
 
-Outer()
+    def on_key_press(self, symbol, modifiers):
+        global arr
+        if symbol == key.F1:
+            pickle.dump(arr, open("save.p", "wb"))
+        elif symbol == key.F2:
+            arr = pickle.load(open("save.p", "rb"))
+        elif symbol == key._1:
+            arr = [1, 2, 3]
+        elif symbol == key._2:
+            arr = [4, 5, 6]
+        elif symbol == key.H:
+            print(arr)
+
+
+def main():
+    game_window = TestGame()
+    game_window.setup()
+    pyglet.clock.schedule_interval(game_window.update, 1 / 60)
+    pyglet.app.run()
+
+
+if __name__ == "__main__":
+    main()
