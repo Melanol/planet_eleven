@@ -18,6 +18,62 @@ left_view_border = 0
 bottom_view_border = 0
 
 
+POS_COORDS = []
+ground_pos_coords_dict = {}
+air_pos_coords_dict = {}
+def gen_pos_coords():
+    global POS_COORDS, ground_pos_coords_dict, air_pos_coords_dict
+    POS_COORDS = []
+    for yi in range(1, POS_COORDS_N_ROWS + 1):
+        for xi in range(1, POS_COORDS_N_COLUMNS + 1):
+            POS_COORDS.append((xi * POS_SPACE - POS_SPACE / 2, yi * POS_SPACE - POS_SPACE / 2))
+    ground_pos_coords_dict = {}
+    for _x, _y in POS_COORDS:
+        ground_pos_coords_dict[(_x, _y)] = None
+    air_pos_coords_dict = {}
+    for _x, _y in POS_COORDS:
+        air_pos_coords_dict[(_x, _y)] = None
+gen_pos_coords()
+
+
+
+def give_next_target(x, y, angle, flying):
+    print('give_next_target input:', x, y, angle)
+    if not flying:
+        dict_to_check = ground_pos_coords_dict
+    else:
+        dict_to_check = air_pos_coords_dict
+    if angle == 0:
+        target = (x + POS_SPACE, y)
+        target_id = dict_to_check[target]
+    elif angle == 45:
+        target = round_coords(x + DISTANCE_PER_JUMP, y + DISTANCE_PER_JUMP)
+        target_id = dict_to_check[target]
+    elif angle == 90:
+        target = (x, y + POS_SPACE)
+        target_id = dict_to_check[target]
+    elif angle == 135:
+        target = round_coords(x - DISTANCE_PER_JUMP, y + DISTANCE_PER_JUMP)
+        target_id = dict_to_check[target]
+    elif angle in [-180, 180]:
+        target = (x - POS_SPACE, y)
+        target_id = dict_to_check[target]
+    elif angle == -135:
+        target = round_coords(x - DISTANCE_PER_JUMP, y - DISTANCE_PER_JUMP)
+        target_id = dict_to_check[target]
+    elif angle == -90:
+        target = (x, y - POS_SPACE)
+        target_id = dict_to_check[target]
+    elif angle == -45:
+        target = round_coords(x + DISTANCE_PER_JUMP, y - DISTANCE_PER_JUMP)
+        target_id = dict_to_check[target]
+    else:
+        raise Exception('bad angle')
+    if target_id is None:
+        return target
+    else:
+        return None
+
 
 def to_minimap(x, y):  # unit.x and unit.y
     x = x / POS_SPACE
@@ -74,14 +130,15 @@ class Building(pyglet.sprite.Sprite):
                                      batch=minimap_pixels_batch)
         minimap_pixels_dict[self] = pixel
 
-    def kill(self):
+    def kill(self, delay_del=False):
         global ground_pos_coords_dict, minimap_pixels_dict, our_buildings_list, enemies_list
         ground_pos_coords_dict[(self.x, self.y)] = None
         minimap_pixels_dict[self].delete()
-        if not self.is_enemy:
-            del our_buildings_list[our_buildings_list.index(self)]
-        else:
-            del enemies_list[enemies_list.index(self)]
+        if not delay_del:
+            if not self.is_enemy:
+                del our_buildings_list[our_buildings_list.index(self)]
+            else:
+                del enemies_list[enemies_list.index(self)]
         self.delete()
 
 
@@ -273,10 +330,11 @@ class Unit(pyglet.sprite.Sprite):
         self.cooldown_started = frame_count
         projectile_list.append(projectile)
 
-    def kill(self):
+    def kill(self, delay_del):
         shadows_dict[id(self)].delete()
         minimap_pixels_dict[self].delete()
-        del our_units_list[our_units_list.index(self)]
+        if not delay_del:
+            del our_units_list[our_units_list.index(self)]
         self.delete()
 
 
@@ -338,21 +396,13 @@ class PlanetEleven(pyglet.window.Window):
         global minimap_pixels_dict, shadows_dict, our_units_list, our_buildings_list, enemies_list, \
             projectile_list, left_view_border, bottom_view_border
         for unit in our_units_list:
-            unit.kill()
-        print(len(our_buildings_list))
-        i = 0
+            unit.kill(delay_del=True)
         for building in our_buildings_list:
-            print('i =', i)
-            building.kill()
-            print('building')
-            i += 1
-        print(len(our_buildings_list))
-        print(len(enemies_list))
+            building.kill(delay_del=True)
         for enemy in enemies_list:
-            enemy.kill()
+            enemy.kill(delay_del=True)
         for projectile in projectile_list:
             projectile.delete()
-
         minimap_pixels_dict = {}
         shadows_dict = {}
         our_units_list = []
@@ -362,8 +412,7 @@ class PlanetEleven(pyglet.window.Window):
         left_view_border = 0
         bottom_view_border = 0
         gen_pos_coords()
-        print('we are here')
-        # self.setup()
+        self.setup()
 
     def setup(self):
         global selected

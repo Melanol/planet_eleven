@@ -50,22 +50,6 @@ image = png.from_array(arr, mode='LA')
 image.save('sprites/minimap_cam_frame.png')
 
 
-POS_COORDS = []
-ground_pos_coords_dict = {}
-air_pos_coords_dict = {}
-def gen_pos_coords():
-    global POS_COORDS, ground_pos_coords_dict, air_pos_coords_dict
-    POS_COORDS = []
-    for yi in range(1, POS_COORDS_N_ROWS + 1):
-        for xi in range(1, POS_COORDS_N_COLUMNS + 1):
-            POS_COORDS.append((xi * POS_SPACE - POS_SPACE / 2, yi * POS_SPACE - POS_SPACE / 2))
-    ground_pos_coords_dict = {}
-    for _x, _y in POS_COORDS:
-        ground_pos_coords_dict[(_x, _y)] = None
-    air_pos_coords_dict = {}
-    for _x, _y in POS_COORDS:
-        air_pos_coords_dict[(_x, _y)] = None
-gen_pos_coords()
 
 DISTANCE_PER_JUMP = (2 * POS_SPACE ** 2) ** 0.5
 minimap_pixels_dict = {}
@@ -111,41 +95,3 @@ def round_coords(x, y):
     if sel_y < 0:
         sel_y += POS_SPACE
     return sel_x, sel_y
-
-
-def give_next_target(x, y, angle, flying):
-    print('give_next_target input:', x, y, angle)
-    if not flying:
-        dict_to_check = ground_pos_coords_dict
-    else:
-        dict_to_check = air_pos_coords_dict
-    if angle == 0:
-        target = (x + POS_SPACE, y)
-        target_id = dict_to_check[target]
-    elif angle == 45:
-        target = round_coords(x + DISTANCE_PER_JUMP, y + DISTANCE_PER_JUMP)
-        target_id = dict_to_check[target]
-    elif angle == 90:
-        target = (x, y + POS_SPACE)
-        target_id = dict_to_check[target]
-    elif angle == 135:
-        target = round_coords(x - DISTANCE_PER_JUMP, y + DISTANCE_PER_JUMP)
-        target_id = dict_to_check[target]
-    elif angle in [-180, 180]:
-        target = (x - POS_SPACE, y)
-        target_id = dict_to_check[target]
-    elif angle == -135:
-        target = round_coords(x - DISTANCE_PER_JUMP, y - DISTANCE_PER_JUMP)
-        target_id = dict_to_check[target]
-    elif angle == -90:
-        target = (x, y - POS_SPACE)
-        target_id = dict_to_check[target]
-    elif angle == -45:
-        target = round_coords(x + DISTANCE_PER_JUMP, y - DISTANCE_PER_JUMP)
-        target_id = dict_to_check[target]
-    else:
-        raise Exception('bad angle')
-    if target_id is None:
-        return target
-    else:
-        return None
