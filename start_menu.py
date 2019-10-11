@@ -1,26 +1,26 @@
 import pyglet
+from pyglet.window import key
+from pyglet.window import mouse
+import os
 
-arr = []
+
+
 class TestGame(pyglet.window.Window):
     def __init__(self):
         super().__init__()
 
     def setup(self):
-        global arr
-        image = pyglet.image.load('sprites/base.png')
-        for _ in range(5):
-            arr.append(pyglet.sprite.Sprite(image, 0, 0))
-        for im in arr:
-            im.delete()
-            print('1')
+        pass
 
     def on_draw(self):
         self.clear()
 
-
-
     def update(self, delta_time):
         pass
+
+    def on_key_press(self, symbol, modifiers):
+        if symbol == key.F1:
+            os.system('python planet_eleven.py')
 
 
 def main():

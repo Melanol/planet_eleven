@@ -1,4 +1,6 @@
 import pyglet
+from pyglet.window import key
+from pyglet.window import mouse
 
 
 class TestGame(pyglet.window.Window):
@@ -12,6 +14,12 @@ class TestGame(pyglet.window.Window):
         self.clear()
 
     def update(self, delta_time):
+        pass
+
+    def on_key_press(self, symbol, modifiers):
+        pass
+
+    def on_mouse_press(self, x, y, button, modifiers):
         pass
 
 

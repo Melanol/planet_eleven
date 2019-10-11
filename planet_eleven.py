@@ -18,6 +18,7 @@ left_view_border = 0
 bottom_view_border = 0
 
 
+
 def to_minimap(x, y):  # unit.x and unit.y
     x = x / POS_SPACE
     if not x.is_integer():
@@ -42,8 +43,7 @@ def mc(**kwargs):
 
 
 class Button(pyglet.sprite.Sprite):
-    def __init__(self, img, x, y):
-        super().__init__(img=img, x=x, y=y)
+    pass
 
 
 class Building(pyglet.sprite.Sprite):
@@ -72,21 +72,24 @@ class Building(pyglet.sprite.Sprite):
         pixel = pyglet.sprite.Sprite(img=minimap_pixel, x=pixel_minimap_coords[0],
                                      y=pixel_minimap_coords[1],
                                      batch=minimap_pixels_batch)
-        minimap_pixels_dict[id(self)] = pixel
+        minimap_pixels_dict[self] = pixel
 
     def kill(self):
+        global ground_pos_coords_dict, minimap_pixels_dict, our_buildings_list, enemies_list
         ground_pos_coords_dict[(self.x, self.y)] = None
-        minimap_pixels_dict[id(self)].delete()
+        minimap_pixels_dict[self].delete()
         if not self.is_enemy:
             del our_buildings_list[our_buildings_list.index(self)]
         else:
             del enemies_list[enemies_list.index(self)]
         self.delete()
 
+
 class Base(Building):
     def __init__(self, outer_instance, x, y, is_enemy=False):
         super().__init__(outer_instance, our_img=res.base_image, enemy_img=res.enemy_base_image, x=x, y=y,
                          hp=100, is_enemy=is_enemy)
+
 
 class Unit(pyglet.sprite.Sprite):
     def __init__(self, outer_instance, img, hp, vision_radius, damage, cooldown, speed, x, y,
@@ -129,7 +132,7 @@ class Unit(pyglet.sprite.Sprite):
         pixel = pyglet.sprite.Sprite(img=res.minimap_our_image, x=pixel_minimap_coords[0],
                                      y=pixel_minimap_coords[1],
                                      batch=minimap_pixels_batch)
-        minimap_pixels_dict[id(self)] = pixel
+        minimap_pixels_dict[self] = pixel
 
         # Shadow
         if self.flying:
@@ -173,7 +176,7 @@ class Unit(pyglet.sprite.Sprite):
         if target:
             self.target_x = target[0]
             self.target_y = target[1]
-            pixel = minimap_pixels_dict[id(self)]
+            pixel = minimap_pixels_dict[self]
             pixel.x, pixel.y = to_minimap(self.target_x, self.target_y)
         else:
             self.destination_reached = True
@@ -227,7 +230,7 @@ class Unit(pyglet.sprite.Sprite):
                 air_pos_coords_dict[(self.x, self.y)] = None
             self.target_x = next_target[0]
             self.target_y = next_target[1]
-            pixel = minimap_pixels_dict[id(self)]
+            pixel = minimap_pixels_dict[self]
             pixel.x, pixel.y = to_minimap(self.target_x, self.target_y)
             if not self.flying:
                 ground_pos_coords_dict[(self.target_x, self.target_y)] = self
@@ -272,7 +275,7 @@ class Unit(pyglet.sprite.Sprite):
 
     def kill(self):
         shadows_dict[id(self)].delete()
-        minimap_pixels_dict[id(self)].delete()
+        minimap_pixels_dict[self].delete()
         del our_units_list[our_units_list.index(self)]
         self.delete()
 
@@ -331,9 +334,25 @@ class PlanetEleven(pyglet.window.Window):
         self.set_mouse_cursor(cursor)
         self.fps_display = pyglet.window.FPSDisplay(window=self)
 
-    def setup(self):
-        global selected, minimap_pixels_dict, shadows_dict, our_units_list, our_buildings_list, enemies_list, \
+    def reset(self):
+        global minimap_pixels_dict, shadows_dict, our_units_list, our_buildings_list, enemies_list, \
             projectile_list, left_view_border, bottom_view_border
+        for unit in our_units_list:
+            unit.kill()
+        print(len(our_buildings_list))
+        i = 0
+        for building in our_buildings_list:
+            print('i =', i)
+            building.kill()
+            print('building')
+            i += 1
+        print(len(our_buildings_list))
+        print(len(enemies_list))
+        for enemy in enemies_list:
+            enemy.kill()
+        for projectile in projectile_list:
+            projectile.delete()
+
         minimap_pixels_dict = {}
         shadows_dict = {}
         our_units_list = []
@@ -342,6 +361,12 @@ class PlanetEleven(pyglet.window.Window):
         projectile_list = []
         left_view_border = 0
         bottom_view_border = 0
+        gen_pos_coords()
+        print('we are here')
+        # self.setup()
+
+    def setup(self):
+        global selected
         self.paused = False
         self.frame_count = 0
         self.dx = 0
@@ -606,117 +631,146 @@ class PlanetEleven(pyglet.window.Window):
             else:
                 self.set_mouse_cursor(cursor_fullscreen)
                 self.set_fullscreen(True)
-        elif symbol == key.S:
-            if selected in our_units_list:
-                selected.destination_x = selected.target_x
-                selected.destination_y = selected.target_y
-        elif symbol == key.F1:
-            self.setup()
-        elif symbol == key.LEFT:
-            left_view_border -= POS_SPACE
-            self.update_viewport()
-        elif symbol == key.RIGHT:
-            left_view_border += POS_SPACE
-            self.update_viewport()
-        elif symbol == key.DOWN:
-            bottom_view_border -= POS_SPACE
-            self.update_viewport()
-        elif symbol == key.UP:
-            bottom_view_border += POS_SPACE
-            self.update_viewport()
-        elif symbol == key.H:
-            pass
-        elif symbol == key.Z:
-            i = 0
-            for _key, value in ground_pos_coords_dict.items():
-                if i % 1 == 0:
-                    if value is None:
-                        unit = Vulture(_key[0], _key[1])
-                        unit.spawn()
-                i += 1
-        elif symbol == key.X:
-            coords_to_delete = []
-            yi = bottom_view_border + POS_SPACE // 2
-            for y in range(yi, yi + 12 * POS_SPACE, POS_SPACE):
-                xi = left_view_border + POS_SPACE // 2
-                for x in range(xi, xi + 17 * POS_SPACE, POS_SPACE):
-                    coords_to_delete.append((x, y))
-            for coord in coords_to_delete:
-                unit_id = ground_pos_coords_dict[coord]
-                ground_pos_coords_dict[coord] = None
-                for unit in our_units_list:
-                    if unit_id == id(unit):
-                        unit.kill()
-            print(len(our_units_list))
-        elif symbol == key.DELETE:
-            if selected in our_units_list:
-                selected.kill()
-                if selected.flying:
-                    air_pos_coords_dict[(self.selection_sprite.x, self.selection_sprite.y)] = None
-                else:
-                    ground_pos_coords_dict[(self.selection_sprite.x, self.selection_sprite.y)] = None
-                selected = None
-            elif selected in our_buildings_list:
-                selected.kill()
-                selected = None
-        elif symbol == key.SPACE:
-            if not self.paused:
+        if not self.paused:
+            if symbol == key.S:
+                if selected in our_units_list:
+                    selected.destination_x = selected.target_x
+                    selected.destination_y = selected.target_y
+            elif symbol == key.F1:
+                self.reset()
+            elif symbol == key.LEFT:
+                left_view_border -= POS_SPACE
+                self.update_viewport()
+            elif symbol == key.RIGHT:
+                left_view_border += POS_SPACE
+                self.update_viewport()
+            elif symbol == key.DOWN:
+                bottom_view_border -= POS_SPACE
+                self.update_viewport()
+            elif symbol == key.UP:
+                bottom_view_border += POS_SPACE
+                self.update_viewport()
+            elif symbol == key.H:
+                pass
+            elif symbol == key.Z:
+                i = 0
+                for _key, value in ground_pos_coords_dict.items():
+                    if i % 1 == 0:
+                        if value is None:
+                            unit = Vulture(_key[0], _key[1])
+                            unit.spawn()
+                    i += 1
+            elif symbol == key.X:
+                coords_to_delete = []
+                yi = bottom_view_border + POS_SPACE // 2
+                for y in range(yi, yi + 12 * POS_SPACE, POS_SPACE):
+                    xi = left_view_border + POS_SPACE // 2
+                    for x in range(xi, xi + 17 * POS_SPACE, POS_SPACE):
+                        coords_to_delete.append((x, y))
+                for coord in coords_to_delete:
+                    unit_id = ground_pos_coords_dict[coord]
+                    ground_pos_coords_dict[coord] = None
+                    for unit in our_units_list:
+                        if unit_id == id(unit):
+                            unit.kill()
+                print(len(our_units_list))
+            elif symbol == key.DELETE:
+                if selected in our_units_list:
+                    selected.kill()
+                    if selected.flying:
+                        air_pos_coords_dict[(self.selection_sprite.x, self.selection_sprite.y)] = None
+                    else:
+                        ground_pos_coords_dict[(self.selection_sprite.x, self.selection_sprite.y)] = None
+                    selected = None
+                elif selected in our_buildings_list:
+                    selected.kill()
+                    selected = None
+            elif symbol == key.SPACE:
                 self.paused = True
-            else:
+            elif symbol == key.ESCAPE:
+                sys.exit()
+        # Paused
+        else:
+            if symbol == key.SPACE:
                 self.paused = False
-        elif symbol == key.ESCAPE:
-            sys.exit()
 
     def on_mouse_press(self, x, y, button, modifiers):
         global selected, minimap_pixels_dict, our_units_list, left_view_border, bottom_view_border
-        if self.fullscreen:
-            x /= 2
-            y /= 2
-        if not self.building_location_selection_phase:
-            # Game field
-            if x < SCREEN_WIDTH - 139:
-                x, y = round_coords(x, y)
-                x, y = mc(x=x, y=y)
-                print('\nglobal click coords:', x, y)
-                if button == mouse.LEFT:
-                    # Selection
-                    selected = None
-                    air_found = False
-                    for _key, value in air_pos_coords_dict.items():
-                        if x == _key[0] and y == _key[1]:
-                            selected = value
-                            if selected:
-                                air_found = True
-                            self.selection_sprite.x = x
-                            self.selection_sprite.y = y
-                            break
-                    if not air_found:
-                        for _key, value in ground_pos_coords_dict.items():
+        if not self.paused:
+            if self.fullscreen:
+                x /= 2
+                y /= 2
+            if not self.building_location_selection_phase:
+                # Game field
+                if x < SCREEN_WIDTH - 139:
+                    x, y = round_coords(x, y)
+                    x, y = mc(x=x, y=y)
+                    print('\nglobal click coords:', x, y)
+                    if button == mouse.LEFT:
+                        # Selection
+                        selected = None
+                        air_found = False
+                        for _key, value in air_pos_coords_dict.items():
                             if x == _key[0] and y == _key[1]:
                                 selected = value
+                                if selected:
+                                    air_found = True
                                 self.selection_sprite.x = x
                                 self.selection_sprite.y = y
-                                if selected in our_buildings_list:
-                                    self.rally_point_sprite.x = selected.rally_point_x
-                                    self.rally_point_sprite.y = selected.rally_point_y
                                 break
-                    try:
-                        self.control_buttons_to_render = self.controls_dict[str(type(selected))]
-                    except KeyError:
-                        pass
-                    print('SELECTED CLASS =', type(selected))
-                elif button == mouse.RIGHT:
-                    # Rally point
-                    if selected in our_buildings_list:
-                        selected.rally_point_x = x
-                        selected.rally_point_y = y
-                        self.rally_point_sprite.x = x
-                        self.rally_point_sprite.y = y
-                        print('Rally set to ({}, {})'.format(x, y))
-                    # A unit is selected
-                    else:
+                        if not air_found:
+                            for _key, value in ground_pos_coords_dict.items():
+                                if x == _key[0] and y == _key[1]:
+                                    selected = value
+                                    self.selection_sprite.x = x
+                                    self.selection_sprite.y = y
+                                    if selected in our_buildings_list:
+                                        self.rally_point_sprite.x = selected.rally_point_x
+                                        self.rally_point_sprite.y = selected.rally_point_y
+                                    break
+                        try:
+                            self.control_buttons_to_render = self.controls_dict[str(type(selected))]
+                        except KeyError:
+                            pass
+                        print('SELECTED CLASS =', type(selected))
+                    elif button == mouse.RIGHT:
+                        # Rally point
+                        if selected in our_buildings_list:
+                            selected.rally_point_x = x
+                            selected.rally_point_y = y
+                            self.rally_point_sprite.x = x
+                            self.rally_point_sprite.y = y
+                            print('Rally set to ({}, {})'.format(x, y))
+                        # A unit is selected
+                        else:
+                            for unit in our_units_list:
+                                if unit == selected:
+                                    if unit.destination_reached:
+                                        unit.move((x, y))
+                                    else:  # Movement interruption
+                                        unit.destination_x = unit.target_x
+                                        unit.destination_y = unit.target_y
+                                        unit.movement_interrupted = True
+                                        unit.new_dest_x = x
+                                        unit.new_dest_y = y
+                # Minimap
+                elif MINIMAP_ZERO_COORDS[0] <= x <= MINIMAP_ZERO_COORDS[0] + 100 and \
+                        MINIMAP_ZERO_COORDS[1] <= y <= MINIMAP_ZERO_COORDS[1] + 100:
+                    if button == mouse.LEFT:
+                        x -= 19 / 2
+                        y -= 14 / 2
+                        left_view_border = (x - MINIMAP_ZERO_COORDS[0]) * POS_SPACE
+                        bottom_view_border = (y - MINIMAP_ZERO_COORDS[1]) * POS_SPACE
+                        self.update_viewport()
+                    elif button == mouse.RIGHT:
+                        x = (x - MINIMAP_ZERO_COORDS[0]) * POS_SPACE
+                        y = (y - MINIMAP_ZERO_COORDS[1]) * POS_SPACE
+                        x, y = round_coords(x, y)
+                        # A unit is selected
+                        unit_found = False
                         for unit in our_units_list:
                             if unit == selected:
+                                unit_found = True
                                 if unit.destination_reached:
                                     unit.move((x, y))
                                 else:  # Movement interruption
@@ -725,157 +779,133 @@ class PlanetEleven(pyglet.window.Window):
                                     unit.movement_interrupted = True
                                     unit.new_dest_x = x
                                     unit.new_dest_y = y
-            # Minimap
-            elif MINIMAP_ZERO_COORDS[0] <= x <= MINIMAP_ZERO_COORDS[0] + 100 and \
-                    MINIMAP_ZERO_COORDS[1] <= y <= MINIMAP_ZERO_COORDS[1] + 100:
-                if button == mouse.LEFT:
-                    x -= 19 / 2
-                    y -= 14 / 2
-                    left_view_border = (x - MINIMAP_ZERO_COORDS[0]) * POS_SPACE
-                    bottom_view_border = (y - MINIMAP_ZERO_COORDS[1]) * POS_SPACE
-                    self.update_viewport()
-                elif button == mouse.RIGHT:
-                    x = (x - MINIMAP_ZERO_COORDS[0]) * POS_SPACE
-                    y = (y - MINIMAP_ZERO_COORDS[1]) * POS_SPACE
-                    x, y = round_coords(x, y)
-                    # A unit is selected
-                    unit_found = False
-                    for unit in our_units_list:
-                        if unit == selected:
-                            unit_found = True
-                            if unit.destination_reached:
-                                unit.move((x, y))
-                            else:  # Movement interruption
-                                unit.destination_x = unit.target_x
-                                unit.destination_y = unit.target_y
-                                unit.movement_interrupted = True
-                                unit.new_dest_x = x
-                                unit.new_dest_y = y
-                    if not unit_found:
-                        if selected in our_buildings_list:
-                            selected.rally_point_x = x
-                            selected.rally_point_y = y
-                            self.rally_point_sprite.x = x
-                            self.rally_point_sprite.y = y
-                            print('Rally set to ({}, {})'.format(x, y))
+                        if not unit_found:
+                            if selected in our_buildings_list:
+                                selected.rally_point_x = x
+                                selected.rally_point_y = y
+                                self.rally_point_sprite.x = x
+                                self.rally_point_sprite.y = y
+                                print('Rally set to ({}, {})'.format(x, y))
 
-            # Control panel other
+                # Control panel other
+                else:
+                    x, y = mc(x=x, y=y)
+                    print('x =', x, 'y =', y)
+                    if selected in our_buildings_list:
+                        # Create defiler
+                        if self.defiler_button.x - 16 <= x <= self.defiler_button.x + 16 and \
+                                self.defiler_button.y - 16 <= y <= self.defiler_button.y + 16:
+                            selected.building_queue.append('defiler')
+                            if len(selected.building_queue) == 1:
+                                selected.building_start_time = self.frame_count
+                        # Create tank
+                        elif self.tank_button.x - 16 <= x <= self.tank_button.x + 16 and \
+                                self.tank_button.y - 16 <= y <= self.tank_button.y + 16:
+                            selected.building_queue.append('tank')
+                            if len(selected.building_queue) == 1:
+                                selected.building_start_time = self.frame_count
+                        # Create vulture
+                        elif self.vulture_button.x - 16 <= x <= self.vulture_button.x + 16 and \
+                                self.vulture_button.y - 16 <= y <= self.vulture_button.y + 16:
+                            selected.building_queue.append('vulture')
+                            if len(selected.building_queue) == 1:
+                                selected.building_start_time = self.frame_count
+                        # Create builder
+                        elif self.builder_button.x - 16 <= x <= self.builder_button.x + 16 and \
+                                self.builder_button.y - 16 <= y <= self.builder_button.y + 16:
+                            selected.building_queue.append('builder')
+                            if len(selected.building_queue) == 1:
+                                selected.building_start_time = self.frame_count
+                    elif selected in our_units_list:
+                        # Move
+                        # Stop
+                        # Attack
+                        if str(type(selected)) == "<class '__main__.Builder'>":
+                            if self.base_button.x - 16 <= x <= self.base_button.x + 16 and \
+                                    self.base_button.y - 16 <= y <= self.base_button.y + 16:
+                                self.base_building_sprite.color = (0, 255, 0)
+                                self.building_location_selection_phase = True
+            # Building location selection
             else:
-                x, y = mc(x=x, y=y)
-                print('x =', x, 'y =', y)
-                if selected in our_buildings_list:
-                    # Create defiler
-                    if self.defiler_button.x - 16 <= x <= self.defiler_button.x + 16 and \
-                            self.defiler_button.y - 16 <= y <= self.defiler_button.y + 16:
-                        selected.building_queue.append('defiler')
-                        if len(selected.building_queue) == 1:
-                            selected.building_start_time = self.frame_count
-                    # Create tank
-                    elif self.tank_button.x - 16 <= x <= self.tank_button.x + 16 and \
-                            self.tank_button.y - 16 <= y <= self.tank_button.y + 16:
-                        selected.building_queue.append('tank')
-                        if len(selected.building_queue) == 1:
-                            selected.building_start_time = self.frame_count
-                    # Create vulture
-                    elif self.vulture_button.x - 16 <= x <= self.vulture_button.x + 16 and \
-                            self.vulture_button.y - 16 <= y <= self.vulture_button.y + 16:
-                        selected.building_queue.append('vulture')
-                        if len(selected.building_queue) == 1:
-                            selected.building_start_time = self.frame_count
-                    # Create builder
-                    elif self.builder_button.x - 16 <= x <= self.builder_button.x + 16 and \
-                            self.builder_button.y - 16 <= y <= self.builder_button.y + 16:
-                        selected.building_queue.append('builder')
-                        if len(selected.building_queue) == 1:
-                            selected.building_start_time = self.frame_count
-                elif selected in our_units_list:
-                    # Move
-                    # Stop
-                    # Attack
-                    if str(type(selected)) == "<class '__main__.Builder'>":
-                        if self.base_button.x - 16 <= x <= self.base_button.x + 16 and \
-                                self.base_button.y - 16 <= y <= self.base_button.y + 16:
-                            self.base_building_sprite.color = (0, 255, 0)
-                            self.building_location_selection_phase = True
-        # Building location selection
-        else:
-            # Game field
-            if x < SCREEN_WIDTH - 139:
-                x, y = round_coords(x, y)
-                x, y = mc(x=x, y=y)
-                if button == mouse.LEFT:
-                    x = int((x - 16) / 32) + 1
-                    y = int((y - 16) / 32) + 1
-                    if not ground_pos_coords_dict[self.base_building_sprite.x, self.base_building_sprite.y] and self.npa[y, x, 3] == 0:
-                        Base(self, self.base_building_sprite.x, self.base_building_sprite.y)
-                elif button == mouse.RIGHT:
-                    self.building_location_selection_phase = False
+                # Game field
+                if x < SCREEN_WIDTH - 139:
+                    x, y = round_coords(x, y)
+                    x, y = mc(x=x, y=y)
+                    if button == mouse.LEFT:
+                        x = int((x - 16) / 32) + 1
+                        y = int((y - 16) / 32) + 1
+                        if not ground_pos_coords_dict[self.base_building_sprite.x, self.base_building_sprite.y] and self.npa[y, x, 3] == 0:
+                            Base(self, self.base_building_sprite.x, self.base_building_sprite.y)
+                    elif button == mouse.RIGHT:
+                        self.building_location_selection_phase = False
 
     def on_mouse_motion(self, x, y, dx, dy):
-        if self.building_location_selection_phase:
-            if self.fullscreen:
-                x /= 2
-                y /= 2
-            x, y = round_coords(x, y)
-            self.base_building_sprite.x, self.base_building_sprite.y = x + left_view_border, y + bottom_view_border
-            x, y = mc(x=x, y=y)
-            x = int((x - 16) / 32) + 1
-            y = int((y - 16) / 32) + 1
-            if ground_pos_coords_dict[self.base_building_sprite.x, self.base_building_sprite.y] or self.npa[y, x, 3] != 0:
-                self.base_building_sprite.color = (255, 0, 0)
-            else:
-                self.base_building_sprite.color = (0, 255, 0)
+        if not self.paused:
+            if self.building_location_selection_phase:
+                if self.fullscreen:
+                    x /= 2
+                    y /= 2
+                x, y = round_coords(x, y)
+                self.base_building_sprite.x, self.base_building_sprite.y = x + left_view_border, y + bottom_view_border
+                x, y = mc(x=x, y=y)
+                x = int((x - 16) / 32) + 1
+                y = int((y - 16) / 32) + 1
+                if ground_pos_coords_dict[self.base_building_sprite.x, self.base_building_sprite.y] or self.npa[y, x, 3] != 0:
+                    self.base_building_sprite.color = (255, 0, 0)
+                else:
+                    self.base_building_sprite.color = (0, 255, 0)
 
     def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
         global left_view_border, bottom_view_border
-        if self.fullscreen:
-            x /= 2
-            y /= 2
-            dx /= 2
-            dy /= 2
-        if not self.minimap_drugging:
-            # Game field
-            if x < SCREEN_WIDTH - 139 and buttons == 2:
-                self.dx += dx * MMB_PAN_SPEED
-                self.dy += dy * MMB_PAN_SPEED
-                if abs(self.dx) >= POS_SPACE:
-                    if self.dx < 0:
-                        left_view_border += POS_SPACE
-                        self.update_viewport()
-                        self.dx -= self.dx
-                    else:
-                        left_view_border -= POS_SPACE
-                        self.update_viewport()
-                        self.dx -= self.dx
-                if abs(self.dy) >= POS_SPACE:
-                    if self.dy < 0:
-                        bottom_view_border += POS_SPACE
-                        self.update_viewport()
-                        self.dy -= self.dy
-                    else:
-                        bottom_view_border -= POS_SPACE
-                        self.update_viewport()
-                        self.dy -= self.dy
-            # Minimap
-            elif MINIMAP_ZERO_COORDS[0] <= x <= MINIMAP_ZERO_COORDS[0] + 100 and \
-                    MINIMAP_ZERO_COORDS[1] <= y <= MINIMAP_ZERO_COORDS[1] + 100 and buttons in [1, 2]:
-                self.minimap_drugging = True
+        if not self.paused:
+            if self.fullscreen:
+                x /= 2
+                y /= 2
+                dx /= 2
+                dy /= 2
+            if not self.minimap_drugging:
+                # Game field
+                if x < SCREEN_WIDTH - 139 and buttons == 2:
+                    self.dx += dx * MMB_PAN_SPEED
+                    self.dy += dy * MMB_PAN_SPEED
+                    if abs(self.dx) >= POS_SPACE:
+                        if self.dx < 0:
+                            left_view_border += POS_SPACE
+                            self.update_viewport()
+                            self.dx -= self.dx
+                        else:
+                            left_view_border -= POS_SPACE
+                            self.update_viewport()
+                            self.dx -= self.dx
+                    if abs(self.dy) >= POS_SPACE:
+                        if self.dy < 0:
+                            bottom_view_border += POS_SPACE
+                            self.update_viewport()
+                            self.dy -= self.dy
+                        else:
+                            bottom_view_border -= POS_SPACE
+                            self.update_viewport()
+                            self.dy -= self.dy
+                # Minimap
+                elif MINIMAP_ZERO_COORDS[0] <= x <= MINIMAP_ZERO_COORDS[0] + 100 and \
+                        MINIMAP_ZERO_COORDS[1] <= y <= MINIMAP_ZERO_COORDS[1] + 100 and buttons in [1, 2]:
+                    self.minimap_drugging = True
+                    left_view_border += dx * POS_SPACE
+                    bottom_view_border += dy * POS_SPACE
+                    self.update_viewport()
+            # Minimap dragging
+            else:
+                # if x < MINIMAP_ZERO_COORDS[0]:
+                #     x = MINIMAP_ZERO_COORDS[0]
+                # elif x > MINIMAP_ZERO_COORDS[0] + 100:
+                #     x = MINIMAP_ZERO_COORDS[0] + 100
+                # if y < MINIMAP_ZERO_COORDS[1]:
+                #     y = MINIMAP_ZERO_COORDS[1]
+                # elif y > MINIMAP_ZERO_COORDS[1] + 100:
+                #     y = MINIMAP_ZERO_COORDS[1] + 100
                 left_view_border += dx * POS_SPACE
                 bottom_view_border += dy * POS_SPACE
                 self.update_viewport()
-        # Minimap dragging
-        else:
-            # if x < MINIMAP_ZERO_COORDS[0]:
-            #     x = MINIMAP_ZERO_COORDS[0]
-            # elif x > MINIMAP_ZERO_COORDS[0] + 100:
-            #     x = MINIMAP_ZERO_COORDS[0] + 100
-            # if y < MINIMAP_ZERO_COORDS[1]:
-            #     y = MINIMAP_ZERO_COORDS[1]
-            # elif y > MINIMAP_ZERO_COORDS[1] + 100:
-            #     y = MINIMAP_ZERO_COORDS[1] + 100
-            left_view_border += dx * POS_SPACE
-            bottom_view_border += dy * POS_SPACE
-            self.update_viewport()
 
     def on_mouse_release(self, x, y, button, modifiers):
         self.minimap_drugging = False
@@ -939,18 +969,19 @@ class PlanetEleven(pyglet.window.Window):
         self.builder_button.x = CONTROL_BUTTONS_COORDS[3][0] + left_view_border
         self.builder_button.y = CONTROL_BUTTONS_COORDS[3][1] + bottom_view_border
         for unit in our_units_list:
-            pixel = minimap_pixels_dict[id(unit)]
+            pixel = minimap_pixels_dict[unit]
             pixel.x, pixel.y = to_minimap(unit.x, unit.y)
         for building in our_buildings_list:
-            pixel = minimap_pixels_dict[id(building)]
+            pixel = minimap_pixels_dict[building]
             pixel.x, pixel.y = to_minimap(building.x, building.y)
         for enemy in enemies_list:
-            pixel = minimap_pixels_dict[id(enemy)]
+            pixel = minimap_pixels_dict[enemy]
             pixel.x, pixel.y = to_minimap(enemy.x, enemy.y)
         self.minimap_cam_frame_sprite.x, self.minimap_cam_frame_sprite.y = to_minimap(left_view_border-2,
                                                                                       bottom_view_border-2)
         minimap_fow_x = MINIMAP_ZERO_COORDS[0] - 1 + left_view_border
         minimap_fow_y = MINIMAP_ZERO_COORDS[1] - 1 + bottom_view_border
+
 
 def main():
     game_window = PlanetEleven(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)

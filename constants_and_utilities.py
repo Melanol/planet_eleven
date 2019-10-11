@@ -49,18 +49,23 @@ arr.append(non_transparent_row)
 image = png.from_array(arr, mode='LA')
 image.save('sprites/minimap_cam_frame.png')
 
-# Generate positional coords
-POS_COORDS = []
-for yi in range(1, POS_COORDS_N_ROWS + 1):
-    for xi in range(1, POS_COORDS_N_COLUMNS + 1):
-        POS_COORDS.append((xi * POS_SPACE - POS_SPACE / 2, yi * POS_SPACE - POS_SPACE / 2))
-ground_pos_coords_dict = {}
-for _x, _y in POS_COORDS:
-    ground_pos_coords_dict[(_x, _y)] = None
-air_pos_coords_dict = {}
-for _x, _y in POS_COORDS:
-    air_pos_coords_dict[(_x, _y)] = None
 
+POS_COORDS = []
+ground_pos_coords_dict = {}
+air_pos_coords_dict = {}
+def gen_pos_coords():
+    global POS_COORDS, ground_pos_coords_dict, air_pos_coords_dict
+    POS_COORDS = []
+    for yi in range(1, POS_COORDS_N_ROWS + 1):
+        for xi in range(1, POS_COORDS_N_COLUMNS + 1):
+            POS_COORDS.append((xi * POS_SPACE - POS_SPACE / 2, yi * POS_SPACE - POS_SPACE / 2))
+    ground_pos_coords_dict = {}
+    for _x, _y in POS_COORDS:
+        ground_pos_coords_dict[(_x, _y)] = None
+    air_pos_coords_dict = {}
+    for _x, _y in POS_COORDS:
+        air_pos_coords_dict[(_x, _y)] = None
+gen_pos_coords()
 
 DISTANCE_PER_JUMP = (2 * POS_SPACE ** 2) ** 0.5
 minimap_pixels_dict = {}
