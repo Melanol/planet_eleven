@@ -66,7 +66,7 @@ air_shadows_batch = pyglet.graphics.Batch()
 LIST_OF_FLYING = ['defiler']
 our_units_list = []
 our_buildings_list = []
-enemies_list = []
+enemy_buildings_list = []
 projectile_list = []
 
 minimap_fow_x = MINIMAP_ZERO_COORDS[0] - 1

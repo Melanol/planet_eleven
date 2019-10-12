@@ -120,7 +120,7 @@ class Building(pyglet.sprite.Sprite):
             minimap_pixel = res.minimap_our_image
             outer_instance.update_fow(x=x, y=y, radius=3)
         else:
-            enemies_list.append(self)
+            enemy_buildings_list.append(self)
             img = enemy_img
             minimap_pixel = res.minimap_enemy_image
         super().__init__(img=img, x=x, y=y, batch=buildings_batch)
@@ -131,14 +131,14 @@ class Building(pyglet.sprite.Sprite):
         minimap_pixels_dict[self] = pixel
 
     def kill(self, delay_del=False):
-        global ground_pos_coords_dict, minimap_pixels_dict, our_buildings_list, enemies_list
+        global ground_pos_coords_dict, minimap_pixels_dict, our_buildings_list, enemy_buildings_list
         ground_pos_coords_dict[(self.x, self.y)] = None
         minimap_pixels_dict[self].delete()
         if not delay_del:
             if not self.is_enemy:
                 del our_buildings_list[our_buildings_list.index(self)]
             else:
-                del enemies_list[enemies_list.index(self)]
+                del enemy_buildings_list[enemy_buildings_list.index(self)]
         self.delete()
 
 
@@ -393,13 +393,13 @@ class PlanetEleven(pyglet.window.Window):
         self.fps_display = pyglet.window.FPSDisplay(window=self)
 
     def clear_level(self):
-        global minimap_pixels_dict, shadows_dict, our_units_list, our_buildings_list, enemies_list, \
+        global minimap_pixels_dict, shadows_dict, our_units_list, our_buildings_list, enemy_buildings_list, \
             projectile_list, left_view_border, bottom_view_border
         for unit in our_units_list:
             unit.kill(delay_del=True)
         for building in our_buildings_list:
             building.kill(delay_del=True)
-        for enemy in enemies_list:
+        for enemy in enemy_buildings_list:
             enemy.kill(delay_del=True)
         for projectile in projectile_list:
             projectile.delete()
@@ -407,7 +407,7 @@ class PlanetEleven(pyglet.window.Window):
         shadows_dict = {}
         our_units_list = []
         our_buildings_list = []
-        enemies_list = []
+        enemy_buildings_list = []
         projectile_list = []
         left_view_border = 0
         bottom_view_border = 0
@@ -416,6 +416,7 @@ class PlanetEleven(pyglet.window.Window):
     def reset(self):
         self.clear_level()
         self.setup()
+        print('reset')
 
     def save(self):
         savefile = open("save.p", "wb")
@@ -426,16 +427,40 @@ class PlanetEleven(pyglet.window.Window):
             pickle.dump(str(type(building)), savefile)
             pickle.dump(building.x, savefile)
             pickle.dump(building.y, savefile)
+            pickle.dump(building.hp, savefile)
+            pickle.dump(building.rally_point_x, savefile)
+            pickle.dump(building.rally_point_y, savefile)
+            pickle.dump(building.building_queue, savefile)
+            pickle.dump(building.current_building_time, savefile)
+            pickle.dump(building.building_complete, savefile)
+            pickle.dump(building.building_start_time, savefile)
         pickle.dump(len(our_units_list), savefile)
         for unit in our_units_list:
             pickle.dump(str(type(unit)), savefile)
             pickle.dump(unit.x, savefile)
             pickle.dump(unit.y, savefile)
             pickle.dump(unit.rotation, savefile)
+            pickle.dump(unit.hp, savefile)
+            pickle.dump(unit.destination_reached, savefile)
+            pickle.dump(unit.movement_interrupted, savefile)
+            pickle.dump(unit.target_x, savefile)
+            pickle.dump(unit.target_y, savefile)
+            pickle.dump(unit.destination_x, savefile)
+            pickle.dump(unit.destination_y, savefile)
+            pickle.dump(unit.velocity_x, savefile)
+            pickle.dump(unit.velocity_y, savefile)
+            pickle.dump(unit.on_cooldown, savefile)
+            pickle.dump(unit.cooldown_started, savefile)
+
+        pickle.dump(len(enemy_buildings_list), savefile)
+        for building in enemy_buildings_list:
+            pickle.dump(str(type(building)), savefile)
+            pickle.dump(building.x, savefile)
+            pickle.dump(building.y, savefile)
         print('saved')
 
     def load(self):
-        global minimap_pixels_dict, shadows_dict, our_units_list, our_buildings_list, enemies_list, \
+        global minimap_pixels_dict, shadows_dict, our_units_list, our_buildings_list, enemy_buildings_list, \
             projectile_list, left_view_border, bottom_view_border
         self.clear_level()
         savefile = open("save.p", "rb")
@@ -443,13 +468,24 @@ class PlanetEleven(pyglet.window.Window):
         self.npa = pickle.load(savefile)
         self.minimap_fow_ImageData.set_data('RGBA', self.minimap_fow_ImageData.width * 4,
                                             data=self.npa.tobytes())
+
+        def unpickle_building(building):
+            building.hp = pickle.load(savefile)
+            building.rally_point_x = pickle.load(savefile)
+            building.rally_point_y = pickle.load(savefile)
+            building.building_queue = pickle.load(savefile)
+            building.current_building_time = pickle.load(savefile)
+            building.building_complete = pickle.load(savefile)
+            building.building_start_time = pickle.load(savefile)
+
         our_buildings_list_len = pickle.load(savefile)
         for _ in range(our_buildings_list_len):
             building_type = pickle.load(savefile)
             x = pickle.load(savefile)
             y = pickle.load(savefile)
             if building_type == "<class '__main__.Base'>":
-                Base(self, x=x, y=y)
+                building = Base(self, x=x, y=y)
+                unpickle_building(building)
         our_units_list_len = pickle.load(savefile)
         for _ in range(our_units_list_len):
             unit_type = pickle.load(savefile)
@@ -466,6 +502,30 @@ class PlanetEleven(pyglet.window.Window):
                 unit = Builder(self, x=x, y=y)
             unit.spawn()
             unit.rotation = rotation
+            unit.hp = pickle.load(savefile)
+            unit.destination_reached = pickle.load(savefile)
+            unit.movement_interrupted = pickle.load(savefile)
+            unit.target_x = pickle.load(savefile)
+            unit.target_y = pickle.load(savefile)
+            unit.destination_x = pickle.load(savefile)
+            unit.destination_y = pickle.load(savefile)
+            unit.velocity_x = pickle.load(savefile)
+            unit.velocity_y = pickle.load(savefile)
+            unit.on_cooldown = pickle.load(savefile)
+            unit.cooldown_started = pickle.load(savefile)
+            shadow = shadows_dict[id(unit)]
+            shadow.rotation = unit.rotation
+            shadow.velocity_x = unit.velocity_x
+            shadow.velocity_y = unit.velocity_y
+
+        enemy_buildings_list_len = pickle.load(savefile)
+        for _ in range(enemy_buildings_list_len):
+            building_type = pickle.load(savefile)
+            x = pickle.load(savefile)
+            y = pickle.load(savefile)
+            if building_type == "<class '__main__.Base'>":
+                building = Base(self, x=x, y=y, is_enemy=True)
+
         print('loaded')
 
     def setup(self):
@@ -705,7 +765,7 @@ class PlanetEleven(pyglet.window.Window):
                 if unit.has_weapon:
                     if unit.destination_reached:
                         if not unit.on_cooldown:
-                            for enemy in enemies_list:
+                            for enemy in enemy_buildings_list:
                                 if ((enemy.x - unit.x) ** 2 + (enemy.y - unit.y) ** 2) ** 0.5 <= unit.shooting_radius:
                                     unit.shoot(self.frame_count, enemy.x, enemy.y, enemy)
                                     break
@@ -723,7 +783,7 @@ class PlanetEleven(pyglet.window.Window):
                     del projectile_list[i]
 
             # Destroying
-            for enemy in enemies_list:
+            for enemy in enemy_buildings_list:
                 if enemy.hp <= 0:
                     enemy.kill()
 
@@ -761,7 +821,9 @@ class PlanetEleven(pyglet.window.Window):
                 bottom_view_border += POS_SPACE
                 self.update_viewport()
             elif symbol == key.H:
-                pass
+                print(our_buildings_list)
+                print(len(minimap_pixels_dict))
+                print(minimap_pixels_dict)
             elif symbol == key.Z:
                 i = 0
                 for _key, value in ground_pos_coords_dict.items():
@@ -1086,7 +1148,7 @@ class PlanetEleven(pyglet.window.Window):
         for building in our_buildings_list:
             pixel = minimap_pixels_dict[building]
             pixel.x, pixel.y = to_minimap(building.x, building.y)
-        for enemy in enemies_list:
+        for enemy in enemy_buildings_list:
             pixel = minimap_pixels_dict[enemy]
             pixel.x, pixel.y = to_minimap(enemy.x, enemy.y)
         self.minimap_cam_frame_sprite.x, self.minimap_cam_frame_sprite.y = to_minimap(left_view_border-2,
