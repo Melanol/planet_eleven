@@ -55,7 +55,8 @@ DISTANCE_PER_JUMP = (2 * POS_SPACE ** 2) ** 0.5
 minimap_pixels_dict = {}
 shadows_dict = {}
 
-ground_batch = pyglet.graphics.Batch()
+buildings_batch = pyglet.graphics.Batch()
+ground_units_batch = pyglet.graphics.Batch()
 air_batch = pyglet.graphics.Batch()
 utilities_batch = pyglet.graphics.Batch()
 minimap_pixels_batch = pyglet.graphics.Batch()

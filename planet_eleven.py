@@ -4,7 +4,6 @@ import sys
 import numpy as np
 import pickle
 
-import pyglet
 from pyglet.gl import *
 from pyglet.window import key
 from pyglet.window import mouse
@@ -124,7 +123,7 @@ class Building(pyglet.sprite.Sprite):
             enemies_list.append(self)
             img = enemy_img
             minimap_pixel = res.minimap_enemy_image
-        super().__init__(img=img, x=x, y=y, batch=ground_batch)
+        super().__init__(img=img, x=x, y=y, batch=buildings_batch)
         pixel_minimap_coords = to_minimap(self.x, self.y)
         pixel = pyglet.sprite.Sprite(img=minimap_pixel, x=pixel_minimap_coords[0],
                                      y=pixel_minimap_coords[1],
@@ -152,7 +151,7 @@ class Base(Building):
 class Unit(pyglet.sprite.Sprite):
     def __init__(self, outer_instance, img, hp, vision_radius, damage, cooldown, speed, x, y,
                  projectile_sprite, projectile_speed, has_weapon=True, projectile_color=(255, 255, 255),
-                 batch=ground_batch):
+                 batch=ground_units_batch):
         super().__init__(img=img, x=x, y=y, batch=batch)
         self.outer_instance = outer_instance
         self.x = x
@@ -419,15 +418,20 @@ class PlanetEleven(pyglet.window.Window):
         self.setup()
 
     def save(self):
-        global minimap_pixels_dict, shadows_dict, our_units_list, our_buildings_list, enemies_list, \
-            projectile_list, left_view_border, bottom_view_border
         savefile = open("save.p", "wb")
+        pickle.dump(self.frame_count, savefile)
         pickle.dump(self.npa, savefile)
+        pickle.dump(len(our_buildings_list), savefile)
+        for building in our_buildings_list:
+            pickle.dump(str(type(building)), savefile)
+            pickle.dump(building.x, savefile)
+            pickle.dump(building.y, savefile)
         pickle.dump(len(our_units_list), savefile)
         for unit in our_units_list:
-            # pickle.dump(str(type(unit)), savefile)
+            pickle.dump(str(type(unit)), savefile)
             pickle.dump(unit.x, savefile)
             pickle.dump(unit.y, savefile)
+            pickle.dump(unit.rotation, savefile)
         print('saved')
 
     def load(self):
@@ -435,14 +439,33 @@ class PlanetEleven(pyglet.window.Window):
             projectile_list, left_view_border, bottom_view_border
         self.clear_level()
         savefile = open("save.p", "rb")
+        self.frame_count = pickle.load(savefile)
         self.npa = pickle.load(savefile)
         self.minimap_fow_ImageData.set_data('RGBA', self.minimap_fow_ImageData.width * 4,
                                             data=self.npa.tobytes())
-        for _ in range(pickle.load(savefile)):
+        our_buildings_list_len = pickle.load(savefile)
+        for _ in range(our_buildings_list_len):
+            building_type = pickle.load(savefile)
             x = pickle.load(savefile)
             y = pickle.load(savefile)
-            unit = Vulture(self, x=x, y=y)
+            if building_type == "<class '__main__.Base'>":
+                Base(self, x=x, y=y)
+        our_units_list_len = pickle.load(savefile)
+        for _ in range(our_units_list_len):
+            unit_type = pickle.load(savefile)
+            x = pickle.load(savefile)
+            y = pickle.load(savefile)
+            rotation = pickle.load(savefile)
+            if unit_type == "<class '__main__.Defiler'>":
+                unit = Defiler(self, x=x, y=y)
+            elif unit_type == "<class '__main__.Tank'>":
+                unit = Tank(self, x=x, y=y)
+            elif unit_type == "<class '__main__.Vulture'>":
+                unit = Vulture(self, x=x, y=y)
+            elif unit_type == "<class '__main__.Builder'>":
+                unit = Builder(self, x=x, y=y)
             unit.spawn()
+            unit.rotation = rotation
         print('loaded')
 
     def setup(self):
@@ -549,7 +572,8 @@ class PlanetEleven(pyglet.window.Window):
 
         self.background.draw()
         shadows_batch.draw()
-        ground_batch.draw()
+        buildings_batch.draw()
+        ground_units_batch.draw()
         air_shadows_batch.draw()
         air_batch.draw()
         glEnable(GL_BLEND)
