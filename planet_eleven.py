@@ -164,6 +164,8 @@ class Unit(pyglet.sprite.Sprite):
         self.speed = speed
         self.destination_reached = True
         self.movement_interrupted = False
+        self.prev_loc_x = x
+        self.prev_loc_y = y
         self.target_x = None
         self.target_y = None
         self.destination_x = None
@@ -216,11 +218,6 @@ class Unit(pyglet.sprite.Sprite):
                 air_pos_coords_dict[(self.x, self.y)] = self
             self.destination_reached = True
             return
-
-        if not self.flying:
-            ground_pos_coords_dict[(self.x, self.y)] = None
-        else:
-            air_pos_coords_dict[(self.x, self.y)] = None
         self.destination_reached = False
         self.destination_x = destination_x
         self.destination_y = destination_y
@@ -230,7 +227,7 @@ class Unit(pyglet.sprite.Sprite):
         d_angle = math.degrees(angle)
         target = give_next_target(self.x, self.y, round_angle(d_angle), self.flying)
         print('target =', target)
-        if target:
+        if target:  # If destination not reached and update_movement will be called (I think)
             self.target_x = target[0]
             self.target_y = target[1]
             pixel = minimap_pixels_dict[self]
@@ -238,9 +235,12 @@ class Unit(pyglet.sprite.Sprite):
         else:
             self.destination_reached = True
             if not self.flying:
+                ground_pos_coords_dict[(self.prev_loc_x, self.prev_loc_y)] = None
                 ground_pos_coords_dict[(self.x, self.y)] = self
             else:
+                air_pos_coords_dict[(self.prev_loc_x, self.prev_loc_y)] = None
                 air_pos_coords_dict[(self.x, self.y)] = self
+            self.prev_loc_x, self.prev_loc_y = self.x, self.y
             return
         diff_x = self.target_x - self.x
         diff_y = self.target_y - self.y
@@ -315,11 +315,11 @@ class Unit(pyglet.sprite.Sprite):
             print('self.destination_reached =', self.destination_reached)
         print()
 
-    def shoot(self, frame_count, target_x, target_y, target_id):
+    def shoot(self, frame_count, target_x, target_y, target_obj):
         global projectile_list
         projectile = Projectile(x=self.x, y=self.y,
                                 target_x=target_x, target_y=target_y,
-                                damage=self.damage, speed=self.projectile_speed, target_id=target_id)
+                                damage=self.damage, speed=self.projectile_speed, target_obj=target_obj)
         x_diff = target_x - self.x
         y_diff = target_y - self.y
         angle = -math.degrees(math.atan2(y_diff, x_diff)) + 90
@@ -423,6 +423,7 @@ class PlanetEleven(pyglet.window.Window):
         pickle.dump(self.frame_count, savefile)
         pickle.dump(self.npa, savefile)
         pickle.dump(len(our_buildings_list), savefile)
+
         for building in our_buildings_list:
             pickle.dump(str(type(building)), savefile)
             pickle.dump(building.x, savefile)
@@ -434,6 +435,7 @@ class PlanetEleven(pyglet.window.Window):
             pickle.dump(building.current_building_time, savefile)
             pickle.dump(building.building_complete, savefile)
             pickle.dump(building.building_start_time, savefile)
+
         pickle.dump(len(our_units_list), savefile)
         for unit in our_units_list:
             pickle.dump(str(type(unit)), savefile)
@@ -451,12 +453,34 @@ class PlanetEleven(pyglet.window.Window):
             pickle.dump(unit.velocity_y, savefile)
             pickle.dump(unit.on_cooldown, savefile)
             pickle.dump(unit.cooldown_started, savefile)
+            pickle.dump(unit.prev_loc_x, savefile)
+            pickle.dump(unit.prev_loc_y, savefile)
 
         pickle.dump(len(enemy_buildings_list), savefile)
         for building in enemy_buildings_list:
             pickle.dump(str(type(building)), savefile)
             pickle.dump(building.x, savefile)
             pickle.dump(building.y, savefile)
+            pickle.dump(building.hp, savefile)
+            pickle.dump(building.rally_point_x, savefile)
+            pickle.dump(building.rally_point_y, savefile)
+            pickle.dump(building.building_queue, savefile)
+            pickle.dump(building.current_building_time, savefile)
+            pickle.dump(building.building_complete, savefile)
+            pickle.dump(building.building_start_time, savefile)
+
+        pickle.dump(len(projectile_list), savefile)
+        for projectile in projectile_list:
+            pickle.dump(projectile.x, savefile)
+            pickle.dump(projectile.y, savefile)
+            pickle.dump(projectile.damage, savefile)
+            pickle.dump(projectile.speed, savefile)
+            pickle.dump(projectile.target_x, savefile)
+            pickle.dump(projectile.target_y, savefile)
+            pickle.dump(projectile.rotation, savefile)
+            pickle.dump(projectile.velocity_x, savefile)
+            pickle.dump(projectile.velocity_y, savefile)
+
         print('saved')
 
     def load(self):
@@ -469,15 +493,6 @@ class PlanetEleven(pyglet.window.Window):
         self.minimap_fow_ImageData.set_data('RGBA', self.minimap_fow_ImageData.width * 4,
                                             data=self.npa.tobytes())
 
-        def unpickle_building(building):
-            building.hp = pickle.load(savefile)
-            building.rally_point_x = pickle.load(savefile)
-            building.rally_point_y = pickle.load(savefile)
-            building.building_queue = pickle.load(savefile)
-            building.current_building_time = pickle.load(savefile)
-            building.building_complete = pickle.load(savefile)
-            building.building_start_time = pickle.load(savefile)
-
         our_buildings_list_len = pickle.load(savefile)
         for _ in range(our_buildings_list_len):
             building_type = pickle.load(savefile)
@@ -485,7 +500,14 @@ class PlanetEleven(pyglet.window.Window):
             y = pickle.load(savefile)
             if building_type == "<class '__main__.Base'>":
                 building = Base(self, x=x, y=y)
-                unpickle_building(building)
+                building.hp = pickle.load(savefile)
+                building.rally_point_x = pickle.load(savefile)
+                building.rally_point_y = pickle.load(savefile)
+                building.building_queue = pickle.load(savefile)
+                building.current_building_time = pickle.load(savefile)
+                building.building_complete = pickle.load(savefile)
+                building.building_start_time = pickle.load(savefile)
+
         our_units_list_len = pickle.load(savefile)
         for _ in range(our_units_list_len):
             unit_type = pickle.load(savefile)
@@ -513,6 +535,8 @@ class PlanetEleven(pyglet.window.Window):
             unit.velocity_y = pickle.load(savefile)
             unit.on_cooldown = pickle.load(savefile)
             unit.cooldown_started = pickle.load(savefile)
+            unit.prev_loc_x = pickle.load(savefile)
+            unit.prev_loc_y = pickle.load(savefile)
             shadow = shadows_dict[id(unit)]
             shadow.rotation = unit.rotation
             shadow.velocity_x = unit.velocity_x
@@ -525,6 +549,39 @@ class PlanetEleven(pyglet.window.Window):
             y = pickle.load(savefile)
             if building_type == "<class '__main__.Base'>":
                 building = Base(self, x=x, y=y, is_enemy=True)
+                building.hp = pickle.load(savefile)
+                building.rally_point_x = pickle.load(savefile)
+                building.rally_point_y = pickle.load(savefile)
+                building.building_queue = pickle.load(savefile)
+                building.current_building_time = pickle.load(savefile)
+                building.building_complete = pickle.load(savefile)
+                building.building_start_time = pickle.load(savefile)
+
+        projectile_list_len = pickle.load(savefile)
+        for _ in range(projectile_list_len):
+            x = pickle.load(savefile)
+            y = pickle.load(savefile)
+            damage = pickle.load(savefile)
+            speed = pickle.load(savefile)
+            target_x = pickle.load(savefile)
+            target_y = pickle.load(savefile)
+            rotation = pickle.load(savefile)
+            velocity_x = pickle.load(savefile)
+            velocity_y = pickle.load(savefile)
+            projectile = Projectile(x, y, target_x, target_y, damage, speed, None)
+            projectile_list.append(projectile)
+            projectile.rotation = rotation
+            projectile.velocity_x = velocity_x
+            projectile.velocity_y = velocity_y
+            print('target_x =', target_x)
+            print('target_y =', target_y)
+            for building in enemy_buildings_list:
+                print('building.x =', building.x)
+                print('building.y =', building.y)
+                if building.x == target_x and building.y == target_y:
+                    projectile.target_obj = building
+                    break
+            print(projectile.target_obj)
 
         print('loaded')
 
@@ -729,36 +786,38 @@ class PlanetEleven(pyglet.window.Window):
                         if not unit.movement_interrupted:
                             unit.x = unit.target_x
                             unit.y = unit.target_y
-                            if unit.flying:
-                                shadow.x = unit.target_x + 10
-                                shadow.y = unit.target_y - 10
-                            else:
+                            if not unit.flying:
                                 shadow.x = unit.target_x + 3
                                 shadow.y = unit.target_y - 3
-                            if not unit.flying:
+                                ground_pos_coords_dict[(unit.prev_loc_x, unit.prev_loc_y)] = None
                                 ground_pos_coords_dict[(unit.target_x, unit.target_y)] = unit
                             else:
+                                shadow.x = unit.target_x + 10
+                                shadow.y = unit.target_y - 10
+                                air_pos_coords_dict[(unit.prev_loc_x, unit.prev_loc_y)] = None
                                 air_pos_coords_dict[(unit.target_x, unit.target_y)] = unit
                             if unit.x == unit.destination_x and unit.y == unit.destination_y:
                                 unit.destination_reached = True
                             else:
                                 unit.update_movement()
+                            unit.prev_loc_x, unit.prev_loc_y = unit.x, unit.y
                         else:
                             unit.x = unit.target_x
                             unit.y = unit.target_y
-                            if unit.flying:
-                                shadow.x = unit.target_x + 10
-                                shadow.y = unit.target_y - 10
-                            else:
+                            if not unit.flying:
                                 shadow.x = unit.target_x + 3
                                 shadow.y = unit.target_y - 3
-                            if not unit.flying:
+                                ground_pos_coords_dict[(unit.prev_loc_x, unit.prev_loc_y)] = None
                                 ground_pos_coords_dict[(unit.target_x, unit.target_y)] = unit
                             else:
+                                shadow.x = unit.target_x + 10
+                                shadow.y = unit.target_y - 10
+                                air_pos_coords_dict[(unit.prev_loc_x, unit.prev_loc_y)] = None
                                 air_pos_coords_dict[(unit.target_x, unit.target_y)] = unit
                             unit.destination_reached = True
                             unit.move((unit.new_dest_x, unit.new_dest_y))
                             unit.movement_interrupted = False
+                            unit.prev_loc_x, unit.prev_loc_y = unit.x, unit.y
                         self.update_fow(unit.x, unit.y, unit.vision_radius)
             # Shooting
             for unit in our_units_list:
@@ -778,7 +837,7 @@ class PlanetEleven(pyglet.window.Window):
                 if not projectile.eta() <= 1:
                     projectile.update()
                 else:
-                    projectile.target_id.hp -= projectile.damage
+                    projectile.target_obj.hp -= projectile.damage
                     projectile.delete()
                     del projectile_list[i]
 
