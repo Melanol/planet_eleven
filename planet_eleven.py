@@ -2,6 +2,7 @@ import math
 import random
 import sys
 import numpy as np
+import pickle
 
 import pyglet
 from pyglet.gl import *
@@ -342,8 +343,8 @@ class Defiler(Unit):
     building_time = 60
 
     def __init__(self, outer_instance, x, y):
-        super().__init__(img=res.defiler_image, outer_instance=outer_instance, hp=100, vision_radius=6, damage=10, cooldown=60, speed=6, x=x,
-                         y=y, projectile_sprite='sprites/blue_laser.png',
+        super().__init__(img=res.defiler_image, outer_instance=outer_instance, hp=100, vision_radius=6, damage=10,
+                         cooldown=60, speed=6, x=x, y=y, projectile_sprite='sprites/blue_laser.png',
                          projectile_speed=5, batch=air_batch)
         self.flying = True
         self.shadow_sprite = res.defiler_shadow_image
@@ -353,8 +354,8 @@ class Tank(Unit):
     building_time = 60
 
     def __init__(self, outer_instance, x, y):
-        super().__init__(img=res.tank_image, outer_instance=outer_instance, hp=100, vision_radius=6, damage=10, cooldown=60, speed=0.6, x=x,
-                         y=y, projectile_sprite='sprites/blue_laser.png',
+        super().__init__(img=res.tank_image, outer_instance=outer_instance, hp=100, vision_radius=6, damage=10,
+                         cooldown=60, speed=0.6, x=x, y=y, projectile_sprite='sprites/blue_laser.png',
                          projectile_speed=5)
         self.flying = False
         self.shadow_sprite = res.tank_shadow_image
@@ -364,8 +365,8 @@ class Vulture(Unit):
     building_time = 10
 
     def __init__(self, outer_instance, x, y):
-        super().__init__(img=res.vulture_image, outer_instance=outer_instance, hp=50, vision_radius=3, damage=10, cooldown=60, speed=10,
-                         x=x, y=y, projectile_sprite='sprites/blue_laser.png',
+        super().__init__(img=res.vulture_image, outer_instance=outer_instance, hp=50, vision_radius=3, damage=10,
+                         cooldown=60, speed=10, x=x, y=y, projectile_sprite='sprites/blue_laser.png',
                          projectile_speed=5)
         self.flying = False
         self.shadow_sprite = res.vulture_shadow_image
@@ -375,8 +376,8 @@ class Builder(Unit):
     building_time = 10
 
     def __init__(self, outer_instance, x, y):
-        super().__init__(img=res.builder_image, outer_instance=outer_instance, hp=50, vision_radius=2, damage=0, cooldown=60, speed=2,
-                         x=x, y=y, has_weapon=False, projectile_sprite='sprites/blue_laser.png',
+        super().__init__(img=res.builder_image, outer_instance=outer_instance, hp=50, vision_radius=2, damage=0,
+                         cooldown=60, speed=2, x=x, y=y, has_weapon=False, projectile_sprite='sprites/blue_laser.png',
                          projectile_speed=5)
         self.flying = False
         self.shadow_sprite = res.builder_shadow_image
@@ -392,7 +393,7 @@ class PlanetEleven(pyglet.window.Window):
         self.set_mouse_cursor(cursor)
         self.fps_display = pyglet.window.FPSDisplay(window=self)
 
-    def reset(self):
+    def clear_level(self):
         global minimap_pixels_dict, shadows_dict, our_units_list, our_buildings_list, enemies_list, \
             projectile_list, left_view_border, bottom_view_border
         for unit in our_units_list:
@@ -412,7 +413,37 @@ class PlanetEleven(pyglet.window.Window):
         left_view_border = 0
         bottom_view_border = 0
         gen_pos_coords()
+
+    def reset(self):
+        self.clear_level()
         self.setup()
+
+    def save(self):
+        global minimap_pixels_dict, shadows_dict, our_units_list, our_buildings_list, enemies_list, \
+            projectile_list, left_view_border, bottom_view_border
+        savefile = open("save.p", "wb")
+        pickle.dump(self.npa, savefile)
+        pickle.dump(len(our_units_list), savefile)
+        for unit in our_units_list:
+            # pickle.dump(str(type(unit)), savefile)
+            pickle.dump(unit.x, savefile)
+            pickle.dump(unit.y, savefile)
+        print('saved')
+
+    def load(self):
+        global minimap_pixels_dict, shadows_dict, our_units_list, our_buildings_list, enemies_list, \
+            projectile_list, left_view_border, bottom_view_border
+        self.clear_level()
+        savefile = open("save.p", "rb")
+        self.npa = pickle.load(savefile)
+        self.minimap_fow_ImageData.set_data('RGBA', self.minimap_fow_ImageData.width * 4,
+                                            data=self.npa.tobytes())
+        for _ in range(pickle.load(savefile)):
+            x = pickle.load(savefile)
+            y = pickle.load(savefile)
+            unit = Vulture(self, x=x, y=y)
+            unit.spawn()
+        print('loaded')
 
     def setup(self):
         global selected
@@ -431,11 +462,13 @@ class PlanetEleven(pyglet.window.Window):
                                                              x=MINIMAP_ZERO_COORDS[0], y=MINIMAP_ZERO_COORDS[1])
         self.minimap_textured_background = pyglet.sprite.Sprite(img=res.minimap_textured_background_image,
                                                              x=MINIMAP_ZERO_COORDS[0], y=MINIMAP_ZERO_COORDS[1])
-        self.minimap_cam_frame_sprite = pyglet.sprite.Sprite(img=res.minimap_cam_frame_image, x=MINIMAP_ZERO_COORDS[0]-1,
+        self.minimap_cam_frame_sprite = pyglet.sprite.Sprite(img=res.minimap_cam_frame_image,
+                                                             x=MINIMAP_ZERO_COORDS[0]-1,
                                                              y=MINIMAP_ZERO_COORDS[1]-1)
         self.minimap_fow_image = pyglet.image.load('sprites/minimap_fow.png')
         self.minimap_fow_ImageData = self.minimap_fow_image.get_image_data()
-        self.npa = np.fromstring(self.minimap_fow_ImageData.get_data('RGBA', self.minimap_fow_ImageData.width * 4), dtype=np.uint8)
+        self.npa = np.fromstring(self.minimap_fow_ImageData.get_data('RGBA', self.minimap_fow_ImageData.width * 4),
+                                 dtype=np.uint8)
         self.npa = self.npa.reshape((102, 102, 4))
 
         # Spawn
@@ -687,6 +720,10 @@ class PlanetEleven(pyglet.window.Window):
                     selected.destination_y = selected.target_y
             elif symbol == key.F1:
                 self.reset()
+            elif symbol == key.F2:
+                self.save()
+            elif symbol == key.F3:
+                self.load()
             elif symbol == key.LEFT:
                 left_view_border -= POS_SPACE
                 self.update_viewport()
@@ -883,7 +920,8 @@ class PlanetEleven(pyglet.window.Window):
                     if button == mouse.LEFT:
                         x = int((x - 16) / 32) + 1
                         y = int((y - 16) / 32) + 1
-                        if not ground_pos_coords_dict[self.base_building_sprite.x, self.base_building_sprite.y] and self.npa[y, x, 3] == 0:
+                        if not ground_pos_coords_dict[self.base_building_sprite.x, self.base_building_sprite.y] and \
+                                self.npa[y, x, 3] == 0:
                             Base(self, self.base_building_sprite.x, self.base_building_sprite.y)
                     elif button == mouse.RIGHT:
                         self.building_location_selection_phase = False
@@ -899,7 +937,8 @@ class PlanetEleven(pyglet.window.Window):
                 x, y = mc(x=x, y=y)
                 x = int((x - 16) / 32) + 1
                 y = int((y - 16) / 32) + 1
-                if ground_pos_coords_dict[self.base_building_sprite.x, self.base_building_sprite.y] or self.npa[y, x, 3] != 0:
+                if ground_pos_coords_dict[self.base_building_sprite.x, self.base_building_sprite.y] or \
+                        self.npa[y, x, 3] != 0:
                     self.base_building_sprite.color = (255, 0, 0)
                 else:
                     self.base_building_sprite.color = (0, 255, 0)
