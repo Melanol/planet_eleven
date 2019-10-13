@@ -154,7 +154,6 @@ class Base(ProductionBuilding):
 
 
 class AttackingBuilding(Building):
-    # 2 sprites per object
     def __init__(self, outer_instance, our_img, enemy_img, x, y, hp, is_enemy, damage, vision_radius, cooldown):
         super().__init__(outer_instance, our_img, enemy_img, x, y, hp, is_enemy)
         self.rotating_sprite = pyglet.sprite.Sprite(res.turret_image, x, y, batch=turret_batch)
@@ -182,6 +181,19 @@ class AttackingBuilding(Building):
         self.on_cooldown = True
         self.cooldown_started = frame_count
         projectile_list.append(projectile)
+
+    def kill(self, delay_del=False):
+        global ground_pos_coords_dict, minimap_pixels_dict, our_buildings_list, enemy_buildings_list
+        ground_pos_coords_dict[(self.x, self.y)] = None
+        minimap_pixels_dict[self].delete()
+        if not delay_del:
+            if not self.is_enemy:
+                del our_buildings_list[our_buildings_list.index(self)]
+            else:
+                del enemy_buildings_list[enemy_buildings_list.index(self)]
+        del shooting_buildings_list[shooting_buildings_list.index(self)]
+        self.rotating_sprite.delete()
+        self.delete()
 
 
 class Turret(AttackingBuilding):
@@ -977,7 +989,9 @@ class PlanetEleven(pyglet.window.Window):
                                     closest_enemy_dist = distance_to_enemy
                     if closest_enemy:
                         building.shoot(self.frame_count, closest_enemy.x, closest_enemy.y, closest_enemy)
-
+                else:
+                    if (self.frame_count - building.cooldown_started) % building.cooldown == 0:
+                        building.on_cooldown = False
             # Projectiles
             for i, projectile in enumerate(projectile_list):
                 if not projectile.eta() <= 1:
