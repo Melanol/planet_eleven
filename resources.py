@@ -40,7 +40,6 @@ utility_dot_image = pyglet.resource.image("utility_dot.png")
 center_anchor(utility_dot_image)
 
 minimap_cam_frame_image = pyglet.resource.image("minimap_cam_frame.png")
-# center_anchor(minimap_cam_frame_image)
 
 minimap_our_image = pyglet.resource.image("minimap_our.png")
 center_anchor(minimap_our_image)
@@ -64,6 +63,13 @@ center_anchor(base_image)
 
 enemy_base_image = pyglet.resource.image("enemy_base.png")
 center_anchor(enemy_base_image)
+
+turret_button_image = pyglet.resource.image("turret_button.png")
+center_anchor(turret_button_image)
+turret_image = pyglet.resource.image("turret.png")
+center_anchor(turret_image)
+turret_base_image = pyglet.resource.image("turret_base.png")
+center_anchor(turret_base_image)
 
 # Units
 tank_image = pyglet.resource.image("tank.png")

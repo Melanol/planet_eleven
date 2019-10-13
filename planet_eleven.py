@@ -107,12 +107,6 @@ class Building(pyglet.sprite.Sprite):
         self.outer_instance = outer_instance
         self.hp = hp
         ground_pos_coords_dict[(x, y)] = self
-        self.rally_point_x = x
-        self.rally_point_y = y
-        self.building_queue = []
-        self.current_building_time = None
-        self.building_complete = True
-        self.building_start_time = 0
         self.is_enemy = is_enemy
         if not self.is_enemy:
             our_buildings_list.append(self)
@@ -142,9 +136,29 @@ class Building(pyglet.sprite.Sprite):
         self.delete()
 
 
-class Base(Building):
+class ProductionBuilding(Building):
+    def __init__(self, outer_instance, our_img, enemy_img, x, y, hp, is_enemy):
+        super().__init__(outer_instance, our_img, enemy_img, x, y, hp, is_enemy)
+        self.rally_point_x = x
+        self.rally_point_y = y
+        self.building_queue = []
+        self.current_building_time = None
+        self.building_complete = True
+        self.building_start_time = 0
+
+
+class Base(ProductionBuilding):
     def __init__(self, outer_instance, x, y, is_enemy=False):
         super().__init__(outer_instance, our_img=res.base_image, enemy_img=res.enemy_base_image, x=x, y=y,
+                         hp=100, is_enemy=is_enemy)
+
+
+class AttackingBuilding(pyglet.sprite.Sprite):
+    pass
+
+class Turret(Building):
+    def __init__(self, outer_instance, x, y, is_enemy=False):
+        super().__init__(outer_instance, our_img=res.turret_base_image, enemy_img=res.turret_base_image, x=x, y=y,
                          hp=100, is_enemy=is_enemy)
 
 
@@ -685,6 +699,8 @@ class PlanetEleven(pyglet.window.Window):
         # Buttons
         self.base_button = Button(img=res.base_image, x=CONTROL_BUTTONS_COORDS[3][0],
                                   y=CONTROL_BUTTONS_COORDS[3][1])
+        self.turret_button = Button(img=res.turret_button_image, x=CONTROL_BUTTONS_COORDS[4][0],
+                                  y=CONTROL_BUTTONS_COORDS[4][1])
         self.move_button = Button(img=res.move_image, x=CONTROL_BUTTONS_COORDS[0][0],
                                   y=CONTROL_BUTTONS_COORDS[0][1])
         self.stop_button = Button(img=res.stop_image, x=CONTROL_BUTTONS_COORDS[1][0],
@@ -717,10 +733,14 @@ class PlanetEleven(pyglet.window.Window):
                               "<class '__main__.Defiler'>": self.basic_unit_control_buttons,
                               "<class '__main__.Tank'>": self.basic_unit_control_buttons,
                               "<class '__main__.Vulture'>": self.basic_unit_control_buttons,
-                              "<class '__main__.Builder'>": self.basic_unit_control_buttons + [self.base_button]}
+                              "<class '__main__.Builder'>": self.basic_unit_control_buttons + [self.base_button] + \
+                                                            [self.turret_button]
+                              }
         self.control_buttons_to_render = self.controls_dict["<class '__main__.Base'>"]
         self.base_building_sprite = pyglet.sprite.Sprite(img=res.base_image, x=-100, y=-100)
         self.base_building_sprite.color = (0, 255, 0)
+        self.turret_building_sprite = pyglet.sprite.Sprite(img=res.turret_button_image, x=-100, y=-100)
+        self.turret_building_sprite.color = (0, 255, 0)
 
 
     def on_draw(self):
@@ -764,7 +784,10 @@ class PlanetEleven(pyglet.window.Window):
         self.texture.blit(-32, -32)
         utilities_batch.draw()
         if self.building_location_selection_phase:
-            self.base_building_sprite.draw()
+            if self.to_build == "base":
+                self.base_building_sprite.draw()
+            elif self.to_build == "turret":
+                self.turret_building_sprite.draw()
         self.control_panel_sprite.draw()
         self.control_panel_buttons_background.draw()
         self.minimap_black_background.draw()
@@ -1130,6 +1153,12 @@ class PlanetEleven(pyglet.window.Window):
                                     self.base_button.y - 16 <= y <= self.base_button.y + 16:
                                 self.base_building_sprite.color = (0, 255, 0)
                                 self.building_location_selection_phase = True
+                                self.to_build = "base"
+                            elif self.turret_button.x - 16 <= x <= self.turret_button.x + 16 and \
+                                    self.turret_button.y - 16 <= y <= self.turret_button.y + 16:
+                                self.turret_building_sprite.color = (0, 255, 0)
+                                self.building_location_selection_phase = True
+                                self.to_build = "turret"
             # Building location selection
             else:
                 # Game field
@@ -1139,9 +1168,14 @@ class PlanetEleven(pyglet.window.Window):
                     if button == mouse.LEFT:
                         x = int((x - 16) / 32) + 1
                         y = int((y - 16) / 32) + 1
-                        if not ground_pos_coords_dict[self.base_building_sprite.x, self.base_building_sprite.y] and \
-                                self.npa[y, x, 3] == 0:
-                            Base(self, self.base_building_sprite.x, self.base_building_sprite.y)
+                        if self.to_build == "base":
+                            if not ground_pos_coords_dict[self.base_building_sprite.x, self.base_building_sprite.y] \
+                                    and self.npa[y, x, 3] == 0:
+                                Base(self, self.base_building_sprite.x, self.base_building_sprite.y)
+                        elif self.to_build == "turret":
+                            if not ground_pos_coords_dict[self.turret_building_sprite.x, self.turret_building_sprite.y] \
+                                    and self.npa[y, x, 3] == 0:
+                                Turret(self, self.turret_building_sprite.x, self.turret_building_sprite.y)
                     elif button == mouse.RIGHT:
                         self.building_location_selection_phase = False
 
@@ -1152,15 +1186,28 @@ class PlanetEleven(pyglet.window.Window):
                     x /= 2
                     y /= 2
                 x, y = round_coords(x, y)
-                self.base_building_sprite.x, self.base_building_sprite.y = x + left_view_border, y + bottom_view_border
-                x, y = mc(x=x, y=y)
-                x = int((x - 16) / 32) + 1
-                y = int((y - 16) / 32) + 1
-                if ground_pos_coords_dict[self.base_building_sprite.x, self.base_building_sprite.y] or \
-                        self.npa[y, x, 3] != 0:
-                    self.base_building_sprite.color = (255, 0, 0)
-                else:
-                    self.base_building_sprite.color = (0, 255, 0)
+                if self.to_build == "base":
+                    self.base_building_sprite.x = x + left_view_border
+                    self.base_building_sprite.y = y + bottom_view_border
+                    x, y = mc(x=x, y=y)
+                    x = int((x - 16) / 32) + 1
+                    y = int((y - 16) / 32) + 1
+                    if ground_pos_coords_dict[self.base_building_sprite.x, self.base_building_sprite.y] or \
+                            self.npa[y, x, 3] != 0:
+                        self.base_building_sprite.color = (255, 0, 0)
+                    else:
+                        self.base_building_sprite.color = (0, 255, 0)
+                elif self.to_build == "turret":
+                    self.turret_building_sprite.x = x + left_view_border
+                    self.turret_building_sprite.y = y + bottom_view_border
+                    x, y = mc(x=x, y=y)
+                    x = int((x - 16) / 32) + 1
+                    y = int((y - 16) / 32) + 1
+                    if ground_pos_coords_dict[self.turret_building_sprite.x, self.turret_building_sprite.y] or \
+                            self.npa[y, x, 3] != 0:
+                        self.turret_building_sprite.color = (255, 0, 0)
+                    else:
+                        self.turret_building_sprite.color = (0, 255, 0)
 
     def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
         global left_view_border, bottom_view_border
@@ -1267,6 +1314,8 @@ class PlanetEleven(pyglet.window.Window):
         self.attack_button.y = CONTROL_BUTTONS_COORDS[2][1] + bottom_view_border
         self.base_button.x = CONTROL_BUTTONS_COORDS[3][0] + left_view_border
         self.base_button.y = CONTROL_BUTTONS_COORDS[3][1] + bottom_view_border
+        self.turret_button.x = CONTROL_BUTTONS_COORDS[4][0] + left_view_border
+        self.turret_button.y = CONTROL_BUTTONS_COORDS[4][1] + bottom_view_border
         self.defiler_button.x = CONTROL_BUTTONS_COORDS[0][0] + left_view_border
         self.defiler_button.y = CONTROL_BUTTONS_COORDS[0][1] + bottom_view_border
         self.tank_button.x = CONTROL_BUTTONS_COORDS[1][0] + left_view_border
