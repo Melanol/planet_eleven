@@ -394,7 +394,7 @@ class PlanetEleven(pyglet.window.Window):
 
     def clear_level(self):
         global minimap_pixels_dict, shadows_dict, our_units_list, our_buildings_list, enemy_buildings_list, \
-            projectile_list, left_view_border, bottom_view_border
+            projectile_list, left_view_border, bottom_view_border, minimap_fow_x, minimap_fow_y
         for unit in our_units_list:
             unit.kill(delay_del=True)
         for building in our_buildings_list:
@@ -412,6 +412,7 @@ class PlanetEleven(pyglet.window.Window):
         left_view_border = 0
         bottom_view_border = 0
         gen_pos_coords()
+        minimap_fow_x, minimap_fow_y = MINIMAP_ZERO_COORDS[0] - 1, MINIMAP_ZERO_COORDS[1] - 1
 
     def reset(self):
         self.clear_level()
@@ -420,10 +421,41 @@ class PlanetEleven(pyglet.window.Window):
 
     def save(self):
         savefile = open("save.p", "wb")
+        pickle.dump(left_view_border, savefile)
+        pickle.dump(bottom_view_border, savefile)
         pickle.dump(self.frame_count, savefile)
         pickle.dump(self.npa, savefile)
-        pickle.dump(len(our_buildings_list), savefile)
 
+        pickle.dump(self.minimap_black_background.x, savefile)
+        pickle.dump(self.minimap_black_background.y, savefile)
+        pickle.dump(self.minimap_textured_background.x, savefile)
+        pickle.dump(self.minimap_textured_background.y, savefile)
+        pickle.dump(self.control_panel_sprite.x, savefile)
+        pickle.dump(self.control_panel_sprite.y, savefile)
+        pickle.dump(self.control_panel_buttons_background.x, savefile)
+        pickle.dump(self.control_panel_buttons_background.y, savefile)
+        pickle.dump(self.move_button.x, savefile)
+        pickle.dump(self.move_button.y, savefile)
+        pickle.dump(self.stop_button.x, savefile)
+        pickle.dump(self.stop_button.y, savefile)
+        pickle.dump(self.attack_button.x, savefile)
+        pickle.dump(self.attack_button.y, savefile)
+        pickle.dump(self.base_button.x, savefile)
+        pickle.dump(self.base_button.y, savefile)
+        pickle.dump(self.defiler_button.x, savefile)
+        pickle.dump(self.defiler_button.y, savefile)
+        pickle.dump(self.tank_button.x, savefile)
+        pickle.dump(self.tank_button.y, savefile)
+        pickle.dump(self.vulture_button.x, savefile)
+        pickle.dump(self.vulture_button.y, savefile)
+        pickle.dump(self.builder_button.x, savefile)
+        pickle.dump(self.builder_button.y, savefile)
+        pickle.dump(minimap_fow_x, savefile)
+        pickle.dump(minimap_fow_y, savefile)
+        pickle.dump(self.minimap_cam_frame_sprite.x, savefile)
+        pickle.dump(self.minimap_cam_frame_sprite.y, savefile)
+
+        pickle.dump(len(our_buildings_list), savefile)
         for building in our_buildings_list:
             pickle.dump(str(type(building)), savefile)
             pickle.dump(building.x, savefile)
@@ -484,14 +516,44 @@ class PlanetEleven(pyglet.window.Window):
         print('saved')
 
     def load(self):
-        global minimap_pixels_dict, shadows_dict, our_units_list, our_buildings_list, enemy_buildings_list, \
-            projectile_list, left_view_border, bottom_view_border
+        global left_view_border, bottom_view_border, minimap_fow_x, minimap_fow_y
         self.clear_level()
         savefile = open("save.p", "rb")
+        left_view_border = pickle.load(savefile)
+        bottom_view_border = pickle.load(savefile)
         self.frame_count = pickle.load(savefile)
         self.npa = pickle.load(savefile)
         self.minimap_fow_ImageData.set_data('RGBA', self.minimap_fow_ImageData.width * 4,
                                             data=self.npa.tobytes())
+
+        self.minimap_black_background.x = pickle.load(savefile)
+        self.minimap_black_background.y = pickle.load(savefile)
+        self.minimap_textured_background.x = pickle.load(savefile)
+        self.minimap_textured_background.y = pickle.load(savefile)
+        self.control_panel_sprite.x = pickle.load(savefile)
+        self.control_panel_sprite.y = pickle.load(savefile)
+        self.control_panel_buttons_background.x = pickle.load(savefile)
+        self.control_panel_buttons_background.y = pickle.load(savefile)
+        self.move_button.x = pickle.load(savefile)
+        self.move_button.y = pickle.load(savefile)
+        self.stop_button.x = pickle.load(savefile)
+        self.stop_button.y = pickle.load(savefile)
+        self.attack_button.x = pickle.load(savefile)
+        self.attack_button.y = pickle.load(savefile)
+        self.base_button.x = pickle.load(savefile)
+        self.base_button.y = pickle.load(savefile)
+        self.defiler_button.x = pickle.load(savefile)
+        self.defiler_button.y = pickle.load(savefile)
+        self.tank_button.x = pickle.load(savefile)
+        self.tank_button.y = pickle.load(savefile)
+        self.vulture_button.x = pickle.load(savefile)
+        self.vulture_button.y = pickle.load(savefile)
+        self.builder_button.x = pickle.load(savefile)
+        self.builder_button.y = pickle.load(savefile)
+        minimap_fow_x = pickle.load(savefile)
+        minimap_fow_y = pickle.load(savefile)
+        self.minimap_cam_frame_sprite.x = pickle.load(savefile)
+        self.minimap_cam_frame_sprite.y = pickle.load(savefile)
 
         our_buildings_list_len = pickle.load(savefile)
         for _ in range(our_buildings_list_len):
@@ -824,10 +886,20 @@ class PlanetEleven(pyglet.window.Window):
                 if unit.has_weapon:
                     if unit.destination_reached:
                         if not unit.on_cooldown:
+                            closest_enemy = None
+                            closest_enemy_dist = None
                             for enemy in enemy_buildings_list:
-                                if ((enemy.x - unit.x) ** 2 + (enemy.y - unit.y) ** 2) ** 0.5 <= unit.shooting_radius:
-                                    unit.shoot(self.frame_count, enemy.x, enemy.y, enemy)
-                                    break
+                                distance_to_enemy = ((enemy.x - unit.x) ** 2 + (enemy.y - unit.y) ** 2) ** 0.5
+                                if distance_to_enemy <= unit.shooting_radius:
+                                    if not closest_enemy:
+                                        closest_enemy = enemy
+                                        closest_enemy_dist = distance_to_enemy
+                                    else:
+                                        if distance_to_enemy < closest_enemy_dist:
+                                            closest_enemy = enemy
+                                            closest_enemy_dist = distance_to_enemy
+                            if closest_enemy:
+                                unit.shoot(self.frame_count, closest_enemy.x, closest_enemy.y, closest_enemy)
                         else:
                             if (self.frame_count - unit.cooldown_started) % unit.cooldown == 0:
                                 unit.on_cooldown = False
