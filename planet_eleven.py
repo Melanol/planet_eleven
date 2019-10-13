@@ -838,7 +838,7 @@ class PlanetEleven(pyglet.window.Window):
         if self.control_buttons_to_render:
             for button in self.control_buttons_to_render:
                 button.draw()
-            if selected in our_buildings_list:
+            if selected in our_buildings_list and selected not in shooting_buildings_list:
                 self.rally_point_sprite.draw()
 
         self.fow_texture.width = 102
@@ -1182,6 +1182,7 @@ class PlanetEleven(pyglet.window.Window):
                 else:
                     x, y = mc(x=x, y=y)
                     print('x =', x, 'y =', y)
+                    # Building
                     if selected in our_buildings_list:
                         # Create defiler
                         if self.defiler_button.x - 16 <= x <= self.defiler_button.x + 16 and \
@@ -1210,6 +1211,10 @@ class PlanetEleven(pyglet.window.Window):
                     elif selected in our_units_list:
                         # Move
                         # Stop
+                        if self.stop_button.x - 16 <= x <= self.stop_button.x + 16 and \
+                                self.stop_button.y - 16 <= y <= self.stop_button.y + 16:
+                            selected.destination_x = selected.target_x
+                            selected.destination_y = selected.target_y
                         # Attack
                         if str(type(selected)) == "<class '__main__.Builder'>":
                             if self.base_button.x - 16 <= x <= self.base_button.x + 16 and \
