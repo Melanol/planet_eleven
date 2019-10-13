@@ -330,7 +330,7 @@ class Unit(pyglet.sprite.Sprite):
         self.cooldown_started = frame_count
         projectile_list.append(projectile)
 
-    def kill(self, delay_del):
+    def kill(self, delay_del=False):
         shadows_dict[id(self)].delete()
         minimap_pixels_dict[self].delete()
         if not delay_del:
@@ -711,12 +711,13 @@ class PlanetEleven(pyglet.window.Window):
         #     self.dots.append(dot)
 
         self.basic_unit_control_buttons = [self.move_button, self.stop_button, self.attack_button]
-        self.controls_dict = {"<class '__main__.Base'>": [self.defiler_button, self.tank_button, self.vulture_button,
+        self.controls_dict = {"<class 'NoneType'>": None,
+                              "<class '__main__.Base'>": [self.defiler_button, self.tank_button, self.vulture_button,
                                                           self.builder_button],
-                        "<class '__main__.Defiler'>": self.basic_unit_control_buttons,
-                        "<class '__main__.Tank'>": self.basic_unit_control_buttons,
-                        "<class '__main__.Vulture'>": self.basic_unit_control_buttons,
-                        "<class '__main__.Builder'>": self.basic_unit_control_buttons + [self.base_button]}
+                              "<class '__main__.Defiler'>": self.basic_unit_control_buttons,
+                              "<class '__main__.Tank'>": self.basic_unit_control_buttons,
+                              "<class '__main__.Vulture'>": self.basic_unit_control_buttons,
+                              "<class '__main__.Builder'>": self.basic_unit_control_buttons + [self.base_button]}
         self.control_buttons_to_render = self.controls_dict["<class '__main__.Base'>"]
         self.base_building_sprite = pyglet.sprite.Sprite(img=res.base_image, x=-100, y=-100)
         self.base_building_sprite.color = (0, 255, 0)
@@ -770,10 +771,11 @@ class PlanetEleven(pyglet.window.Window):
         self.minimap_textured_background.draw()
         minimap_pixels_batch.draw()
 
-        for button in self.control_buttons_to_render:
-            button.draw()
-        if selected in our_buildings_list:
-            self.rally_point_sprite.draw()
+        if self.control_buttons_to_render:
+            for button in self.control_buttons_to_render:
+                button.draw()
+            if selected in our_buildings_list:
+                self.rally_point_sprite.draw()
 
         self.texture.width = 102
         self.texture.height = 102
@@ -960,7 +962,7 @@ class PlanetEleven(pyglet.window.Window):
                 for _key, value in ground_pos_coords_dict.items():
                     if i % 1 == 0:
                         if value is None:
-                            unit = Vulture(_key[0], _key[1])
+                            unit = Vulture(self, _key[0], _key[1])
                             unit.spawn()
                     i += 1
             elif symbol == key.X:
