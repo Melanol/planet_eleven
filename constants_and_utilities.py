@@ -62,10 +62,12 @@ utilities_batch = pyglet.graphics.Batch()
 minimap_pixels_batch = pyglet.graphics.Batch()
 shadows_batch = pyglet.graphics.Batch()
 air_shadows_batch = pyglet.graphics.Batch()
+turret_batch = pyglet.graphics.Batch()
 
 LIST_OF_FLYING = ['defiler']
 our_units_list = []
 our_buildings_list = []
+shooting_buildings_list = []
 enemy_buildings_list = []
 projectile_list = []
 

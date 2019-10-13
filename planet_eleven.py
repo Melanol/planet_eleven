@@ -153,13 +153,41 @@ class Base(ProductionBuilding):
                          hp=100, is_enemy=is_enemy)
 
 
-class AttackingBuilding(pyglet.sprite.Sprite):
-    pass
+class AttackingBuilding(Building):
+    # 2 sprites per object
+    def __init__(self, outer_instance, our_img, enemy_img, x, y, hp, is_enemy, damage, vision_radius, cooldown):
+        super().__init__(outer_instance, our_img, enemy_img, x, y, hp, is_enemy)
+        self.rotating_sprite = pyglet.sprite.Sprite(res.turret_image, x, y, batch=turret_batch)
+        self.damage = damage
+        self.shooting_radius = vision_radius * 32
+        self.target_x = None
+        self.target_y = None
+        self.cooldown = cooldown
+        self.on_cooldown = False
+        self.cooldown_started = None
+        shooting_buildings_list.append(self)
+        self.projectile_sprite = res.projectile_image
+        self.projectile_speed = 10
+        self.projectile_color = (255, 255, 255)
 
-class Turret(Building):
+    def shoot(self, frame_count, target_x, target_y, target_obj):
+        global projectile_list
+        projectile = Projectile(x=self.x, y=self.y,
+                                target_x=target_x, target_y=target_y,
+                                damage=self.damage, speed=self.projectile_speed, target_obj=target_obj)
+        x_diff = target_x - self.x
+        y_diff = target_y - self.y
+        angle = -math.degrees(math.atan2(y_diff, x_diff)) + 90
+        self.rotating_sprite.rotation = angle
+        self.on_cooldown = True
+        self.cooldown_started = frame_count
+        projectile_list.append(projectile)
+
+
+class Turret(AttackingBuilding):
     def __init__(self, outer_instance, x, y, is_enemy=False):
         super().__init__(outer_instance, our_img=res.turret_base_image, enemy_img=res.turret_base_image, x=x, y=y,
-                         hp=100, is_enemy=is_enemy)
+                         hp=100, is_enemy=is_enemy, damage=10, vision_radius=500, cooldown=60)
 
 
 class Unit(pyglet.sprite.Sprite):
@@ -774,14 +802,15 @@ class PlanetEleven(pyglet.window.Window):
         shadows_batch.draw()
         buildings_batch.draw()
         ground_units_batch.draw()
+        turret_batch.draw()
         air_shadows_batch.draw()
         air_batch.draw()
         glEnable(GL_BLEND)
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
-        self.texture = self.minimap_fow_image.get_texture()
-        self.texture.width = 3264
-        self.texture.height = 3264
-        self.texture.blit(-32, -32)
+        self.fow_texture = self.minimap_fow_image.get_texture()
+        self.fow_texture.width = 3264
+        self.fow_texture.height = 3264
+        self.fow_texture.blit(-32, -32)
         utilities_batch.draw()
         if self.building_location_selection_phase:
             if self.to_build == "base":
@@ -800,9 +829,9 @@ class PlanetEleven(pyglet.window.Window):
             if selected in our_buildings_list:
                 self.rally_point_sprite.draw()
 
-        self.texture.width = 102
-        self.texture.height = 102
-        self.texture.blit(minimap_fow_x, minimap_fow_y)
+        self.fow_texture.width = 102
+        self.fow_texture.height = 102
+        self.fow_texture.blit(minimap_fow_x, minimap_fow_y)
 
         self.minimap_cam_frame_sprite.draw()
 
@@ -821,40 +850,43 @@ class PlanetEleven(pyglet.window.Window):
             # Units
             # Building units
             for building in our_buildings_list:
-                if building.building_queue:
-                    unit = building.building_queue[0]
-                    if unit == 'defiler':
-                        building.current_building_time = Defiler.building_time
-                    elif unit == 'tank':
-                        building.current_building_time = Tank.building_time
-                    elif unit == 'vulture':
-                        building.current_building_time = Vulture.building_time
-                    elif unit == 'builder':
-                        building.current_building_time = Builder.building_time
-                    if self.frame_count - building.building_start_time == building.current_building_time:
-                        if building.building_queue[0] not in LIST_OF_FLYING:
-                            dict_to_check = ground_pos_coords_dict
-                        else:
-                            dict_to_check = air_pos_coords_dict
-                        if dict_to_check[(building.x + POS_SPACE, building.y + POS_SPACE)] is None:
-                            unit = building.building_queue.pop(0)
-                            if unit == 'defiler':
-                                unit = Defiler(self, x=building.x + POS_SPACE, y=building.y + POS_SPACE)
-                                unit.spawn()
-                            elif unit == 'tank':
-                                unit = Tank(self, x=building.x + POS_SPACE, y=building.y + POS_SPACE)
-                                unit.spawn()
-                            elif unit == 'vulture':
-                                unit = Vulture(self, x=building.x + POS_SPACE, y=building.y + POS_SPACE)
-                                unit.spawn()
-                            elif unit == 'builder':
-                                unit = Builder(self, x=building.x + POS_SPACE, y=building.y + POS_SPACE)
-                                unit.spawn()
-                            building.building_start_time += building.current_building_time
-                            unit.move((building.rally_point_x, building.rally_point_y))
-                        else:
-                            building.building_start_time += 1
-                            print('No space')
+                try:
+                    if building.building_queue:
+                        unit = building.building_queue[0]
+                        if unit == 'defiler':
+                            building.current_building_time = Defiler.building_time
+                        elif unit == 'tank':
+                            building.current_building_time = Tank.building_time
+                        elif unit == 'vulture':
+                            building.current_building_time = Vulture.building_time
+                        elif unit == 'builder':
+                            building.current_building_time = Builder.building_time
+                        if self.frame_count - building.building_start_time == building.current_building_time:
+                            if building.building_queue[0] not in LIST_OF_FLYING:
+                                dict_to_check = ground_pos_coords_dict
+                            else:
+                                dict_to_check = air_pos_coords_dict
+                            if dict_to_check[(building.x + POS_SPACE, building.y + POS_SPACE)] is None:
+                                unit = building.building_queue.pop(0)
+                                if unit == 'defiler':
+                                    unit = Defiler(self, x=building.x + POS_SPACE, y=building.y + POS_SPACE)
+                                    unit.spawn()
+                                elif unit == 'tank':
+                                    unit = Tank(self, x=building.x + POS_SPACE, y=building.y + POS_SPACE)
+                                    unit.spawn()
+                                elif unit == 'vulture':
+                                    unit = Vulture(self, x=building.x + POS_SPACE, y=building.y + POS_SPACE)
+                                    unit.spawn()
+                                elif unit == 'builder':
+                                    unit = Builder(self, x=building.x + POS_SPACE, y=building.y + POS_SPACE)
+                                    unit.spawn()
+                                building.building_start_time += building.current_building_time
+                                unit.move((building.rally_point_x, building.rally_point_y))
+                            else:
+                                building.building_start_time += 1
+                                print('No space')
+                except AttributeError:
+                    pass
 
             # Movement
             for unit in our_units_list:
@@ -906,7 +938,7 @@ class PlanetEleven(pyglet.window.Window):
                             unit.movement_interrupted = False
                             unit.prev_loc_x, unit.prev_loc_y = unit.x, unit.y
                         self.update_fow(unit.x, unit.y, unit.vision_radius)
-            # Shooting
+            # Units shooting
             for unit in our_units_list:
                 if unit.has_weapon:
                     if unit.destination_reached:
@@ -928,6 +960,23 @@ class PlanetEleven(pyglet.window.Window):
                         else:
                             if (self.frame_count - unit.cooldown_started) % unit.cooldown == 0:
                                 unit.on_cooldown = False
+            # Buildings shooting
+            for building in shooting_buildings_list:
+                if not building.on_cooldown:
+                    closest_enemy = None
+                    closest_enemy_dist = None
+                    for enemy in enemy_buildings_list:
+                        distance_to_enemy = ((enemy.x - building.x) ** 2 + (enemy.y - building.y) ** 2) ** 0.5
+                        if distance_to_enemy <= building.shooting_radius:
+                            if not closest_enemy:
+                                closest_enemy = enemy
+                                closest_enemy_dist = distance_to_enemy
+                            else:
+                                if distance_to_enemy < closest_enemy_dist:
+                                    closest_enemy = enemy
+                                    closest_enemy_dist = distance_to_enemy
+                    if closest_enemy:
+                        building.shoot(self.frame_count, closest_enemy.x, closest_enemy.y, closest_enemy)
 
             # Projectiles
             for i, projectile in enumerate(projectile_list):
@@ -938,7 +987,7 @@ class PlanetEleven(pyglet.window.Window):
                     projectile.delete()
                     del projectile_list[i]
 
-            # Destroying
+            # Destroying targets
             for enemy in enemy_buildings_list:
                 if enemy.hp <= 0:
                     enemy.kill()
@@ -1282,7 +1331,6 @@ class PlanetEleven(pyglet.window.Window):
                             self.npa[yi, xi, 3] = 0
         self.minimap_fow_ImageData.set_data('RGBA', self.minimap_fow_ImageData.width * 4,
                                             data=self.npa.tobytes())
-
 
     def update_viewport(self):
         global left_view_border, bottom_view_border, minimap_fow_x, minimap_fow_y

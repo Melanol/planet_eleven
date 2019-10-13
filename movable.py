@@ -1,5 +1,6 @@
 import pyglet
 
+
 class Movable(pyglet.sprite.Sprite):
     def __init__(self, img, x, y):
         super().__init__(img=img, x=x, y=y)
