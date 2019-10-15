@@ -51,7 +51,6 @@ image.save('sprites/minimap_cam_frame.png')
 
 
 DISTANCE_PER_JUMP = (2 * POS_SPACE ** 2) ** 0.5
-minimap_pixels_dict = {}
 
 buildings_batch = pyglet.graphics.Batch()
 ground_units_batch = pyglet.graphics.Batch()

@@ -119,15 +119,14 @@ class Building(pyglet.sprite.Sprite):
             minimap_pixel = res.minimap_enemy_image
         super().__init__(img=img, x=x, y=y, batch=buildings_batch)
         pixel_minimap_coords = to_minimap(self.x, self.y)
-        pixel = pyglet.sprite.Sprite(img=minimap_pixel, x=pixel_minimap_coords[0],
-                                     y=pixel_minimap_coords[1],
-                                     batch=minimap_pixels_batch)
-        minimap_pixels_dict[self] = pixel
+        self.pixel = pyglet.sprite.Sprite(img=minimap_pixel, x=pixel_minimap_coords[0],
+                                          y=pixel_minimap_coords[1],
+                                          batch=minimap_pixels_batch)
 
     def kill(self, delay_del=False):
-        global ground_pos_coords_dict, minimap_pixels_dict, our_buildings_list, enemy_buildings_list
+        global ground_pos_coords_dict, our_buildings_list, enemy_buildings_list
         ground_pos_coords_dict[(self.x, self.y)] = None
-        minimap_pixels_dict[self].delete()
+        self.pixel.delete()
         if not delay_del:
             if not self.is_enemy:
                 del our_buildings_list[our_buildings_list.index(self)]
@@ -182,9 +181,9 @@ class AttackingBuilding(Building):
         projectile_list.append(projectile)
 
     def kill(self, delay_del=False):
-        global ground_pos_coords_dict, minimap_pixels_dict, our_buildings_list, enemy_buildings_list
+        global ground_pos_coords_dict, our_buildings_list, enemy_buildings_list
         ground_pos_coords_dict[(self.x, self.y)] = None
-        minimap_pixels_dict[self].delete()
+        self.pixel.delete()
         if not delay_del:
             if not self.is_enemy:
                 del our_buildings_list[our_buildings_list.index(self)]
@@ -241,10 +240,9 @@ class Unit(pyglet.sprite.Sprite):
 
         # Minimap pixel
         pixel_minimap_coords = to_minimap(self.x, self.y)
-        pixel = pyglet.sprite.Sprite(img=res.minimap_our_image, x=pixel_minimap_coords[0],
+        self.pixel = pyglet.sprite.Sprite(img=res.minimap_our_image, x=pixel_minimap_coords[0],
                                      y=pixel_minimap_coords[1],
                                      batch=minimap_pixels_batch)
-        minimap_pixels_dict[self] = pixel
 
         # Shadow
         if self.flying:
@@ -282,8 +280,7 @@ class Unit(pyglet.sprite.Sprite):
         if target:  # If destination not reached and update_movement will be called (I think)
             self.target_x = target[0]
             self.target_y = target[1]
-            pixel = minimap_pixels_dict[self]
-            pixel.x, pixel.y = to_minimap(self.target_x, self.target_y)
+            self.pixel.x, self.pixel.y = to_minimap(self.target_x, self.target_y)
         else:
             self.destination_reached = True
             if not self.flying:
@@ -337,8 +334,7 @@ class Unit(pyglet.sprite.Sprite):
                 air_pos_coords_dict[(self.x, self.y)] = None
             self.target_x = next_target[0]
             self.target_y = next_target[1]
-            pixel = minimap_pixels_dict[self]
-            pixel.x, pixel.y = to_minimap(self.target_x, self.target_y)
+            self.pixel.x, self.pixel.y = to_minimap(self.target_x, self.target_y)
             if not self.flying:
                 ground_pos_coords_dict[(self.target_x, self.target_y)] = self
             else:
@@ -380,7 +376,7 @@ class Unit(pyglet.sprite.Sprite):
         projectile_list.append(projectile)
 
     def kill(self, delay_del=False):
-        minimap_pixels_dict[self].delete()
+        self.pixel.delete()
         if not delay_del:
             del our_units_list[our_units_list.index(self)]
             self.shadow.delete()
@@ -442,7 +438,7 @@ class PlanetEleven(pyglet.window.Window):
         self.fps_display = pyglet.window.FPSDisplay(window=self)
 
     def clear_level(self):
-        global minimap_pixels_dict, our_units_list, our_buildings_list, enemy_buildings_list, \
+        global our_units_list, our_buildings_list, enemy_buildings_list, \
             projectile_list, left_view_border, bottom_view_border, minimap_fow_x, minimap_fow_y
         for unit in our_units_list:
             unit.kill(delay_del=True)
@@ -452,7 +448,6 @@ class PlanetEleven(pyglet.window.Window):
             enemy.kill(delay_del=True)
         for projectile in projectile_list:
             projectile.delete()
-        minimap_pixels_dict = {}
         our_units_list = []
         our_buildings_list = []
         enemy_buildings_list = []
@@ -842,7 +837,6 @@ class PlanetEleven(pyglet.window.Window):
 
     def update(self, delta_time):
         if not self.paused:
-            global minimap_pixels_dict
             self.frame_count += 1
             # Units
             # Building units
@@ -1058,8 +1052,6 @@ class PlanetEleven(pyglet.window.Window):
                 self.update_viewport()
             elif symbol == key.H:
                 print(our_buildings_list)
-                print(len(minimap_pixels_dict))
-                print(minimap_pixels_dict)
             elif symbol == key.Z:
                 i = 0
                 for _key, value in ground_pos_coords_dict.items():
@@ -1103,7 +1095,7 @@ class PlanetEleven(pyglet.window.Window):
                 self.paused = False
 
     def on_mouse_press(self, x, y, button, modifiers):
-        global selected, minimap_pixels_dict, our_units_list, left_view_border, bottom_view_border
+        global selected, our_units_list, left_view_border, bottom_view_border
         if not self.paused:
             if self.fullscreen:
                 x /= 2
@@ -1410,14 +1402,11 @@ class PlanetEleven(pyglet.window.Window):
         self.builder_button.x = CONTROL_BUTTONS_COORDS[3][0] + left_view_border
         self.builder_button.y = CONTROL_BUTTONS_COORDS[3][1] + bottom_view_border
         for unit in our_units_list:
-            pixel = minimap_pixels_dict[unit]
-            pixel.x, pixel.y = to_minimap(unit.x, unit.y)
+            unit.pixel.x, unit.pixel.y = to_minimap(unit.x, unit.y)
         for building in our_buildings_list:
-            pixel = minimap_pixels_dict[building]
-            pixel.x, pixel.y = to_minimap(building.x, building.y)
+            building.pixel.x, building.pixel.y = to_minimap(building.x, building.y)
         for enemy in enemy_buildings_list:
-            pixel = minimap_pixels_dict[enemy]
-            pixel.x, pixel.y = to_minimap(enemy.x, enemy.y)
+            enemy.pixel.x, enemy.pixel.y = to_minimap(enemy.x, enemy.y)
         self.minimap_cam_frame_sprite.x, self.minimap_cam_frame_sprite.y = to_minimap(left_view_border-2,
                                                                                       bottom_view_border-2)
         minimap_fow_x = MINIMAP_ZERO_COORDS[0] - 1 + left_view_border
