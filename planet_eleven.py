@@ -383,6 +383,7 @@ class Unit(pyglet.sprite.Sprite):
         minimap_pixels_dict[self].delete()
         if not delay_del:
             del our_units_list[our_units_list.index(self)]
+            self.shadow.delete()
         self.delete()
 
 
@@ -473,8 +474,6 @@ class PlanetEleven(pyglet.window.Window):
         pickle.dump(self.frame_count, savefile)
         pickle.dump(self.npa, savefile)
 
-        pickle.dump(self.minimap_black_background.x, savefile)
-        pickle.dump(self.minimap_black_background.y, savefile)
         pickle.dump(self.minimap_textured_background.x, savefile)
         pickle.dump(self.minimap_textured_background.y, savefile)
         pickle.dump(self.control_panel_sprite.x, savefile)
@@ -573,8 +572,6 @@ class PlanetEleven(pyglet.window.Window):
         self.minimap_fow_ImageData.set_data('RGBA', self.minimap_fow_ImageData.width * 4,
                                             data=self.npa.tobytes())
 
-        self.minimap_black_background.x = pickle.load(savefile)
-        self.minimap_black_background.y = pickle.load(savefile)
         self.minimap_textured_background.x = pickle.load(savefile)
         self.minimap_textured_background.y = pickle.load(savefile)
         self.control_panel_sprite.x = pickle.load(savefile)
@@ -706,8 +703,6 @@ class PlanetEleven(pyglet.window.Window):
         self.control_panel_sprite = pyglet.sprite.Sprite(img=res.control_panel_image, x=SCREEN_WIDTH, y=0)
         self.control_panel_buttons_background = pyglet.sprite.Sprite(img=res.control_panel_buttons_background_image,
                                                                      x=center_x, y=center_y)
-        self.minimap_black_background = pyglet.sprite.Sprite(img=res.minimap_black_background_image,
-                                                             x=MINIMAP_ZERO_COORDS[0], y=MINIMAP_ZERO_COORDS[1])
         self.minimap_textured_background = pyglet.sprite.Sprite(img=res.minimap_textured_background_image,
                                                              x=MINIMAP_ZERO_COORDS[0], y=MINIMAP_ZERO_COORDS[1])
         self.minimap_cam_frame_sprite = pyglet.sprite.Sprite(img=res.minimap_cam_frame_image,
@@ -822,7 +817,6 @@ class PlanetEleven(pyglet.window.Window):
                 self.turret_building_sprite.draw()
         self.control_panel_sprite.draw()
         self.control_panel_buttons_background.draw()
-        self.minimap_black_background.draw()
         self.minimap_textured_background.draw()
         minimap_pixels_batch.draw()
 
@@ -1391,8 +1385,6 @@ class PlanetEleven(pyglet.window.Window):
         elif bottom_view_border > POS_COORDS_N_ROWS * POS_SPACE - SCREEN_HEIGHT:
             bottom_view_border = POS_COORDS_N_ROWS * POS_SPACE - SCREEN_HEIGHT
 
-        self.minimap_black_background.x = MINIMAP_ZERO_COORDS[0] + left_view_border
-        self.minimap_black_background.y = MINIMAP_ZERO_COORDS[1] + bottom_view_border
         self.minimap_textured_background.x = MINIMAP_ZERO_COORDS[0] + left_view_border
         self.minimap_textured_background.y = MINIMAP_ZERO_COORDS[1] + bottom_view_border
         self.control_panel_sprite.x = SCREEN_WIDTH + left_view_border
