@@ -377,9 +377,9 @@ class Unit(pyglet.sprite.Sprite):
 
     def kill(self, delay_del=False):
         self.pixel.delete()
+        self.shadow.delete()
         if not delay_del:
             del our_units_list[our_units_list.index(self)]
-            self.shadow.delete()
         self.delete()
 
 
@@ -444,10 +444,11 @@ class PlanetEleven(pyglet.window.Window):
             unit.kill(delay_del=True)
         for building in our_buildings_list:
             building.kill(delay_del=True)
-        for enemy in enemy_buildings_list:
-            enemy.kill(delay_del=True)
+        for enemy_building in enemy_buildings_list:
+            enemy_building.kill(delay_del=True)
         for projectile in projectile_list:
             projectile.delete()
+
         our_units_list = []
         our_buildings_list = []
         enemy_buildings_list = []
@@ -456,6 +457,7 @@ class PlanetEleven(pyglet.window.Window):
         bottom_view_border = 0
         gen_pos_coords()
         minimap_fow_x, minimap_fow_y = MINIMAP_ZERO_COORDS[0] - 1, MINIMAP_ZERO_COORDS[1] - 1
+
 
     def reset(self):
         self.clear_level()
