@@ -93,5 +93,5 @@ builder_shadow_image = pyglet.resource.image("builder_shadow.png")
 center_anchor(builder_shadow_image)
 
 # Other
-projectile_image = pyglet.resource.image("blue_laser.png")
+projectile_image = pyglet.resource.image("laser.png")
 center_anchor(projectile_image)

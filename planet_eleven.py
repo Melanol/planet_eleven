@@ -36,7 +36,6 @@ def gen_pos_coords():
 gen_pos_coords()
 
 
-
 def give_next_target(x, y, angle, flying):
     print('give_next_target input:', x, y, angle)
     if not flying:
@@ -103,6 +102,7 @@ class Button(pyglet.sprite.Sprite):
 
 
 class Building(pyglet.sprite.Sprite):
+    # __init__ == spawn()
     def __init__(self, outer_instance, our_img, enemy_img, x, y, hp, is_enemy):
         self.outer_instance = outer_instance
         self.hp = hp
@@ -167,13 +167,12 @@ class AttackingBuilding(Building):
         shooting_buildings_list.append(self)
         self.projectile_sprite = res.projectile_image
         self.projectile_speed = 10
-        self.projectile_color = (255, 255, 255)
+        self.projectile_color = (255, 0, 0)
 
     def shoot(self, frame_count, target_x, target_y, target_obj):
         global projectile_list
-        projectile = Projectile(x=self.x, y=self.y,
-                                target_x=target_x, target_y=target_y,
-                                damage=self.damage, speed=self.projectile_speed, target_obj=target_obj)
+        projectile = Projectile(self.x, self.y, target_x, target_y, self.damage, self.projectile_speed, target_obj,
+                                color=(255, 0, 0))
         x_diff = target_x - self.x
         y_diff = target_y - self.y
         angle = -math.degrees(math.atan2(y_diff, x_diff)) + 90
@@ -397,7 +396,7 @@ class Defiler(Unit):
 
     def __init__(self, outer_instance, x, y):
         super().__init__(img=res.defiler_image, outer_instance=outer_instance, hp=100, vision_radius=6, damage=10,
-                         cooldown=60, speed=6, x=x, y=y, projectile_sprite='sprites/blue_laser.png',
+                         cooldown=60, speed=6, x=x, y=y, projectile_sprite='sprites/laser.png',
                          projectile_speed=5, batch=air_batch)
         self.flying = True
         self.shadow_sprite = res.defiler_shadow_image
@@ -408,7 +407,7 @@ class Tank(Unit):
 
     def __init__(self, outer_instance, x, y):
         super().__init__(img=res.tank_image, outer_instance=outer_instance, hp=100, vision_radius=6, damage=10,
-                         cooldown=60, speed=0.6, x=x, y=y, projectile_sprite='sprites/blue_laser.png',
+                         cooldown=60, speed=0.6, x=x, y=y, projectile_sprite='sprites/laser.png',
                          projectile_speed=5)
         self.flying = False
         self.shadow_sprite = res.tank_shadow_image
@@ -419,7 +418,7 @@ class Vulture(Unit):
 
     def __init__(self, outer_instance, x, y):
         super().__init__(img=res.vulture_image, outer_instance=outer_instance, hp=50, vision_radius=3, damage=10,
-                         cooldown=60, speed=10, x=x, y=y, projectile_sprite='sprites/blue_laser.png',
+                         cooldown=60, speed=10, x=x, y=y, projectile_sprite='sprites/laser.png',
                          projectile_speed=5)
         self.flying = False
         self.shadow_sprite = res.vulture_shadow_image
@@ -430,7 +429,7 @@ class Builder(Unit):
 
     def __init__(self, outer_instance, x, y):
         super().__init__(img=res.builder_image, outer_instance=outer_instance, hp=50, vision_radius=2, damage=0,
-                         cooldown=60, speed=2, x=x, y=y, has_weapon=False, projectile_sprite='sprites/blue_laser.png',
+                         cooldown=60, speed=2, x=x, y=y, has_weapon=False, projectile_sprite='sprites/laser.png',
                          projectile_speed=5)
         self.flying = False
         self.shadow_sprite = res.builder_shadow_image
@@ -728,9 +727,8 @@ class PlanetEleven(pyglet.window.Window):
         self.npa = self.npa.reshape((102, 102, 4))
 
         # Spawn
-        self.our_1st_base = Base(self, POS_SPACE / 2 + POS_SPACE, POS_SPACE / 2 + POS_SPACE)
+        self.our_1st_base = Base(self, POS_SPACE / 2 + POS_SPACE * 6, POS_SPACE / 2 + POS_SPACE * 6)
         selected = self.our_1st_base
-        Base(self, POS_SPACE / 2 + POS_SPACE * 3, POS_SPACE / 2 + POS_SPACE)
         Base(self, POS_SPACE / 2 + POS_SPACE * 4, POS_SPACE / 2 + POS_SPACE * 6, is_enemy=True)
         Base(self, POS_SPACE / 2 + POS_SPACE * 10, POS_SPACE / 2 + POS_SPACE * 8, is_enemy=True)
         Base(self, POS_SPACE / 2 + POS_SPACE * 12, POS_SPACE / 2 + POS_SPACE * 8, is_enemy=True)
@@ -878,25 +876,58 @@ class PlanetEleven(pyglet.window.Window):
                                 dict_to_check = ground_pos_coords_dict
                             else:
                                 dict_to_check = air_pos_coords_dict
-                            if dict_to_check[(building.x + POS_SPACE, building.y + POS_SPACE)] is None:
+                            x = building.x - POS_SPACE
+                            y = building.y - POS_SPACE
+                            place_found = False
+                            if dict_to_check[(x, y)] is None:
+                                place_found = True
+                            else:
+                                x += POS_SPACE
+                                if dict_to_check[(x, y)] is None:
+                                    place_found = True
+                                else:
+                                    x += POS_SPACE
+                                    if dict_to_check[(x, y)] is None:
+                                        place_found = True
+                                    else:
+                                        y += POS_SPACE
+                                        if dict_to_check[(x, y)] is None:
+                                            place_found = True
+                                        else:
+                                            y += POS_SPACE
+                                            if dict_to_check[(x, y)] is None:
+                                                place_found = True
+                                            else:
+                                                x -= POS_SPACE
+                                                if dict_to_check[(x, y)] is None:
+                                                    place_found = True
+                                                else:
+                                                    x -= POS_SPACE
+                                                    if dict_to_check[(x, y)] is None:
+                                                        place_found = True
+                                                    else:
+                                                        y -= POS_SPACE
+                                                        if dict_to_check[(x, y)] is None:
+                                                            place_found = True
+                                                        else:
+                                                            building.building_start_time += 1
+                                                            print('No space')
+                            if place_found:
                                 unit = building.building_queue.pop(0)
                                 if unit == 'defiler':
-                                    unit = Defiler(self, x=building.x + POS_SPACE, y=building.y + POS_SPACE)
+                                    unit = Defiler(self, x=x, y=y)
                                     unit.spawn()
                                 elif unit == 'tank':
-                                    unit = Tank(self, x=building.x + POS_SPACE, y=building.y + POS_SPACE)
+                                    unit = Tank(self, x=x, y=y)
                                     unit.spawn()
                                 elif unit == 'vulture':
-                                    unit = Vulture(self, x=building.x + POS_SPACE, y=building.y + POS_SPACE)
+                                    unit = Vulture(self, x=x, y=y)
                                     unit.spawn()
                                 elif unit == 'builder':
-                                    unit = Builder(self, x=building.x + POS_SPACE, y=building.y + POS_SPACE)
+                                    unit = Builder(self, x=x, y=y)
                                     unit.spawn()
                                 building.building_start_time += building.current_building_time
                                 unit.move((building.rally_point_x, building.rally_point_y))
-                            else:
-                                building.building_start_time += 1
-                                print('No space')
                 except AttributeError:
                     pass
 
@@ -1210,12 +1241,15 @@ class PlanetEleven(pyglet.window.Window):
                                 selected.building_start_time = self.frame_count
                     elif selected in our_units_list:
                         # Move
+
                         # Stop
                         if self.stop_button.x - 16 <= x <= self.stop_button.x + 16 and \
                                 self.stop_button.y - 16 <= y <= self.stop_button.y + 16:
                             selected.destination_x = selected.target_x
                             selected.destination_y = selected.target_y
                         # Attack
+
+
                         if str(type(selected)) == "<class '__main__.Builder'>":
                             if self.base_button.x - 16 <= x <= self.base_button.x + 16 and \
                                     self.base_button.y - 16 <= y <= self.base_button.y + 16:
