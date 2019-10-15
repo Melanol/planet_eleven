@@ -17,10 +17,11 @@ from constants_and_utilities import *
 left_view_border = 0
 bottom_view_border = 0
 
-
 POS_COORDS = []
 ground_pos_coords_dict = {}
 air_pos_coords_dict = {}
+
+
 def gen_pos_coords():
     global POS_COORDS, ground_pos_coords_dict, air_pos_coords_dict
     POS_COORDS = []
@@ -33,6 +34,8 @@ def gen_pos_coords():
     air_pos_coords_dict = {}
     for _x, _y in POS_COORDS:
         air_pos_coords_dict[(_x, _y)] = None
+
+
 gen_pos_coords()
 
 
@@ -241,8 +244,8 @@ class Unit(pyglet.sprite.Sprite):
         # Minimap pixel
         pixel_minimap_coords = to_minimap(self.x, self.y)
         self.pixel = pyglet.sprite.Sprite(img=res.minimap_our_image, x=pixel_minimap_coords[0],
-                                     y=pixel_minimap_coords[1],
-                                     batch=minimap_pixels_batch)
+                                          y=pixel_minimap_coords[1],
+                                          batch=minimap_pixels_batch)
 
         # Shadow
         if self.flying:
@@ -457,7 +460,6 @@ class PlanetEleven(pyglet.window.Window):
         bottom_view_border = 0
         gen_pos_coords()
         minimap_fow_x, minimap_fow_y = MINIMAP_ZERO_COORDS[0] - 1, MINIMAP_ZERO_COORDS[1] - 1
-
 
     def reset(self):
         self.clear_level()
@@ -698,13 +700,15 @@ class PlanetEleven(pyglet.window.Window):
 
         self.background = pyglet.sprite.Sprite(img=res.background_image, x=0, y=0)
         self.control_panel_sprite = pyglet.sprite.Sprite(img=res.control_panel_image, x=SCREEN_WIDTH, y=0)
+        self.menu_button = pyglet.sprite.Sprite(img=res.menu_image, x=center_x, y=SCREEN_HEIGHT - 30)
+        self.selected_frame = pyglet.sprite.Sprite(img=res.selected_frame_image, x=center_x, y=SCREEN_HEIGHT - 90)
         self.control_panel_buttons_background = pyglet.sprite.Sprite(img=res.control_panel_buttons_background_image,
                                                                      x=center_x, y=center_y)
         self.minimap_textured_background = pyglet.sprite.Sprite(img=res.minimap_textured_background_image,
-                                                             x=MINIMAP_ZERO_COORDS[0], y=MINIMAP_ZERO_COORDS[1])
+                                                                x=MINIMAP_ZERO_COORDS[0], y=MINIMAP_ZERO_COORDS[1])
         self.minimap_cam_frame_sprite = pyglet.sprite.Sprite(img=res.minimap_cam_frame_image,
-                                                             x=MINIMAP_ZERO_COORDS[0]-1,
-                                                             y=MINIMAP_ZERO_COORDS[1]-1)
+                                                             x=MINIMAP_ZERO_COORDS[0] - 1,
+                                                             y=MINIMAP_ZERO_COORDS[1] - 1)
         self.minimap_fow_image = pyglet.image.load('sprites/minimap_fow.png')
         self.minimap_fow_ImageData = self.minimap_fow_image.get_image_data()
         self.npa = np.fromstring(self.minimap_fow_ImageData.get_data('RGBA', self.minimap_fow_ImageData.width * 4),
@@ -723,7 +727,7 @@ class PlanetEleven(pyglet.window.Window):
         self.base_button = Button(img=res.base_image, x=CONTROL_BUTTONS_COORDS[3][0],
                                   y=CONTROL_BUTTONS_COORDS[3][1])
         self.turret_button = Button(img=res.turret_button_image, x=CONTROL_BUTTONS_COORDS[4][0],
-                                  y=CONTROL_BUTTONS_COORDS[4][1])
+                                    y=CONTROL_BUTTONS_COORDS[4][1])
         self.move_button = Button(img=res.move_image, x=CONTROL_BUTTONS_COORDS[0][0],
                                   y=CONTROL_BUTTONS_COORDS[0][1])
         self.stop_button = Button(img=res.stop_image, x=CONTROL_BUTTONS_COORDS[1][0],
@@ -742,7 +746,6 @@ class PlanetEleven(pyglet.window.Window):
                                                      y=self.our_1st_base.y, batch=utilities_batch)
         self.rally_point_sprite = pyglet.sprite.Sprite(img=res.rally_point_image, x=self.our_1st_base.rally_point_x,
                                                        y=self.our_1st_base.rally_point_y)
-
 
         # self.dots = []
         # for x, y in POS_COORDS:
@@ -764,7 +767,6 @@ class PlanetEleven(pyglet.window.Window):
         self.base_building_sprite.color = (0, 255, 0)
         self.turret_building_sprite = pyglet.sprite.Sprite(img=res.turret_button_image, x=-100, y=-100)
         self.turret_building_sprite.color = (0, 255, 0)
-
 
     def on_draw(self):
         """
@@ -813,6 +815,8 @@ class PlanetEleven(pyglet.window.Window):
             elif self.to_build == "turret":
                 self.turret_building_sprite.draw()
         self.control_panel_sprite.draw()
+        self.menu_button.draw()
+        self.selected_frame.draw()
         self.control_panel_buttons_background.draw()
         self.minimap_textured_background.draw()
         minimap_pixels_batch.draw()
@@ -845,14 +849,14 @@ class PlanetEleven(pyglet.window.Window):
             for building in our_buildings_list:
                 try:
                     if building.building_queue:
-                        unit = building.building_queue[0]
-                        if unit == 'defiler':
+                        unit_str = building.building_queue[0]
+                        if unit_str == 'defiler':
                             building.current_building_time = Defiler.building_time
-                        elif unit == 'tank':
+                        elif unit_str == 'tank':
                             building.current_building_time = Tank.building_time
-                        elif unit == 'vulture':
+                        elif unit_str == 'vulture':
                             building.current_building_time = Vulture.building_time
-                        elif unit == 'builder':
+                        elif unit_str == 'builder':
                             building.current_building_time = Builder.building_time
                         if self.frame_count - building.building_start_time == building.current_building_time:
                             if building.building_queue[0] not in LIST_OF_FLYING:
@@ -896,83 +900,83 @@ class PlanetEleven(pyglet.window.Window):
                                                             building.building_start_time += 1
                                                             print('No space')
                             if place_found:
-                                unit = building.building_queue.pop(0)
-                                if unit == 'defiler':
-                                    unit = Defiler(self, x=x, y=y)
-                                    unit.spawn()
-                                elif unit == 'tank':
-                                    unit = Tank(self, x=x, y=y)
-                                    unit.spawn()
-                                elif unit == 'vulture':
-                                    unit = Vulture(self, x=x, y=y)
-                                    unit.spawn()
-                                elif unit == 'builder':
-                                    unit = Builder(self, x=x, y=y)
-                                    unit.spawn()
+                                unit_str = building.building_queue.pop(0)
+                                if unit_str == 'defiler':
+                                    unit_str = Defiler(self, x=x, y=y)
+                                    unit_str.spawn()
+                                elif unit_str == 'tank':
+                                    unit_str = Tank(self, x=x, y=y)
+                                    unit_str.spawn()
+                                elif unit_str == 'vulture':
+                                    unit_str = Vulture(self, x=x, y=y)
+                                    unit_str.spawn()
+                                elif unit_str == 'builder':
+                                    unit_str = Builder(self, x=x, y=y)
+                                    unit_str.spawn()
                                 building.building_start_time += building.current_building_time
-                                unit.move((building.rally_point_x, building.rally_point_y))
+                                unit_str.move((building.rally_point_x, building.rally_point_y))
                 except AttributeError:
                     pass
 
             # Movement
-            for unit in our_units_list:
+            for unit_str in our_units_list:
                 # Selection
-                if selected == unit:
-                    self.selection_sprite.x = unit.x
-                    self.selection_sprite.y = unit.y
+                if selected == unit_str:
+                    self.selection_sprite.x = unit_str.x
+                    self.selection_sprite.y = unit_str.y
                 # Do not jump
-                if not unit.destination_reached:
-                    if not unit.eta() <= 1:
-                        unit.update()
-                        unit.shadow.update()
+                if not unit_str.destination_reached:
+                    if not unit_str.eta() <= 1:
+                        unit_str.update()
+                        unit_str.shadow.update()
                     # Jump
                     else:
-                        if not unit.movement_interrupted:
-                            unit.x = unit.target_x
-                            unit.y = unit.target_y
-                            if not unit.flying:
-                                unit.shadow.x = unit.target_x + 3
-                                unit.shadow.y = unit.target_y - 3
-                                ground_pos_coords_dict[(unit.prev_loc_x, unit.prev_loc_y)] = None
-                                ground_pos_coords_dict[(unit.target_x, unit.target_y)] = unit
+                        if not unit_str.movement_interrupted:
+                            unit_str.x = unit_str.target_x
+                            unit_str.y = unit_str.target_y
+                            if not unit_str.flying:
+                                unit_str.shadow.x = unit_str.target_x + 3
+                                unit_str.shadow.y = unit_str.target_y - 3
+                                ground_pos_coords_dict[(unit_str.prev_loc_x, unit_str.prev_loc_y)] = None
+                                ground_pos_coords_dict[(unit_str.target_x, unit_str.target_y)] = unit_str
                             else:
-                                unit.shadow.x = unit.target_x + 10
-                                unit.shadow.y = unit.target_y - 10
-                                air_pos_coords_dict[(unit.prev_loc_x, unit.prev_loc_y)] = None
-                                air_pos_coords_dict[(unit.target_x, unit.target_y)] = unit
-                            if unit.x == unit.destination_x and unit.y == unit.destination_y:
-                                unit.destination_reached = True
+                                unit_str.shadow.x = unit_str.target_x + 10
+                                unit_str.shadow.y = unit_str.target_y - 10
+                                air_pos_coords_dict[(unit_str.prev_loc_x, unit_str.prev_loc_y)] = None
+                                air_pos_coords_dict[(unit_str.target_x, unit_str.target_y)] = unit_str
+                            if unit_str.x == unit_str.destination_x and unit_str.y == unit_str.destination_y:
+                                unit_str.destination_reached = True
                             else:
-                                unit.update_movement()
-                            unit.prev_loc_x, unit.prev_loc_y = unit.x, unit.y
+                                unit_str.update_movement()
+                            unit_str.prev_loc_x, unit_str.prev_loc_y = unit_str.x, unit_str.y
                         else:
-                            unit.x = unit.target_x
-                            unit.y = unit.target_y
-                            if not unit.flying:
-                                unit.shadow.x = unit.target_x + 3
-                                unit.shadow.y = unit.target_y - 3
-                                ground_pos_coords_dict[(unit.prev_loc_x, unit.prev_loc_y)] = None
-                                ground_pos_coords_dict[(unit.target_x, unit.target_y)] = unit
+                            unit_str.x = unit_str.target_x
+                            unit_str.y = unit_str.target_y
+                            if not unit_str.flying:
+                                unit_str.shadow.x = unit_str.target_x + 3
+                                unit_str.shadow.y = unit_str.target_y - 3
+                                ground_pos_coords_dict[(unit_str.prev_loc_x, unit_str.prev_loc_y)] = None
+                                ground_pos_coords_dict[(unit_str.target_x, unit_str.target_y)] = unit_str
                             else:
-                                unit.shadow.x = unit.target_x + 10
-                                unit.shadow.y = unit.target_y - 10
-                                air_pos_coords_dict[(unit.prev_loc_x, unit.prev_loc_y)] = None
-                                air_pos_coords_dict[(unit.target_x, unit.target_y)] = unit
-                            unit.destination_reached = True
-                            unit.move((unit.new_dest_x, unit.new_dest_y))
-                            unit.movement_interrupted = False
-                            unit.prev_loc_x, unit.prev_loc_y = unit.x, unit.y
-                        self.update_fow(unit.x, unit.y, unit.vision_radius)
+                                unit_str.shadow.x = unit_str.target_x + 10
+                                unit_str.shadow.y = unit_str.target_y - 10
+                                air_pos_coords_dict[(unit_str.prev_loc_x, unit_str.prev_loc_y)] = None
+                                air_pos_coords_dict[(unit_str.target_x, unit_str.target_y)] = unit_str
+                            unit_str.destination_reached = True
+                            unit_str.move((unit_str.new_dest_x, unit_str.new_dest_y))
+                            unit_str.movement_interrupted = False
+                            unit_str.prev_loc_x, unit_str.prev_loc_y = unit_str.x, unit_str.y
+                        self.update_fow(unit_str.x, unit_str.y, unit_str.vision_radius)
             # Units shooting
-            for unit in our_units_list:
-                if unit.has_weapon:
-                    if unit.destination_reached:
-                        if not unit.on_cooldown:
+            for unit_str in our_units_list:
+                if unit_str.has_weapon:
+                    if unit_str.destination_reached:
+                        if not unit_str.on_cooldown:
                             closest_enemy = None
                             closest_enemy_dist = None
                             for enemy in enemy_buildings_list:
-                                distance_to_enemy = ((enemy.x - unit.x) ** 2 + (enemy.y - unit.y) ** 2) ** 0.5
-                                if distance_to_enemy <= unit.shooting_radius:
+                                distance_to_enemy = ((enemy.x - unit_str.x) ** 2 + (enemy.y - unit_str.y) ** 2) ** 0.5
+                                if distance_to_enemy <= unit_str.shooting_radius:
                                     if not closest_enemy:
                                         closest_enemy = enemy
                                         closest_enemy_dist = distance_to_enemy
@@ -981,10 +985,10 @@ class PlanetEleven(pyglet.window.Window):
                                             closest_enemy = enemy
                                             closest_enemy_dist = distance_to_enemy
                             if closest_enemy:
-                                unit.shoot(self.frame_count, closest_enemy.x, closest_enemy.y, closest_enemy)
+                                unit_str.shoot(self.frame_count, closest_enemy.x, closest_enemy.y, closest_enemy)
                         else:
-                            if (self.frame_count - unit.cooldown_started) % unit.cooldown == 0:
-                                unit.on_cooldown = False
+                            if (self.frame_count - unit_str.cooldown_started) % unit_str.cooldown == 0:
+                                unit_str.on_cooldown = False
             # Buildings shooting
             for building in shooting_buildings_list:
                 if not building.on_cooldown:
@@ -1053,15 +1057,16 @@ class PlanetEleven(pyglet.window.Window):
                 bottom_view_border += POS_SPACE
                 self.update_viewport()
             elif symbol == key.H:
-                print(our_buildings_list)
-            elif symbol == key.Z:
-                i = 0
-                for _key, value in ground_pos_coords_dict.items():
-                    if i % 1 == 0:
-                        if value is None:
-                            unit = Vulture(self, _key[0], _key[1])
-                            unit.spawn()
-                    i += 1
+                print(self.menu_button.height)
+                print(self.menu_button.width)
+            # elif symbol == key.Z:
+            #     i = 0
+            #     for _key, value in ground_pos_coords_dict.items():
+            #         if i % 1 == 0:
+            #             if value is None:
+            #                 unit = Vulture(self, _key[0], _key[1])
+            #                 unit.spawn()
+            #         i += 1
             elif symbol == key.X:
                 coords_to_delete = []
                 yi = bottom_view_border + POS_SPACE // 2
@@ -1193,6 +1198,12 @@ class PlanetEleven(pyglet.window.Window):
                 else:
                     x, y = mc(x=x, y=y)
                     print('x =', x, 'y =', y)
+                    w = self.menu_button.width
+                    h = self.menu_button.height
+                    if self.menu_button.x - w // 2 <= x <= self.menu_button.x + w // 2 and \
+                            self.menu_button.y - h // 2 <= y <= self.menu_button.y + h // 2:
+                        print('SDFSDFSDFSDFSDF')
+
                     # Building
                     if selected in our_buildings_list:
                         # Create defiler
@@ -1228,7 +1239,6 @@ class PlanetEleven(pyglet.window.Window):
                             selected.destination_x = selected.target_x
                             selected.destination_y = selected.target_y
                         # Attack
-
 
                         if str(type(selected)) == "<class '__main__.Builder'>":
                             if self.base_button.x - 16 <= x <= self.base_button.x + 16 and \
@@ -1353,18 +1363,6 @@ class PlanetEleven(pyglet.window.Window):
     #         bottom_view_border += POS_SPACE
     #         self.update_viewport()
 
-    def update_fow(self, x, y, radius):
-        x = int((x - 16) / 32) + 1
-        y = int((y - 16) / 32) + 1
-        for yi in range(-radius + y, radius + 1 + y):
-            if 0 <= yi <= 101:
-                for xi in range(-radius + x, radius + 1 + x):
-                    if 0 <= xi <= 101:
-                        if ((xi - x) ** 2 + (yi - y) ** 2) ** 0.5 <= radius:
-                            self.npa[yi, xi, 3] = 0
-        self.minimap_fow_ImageData.set_data('RGBA', self.minimap_fow_ImageData.width * 4,
-                                            data=self.npa.tobytes())
-
     def update_viewport(self):
         global left_view_border, bottom_view_border, minimap_fow_x, minimap_fow_y
 
@@ -1383,6 +1381,10 @@ class PlanetEleven(pyglet.window.Window):
         self.minimap_textured_background.y = MINIMAP_ZERO_COORDS[1] + bottom_view_border
         self.control_panel_sprite.x = SCREEN_WIDTH + left_view_border
         self.control_panel_sprite.y = bottom_view_border
+        self.menu_button.x = center_x + left_view_border
+        self.menu_button.y = SCREEN_HEIGHT - 30 + bottom_view_border
+        self.selected_frame.x = center_x + left_view_border
+        self.selected_frame.y = SCREEN_HEIGHT - 90 + bottom_view_border
         self.control_panel_buttons_background.x = center_x + left_view_border
         self.control_panel_buttons_background.y = center_y + bottom_view_border
         self.move_button.x = CONTROL_BUTTONS_COORDS[0][0] + left_view_border
@@ -1409,10 +1411,22 @@ class PlanetEleven(pyglet.window.Window):
             building.pixel.x, building.pixel.y = to_minimap(building.x, building.y)
         for enemy in enemy_buildings_list:
             enemy.pixel.x, enemy.pixel.y = to_minimap(enemy.x, enemy.y)
-        self.minimap_cam_frame_sprite.x, self.minimap_cam_frame_sprite.y = to_minimap(left_view_border-2,
-                                                                                      bottom_view_border-2)
+        self.minimap_cam_frame_sprite.x, self.minimap_cam_frame_sprite.y = to_minimap(left_view_border - 2,
+                                                                                      bottom_view_border - 2)
         minimap_fow_x = MINIMAP_ZERO_COORDS[0] - 1 + left_view_border
         minimap_fow_y = MINIMAP_ZERO_COORDS[1] - 1 + bottom_view_border
+
+    def update_fow(self, x, y, radius):
+        x = int((x - 16) / 32) + 1
+        y = int((y - 16) / 32) + 1
+        for yi in range(-radius + y, radius + 1 + y):
+            if 0 <= yi <= 101:
+                for xi in range(-radius + x, radius + 1 + x):
+                    if 0 <= xi <= 101:
+                        if ((xi - x) ** 2 + (yi - y) ** 2) ** 0.5 <= radius:
+                            self.npa[yi, xi, 3] = 0
+        self.minimap_fow_ImageData.set_data('RGBA', self.minimap_fow_ImageData.width * 4,
+                                            data=self.npa.tobytes())
 
 
 def main():

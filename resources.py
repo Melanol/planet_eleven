@@ -32,6 +32,12 @@ right_bottom_anchor(control_panel_image)
 control_panel_buttons_background_image = pyglet.resource.image("control_panel_buttons_background.png")
 center_anchor(control_panel_buttons_background_image)
 
+menu_image = pyglet.resource.image("menu.png")
+center_anchor(menu_image)
+
+selected_frame_image = pyglet.resource.image("selected_frame.png")
+center_anchor(selected_frame_image)
+
 minimap_black_background_image = pyglet.resource.image("minimap_black_background.png")
 
 minimap_textured_background_image = pyglet.resource.image("minimap_textured_background.png")
