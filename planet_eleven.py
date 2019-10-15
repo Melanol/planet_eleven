@@ -248,12 +248,11 @@ class Unit(pyglet.sprite.Sprite):
 
         # Shadow
         if self.flying:
-            shadow = Movable(img=self.shadow_sprite, x=self.x + 10, y=self.y - 10)
-            shadow.batch = air_shadows_batch
+            self.shadow = Movable(img=self.shadow_sprite, x=self.x + 10, y=self.y - 10)
+            self.shadow.batch = air_shadows_batch
         else:
-            shadow = Movable(img=self.shadow_sprite, x=self.x + 3, y=self.y - 3)
-            shadow.batch = shadows_batch
-        shadows_dict[id(self)] = shadow
+            self.shadow = Movable(img=self.shadow_sprite, x=self.x + 3, y=self.y - 3)
+            self.shadow.batch = shadows_batch
         self.outer_instance.update_fow(self.x, self.y, self.vision_radius)
 
     def update(self):
@@ -301,10 +300,9 @@ class Unit(pyglet.sprite.Sprite):
         self.rotation = -math.degrees(angle) + 90
         self.velocity_x = math.cos(angle) * self.speed
         self.velocity_y = math.sin(angle) * self.speed
-        shadow = shadows_dict[id(self)]
-        shadow.rotation = -math.degrees(angle) + 90
-        shadow.velocity_x = math.cos(angle) * self.speed
-        shadow.velocity_y = math.sin(angle) * self.speed
+        self.shadow.rotation = -math.degrees(angle) + 90
+        self.shadow.velocity_x = math.cos(angle) * self.speed
+        self.shadow.velocity_y = math.sin(angle) * self.speed
 
         if not self.flying:
             ground_pos_coords_dict[(self.target_x, self.target_y)] = self
@@ -324,13 +322,12 @@ class Unit(pyglet.sprite.Sprite):
             ground_pos_coords_dict[(self.x, self.y)] = None
         else:
             air_pos_coords_dict[(self.x, self.y)] = None
-        shadow = shadows_dict[id(self)]
         diff_x = self.destination_x - self.x
         diff_y = self.destination_y - self.y
         angle = math.atan2(diff_y, diff_x)  # Rad
         d_angle = math.degrees(angle)
         self.rotation = -d_angle + 90
-        shadow.rotation = -math.degrees(angle) + 90
+        self.shadow.rotation = -math.degrees(angle) + 90
         next_target = give_next_target(self.x, self.y, round_angle(d_angle), self.flying)
         print('next_target =', next_target)
         if next_target:
@@ -353,9 +350,9 @@ class Unit(pyglet.sprite.Sprite):
             self.rotation = -d_angle + 90
             self.velocity_x = math.cos(angle) * self.speed
             self.velocity_y = math.sin(angle) * self.speed
-            shadow.rotation = -math.degrees(angle) + 90
-            shadow.velocity_x = math.cos(angle) * self.speed
-            shadow.velocity_y = math.sin(angle) * self.speed
+            self.shadow.rotation = -math.degrees(angle) + 90
+            self.shadow.velocity_x = math.cos(angle) * self.speed
+            self.shadow.velocity_y = math.sin(angle) * self.speed
         else:
             if not self.flying:
                 ground_pos_coords_dict[(self.x, self.y)] = self
@@ -377,14 +374,12 @@ class Unit(pyglet.sprite.Sprite):
         y_diff = target_y - self.y
         angle = -math.degrees(math.atan2(y_diff, x_diff)) + 90
         self.rotation = angle
-        shadow = shadows_dict[id(self)]
-        shadow.rotation = angle
+        self.shadow.rotation = angle
         self.on_cooldown = True
         self.cooldown_started = frame_count
         projectile_list.append(projectile)
 
     def kill(self, delay_del=False):
-        shadows_dict[id(self)].delete()
         minimap_pixels_dict[self].delete()
         if not delay_del:
             del our_units_list[our_units_list.index(self)]
@@ -446,7 +441,7 @@ class PlanetEleven(pyglet.window.Window):
         self.fps_display = pyglet.window.FPSDisplay(window=self)
 
     def clear_level(self):
-        global minimap_pixels_dict, shadows_dict, our_units_list, our_buildings_list, enemy_buildings_list, \
+        global minimap_pixels_dict, our_units_list, our_buildings_list, enemy_buildings_list, \
             projectile_list, left_view_border, bottom_view_border, minimap_fow_x, minimap_fow_y
         for unit in our_units_list:
             unit.kill(delay_del=True)
@@ -457,7 +452,6 @@ class PlanetEleven(pyglet.window.Window):
         for projectile in projectile_list:
             projectile.delete()
         minimap_pixels_dict = {}
-        shadows_dict = {}
         our_units_list = []
         our_buildings_list = []
         enemy_buildings_list = []
@@ -652,10 +646,9 @@ class PlanetEleven(pyglet.window.Window):
             unit.cooldown_started = pickle.load(savefile)
             unit.prev_loc_x = pickle.load(savefile)
             unit.prev_loc_y = pickle.load(savefile)
-            shadow = shadows_dict[id(unit)]
-            shadow.rotation = unit.rotation
-            shadow.velocity_x = unit.velocity_x
-            shadow.velocity_y = unit.velocity_y
+            unit.shadow.rotation = unit.rotation
+            unit.shadow.velocity_x = unit.velocity_x
+            unit.shadow.velocity_y = unit.velocity_y
 
         enemy_buildings_list_len = pickle.load(savefile)
         for _ in range(enemy_buildings_list_len):
@@ -933,7 +926,6 @@ class PlanetEleven(pyglet.window.Window):
 
             # Movement
             for unit in our_units_list:
-                shadow = shadows_dict[id(unit)]
                 # Selection
                 if selected == unit:
                     self.selection_sprite.x = unit.x
@@ -942,20 +934,20 @@ class PlanetEleven(pyglet.window.Window):
                 if not unit.destination_reached:
                     if not unit.eta() <= 1:
                         unit.update()
-                        shadow.update()
+                        unit.shadow.update()
                     # Jump
                     else:
                         if not unit.movement_interrupted:
                             unit.x = unit.target_x
                             unit.y = unit.target_y
                             if not unit.flying:
-                                shadow.x = unit.target_x + 3
-                                shadow.y = unit.target_y - 3
+                                unit.shadow.x = unit.target_x + 3
+                                unit.shadow.y = unit.target_y - 3
                                 ground_pos_coords_dict[(unit.prev_loc_x, unit.prev_loc_y)] = None
                                 ground_pos_coords_dict[(unit.target_x, unit.target_y)] = unit
                             else:
-                                shadow.x = unit.target_x + 10
-                                shadow.y = unit.target_y - 10
+                                unit.shadow.x = unit.target_x + 10
+                                unit.shadow.y = unit.target_y - 10
                                 air_pos_coords_dict[(unit.prev_loc_x, unit.prev_loc_y)] = None
                                 air_pos_coords_dict[(unit.target_x, unit.target_y)] = unit
                             if unit.x == unit.destination_x and unit.y == unit.destination_y:
@@ -967,13 +959,13 @@ class PlanetEleven(pyglet.window.Window):
                             unit.x = unit.target_x
                             unit.y = unit.target_y
                             if not unit.flying:
-                                shadow.x = unit.target_x + 3
-                                shadow.y = unit.target_y - 3
+                                unit.shadow.x = unit.target_x + 3
+                                unit.shadow.y = unit.target_y - 3
                                 ground_pos_coords_dict[(unit.prev_loc_x, unit.prev_loc_y)] = None
                                 ground_pos_coords_dict[(unit.target_x, unit.target_y)] = unit
                             else:
-                                shadow.x = unit.target_x + 10
-                                shadow.y = unit.target_y - 10
+                                unit.shadow.x = unit.target_x + 10
+                                unit.shadow.y = unit.target_y - 10
                                 air_pos_coords_dict[(unit.prev_loc_x, unit.prev_loc_y)] = None
                                 air_pos_coords_dict[(unit.target_x, unit.target_y)] = unit
                             unit.destination_reached = True
