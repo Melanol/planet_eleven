@@ -63,6 +63,7 @@ turret_batch = pyglet.graphics.Batch()
 
 LIST_OF_FLYING = ['defiler']
 our_units_list = []
+builders_list = []
 our_buildings_list = []
 shooting_buildings_list = []
 enemy_buildings_list = []
