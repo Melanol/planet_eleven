@@ -110,6 +110,7 @@ class Building(pyglet.sprite.Sprite):
         self.outer_instance = outer_instance
         self.hp = hp
         ground_pos_coords_dict[(x, y)] = self
+        self.default_rally_point = True
         self.is_enemy = is_enemy
         if not self.is_enemy:
             our_buildings_list.append(self)
@@ -161,6 +162,7 @@ class BigBuilding(pyglet.sprite.Sprite):
         self.outer_instance = outer_instance
         self.is_big = True
         self.hp = hp
+        self.default_rally_point = True
         ground_pos_coords_dict[(x, y)] = self
         ground_pos_coords_dict[(x + POS_SPACE, y)] = self
         ground_pos_coords_dict[(x, y + POS_SPACE)] = self
@@ -954,24 +956,25 @@ class PlanetEleven(pyglet.window.Window):
                             org_x = x
                             org_y = y
                             place_found = False
-                            for i in range(building.width // POS_SPACE + 2):
+                            n = building.width // POS_SPACE + 2
+                            for i in range(n):
                                 x = org_x + POS_SPACE * i
                                 if dict_to_check[(x, y)] is None:
                                     place_found = True
                                     break
-                            for i in range(building.height // POS_SPACE + 2):
+                            for i in range(n):
                                 y = org_y + POS_SPACE * i
                                 if dict_to_check[(x, y)] is None:
                                     place_found = True
                                     break
                             org_x = x
-                            for i in range(building.width // POS_SPACE + 2):
+                            for i in range(n):
                                 x = org_x - POS_SPACE * i
                                 if dict_to_check[(x, y)] is None:
                                     place_found = True
                                     break
                             org_y = y
-                            for i in range(building.height // POS_SPACE + 2):
+                            for i in range(n):
                                 y = org_y - POS_SPACE * i
                                 if dict_to_check[(x, y)] is None:
                                     place_found = True
@@ -991,7 +994,8 @@ class PlanetEleven(pyglet.window.Window):
                                     unit = Builder(self, x=x, y=y)
                                     unit.spawn()
                                 building.building_start_time += building.current_building_time
-                                unit.move((building.rally_point_x, building.rally_point_y))
+                                if not building.default_rally_point:
+                                    unit.move((building.rally_point_x, building.rally_point_y))
                             else:
                                 building.building_start_time += 1
                                 print('No space')
@@ -1263,6 +1267,10 @@ class PlanetEleven(pyglet.window.Window):
                         if selected in our_buildings_list:
                             selected.rally_point_x = x
                             selected.rally_point_y = y
+                            if x == selected.x and y == selected.y:
+                                selected.default_rally_point = True
+                            else:
+                                selected.default_rally_point = False
                             self.rally_point_sprite.x = x
                             self.rally_point_sprite.y = y
                             print('Rally set to ({}, {})'.format(x, y))
