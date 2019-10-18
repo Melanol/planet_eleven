@@ -834,6 +834,8 @@ class PlanetEleven(pyglet.window.Window):
         self.controls_dict = {"<class 'NoneType'>": None,
                               "<class '__main__.Base'>": [self.defiler_button, self.tank_button, self.vulture_button,
                                                           self.builder_button],
+                              "<class '__main__.BigBase'>": [self.defiler_button, self.tank_button, self.vulture_button,
+                                                             self.builder_button],
                               "<class '__main__.Defiler'>": self.basic_unit_control_buttons,
                               "<class '__main__.Tank'>": self.basic_unit_control_buttons,
                               "<class '__main__.Vulture'>": self.basic_unit_control_buttons,
@@ -949,40 +951,31 @@ class PlanetEleven(pyglet.window.Window):
                                 dict_to_check = air_pos_coords_dict
                             x = building.x - POS_SPACE
                             y = building.y - POS_SPACE
+                            org_x = x
+                            org_y = y
                             place_found = False
-                            if dict_to_check[(x, y)] is None:
-                                place_found = True
-                            else:
-                                x += POS_SPACE
+                            for i in range(building.width // POS_SPACE + 2):
+                                x = org_x + POS_SPACE * i
                                 if dict_to_check[(x, y)] is None:
                                     place_found = True
-                                else:
-                                    x += POS_SPACE
-                                    if dict_to_check[(x, y)] is None:
-                                        place_found = True
-                                    else:
-                                        y += POS_SPACE
-                                        if dict_to_check[(x, y)] is None:
-                                            place_found = True
-                                        else:
-                                            y += POS_SPACE
-                                            if dict_to_check[(x, y)] is None:
-                                                place_found = True
-                                            else:
-                                                x -= POS_SPACE
-                                                if dict_to_check[(x, y)] is None:
-                                                    place_found = True
-                                                else:
-                                                    x -= POS_SPACE
-                                                    if dict_to_check[(x, y)] is None:
-                                                        place_found = True
-                                                    else:
-                                                        y -= POS_SPACE
-                                                        if dict_to_check[(x, y)] is None:
-                                                            place_found = True
-                                                        else:
-                                                            building.building_start_time += 1
-                                                            print('No space')
+                                    break
+                            for i in range(building.height // POS_SPACE + 2):
+                                y = org_y + POS_SPACE * i
+                                if dict_to_check[(x, y)] is None:
+                                    place_found = True
+                                    break
+                            org_x = x
+                            for i in range(building.width // POS_SPACE + 2):
+                                x = org_x - POS_SPACE * i
+                                if dict_to_check[(x, y)] is None:
+                                    place_found = True
+                                    break
+                            org_y = y
+                            for i in range(building.height // POS_SPACE + 2):
+                                y = org_y - POS_SPACE * i
+                                if dict_to_check[(x, y)] is None:
+                                    place_found = True
+                                    break
                             if place_found:
                                 unit = building.building_queue.pop(0)
                                 if unit == 'defiler':
@@ -999,6 +992,10 @@ class PlanetEleven(pyglet.window.Window):
                                     unit.spawn()
                                 building.building_start_time += building.current_building_time
                                 unit.move((building.rally_point_x, building.rally_point_y))
+                            else:
+                                building.building_start_time += 1
+                                print('No space')
+
                 except AttributeError:
                     pass
             # Units
@@ -1237,14 +1234,24 @@ class PlanetEleven(pyglet.window.Window):
                                     selected = value
                                     try:
                                         selected.is_big
-                                        self.selection_big_sprite.x = x + POS_SPACE / 2
-                                        self.selection_big_sprite.y = y + POS_SPACE / 2
+                                        self.selection_big_sprite.x = selected.x + POS_SPACE / 2
+                                        self.selection_big_sprite.y = selected.y + POS_SPACE / 2
                                     except AttributeError:
                                         self.selection_sprite.x = x
                                         self.selection_sprite.y = y
                                     if selected in our_buildings_list:
-                                        self.rally_point_sprite.x = selected.rally_point_x
-                                        self.rally_point_sprite.y = selected.rally_point_y
+                                        if selected.rally_point_x == selected.x and \
+                                                selected.rally_point_y == selected.y:
+                                            try:
+                                                selected.is_big
+                                                self.rally_point_sprite.x = selected.x + 16
+                                                self.rally_point_sprite.y = selected.y + 16
+                                            except AttributeError:
+                                                self.rally_point_sprite.x = selected.rally_point_x
+                                                self.rally_point_sprite.y = selected.rally_point_y
+                                        else:
+                                            self.rally_point_sprite.x = selected.rally_point_x
+                                            self.rally_point_sprite.y = selected.rally_point_y
                                     break
                         try:
                             self.control_buttons_to_render = self.controls_dict[str(type(selected))]
