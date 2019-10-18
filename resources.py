@@ -14,14 +14,28 @@ def right_bottom_anchor(image):
     glTexParameteri(image.target, gl.GL_TEXTURE_MIN_FILTER, gl.GL_NEAREST)
 
 
+def big_building_anchor(image):
+    image.anchor_x = 16
+    image.anchor_y = 16
+    glTexParameteri(image.target, gl.GL_TEXTURE_MAG_FILTER, gl.GL_NEAREST)
+    glTexParameteri(image.target, gl.GL_TEXTURE_MIN_FILTER, gl.GL_NEAREST)
+
+
 pyglet.resource.path = ['sprites']
 pyglet.resource.reindex()
 
 # Utilities
+cursor = pyglet.window.ImageMouseCursor(pyglet.image.load('sprites/cursor.png'), 0, 16)
+cursor_fullscreen = pyglet.window.ImageMouseCursor(pyglet.image.load('sprites/cursor_fullscreen.png'), 0, 32)
+move_cursor = pyglet.window.ImageMouseCursor(pyglet.image.load('sprites/move_cursor.png'), 0, 16)
+
 background_image = pyglet.resource.image("background.png")
 
 selection_image = pyglet.resource.image("selection.png")
 center_anchor(selection_image)
+
+selection_big_image = pyglet.resource.image("selection_big.png")
+center_anchor(selection_big_image)
 
 rally_point_image = pyglet.resource.image("rally_point.png")
 center_anchor(rally_point_image)
@@ -63,6 +77,9 @@ center_anchor(stop_image)
 attack_image = pyglet.resource.image("attack.png")
 center_anchor(attack_image)
 
+big_base_icon_image = pyglet.resource.image("big_base_icon.png")
+center_anchor(big_base_icon_image)
+
 # Buildings
 base_image = pyglet.resource.image("base.png")
 center_anchor(base_image)
@@ -76,6 +93,9 @@ turret_image = pyglet.resource.image("turret.png")
 center_anchor(turret_image)
 turret_base_image = pyglet.resource.image("turret_base.png")
 center_anchor(turret_base_image)
+
+big_base_image = pyglet.resource.image("big_base.png")
+big_building_anchor(big_base_image)
 
 # Units
 tank_image = pyglet.resource.image("tank.png")

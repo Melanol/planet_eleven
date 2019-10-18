@@ -16,9 +16,6 @@ MMB_PAN_SPEED = 4
 # RIGHT_SCREEN_SCROLL_ZONE = (16 * POS_SPACE, 17 * POS_SPACE)
 # TOP_SCREEN_SCROLL_ZONE = (11 * POS_SPACE, 12 * POS_SPACE)
 
-cursor = pyglet.window.ImageMouseCursor(pyglet.image.load('sprites/cursor.png'), 0, 16)
-cursor_fullscreen = pyglet.window.ImageMouseCursor(pyglet.image.load('sprites/cursor_fullscreen.png'), 0, 32)
-
 CONTROL_PANEL_CENTER_X = SCREEN_WIDTH - 139 + 139 / 2
 MINIMAP_ZERO_COORDS = CONTROL_PANEL_CENTER_X - 50, SCREEN_HEIGHT / 2 - 50
 # Generate control button coords
@@ -48,7 +45,6 @@ for _ in range(fully_visible_height):
 arr.append(non_transparent_row)
 image = png.from_array(arr, mode='LA')
 image.save('sprites/minimap_cam_frame.png')
-
 
 DISTANCE_PER_JUMP = (2 * POS_SPACE ** 2) ** 0.5
 
