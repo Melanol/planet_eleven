@@ -14,6 +14,7 @@ from projectile import Projectile
 from draw_dot import draw_dot
 from constants_and_utilities import *
 
+
 left_view_border = 0
 bottom_view_border = 0
 
@@ -104,9 +105,22 @@ class Button(pyglet.sprite.Sprite):
     pass
 
 
+class Shadow(Movable):
+    pass
+
+
+class Mineral(pyglet.sprite.Sprite):
+    def __init__(self, outer_instance, x, y, amount=5000):
+        super().__init__(img=res.mineral, x=x, y=y, batch=buildings_batch)
+        self.outer_instance = outer_instance
+        self.amount = amount
+        ground_pos_coords_dict[(x, y)] = self
+        self.shadow = Shadow(img=res.mineral_shadow, x=x, y=y, batch=ground_shadows_batch)
+
+
 class Building(pyglet.sprite.Sprite):
     # __init__ == spawn()
-    def __init__(self, outer_instance, our_img, enemy_img, x, y, hp, is_enemy):
+    def __init__(self, outer_instance, our_img, enemy_img, x, y, hp, is_enemy, vision_radius=4):
         self.outer_instance = outer_instance
         self.hp = hp
         ground_pos_coords_dict[(x, y)] = self
@@ -116,7 +130,7 @@ class Building(pyglet.sprite.Sprite):
             our_buildings_list.append(self)
             img = our_img
             minimap_pixel = res.minimap_our_image
-            outer_instance.update_fow(x=x, y=y, radius=3)
+            outer_instance.update_fow(x=x, y=y, radius=vision_radius)
         else:
             enemy_buildings_list.append(self)
             img = enemy_img
@@ -140,8 +154,8 @@ class Building(pyglet.sprite.Sprite):
 
 
 class ProductionBuilding(Building):
-    def __init__(self, outer_instance, our_img, enemy_img, x, y, hp, is_enemy):
-        super().__init__(outer_instance, our_img, enemy_img, x, y, hp, is_enemy)
+    def __init__(self, outer_instance, our_img, enemy_img, x, y, hp, is_enemy, vision_radius=3):
+        super().__init__(outer_instance, our_img, enemy_img, x, y, hp, is_enemy, vision_radius)
         self.rally_point_x = x
         self.rally_point_y = y
         self.building_queue = []
@@ -153,12 +167,12 @@ class ProductionBuilding(Building):
 class Base(ProductionBuilding):
     def __init__(self, outer_instance, x, y, is_enemy=False):
         super().__init__(outer_instance, our_img=res.base_image, enemy_img=res.enemy_base_image, x=x, y=y,
-                         hp=100, is_enemy=is_enemy)
+                         hp=100, is_enemy=is_enemy, vision_radius=4)
 
 
 class BigBuilding(pyglet.sprite.Sprite):
     # __init__ == spawn()
-    def __init__(self, outer_instance, our_img, enemy_img, x, y, hp, is_enemy):
+    def __init__(self, outer_instance, our_img, enemy_img, x, y, hp, is_enemy, vision_radius):
         self.outer_instance = outer_instance
         self.is_big = True
         self.hp = hp
@@ -173,6 +187,9 @@ class BigBuilding(pyglet.sprite.Sprite):
             img = our_img
             minimap_pixel = res.minimap_our_image
             outer_instance.update_fow(x=x, y=y, radius=3)
+            outer_instance.update_fow(x=x + POS_SPACE, y=y, radius=3)
+            outer_instance.update_fow(x=x + POS_SPACE, y=y + POS_SPACE, radius=3)
+            outer_instance.update_fow(x=x, y=y + POS_SPACE, radius=3)
         else:
             enemy_buildings_list.append(self)
             img = enemy_img
@@ -196,8 +213,8 @@ class BigBuilding(pyglet.sprite.Sprite):
 
 
 class BigProductionBuilding(BigBuilding):
-    def __init__(self, outer_instance, our_img, enemy_img, x, y, hp, is_enemy):
-        super().__init__(outer_instance, our_img, enemy_img, x, y, hp, is_enemy)
+    def __init__(self, outer_instance, our_img, enemy_img, x, y, hp, is_enemy, vision_radius=4):
+        super().__init__(outer_instance, our_img, enemy_img, x, y, hp, is_enemy, vision_radius)
         self.rally_point_x = x
         self.rally_point_y = y
         self.building_queue = []
@@ -209,7 +226,7 @@ class BigProductionBuilding(BigBuilding):
 class BigBase(BigProductionBuilding):
     def __init__(self, outer_instance, x, y, is_enemy=False):
         super().__init__(outer_instance, our_img=res.big_base_image, enemy_img=res.enemy_base_image, x=x, y=y,
-                         hp=100, is_enemy=is_enemy)
+                         hp=100, is_enemy=is_enemy, vision_radius=4)
 
 
 class AttackingBuilding(Building):
@@ -306,11 +323,11 @@ class Unit(pyglet.sprite.Sprite):
 
         # Shadow
         if self.flying:
-            self.shadow = Movable(img=self.shadow_sprite, x=self.x + 10, y=self.y - 10)
+            self.shadow = Shadow(img=self.shadow_sprite, x=self.x + 10, y=self.y - 10)
             self.shadow.batch = air_shadows_batch
         else:
-            self.shadow = Movable(img=self.shadow_sprite, x=self.x + 3, y=self.y - 3)
-            self.shadow.batch = shadows_batch
+            self.shadow = Shadow(img=self.shadow_sprite, x=self.x + 3, y=self.y - 3)
+            self.shadow.batch = ground_shadows_batch
         self.outer_instance.update_fow(self.x, self.y, self.vision_radius)
 
     def update(self):
@@ -335,12 +352,15 @@ class Unit(pyglet.sprite.Sprite):
         diff_y = self.destination_y - self.y
         angle = math.atan2(diff_y, diff_x)  # Rad
         d_angle = math.degrees(angle)
+        self.rotation = -math.degrees(angle) + 90
+        self.shadow.rotation = -math.degrees(angle) + 90
         target = give_next_target(self.x, self.y, round_angle(d_angle), self.flying)
         print('target =', target)
         if target:  # If destination not reached and update_movement will be called (I think)
             self.target_x = target[0]
             self.target_y = target[1]
             self.pixel.x, self.pixel.y = to_minimap(self.target_x, self.target_y)
+        # Not moving
         else:
             self.destination_reached = True
             if not self.flying:
@@ -448,7 +468,7 @@ class Unit(pyglet.sprite.Sprite):
 
 
 class Defiler(Unit):
-    building_time = 60
+    building_time = 10
 
     def __init__(self, outer_instance, x, y):
         super().__init__(img=res.defiler_image, outer_instance=outer_instance, hp=100, vision_radius=6, damage=10,
@@ -459,7 +479,7 @@ class Defiler(Unit):
 
 
 class Tank(Unit):
-    building_time = 60
+    building_time = 10
 
     def __init__(self, outer_instance, x, y):
         super().__init__(img=res.tank_image, outer_instance=outer_instance, hp=100, vision_radius=6, damage=10,
@@ -484,7 +504,7 @@ class Builder(Unit):
     building_time = 10
 
     def __init__(self, outer_instance, x, y):
-        super().__init__(img=res.builder_image, outer_instance=outer_instance, hp=50, vision_radius=2, damage=0,
+        super().__init__(img=res.builder_image, outer_instance=outer_instance, hp=10, vision_radius=2, damage=0,
                          cooldown=60, speed=5, x=x, y=y, has_weapon=False, projectile_sprite='sprites/laser.png',
                          projectile_speed=5)
         builders_list.append(self)
@@ -493,6 +513,9 @@ class Builder(Unit):
         self.to_build = None
         self.building_coord_x = None
         self.building_coord_y = None
+        self.mineral_to_gather = None
+        self.to_gather_coord_x = None
+        self.to_gather_coord_y = None
 
     def build(self):
         self.destination_reached = True
@@ -502,6 +525,9 @@ class Builder(Unit):
         elif self.to_build == "turret":
             Turret(self.outer_instance, self.building_coord_x, self.building_coord_y)
         self.to_build = None
+
+    def gather(self):
+        self.cycle_started = self.outer_instance.frame_count
 
 
 class PlanetEleven(pyglet.window.Window):
@@ -788,8 +814,11 @@ class PlanetEleven(pyglet.window.Window):
         self.npa = np.fromstring(self.minimap_fow_ImageData.get_data('RGBA', self.minimap_fow_ImageData.width * 4),
                                  dtype=np.uint8)
         self.npa = self.npa.reshape((102, 102, 4))
+        self.mineral_count = 500
+        self.mineral_count_label = pyglet.text.Label(str(self.mineral_count), x=SCREEN_WIDTH - 200, y=SCREEN_HEIGHT - 30)
 
         # Spawn
+        Mineral(self, POS_SPACE / 2 + POS_SPACE * 4, POS_SPACE / 2 + POS_SPACE * 7)
         self.our_1st_base = Base(self, POS_SPACE / 2 + POS_SPACE * 6, POS_SPACE / 2 + POS_SPACE * 6)
         selected = self.our_1st_base
         Base(self, POS_SPACE / 2 + POS_SPACE * 6, POS_SPACE / 2 + POS_SPACE * 5, is_enemy=True)
@@ -878,7 +907,7 @@ class PlanetEleven(pyglet.window.Window):
             draw_dot(x, y, 2)'''
 
         self.background.draw()
-        shadows_batch.draw()
+        ground_shadows_batch.draw()
         buildings_batch.draw()
         ground_units_batch.draw()
         turret_batch.draw()
@@ -924,6 +953,7 @@ class PlanetEleven(pyglet.window.Window):
         for projectile in projectile_list:
             projectile.draw()
 
+        self.mineral_count_label.draw()
         self.fps_display.draw()
 
         # Remove default modelview matrix
@@ -1003,15 +1033,18 @@ class PlanetEleven(pyglet.window.Window):
                 except AttributeError:
                     pass
             # Units
+            # Gathering resources
+            for builder in builders_list:
+                if builder.mineral_to_gather:
+                    if is_melee_distance(builder, builder.to_gather_coord_x, builder.to_gather_coord_y):
+                        builder.gather()
+                        self.mineral_count += 0.01
+                        builder.mineral_to_gather.amount -= 0.01
+                        self.mineral_count_label.text = str(int(self.mineral_count))
             # Build buildings
             for builder in builders_list:
                 if builder.to_build:
-                    if abs(builder.x - builder.building_coord_x) == POS_SPACE:
-                        if abs(
-                                builder.y - builder.building_coord_y) == POS_SPACE or builder.y == builder.building_coord_y:
-                            builder.build()
-                    elif builder.x == builder.building_coord_x and abs(
-                            builder.y - builder.building_coord_y) == POS_SPACE:
+                    if is_melee_distance(builder, builder.building_coord_x, builder.building_coord_y):
                         builder.build()
             # Movement
             for unit in our_units_list:
@@ -1267,12 +1300,14 @@ class PlanetEleven(pyglet.window.Window):
                         if selected in our_buildings_list:
                             selected.rally_point_x = x
                             selected.rally_point_y = y
-                            if x == selected.x and y == selected.y:
+                            if ground_pos_coords_dict[x, y] == selected:
                                 selected.default_rally_point = True
+                                self.rally_point_sprite.x = selected.x + (selected.width - POS_SPACE) // 2
+                                self.rally_point_sprite.y = selected.y + (selected.width - POS_SPACE) // 2
                             else:
                                 selected.default_rally_point = False
-                            self.rally_point_sprite.x = x
-                            self.rally_point_sprite.y = y
+                                self.rally_point_sprite.x = x
+                                self.rally_point_sprite.y = y
                             print('Rally set to ({}, {})'.format(x, y))
                         # A unit is selected
                         else:
@@ -1286,6 +1321,14 @@ class PlanetEleven(pyglet.window.Window):
                                         unit.movement_interrupted = True
                                         unit.new_dest_x = x
                                         unit.new_dest_y = y
+                            if str(type(selected)) == "<class '__main__.Builder'>":
+                                selected.mineral_to_gather = None
+                                obj = ground_pos_coords_dict[(x, y)]
+                                if str(type(obj)) == "<class '__main__.Mineral'>":
+                                    print('go gather, lazy worker!')
+                                    selected.mineral_to_gather = obj
+                                    selected.to_gather_coord_x = obj.x
+                                    selected.to_gather_coord_y = obj.y
                 # Minimap
                 elif MINIMAP_ZERO_COORDS[0] <= x <= MINIMAP_ZERO_COORDS[0] + 100 and \
                         MINIMAP_ZERO_COORDS[1] <= y <= MINIMAP_ZERO_COORDS[1] + 100:
@@ -1531,6 +1574,8 @@ class PlanetEleven(pyglet.window.Window):
         self.vulture_button.y = CONTROL_BUTTONS_COORDS[2][1] + bottom_view_border
         self.builder_button.x = CONTROL_BUTTONS_COORDS[3][0] + left_view_border
         self.builder_button.y = CONTROL_BUTTONS_COORDS[3][1] + bottom_view_border
+        self.mineral_count_label.x = SCREEN_WIDTH - 200 + left_view_border
+        self.mineral_count_label.y = SCREEN_HEIGHT - 30 + bottom_view_border
         for unit in our_units_list:
             unit.pixel.x, unit.pixel.y = to_minimap(unit.x, unit.y)
         for building in our_buildings_list:

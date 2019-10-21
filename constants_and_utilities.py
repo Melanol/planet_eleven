@@ -53,7 +53,7 @@ ground_units_batch = pyglet.graphics.Batch()
 air_batch = pyglet.graphics.Batch()
 utilities_batch = pyglet.graphics.Batch()
 minimap_pixels_batch = pyglet.graphics.Batch()
-shadows_batch = pyglet.graphics.Batch()
+ground_shadows_batch = pyglet.graphics.Batch()
 air_shadows_batch = pyglet.graphics.Batch()
 turret_batch = pyglet.graphics.Batch()
 
@@ -92,3 +92,11 @@ def round_coords(x, y):
     if sel_y < 0:
         sel_y += POS_SPACE
     return sel_x, sel_y
+
+
+def is_melee_distance(unit, target_x, target_y):
+    if abs(unit.x - target_x) == POS_SPACE:
+        if abs(unit.y - target_y) == POS_SPACE or unit.y == target_y:
+            return True
+    elif unit.x == target_x and abs(unit.y - target_y) == POS_SPACE:
+        return True

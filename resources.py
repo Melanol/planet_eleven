@@ -1,4 +1,15 @@
 from pyglet.gl import *
+from pyglet.image.atlas import TextureAtlas
+
+
+class BorderedTextureAtlas(TextureAtlas):
+    def add(self, img):
+        x, y = self.allocator.alloc(img.width+2, img.height+2)
+        self.texture.blit_into(img, x+1, y+1, 0)
+        return self.texture.get_region(x+1, y+1, img.width, img.height)
+
+
+pyglet.image.atlas.TextureAtlas = BorderedTextureAtlas
 
 
 def center_anchor(image):
@@ -80,6 +91,12 @@ center_anchor(attack_image)
 big_base_icon_image = pyglet.resource.image("big_base_icon.png")
 center_anchor(big_base_icon_image)
 
+# Resources
+mineral = pyglet.resource.image("mineral.png")
+center_anchor(mineral)
+mineral_shadow = pyglet.resource.image("mineral_shadow.png")
+center_anchor(mineral_shadow)
+
 # Buildings
 base_image = pyglet.resource.image("base.png")
 center_anchor(base_image)
@@ -91,6 +108,11 @@ turret_button_image = pyglet.resource.image("turret_button.png")
 center_anchor(turret_button_image)
 turret_image = pyglet.resource.image("turret.png")
 center_anchor(turret_image)
+
+# turret_image = pyglet.image.load("sprites/turret.png")
+# turret_image.anchor_x = turret_image.width / 2
+# turret_image.anchor_y = turret_image.height / 2
+
 turret_base_image = pyglet.resource.image("turret_base.png")
 center_anchor(turret_base_image)
 
