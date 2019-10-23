@@ -522,11 +522,9 @@ class Builder(Unit):
         self.zap_sprite = outer_instance
         self.shadow_sprite = res.builder_shadow_image
         self.to_build = None
-        self.building_coord_x = None
-        self.building_coord_y = None
         self.mineral_to_gather = None
-        self.to_gather_coord_x = None
-        self.to_gather_coord_y = None
+        self.task_x = None
+        self.task_y = None
         self.is_gathering = False
 
         s0 = pyglet.image.load('sprites/zap1.png')
@@ -540,9 +538,9 @@ class Builder(Unit):
         self.destination_reached = True
         ground_pos_coords_dict[(self.x, self.y)] = self
         if self.to_build == "base":
-            Base(self.outer_instance, self.building_coord_x, self.building_coord_y)
+            Base(self.outer_instance, self.task_x, self.task_y)
         elif self.to_build == "turret":
-            Turret(self.outer_instance, self.building_coord_x, self.building_coord_y)
+            Turret(self.outer_instance, self.task_x, self.task_y)
         self.to_build = None
 
     def gather(self):
@@ -550,11 +548,9 @@ class Builder(Unit):
 
     def stop(self):
         self.to_build = None
-        self.building_coord_x = None
-        self.building_coord_y = None
         self.mineral_to_gather = None
-        self.to_gather_coord_x = None
-        self.to_gather_coord_y = None
+        self.task_x = None
+        self.task_y = None
         self.is_gathering = False
 
 
@@ -848,7 +844,7 @@ class PlanetEleven(pyglet.window.Window):
 
         # Spawn
         Mineral(self, POS_SPACE / 2 + POS_SPACE * 4, POS_SPACE / 2 + POS_SPACE * 7)
-        Mineral(self, POS_SPACE / 2 + POS_SPACE * 4, POS_SPACE / 2 + POS_SPACE * 8, amount=5)
+        Mineral(self, POS_SPACE / 2 + POS_SPACE * 4, POS_SPACE / 2 + POS_SPACE * 8, amount=1)
         self.our_1st_base = Base(self, POS_SPACE / 2 + POS_SPACE * 6, POS_SPACE / 2 + POS_SPACE * 6)
         selected = self.our_1st_base
         Base(self, POS_SPACE / 2 + POS_SPACE * 6, POS_SPACE / 2 + POS_SPACE * 5, is_enemy=True)
@@ -1078,7 +1074,7 @@ class PlanetEleven(pyglet.window.Window):
             # Build buildings
             for builder in builders_list:
                 if builder.to_build:
-                    if is_melee_distance(builder, builder.building_coord_x, builder.building_coord_y):
+                    if is_melee_distance(builder, builder.task_x, builder.task_y):
                         builder.build()
             # Movement
             for unit in our_units_list:
@@ -1132,8 +1128,8 @@ class PlanetEleven(pyglet.window.Window):
                 else:
                     try:
                         unit.to_build = None
-                        unit.building_coord_x = None
-                        unit.building_coord_y = None
+                        unit.task_x = None
+                        unit.task_y = None
                     except AttributeError:
                         pass
             # Units shooting
@@ -1472,8 +1468,8 @@ class PlanetEleven(pyglet.window.Window):
                         if not ground_pos_coords_dict[x, y] \
                                 and self.npa[my, mx, 3] == 0:
                             selected.to_build = self.to_build
-                            selected.building_coord_x = x
-                            selected.building_coord_y = y
+                            selected.task_x = x
+                            selected.task_y = y
                             selected.move((x, y))
                             self.building_location_selection_phase = False
                     elif button == mouse.RIGHT:
