@@ -121,7 +121,7 @@ class Mineral(pyglet.sprite.Sprite):
 
     def kill(self):
         for worker in self.workers:
-            worker.stop()
+            worker.clear_task()
         ground_pos_coords_dict[(self.x, self.y)] = None
         self.shadow.delete()
         self.delete()
@@ -465,6 +465,13 @@ class Unit(pyglet.sprite.Sprite):
         self.cooldown_started = frame_count
         projectile_list.append(projectile)
 
+    def stop(self, x, y):
+        self.destination_x = self.target_x
+        self.destination_y = self.target_y
+        self.movement_interrupted = True
+        self.new_dest_x = x
+        self.new_dest_y = y
+
     def kill(self, delay_del=False):
         self.pixel.delete()
         self.shadow.delete()
@@ -546,7 +553,7 @@ class Builder(Unit):
     def gather(self):
         self.cycle_started = self.outer_instance.frame_count
 
-    def stop(self):
+    def clear_task(self):
         self.to_build = None
         self.mineral_to_gather = None
         self.task_x = None
@@ -1352,12 +1359,9 @@ class PlanetEleven(pyglet.window.Window):
                                 if unit == selected:
                                     if unit.destination_reached:
                                         unit.move((x, y))
-                                    else:  # Movement interruption
-                                        unit.destination_x = unit.target_x
-                                        unit.destination_y = unit.target_y
-                                        unit.movement_interrupted = True
-                                        unit.new_dest_x = x
-                                        unit.new_dest_y = y
+                                    # Movement interruption
+                                    else:
+                                        unit.stop(x, y)
                             if str(type(selected)) == "<class '__main__.Builder'>":
                                 selected.mineral_to_gather = None
                                 obj = ground_pos_coords_dict[(x, y)]
