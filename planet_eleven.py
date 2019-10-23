@@ -113,9 +113,19 @@ class Mineral(pyglet.sprite.Sprite):
     def __init__(self, outer_instance, x, y, amount=5000):
         super().__init__(img=res.mineral, x=x, y=y, batch=buildings_batch)
         self.outer_instance = outer_instance
+        self.workers = []
         self.amount = amount
+        minerals.append(self)
         ground_pos_coords_dict[(x, y)] = self
         self.shadow = Shadow(img=res.mineral_shadow, x=x, y=y, batch=ground_shadows_batch)
+
+    def kill(self):
+        for worker in self.workers:
+            worker.stop()
+        ground_pos_coords_dict[(self.x, self.y)] = None
+        self.shadow.delete()
+        self.delete()
+
 
 
 class Building(pyglet.sprite.Sprite):
@@ -509,6 +519,7 @@ class Builder(Unit):
                          projectile_speed=5)
         builders_list.append(self)
         self.flying = False
+        self.zap_sprite = outer_instance
         self.shadow_sprite = res.builder_shadow_image
         self.to_build = None
         self.building_coord_x = None
@@ -516,6 +527,14 @@ class Builder(Unit):
         self.mineral_to_gather = None
         self.to_gather_coord_x = None
         self.to_gather_coord_y = None
+        self.is_gathering = False
+
+        s0 = pyglet.image.load('sprites/zap1.png')
+        s1 = pyglet.image.load('sprites/zap2.png')
+        s2 = pyglet.image.load('sprites/zap3.png')
+        sprites = [s0, s1, s2]
+        anim = pyglet.image.Animation.from_image_sequence(sprites, 0.1, True)
+        self.zap_anim = pyglet.sprite.Sprite(anim)
 
     def build(self):
         self.destination_reached = True
@@ -528,6 +547,15 @@ class Builder(Unit):
 
     def gather(self):
         self.cycle_started = self.outer_instance.frame_count
+
+    def stop(self):
+        self.to_build = None
+        self.building_coord_x = None
+        self.building_coord_y = None
+        self.mineral_to_gather = None
+        self.to_gather_coord_x = None
+        self.to_gather_coord_y = None
+        self.is_gathering = False
 
 
 class PlanetEleven(pyglet.window.Window):
@@ -817,8 +845,10 @@ class PlanetEleven(pyglet.window.Window):
         self.mineral_count = 500
         self.mineral_count_label = pyglet.text.Label(str(self.mineral_count), x=SCREEN_WIDTH - 200, y=SCREEN_HEIGHT - 30)
 
+
         # Spawn
         Mineral(self, POS_SPACE / 2 + POS_SPACE * 4, POS_SPACE / 2 + POS_SPACE * 7)
+        Mineral(self, POS_SPACE / 2 + POS_SPACE * 4, POS_SPACE / 2 + POS_SPACE * 8, amount=5)
         self.our_1st_base = Base(self, POS_SPACE / 2 + POS_SPACE * 6, POS_SPACE / 2 + POS_SPACE * 6)
         selected = self.our_1st_base
         Base(self, POS_SPACE / 2 + POS_SPACE * 6, POS_SPACE / 2 + POS_SPACE * 5, is_enemy=True)
@@ -1036,10 +1066,14 @@ class PlanetEleven(pyglet.window.Window):
             # Gathering resources
             for builder in builders_list:
                 if builder.mineral_to_gather:
-                    if is_melee_distance(builder, builder.to_gather_coord_x, builder.to_gather_coord_y):
-                        builder.gather()
-                        self.mineral_count += 0.01
-                        builder.mineral_to_gather.amount -= 0.01
+                    if not builder.is_gathering:
+                        if is_melee_distance(builder, builder.to_gather_coord_x, builder.to_gather_coord_y):
+                            builder.gather()
+                            builder.is_gathering = True
+                            builder.mineral_to_gather.workers.append(builder)
+                    else:
+                        builder.mineral_to_gather.amount -= 0.03
+                        self.mineral_count += 0.03
                         self.mineral_count_label.text = str(int(self.mineral_count))
             # Build buildings
             for builder in builders_list:
@@ -1152,11 +1186,18 @@ class PlanetEleven(pyglet.window.Window):
                     projectile.target_obj.hp -= projectile.damage
                     projectile.delete()
                     del projectile_list[i]
-
+            # Destroying minerals
+            minerals_to_del = []
+            for mineral in minerals:
+                if mineral.amount <= 0:
+                    mineral.kill()
+                    minerals_to_del.append(mineral)
+            for mineral in minerals_to_del:
+                minerals.remove(mineral)
             # Destroying targets
             for enemy in enemy_buildings_list:
                 if enemy.hp <= 0:
-                    enemy.kill()
+                    enemy.kill(delayed_del=True)
 
     def on_key_press(self, symbol, modifiers):
         """Called whenever a key is pressed. """

@@ -57,6 +57,7 @@ ground_shadows_batch = pyglet.graphics.Batch()
 air_shadows_batch = pyglet.graphics.Batch()
 turret_batch = pyglet.graphics.Batch()
 
+minerals = []
 LIST_OF_FLYING = ['defiler']
 our_units_list = []
 builders_list = []
@@ -100,3 +101,4 @@ def is_melee_distance(unit, target_x, target_y):
             return True
     elif unit.x == target_x and abs(unit.y - target_y) == POS_SPACE:
         return True
+    return False
