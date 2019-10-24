@@ -41,7 +41,7 @@ gen_pos_coords()
 
 
 def give_next_target(x, y, angle, flying):
-    print('give_next_target input:', x, y, angle)
+    # print('give_next_target input:', x, y, angle)
     if not flying:
         dict_to_check = ground_pos_coords_dict
     else:
@@ -121,11 +121,10 @@ class Mineral(pyglet.sprite.Sprite):
 
     def kill(self):
         for worker in self.workers:
-            worker.clear_task()
+            worker.stop()
         ground_pos_coords_dict[(self.x, self.y)] = None
         self.shadow.delete()
         self.delete()
-
 
 
 class Building(pyglet.sprite.Sprite):
@@ -293,9 +292,9 @@ class Unit(pyglet.sprite.Sprite):
                  batch=ground_units_batch):
         super().__init__(img=img, x=x, y=y, batch=batch)
         self.outer_instance = outer_instance
+        self.hp = hp
         self.x = x
         self.y = y
-        self.hp = hp
         self.vision_radius = vision_radius
         self.has_weapon = has_weapon
         self.damage = damage
@@ -346,7 +345,7 @@ class Unit(pyglet.sprite.Sprite):
     def move(self, destination):
         # Called once by RMB or when a unit is created
         destination_x, destination_y = destination[0], destination[1]
-        print('destination_x =', destination_x, 'destination_y =', destination_y)
+        # # print('destination_x =', destination_x, 'destination_y =', destination_y)
         # Not moving: same coords
         if self.x == destination_x and self.y == destination_y:
             if not self.flying:
@@ -365,7 +364,7 @@ class Unit(pyglet.sprite.Sprite):
         self.rotation = -math.degrees(angle) + 90
         self.shadow.rotation = -math.degrees(angle) + 90
         target = give_next_target(self.x, self.y, round_angle(d_angle), self.flying)
-        print('target =', target)
+        # print('target =', target)
         if target:  # If destination not reached and update_movement will be called (I think)
             self.target_x = target[0]
             self.target_y = target[1]
@@ -404,7 +403,7 @@ class Unit(pyglet.sprite.Sprite):
 
     def update_movement(self):
         # Called by update to move to the next point
-        print('\nupdate_movement: self.x = {}, self.y = {})'.format(self.x, self.y))
+        # print('\nupdate_movement: self.x = {}, self.y = {})'.format(self.x, self.y))
         if not self.flying:
             ground_pos_coords_dict[(self.x, self.y)] = None
         else:
@@ -416,7 +415,7 @@ class Unit(pyglet.sprite.Sprite):
         self.rotation = -d_angle + 90
         self.shadow.rotation = -math.degrees(angle) + 90
         next_target = give_next_target(self.x, self.y, round_angle(d_angle), self.flying)
-        print('next_target =', next_target)
+        # print('next_target =', next_target)
         if next_target:
             if not self.flying:
                 ground_pos_coords_dict[(self.x, self.y)] = None
@@ -446,10 +445,10 @@ class Unit(pyglet.sprite.Sprite):
                 air_pos_coords_dict[(self.x, self.y)] = self
             self.destination_reached = True
         if self.x == self.destination_x and self.y == self.destination_y:
-            print('Destination reached')
+            # print('Destination reached')
             self.destination_reached = True
-            print('self.destination_reached =', self.destination_reached)
-        print()
+            # print('self.destination_reached =', self.destination_reached)
+        # print()
 
     def shoot(self, frame_count, target_x, target_y, target_obj):
         global projectile_list
@@ -465,12 +464,20 @@ class Unit(pyglet.sprite.Sprite):
         self.cooldown_started = frame_count
         projectile_list.append(projectile)
 
-    def stop(self, x, y):
-        self.destination_x = self.target_x
-        self.destination_y = self.target_y
-        self.movement_interrupted = True
-        self.new_dest_x = x
-        self.new_dest_y = y
+    def stop(self, x=None, y=None):
+        if not x:
+            x = self.target_x
+            y = self.target_y
+        if not self.destination_reached:
+            self.destination_x = self.target_x
+            self.destination_y = self.target_y
+            self.movement_interrupted = True
+            self.new_dest_x = x
+            self.new_dest_y = y
+        try:
+            self.clear_task()
+        except AttributeError:
+            pass
 
     def kill(self, delay_del=False):
         self.pixel.delete()
@@ -485,48 +492,52 @@ class Unit(pyglet.sprite.Sprite):
 
 
 class Defiler(Unit):
+    cost = 250
     building_time = 10
 
     def __init__(self, outer_instance, x, y):
-        super().__init__(img=res.defiler_image, outer_instance=outer_instance, hp=100, vision_radius=6, damage=10,
-                         cooldown=60, speed=6, x=x, y=y, projectile_sprite='sprites/laser.png',
+        super().__init__(outer_instance=outer_instance, img=res.defiler_image, hp=100, vision_radius=6,
+                         damage=10, cooldown=60, speed=6, x=x, y=y, projectile_sprite='sprites/laser.png',
                          projectile_speed=5, batch=air_batch)
         self.flying = True
         self.shadow_sprite = res.defiler_shadow_image
 
 
 class Tank(Unit):
+    cost = 400
     building_time = 10
 
     def __init__(self, outer_instance, x, y):
-        super().__init__(img=res.tank_image, outer_instance=outer_instance, hp=100, vision_radius=6, damage=10,
-                         cooldown=60, speed=0.6, x=x, y=y, projectile_sprite='sprites/laser.png',
+        super().__init__(outer_instance=outer_instance, img=res.tank_image, hp=100, vision_radius=6,
+                         damage=10, cooldown=60, speed=0.6, x=x, y=y, projectile_sprite='sprites/laser.png',
                          projectile_speed=5)
         self.flying = False
         self.shadow_sprite = res.tank_shadow_image
 
 
 class Vulture(Unit):
+    cost = 150
     building_time = 10
 
     def __init__(self, outer_instance, x, y):
-        super().__init__(img=res.vulture_image, outer_instance=outer_instance, hp=50, vision_radius=3, damage=10,
-                         cooldown=60, speed=10, x=x, y=y, projectile_sprite='sprites/laser.png',
+        super().__init__(outer_instance=outer_instance, img=res.vulture_image, hp=50, vision_radius=3,
+                         damage=10, cooldown=60, speed=10, x=x, y=y, projectile_sprite='sprites/laser.png',
                          projectile_speed=5)
         self.flying = False
         self.shadow_sprite = res.vulture_shadow_image
 
 
 class Builder(Unit):
+    cost = 50
     building_time = 10
 
     def __init__(self, outer_instance, x, y):
-        super().__init__(img=res.builder_image, outer_instance=outer_instance, hp=10, vision_radius=2, damage=0,
-                         cooldown=60, speed=5, x=x, y=y, has_weapon=False, projectile_sprite='sprites/laser.png',
-                         projectile_speed=5)
+        super().__init__(outer_instance=outer_instance, img=res.builder_image, hp=10, vision_radius=2,
+                         damage=0, cooldown=60, speed=5, x=x, y=y, has_weapon=False,
+                         projectile_sprite='sprites/laser.png', projectile_speed=5)
         builders_list.append(self)
         self.flying = False
-        self.zap_sprite = outer_instance
+        self.outer_instance = outer_instance
         self.shadow_sprite = res.builder_shadow_image
         self.to_build = None
         self.mineral_to_gather = None
@@ -535,11 +546,16 @@ class Builder(Unit):
         self.is_gathering = False
 
         s0 = pyglet.image.load('sprites/zap1.png')
+        s0.anchor_y = 8
         s1 = pyglet.image.load('sprites/zap2.png')
+        s1.anchor_y = 8
         s2 = pyglet.image.load('sprites/zap3.png')
+        s2.anchor_y = 8
         sprites = [s0, s1, s2]
         anim = pyglet.image.Animation.from_image_sequence(sprites, 0.1, True)
-        self.zap_anim = pyglet.sprite.Sprite(anim)
+        self.zap_sprite = pyglet.sprite.Sprite(anim, self.x, self.y, batch=zap_batch)
+
+        self.zap_sprite.visible = False
 
     def build(self):
         self.destination_reached = True
@@ -551,6 +567,17 @@ class Builder(Unit):
         self.to_build = None
 
     def gather(self):
+        self.is_gathering = True
+        self.zap_sprite.x = self.x
+        self.zap_sprite.y = self.y
+        diff_x = self.task_x - self.x
+        diff_y = self.task_y - self.y
+        dist = (diff_x ** 2 + diff_y ** 2) ** 0.5
+        self.zap_sprite.scale_x = dist / POS_SPACE
+        angle = math.atan2(diff_y, diff_x)  # Rad
+        self.zap_sprite.rotation = -math.degrees(angle)
+        self.zap_sprite.visible = True
+        self.mineral_to_gather.workers.append(self)
         self.cycle_started = self.outer_instance.frame_count
 
     def clear_task(self):
@@ -559,6 +586,7 @@ class Builder(Unit):
         self.task_x = None
         self.task_y = None
         self.is_gathering = False
+        self.zap_sprite.visible = False
 
 
 class PlanetEleven(pyglet.window.Window):
@@ -595,7 +623,7 @@ class PlanetEleven(pyglet.window.Window):
     def reset(self):
         self.clear_level()
         self.setup()
-        print('reset')
+        # print('reset')
 
     def save(self):
         savefile = open("save.p", "wb")
@@ -689,7 +717,7 @@ class PlanetEleven(pyglet.window.Window):
             pickle.dump(projectile.velocity_x, savefile)
             pickle.dump(projectile.velocity_y, savefile)
 
-        print('saved')
+        # print('saved')
 
     def load(self):
         global left_view_border, bottom_view_border, minimap_fow_x, minimap_fow_y
@@ -808,17 +836,17 @@ class PlanetEleven(pyglet.window.Window):
             projectile.rotation = rotation
             projectile.velocity_x = velocity_x
             projectile.velocity_y = velocity_y
-            print('target_x =', target_x)
-            print('target_y =', target_y)
+            # print('target_x =', target_x)
+            # print('target_y =', target_y)
             for building in enemy_buildings_list:
-                print('building.x =', building.x)
-                print('building.y =', building.y)
+                # print('building.x =', building.x)
+                # print('building.y =', building.y)
                 if building.x == target_x and building.y == target_y:
                     projectile.target_obj = building
                     break
-            print(projectile.target_obj)
+            # print(projectile.target_obj)
 
-        print('loaded')
+        # print('loaded')
 
     def setup(self):
         global selected
@@ -845,7 +873,7 @@ class PlanetEleven(pyglet.window.Window):
         self.npa = np.fromstring(self.minimap_fow_ImageData.get_data('RGBA', self.minimap_fow_ImageData.width * 4),
                                  dtype=np.uint8)
         self.npa = self.npa.reshape((102, 102, 4))
-        self.mineral_count = 500
+        self.mineral_count = 50000
         self.mineral_count_label = pyglet.text.Label(str(self.mineral_count), x=SCREEN_WIDTH - 200, y=SCREEN_HEIGHT - 30)
 
 
@@ -941,6 +969,7 @@ class PlanetEleven(pyglet.window.Window):
 
         self.background.draw()
         ground_shadows_batch.draw()
+        zap_batch.draw()
         buildings_batch.draw()
         ground_units_batch.draw()
         turret_batch.draw()
@@ -1061,7 +1090,7 @@ class PlanetEleven(pyglet.window.Window):
                                     unit.move((building.rally_point_x, building.rally_point_y))
                             else:
                                 building.building_start_time += 1
-                                print('No space')
+                                # print('No space')
 
                 except AttributeError:
                     pass
@@ -1070,10 +1099,8 @@ class PlanetEleven(pyglet.window.Window):
             for builder in builders_list:
                 if builder.mineral_to_gather:
                     if not builder.is_gathering:
-                        if is_melee_distance(builder, builder.to_gather_coord_x, builder.to_gather_coord_y):
+                        if is_melee_distance(builder, builder.task_x, builder.task_y):
                             builder.gather()
-                            builder.is_gathering = True
-                            builder.mineral_to_gather.workers.append(builder)
                     else:
                         builder.mineral_to_gather.amount -= 0.03
                         self.mineral_count += 0.03
@@ -1193,6 +1220,8 @@ class PlanetEleven(pyglet.window.Window):
             minerals_to_del = []
             for mineral in minerals:
                 if mineral.amount <= 0:
+                    for worker in mineral.workers:
+                        worker.stop()
                     mineral.kill()
                     minerals_to_del.append(mineral)
             for mineral in minerals_to_del:
@@ -1200,7 +1229,7 @@ class PlanetEleven(pyglet.window.Window):
             # Destroying targets
             for enemy in enemy_buildings_list:
                 if enemy.hp <= 0:
-                    enemy.kill(delayed_del=True)
+                    enemy.kill(delay_del=False)
 
     def on_key_press(self, symbol, modifiers):
         """Called whenever a key is pressed. """
@@ -1214,9 +1243,10 @@ class PlanetEleven(pyglet.window.Window):
                 self.set_fullscreen(True)
         if not self.paused:
             if symbol == key.S:
-                if selected in our_units_list:
-                    selected.destination_x = selected.target_x
-                    selected.destination_y = selected.target_y
+                try:
+                    selected.stop()
+                except AttributeError:
+                    pass
             elif symbol == key.F1:
                 self.reset()
             elif symbol == key.F2:
@@ -1236,13 +1266,16 @@ class PlanetEleven(pyglet.window.Window):
                 bottom_view_border += POS_SPACE
                 self.update_viewport()
             elif symbol == key.G:
-                print(selected)
+                # print(selected)
+                pass
             elif symbol == key.H:
                 for _key, _value in ground_pos_coords_dict.items():
                     if _value:
-                        print('key =', _key, 'value =', _value)
+                        # print('key =', _key, 'value =', _value)
+                        pass
             elif symbol == key.J:
-                print(selected.is_big)
+                # print(selected.is_big)
+                pass
             # elif symbol == key.Z:
             #     i = 0
             #     for _key, value in ground_pos_coords_dict.items():
@@ -1264,7 +1297,7 @@ class PlanetEleven(pyglet.window.Window):
                     for unit in our_units_list:
                         if unit_id == id(unit):
                             unit.kill()
-                print(len(our_units_list))
+                # print(len(our_units_list))
             elif symbol == key.DELETE:
                 if selected in our_units_list:
                     selected.kill()
@@ -1296,7 +1329,7 @@ class PlanetEleven(pyglet.window.Window):
                 if x < SCREEN_WIDTH - 139:
                     x, y = round_coords(x, y)
                     x, y = mc(x=x, y=y)
-                    print('\nglobal click coords:', x, y)
+                    # print('\nglobal click coords:', x, y)
                     if button == mouse.LEFT:
                         # Selection
                         selected = None
@@ -1338,7 +1371,7 @@ class PlanetEleven(pyglet.window.Window):
                             self.control_buttons_to_render = self.controls_dict[str(type(selected))]
                         except KeyError:
                             pass
-                        print('SELECTED CLASS =', type(selected))
+                        # print('SELECTED CLASS =', type(selected))
                     elif button == mouse.RIGHT:
                         # Rally point
                         if selected in our_buildings_list:
@@ -1352,7 +1385,7 @@ class PlanetEleven(pyglet.window.Window):
                                 selected.default_rally_point = False
                                 self.rally_point_sprite.x = x
                                 self.rally_point_sprite.y = y
-                            print('Rally set to ({}, {})'.format(x, y))
+                            # print('Rally set to ({}, {})'.format(x, y))
                         # A unit is selected
                         else:
                             for unit in our_units_list:
@@ -1363,13 +1396,13 @@ class PlanetEleven(pyglet.window.Window):
                                     else:
                                         unit.stop(x, y)
                             if str(type(selected)) == "<class '__main__.Builder'>":
-                                selected.mineral_to_gather = None
+                                selected.clear_task()
                                 obj = ground_pos_coords_dict[(x, y)]
                                 if str(type(obj)) == "<class '__main__.Mineral'>":
-                                    print('go gather, lazy worker!')
+                                    # print('go gather, lazy worker!')
                                     selected.mineral_to_gather = obj
-                                    selected.to_gather_coord_x = obj.x
-                                    selected.to_gather_coord_y = obj.y
+                                    selected.task_x = obj.x
+                                    selected.task_y = obj.y
                 # Minimap
                 elif MINIMAP_ZERO_COORDS[0] <= x <= MINIMAP_ZERO_COORDS[0] + 100 and \
                         MINIMAP_ZERO_COORDS[1] <= y <= MINIMAP_ZERO_COORDS[1] + 100:
@@ -1402,41 +1435,49 @@ class PlanetEleven(pyglet.window.Window):
                                 selected.rally_point_y = y
                                 self.rally_point_sprite.x = x
                                 self.rally_point_sprite.y = y
-                                print('Rally set to ({}, {})'.format(x, y))
+                                # print('Rally set to ({}, {})'.format(x, y))
 
                 # Control panel other
                 else:
                     x, y = mc(x=x, y=y)
-                    print('x =', x, 'y =', y)
+                    # print('x =', x, 'y =', y)
                     w = self.menu_button.width
                     h = self.menu_button.height
                     if self.menu_button.x - w // 2 <= x <= self.menu_button.x + w // 2 and \
                             self.menu_button.y - h // 2 <= y <= self.menu_button.y + h // 2:
-                        print('SDFSDFSDFSDFSDF')
+                        pass
 
                     # Build units
                     if selected in our_buildings_list:
                         # Create defiler
                         if self.defiler_button.x - 16 <= x <= self.defiler_button.x + 16 and \
                                 self.defiler_button.y - 16 <= y <= self.defiler_button.y + 16:
+                            self.mineral_count -= Defiler.cost
+                            self.mineral_count_label.text = str(self.mineral_count)
                             selected.building_queue.append('defiler')
                             if len(selected.building_queue) == 1:
                                 selected.building_start_time = self.frame_count
                         # Create tank
                         elif self.tank_button.x - 16 <= x <= self.tank_button.x + 16 and \
                                 self.tank_button.y - 16 <= y <= self.tank_button.y + 16:
+                            self.mineral_count -= Tank.cost
+                            self.mineral_count_label.text = str(self.mineral_count)
                             selected.building_queue.append('tank')
                             if len(selected.building_queue) == 1:
                                 selected.building_start_time = self.frame_count
                         # Create vulture
                         elif self.vulture_button.x - 16 <= x <= self.vulture_button.x + 16 and \
                                 self.vulture_button.y - 16 <= y <= self.vulture_button.y + 16:
+                            self.mineral_count -= Vulture.cost
+                            self.mineral_count_label.text = str(self.mineral_count)
                             selected.building_queue.append('vulture')
                             if len(selected.building_queue) == 1:
                                 selected.building_start_time = self.frame_count
                         # Create builder
                         elif self.builder_button.x - 16 <= x <= self.builder_button.x + 16 and \
                                 self.builder_button.y - 16 <= y <= self.builder_button.y + 16:
+                            self.mineral_count -= Builder.cost
+                            self.mineral_count_label.text = str(self.mineral_count)
                             selected.building_queue.append('builder')
                             if len(selected.building_queue) == 1:
                                 selected.building_start_time = self.frame_count
@@ -1445,8 +1486,7 @@ class PlanetEleven(pyglet.window.Window):
                         # Stop
                         if self.stop_button.x - 16 <= x <= self.stop_button.x + 16 and \
                                 self.stop_button.y - 16 <= y <= self.stop_button.y + 16:
-                            selected.destination_x = selected.target_x
-                            selected.destination_y = selected.target_y
+                            selected.stop()
                         # Attack
                         # Build
                         if str(type(selected)) == "<class '__main__.Builder'>":
@@ -1567,7 +1607,7 @@ class PlanetEleven(pyglet.window.Window):
     # def on_mouse_motion(self, x, y, dx, dy):
     #     global left_view_border, bottom_view_border
     #     if TOP_SCREEN_SCROLL_ZONE[0] <= y <= TOP_SCREEN_SCROLL_ZONE[1]:
-    #         print('sdfsdfs')
+    #         # print('sdfsdfs')
     #         bottom_view_border += POS_SPACE
     #         self.update_viewport()
 
