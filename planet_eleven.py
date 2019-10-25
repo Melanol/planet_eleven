@@ -267,13 +267,18 @@ class AttackingBuilding(Building):
         self.projectile_sprite = res.projectile_image
         self.projectile_speed = 10
         self.projectile_color = (255, 0, 0)
+        self.has_target_p = False
+        self.target_p = None
+        self.target_p_x = None
+        self.target_p_y = None
 
-    def shoot(self, frame_count, target_x, target_y, target_obj):
+    def shoot(self, frame_count):
         global projectile_list
-        projectile = Projectile(self.x, self.y, target_x, target_y, self.damage, self.projectile_speed, target_obj,
-                                color=(200, 200, 255))
-        x_diff = target_x - self.x
-        y_diff = target_y - self.y
+        projectile = Projectile(x=self.x, y=self.y,
+                                target_x=self.target_p.x, target_y=self.target_p.y,
+                                damage=self.damage, speed=self.projectile_speed, target_obj=self.target_p)
+        x_diff = self.target_p.x - self.x
+        y_diff = self.target_p.y - self.y
         angle = -math.degrees(math.atan2(y_diff, x_diff)) + 90
         self.rotating_sprite.rotation = angle
         self.on_cooldown = True
@@ -469,13 +474,13 @@ class Unit(pyglet.sprite.Sprite):
             # print('self.destination_reached =', self.destination_reached)
         # print()
 
-    def shoot(self, frame_count, target_x, target_y):
+    def shoot(self, frame_count):
         global projectile_list
         projectile = Projectile(x=self.x, y=self.y,
-                                target_x=target_x, target_y=target_y,
+                                target_x=self.target_p.x, target_y=self.target_p.y,
                                 damage=self.damage, speed=self.projectile_speed, target_obj=self.target_p)
-        x_diff = target_x - self.x
-        y_diff = target_y - self.y
+        x_diff = self.target_p.x - self.x
+        y_diff = self.target_p.y - self.y
         angle = -math.degrees(math.atan2(y_diff, x_diff)) + 90
         self.rotation = angle
         self.shadow.rotation = angle
@@ -1210,27 +1215,34 @@ class PlanetEleven(pyglet.window.Window):
                                 unit.target_p_y = closest_enemy.y
                                 unit.target_p.attackers.append(unit)
                         else:
-                            unit.shoot(self.frame_count, unit.target_p_x, unit.target_p_y)
+                            unit.shoot(self.frame_count)
                     else:
                         if (self.frame_count - unit.cooldown_started) % unit.cooldown == 0:
                             unit.on_cooldown = False
             # Buildings shooting
             for building in shooting_buildings_list:
                 if not building.on_cooldown:
-                    closest_enemy = None
-                    closest_enemy_dist = None
-                    for enemy in enemy_buildings_list:
-                        distance_to_enemy = ((enemy.x - building.x) ** 2 + (enemy.y - building.y) ** 2) ** 0.5
-                        if distance_to_enemy <= building.shooting_radius:
-                            if not closest_enemy:
-                                closest_enemy = enemy
-                                closest_enemy_dist = distance_to_enemy
-                            else:
-                                if distance_to_enemy < closest_enemy_dist:
+                    if not building.has_target_p:
+                        closest_enemy = None
+                        closest_enemy_dist = None
+                        for enemy in enemy_buildings_list:
+                            distance_to_enemy = ((enemy.x - building.x) ** 2 + (enemy.y - building.y) ** 2) ** 0.5
+                            if distance_to_enemy <= building.shooting_radius:
+                                if not closest_enemy:
                                     closest_enemy = enemy
                                     closest_enemy_dist = distance_to_enemy
-                    if closest_enemy:
-                        building.shoot(self.frame_count, closest_enemy.x, closest_enemy.y, closest_enemy)
+                                else:
+                                    if distance_to_enemy < closest_enemy_dist:
+                                        closest_enemy = enemy
+                                        closest_enemy_dist = distance_to_enemy
+                        if closest_enemy:
+                            building.has_target_p = True
+                            building.target_p = closest_enemy
+                            building.target_p_x = closest_enemy.x
+                            building.target_p_y = closest_enemy.y
+                            building.target_p.attackers.append(building)
+                    else:
+                        building.shoot(self.frame_count)
                 else:
                     if (self.frame_count - building.cooldown_started) % building.cooldown == 0:
                         building.on_cooldown = False
