@@ -40,6 +40,17 @@ def gen_pos_coords():
 gen_pos_coords()
 
 
+def order(outer_instance, unit):
+    if outer_instance.mineral_count - unit.cost >= 0:
+        outer_instance.mineral_count -= unit.cost
+        outer_instance.mineral_count_label.text = str(int(outer_instance.mineral_count))
+        selected.building_queue.append(unit)
+        if len(selected.building_queue) == 1:
+            selected.building_start_time = outer_instance.frame_count
+    else:
+        print("Not enough minerals")
+
+
 def give_next_target(x, y, angle, flying):
     # print('give_next_target input:', x, y, angle)
     if not flying:
@@ -135,6 +146,7 @@ class Building(pyglet.sprite.Sprite):
         ground_pos_coords_dict[(x, y)] = self
         self.default_rally_point = True
         self.is_enemy = is_enemy
+        self.attackers = []
         if not self.is_enemy:
             our_buildings_list.append(self)
             img = our_img
@@ -159,6 +171,8 @@ class Building(pyglet.sprite.Sprite):
                 del our_buildings_list[our_buildings_list.index(self)]
             else:
                 del enemy_buildings_list[enemy_buildings_list.index(self)]
+        for attacker in self.attackers:
+            attacker.has_target_p = False
         self.delete()
 
 
@@ -310,12 +324,17 @@ class Unit(pyglet.sprite.Sprite):
         self.destination_y = None
         self.velocity_x = 0
         self.velocity_y = 0
+        self.has_target_p = False
+        self.target_p = None
+        self.target_p_x = None
+        self.target_p_y = None
         self.cooldown = cooldown
         self.on_cooldown = False
         self.cooldown_started = None
         self.projectile_sprite = projectile_sprite
         self.projectile_speed = projectile_speed
         self.projectile_color = projectile_color
+        self.attackers = []
 
     def spawn(self):
         if not self.flying:
@@ -450,11 +469,11 @@ class Unit(pyglet.sprite.Sprite):
             # print('self.destination_reached =', self.destination_reached)
         # print()
 
-    def shoot(self, frame_count, target_x, target_y, target_obj):
+    def shoot(self, frame_count, target_x, target_y):
         global projectile_list
         projectile = Projectile(x=self.x, y=self.y,
                                 target_x=target_x, target_y=target_y,
-                                damage=self.damage, speed=self.projectile_speed, target_obj=target_obj)
+                                damage=self.damage, speed=self.projectile_speed, target_obj=self.target_p)
         x_diff = target_x - self.x
         y_diff = target_y - self.y
         angle = -math.degrees(math.atan2(y_diff, x_diff)) + 90
@@ -873,7 +892,7 @@ class PlanetEleven(pyglet.window.Window):
         self.npa = np.fromstring(self.minimap_fow_ImageData.get_data('RGBA', self.minimap_fow_ImageData.width * 4),
                                  dtype=np.uint8)
         self.npa = self.npa.reshape((102, 102, 4))
-        self.mineral_count = 50000
+        self.mineral_count = 5000
         self.mineral_count_label = pyglet.text.Label(str(self.mineral_count), x=SCREEN_WIDTH - 200, y=SCREEN_HEIGHT - 30)
 
 
@@ -1030,19 +1049,20 @@ class PlanetEleven(pyglet.window.Window):
                 try:
                     if building.building_queue:
                         unit = building.building_queue[0]
-                        if unit == 'defiler':
+                        if str(unit) == "<class '__main__.Defiler'>":
                             building.current_building_time = Defiler.building_time
-                        elif unit == 'tank':
+                        elif str(unit) == "<class '__main__.Tank'>":
                             building.current_building_time = Tank.building_time
-                        elif unit == 'vulture':
+                        elif str(unit) == "<class '__main__.Vulture'>":
                             building.current_building_time = Vulture.building_time
-                        elif unit == 'builder':
+                        elif str(unit) == "<class '__main__.Builder'>":
                             building.current_building_time = Builder.building_time
                         if self.frame_count - building.building_start_time == building.current_building_time:
-                            if building.building_queue[0] not in LIST_OF_FLYING:
+                            if str(building.building_queue[0]) not in LIST_OF_FLYING:
                                 dict_to_check = ground_pos_coords_dict
                             else:
                                 dict_to_check = air_pos_coords_dict
+                            # Searching for a place to build
                             x = building.x - POS_SPACE
                             y = building.y - POS_SPACE
                             org_x = x
@@ -1073,16 +1093,16 @@ class PlanetEleven(pyglet.window.Window):
                                     break
                             if place_found:
                                 unit = building.building_queue.pop(0)
-                                if unit == 'defiler':
+                                if str(unit) == "<class '__main__.Defiler'>":
                                     unit = Defiler(self, x=x, y=y)
                                     unit.spawn()
-                                elif unit == 'tank':
+                                elif str(unit) == "<class '__main__.Tank'>":
                                     unit = Tank(self, x=x, y=y)
                                     unit.spawn()
-                                elif unit == 'vulture':
+                                elif str(unit) == "<class '__main__.Vulture'>":
                                     unit = Vulture(self, x=x, y=y)
                                     unit.spawn()
-                                elif unit == 'builder':
+                                elif str(unit) == "<class '__main__.Builder'>":
                                     unit = Builder(self, x=x, y=y)
                                     unit.spawn()
                                 building.building_start_time += building.current_building_time
@@ -1168,9 +1188,9 @@ class PlanetEleven(pyglet.window.Window):
                         pass
             # Units shooting
             for unit in our_units_list:
-                if unit.has_weapon:
-                    if unit.destination_reached:
-                        if not unit.on_cooldown:
+                if unit.has_weapon and unit.destination_reached:
+                    if not unit.on_cooldown:
+                        if not unit.has_target_p:
                             closest_enemy = None
                             closest_enemy_dist = None
                             for enemy in enemy_buildings_list:
@@ -1184,10 +1204,16 @@ class PlanetEleven(pyglet.window.Window):
                                             closest_enemy = enemy
                                             closest_enemy_dist = distance_to_enemy
                             if closest_enemy:
-                                unit.shoot(self.frame_count, closest_enemy.x, closest_enemy.y, closest_enemy)
+                                unit.has_target_p = True
+                                unit.target_p = closest_enemy
+                                unit.target_p_x = closest_enemy.x
+                                unit.target_p_y = closest_enemy.y
+                                unit.target_p.attackers.append(unit)
                         else:
-                            if (self.frame_count - unit.cooldown_started) % unit.cooldown == 0:
-                                unit.on_cooldown = False
+                            unit.shoot(self.frame_count, unit.target_p_x, unit.target_p_y)
+                    else:
+                        if (self.frame_count - unit.cooldown_started) % unit.cooldown == 0:
+                            unit.on_cooldown = False
             # Buildings shooting
             for building in shooting_buildings_list:
                 if not building.on_cooldown:
@@ -1229,7 +1255,7 @@ class PlanetEleven(pyglet.window.Window):
             # Destroying targets
             for enemy in enemy_buildings_list:
                 if enemy.hp <= 0:
-                    enemy.kill(delay_del=False)
+                    enemy.kill()
 
     def on_key_press(self, symbol, modifiers):
         """Called whenever a key is pressed. """
@@ -1452,35 +1478,19 @@ class PlanetEleven(pyglet.window.Window):
                         # Create defiler
                         if self.defiler_button.x - 16 <= x <= self.defiler_button.x + 16 and \
                                 self.defiler_button.y - 16 <= y <= self.defiler_button.y + 16:
-                            self.mineral_count -= Defiler.cost
-                            self.mineral_count_label.text = str(self.mineral_count)
-                            selected.building_queue.append('defiler')
-                            if len(selected.building_queue) == 1:
-                                selected.building_start_time = self.frame_count
+                            order(self, Defiler)
                         # Create tank
                         elif self.tank_button.x - 16 <= x <= self.tank_button.x + 16 and \
                                 self.tank_button.y - 16 <= y <= self.tank_button.y + 16:
-                            self.mineral_count -= Tank.cost
-                            self.mineral_count_label.text = str(self.mineral_count)
-                            selected.building_queue.append('tank')
-                            if len(selected.building_queue) == 1:
-                                selected.building_start_time = self.frame_count
+                            order(self, Tank)
                         # Create vulture
                         elif self.vulture_button.x - 16 <= x <= self.vulture_button.x + 16 and \
                                 self.vulture_button.y - 16 <= y <= self.vulture_button.y + 16:
-                            self.mineral_count -= Vulture.cost
-                            self.mineral_count_label.text = str(self.mineral_count)
-                            selected.building_queue.append('vulture')
-                            if len(selected.building_queue) == 1:
-                                selected.building_start_time = self.frame_count
+                            order(self, Vulture)
                         # Create builder
                         elif self.builder_button.x - 16 <= x <= self.builder_button.x + 16 and \
                                 self.builder_button.y - 16 <= y <= self.builder_button.y + 16:
-                            self.mineral_count -= Builder.cost
-                            self.mineral_count_label.text = str(self.mineral_count)
-                            selected.building_queue.append('builder')
-                            if len(selected.building_queue) == 1:
-                                selected.building_start_time = self.frame_count
+                            order(self, Builder)
                     elif selected in our_units_list:
                         # Move
                         # Stop
