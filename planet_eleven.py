@@ -45,9 +45,7 @@ class Node:
     def __init__(self, parent=None, pos=None):
         self.parent = parent
         self.pos = pos
-
         self.g = 0
-        self.h = 0
         self.f = 0
 
     def __eq__(self, other):
@@ -59,9 +57,9 @@ def astar(maze, start, end):
 
     # Create start and end node
     start_node = Node(None, start)
-    start_node.g = start_node.h = start_node.f = 0
+    start_node.g = start_node.f = 0
     end_node = Node(None, end)
-    end_node.g = end_node.h = end_node.f = 0
+    end_node.g = end_node.f = 0
 
     # open_list is where you can go now
     open_list = [start_node]
@@ -86,10 +84,9 @@ def astar(maze, start, end):
         # Return path
         if current_node == end_node:
             path = []
-            current = current_node
-            while current is not None:
-                path.append(current.pos)
-                current = current.parent
+            while current_node:
+                path.append(current_node.pos)
+                current_node = current_node.parent
             return path[::-1]  # Return reversed path
 
         # Generate children
@@ -99,7 +96,7 @@ def astar(maze, start, end):
             # Get node position
             node_pos = (current_node.pos[0] + new_pos[0], current_node.pos[1] + new_pos[1])
 
-            # Make sure within range
+            # Make sure within range. Strange code
             if node_pos[0] > (len(maze) - 1) or node_pos[0] < 0 \
                     or node_pos[1] > (len(maze[len(maze)-1]) - 1) or node_pos[1] < 0:
                 continue
@@ -123,8 +120,7 @@ def astar(maze, start, end):
 
             # Create the f, g, and h values
             child.g = current_node.g + 1
-            child.h = (child.pos[0] - end_node.pos[0]) ** 2 + (child.pos[1] - end_node.pos[1]) ** 2
-            child.f = child.g + child.h
+            child.f = child.g + (child.pos[0] - end_node.pos[0]) ** 2 + (child.pos[1] - end_node.pos[1]) ** 2
 
             # Child is already in the open list
             if child in open_list:
