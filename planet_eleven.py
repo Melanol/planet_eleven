@@ -65,7 +65,7 @@ def astar(maze, start, end):
 
     # open_list is where you can go now
     open_list = [start_node]
-    # closed_list is where we were already
+    # closed_list is where we already were
     closed_list = []
 
     # Loop until you find the end
@@ -161,7 +161,6 @@ def find_path(start=(5, 5), end=(6, 7)):
     map = convert_map()
     print('map converted to simple')
     path = astar(map, start, end)
-    print(node_counter)
     print('path =', path)
     converted_path = []
     for x, y in path:
