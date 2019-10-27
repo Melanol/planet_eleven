@@ -1,5 +1,3 @@
-# This shit is not working
-
 class Node:
     """A node class for A* Pathfinding"""
 
@@ -57,13 +55,14 @@ def astar(maze, start, end):
 
         # Generate children
         children = []
-        for new_position in [(0, -1), (0, 1), (-1, 0), (1, 0), (-1, -1), (-1, 1), (1, -1), (1, 1)]: # Adjacent squares
+        for new_position in [(0, -1), (0, 1), (-1, 0), (1, 0), (-1, -1), (-1, 1), (1, -1), (1, 1)]:  # Adjacent squares
 
             # Get node position
             node_position = (current_node.position[0] + new_position[0], current_node.position[1] + new_position[1])
 
             # Make sure within range
-            if node_position[0] > (len(maze) - 1) or node_position[0] < 0 or node_position[1] > (len(maze[len(maze)-1]) -1) or node_position[1] < 0:
+            if node_position[0] > (len(maze) - 1) or node_position[0] < 0 \
+                    or node_position[1] > (len(maze[len(maze)-1]) -1) or node_position[1] < 0:
                 continue
 
             # Make sure walkable terrain
@@ -99,18 +98,6 @@ def astar(maze, start, end):
 
 
 def main():
-
-    maze = [[0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
-
     maze = [[0, 0, 0, 0],
             [0, 1, 0, 0],
             [0, 1, 0, 0],
