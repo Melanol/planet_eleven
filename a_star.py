@@ -1,16 +1,21 @@
+node_counter = 0
+
+
 class Node:
     """A node class for A* Pathfinding"""
 
-    def __init__(self, parent=None, position=None):
+    def __init__(self, parent=None, pos=None):
+        global node_counter
+        node_counter += 1
         self.parent = parent
-        self.position = position
+        self.pos = pos
 
         self.g = 0
         self.h = 0
         self.f = 0
 
     def __eq__(self, other):
-        return self.position == other.position
+        return self.pos == other.pos
 
 
 def astar(maze, start, end):
@@ -22,17 +27,15 @@ def astar(maze, start, end):
     end_node = Node(None, end)
     end_node.g = end_node.h = end_node.f = 0
 
-    # Initialize both open and closed list
-    open_list = []
+    # open_list is where you can go now
+    open_list = [start_node]
+    # closed_list is where we were already
     closed_list = []
-
-    # Add the start node
-    open_list.append(start_node)
 
     # Loop until you find the end
     while len(open_list) > 0:
 
-        # Get the current node
+        # Get the current node. Which is the node with lowest f of the entire open_list
         current_node = open_list[0]
         current_index = 0
         for index, item in enumerate(open_list):
@@ -40,37 +43,37 @@ def astar(maze, start, end):
                 current_node = item
                 current_index = index
 
-        # Pop current off open list, add to closed list
+        # Pop current off open_list, add to closed list
         open_list.pop(current_index)
         closed_list.append(current_node)
 
-        # Found the goal
+        # Return path
         if current_node == end_node:
             path = []
             current = current_node
             while current is not None:
-                path.append(current.position)
+                path.append(current.pos)
                 current = current.parent
-            return path[::-1] # Return reversed path
+            return path[::-1]  # Return reversed path
 
         # Generate children
         children = []
-        for new_position in [(0, -1), (0, 1), (-1, 0), (1, 0), (-1, -1), (-1, 1), (1, -1), (1, 1)]:  # Adjacent squares
+        for new_pos in [(0, -1), (0, 1), (-1, 0), (1, 0), (-1, -1), (-1, 1), (1, -1), (1, 1)]:  # Adjacent squares
 
             # Get node position
-            node_position = (current_node.position[0] + new_position[0], current_node.position[1] + new_position[1])
+            node_pos = (current_node.pos[0] + new_pos[0], current_node.pos[1] + new_pos[1])
 
             # Make sure within range
-            if node_position[0] > (len(maze) - 1) or node_position[0] < 0 \
-                    or node_position[1] > (len(maze[len(maze)-1]) -1) or node_position[1] < 0:
+            if node_pos[0] > (len(maze) - 1) or node_pos[0] < 0 \
+                    or node_pos[1] > (len(maze[len(maze)-1]) -1) or node_pos[1] < 0:
                 continue
 
             # Make sure walkable terrain
-            if maze[node_position[0]][node_position[1]] != 0:
+            if maze[node_pos[0]][node_pos[1]] != 0:
                 continue
 
             # Create new node
-            new_node = Node(current_node, node_position)
+            new_node = Node(current_node, node_pos)
 
             # Append
             children.append(new_node)
@@ -79,19 +82,17 @@ def astar(maze, start, end):
         for child in children:
 
             # Child is on the closed list
-            for closed_child in closed_list:
-                if child == closed_child:
-                    continue
+            if child in closed_list:
+                continue
 
             # Create the f, g, and h values
             child.g = current_node.g + 1
-            child.h = ((child.position[0] - end_node.position[0]) ** 2) + ((child.position[1] - end_node.position[1]) ** 2)
+            child.h = (child.pos[0] - end_node.pos[0]) ** 2 + (child.pos[1] - end_node.pos[1]) ** 2
             child.f = child.g + child.h
 
             # Child is already in the open list
-            for open_node in open_list:
-                if child == open_node and child.g > open_node.g:
-                    continue
+            if child in open_list:
+                continue
 
             # Add the child to the open list
             open_list.append(child)
@@ -103,10 +104,16 @@ def main():
             [0, 1, 0, 0],
             [0, 1, 0, 0]]
 
+    maze = []
+    row = [0] * 100
+    for _ in range(100):
+        maze.append(row)
+    # print(maze)
     start = (0, 0)
     end = (3, 3)
 
     path = astar(maze, start, end)
+    print(node_counter)
     print(path)
 
 

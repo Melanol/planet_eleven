@@ -22,7 +22,6 @@ POS_COORDS = []
 ground_pos_coords_dict = {}
 air_pos_coords_dict = {}
 
-
 def gen_pos_coords():
     global POS_COORDS, ground_pos_coords_dict, air_pos_coords_dict
     POS_COORDS = []
@@ -43,16 +42,16 @@ gen_pos_coords()
 class Node:
     """A node class for A* Pathfinding"""
 
-    def __init__(self, parent=None, position=None):
+    def __init__(self, parent=None, pos=None):
         self.parent = parent
-        self.position = position
+        self.pos = pos
 
         self.g = 0
         self.h = 0
         self.f = 0
 
     def __eq__(self, other):
-        return self.position == other.position
+        return self.pos == other.pos
 
 
 def astar(maze, start, end):
@@ -64,17 +63,15 @@ def astar(maze, start, end):
     end_node = Node(None, end)
     end_node.g = end_node.h = end_node.f = 0
 
-    # Initialize both open and closed list
-    open_list = []
+    # open_list is where you can go now
+    open_list = [start_node]
+    # closed_list is where we were already
     closed_list = []
-
-    # Add the start node
-    open_list.append(start_node)
 
     # Loop until you find the end
     while len(open_list) > 0:
 
-        # Get the current node
+        # Get the current node. Which is the node with lowest f of the entire open_list
         current_node = open_list[0]
         current_index = 0
         for index, item in enumerate(open_list):
@@ -82,37 +79,37 @@ def astar(maze, start, end):
                 current_node = item
                 current_index = index
 
-        # Pop current off open list, add to closed list
+        # Pop current off open_list, add to closed list
         open_list.pop(current_index)
         closed_list.append(current_node)
 
-        # Found the goal
+        # Return path
         if current_node == end_node:
             path = []
             current = current_node
             while current is not None:
-                path.append(current.position)
+                path.append(current.pos)
                 current = current.parent
-            return path[::-1] # Return reversed path
+            return path[::-1]  # Return reversed path
 
         # Generate children
         children = []
-        for new_position in [(0, -1), (0, 1), (-1, 0), (1, 0), (-1, -1), (-1, 1), (1, -1), (1, 1)]:  # Adjacent squares
+        for new_pos in [(0, -1), (0, 1), (-1, 0), (1, 0), (-1, -1), (-1, 1), (1, -1), (1, 1)]:  # Adjacent squares
 
             # Get node position
-            node_position = (current_node.position[0] + new_position[0], current_node.position[1] + new_position[1])
+            node_pos = (current_node.pos[0] + new_pos[0], current_node.pos[1] + new_pos[1])
 
             # Make sure within range
-            if node_position[0] > (len(maze) - 1) or node_position[0] < 0 \
-                    or node_position[1] > (len(maze[len(maze)-1]) -1) or node_position[1] < 0:
+            if node_pos[0] > (len(maze) - 1) or node_pos[0] < 0 \
+                    or node_pos[1] > (len(maze[len(maze)-1]) - 1) or node_pos[1] < 0:
                 continue
 
             # Make sure walkable terrain
-            if maze[node_position[0]][node_position[1]] != 0:
+            if maze[node_pos[0]][node_pos[1]] != 0:
                 continue
 
             # Create new node
-            new_node = Node(current_node, node_position)
+            new_node = Node(current_node, node_pos)
 
             # Append
             children.append(new_node)
@@ -121,19 +118,17 @@ def astar(maze, start, end):
         for child in children:
 
             # Child is on the closed list
-            for closed_child in closed_list:
-                if child == closed_child:
-                    continue
+            if child in closed_list:
+                continue
 
             # Create the f, g, and h values
             child.g = current_node.g + 1
-            child.h = ((child.position[0] - end_node.position[0]) ** 2) + ((child.position[1] - end_node.position[1]) ** 2)
+            child.h = (child.pos[0] - end_node.pos[0]) ** 2 + (child.pos[1] - end_node.pos[1]) ** 2
             child.f = child.g + child.h
 
             # Child is already in the open list
-            for open_node in open_list:
-                if child == open_node and child.g > open_node.g:
-                    continue
+            if child in open_list:
+                continue
 
             # Add the child to the open list
             open_list.append(child)
@@ -155,12 +150,26 @@ def convert_map():
     return new_map
 
 
-def find_path():
-    start = (0, 0)
-    end = (5, 5)
-
-    path = astar(convert_map(), start, end)
-    print(path)
+def find_path(start=(5, 5), end=(6, 7)):
+    # x and y are reversed for input
+    print('start =', start, 'end =', end)
+    def convert_c_to_simple(c):
+        return int((c - POS_SPACE // 2) // POS_SPACE)
+    # start = convert_c_to_simple(start[0]), convert_c_to_simple(start[1])
+    # end = convert_c_to_simple(end[0]), convert_c_to_simple(end[1])
+    # print('start =', start, 'end =', end)
+    map = convert_map()
+    print('map converted to simple')
+    path = astar(map, start, end)
+    print(node_counter)
+    print('path =', path)
+    converted_path = []
+    for x, y in path:
+        x = x * POS_SPACE + POS_SPACE // 2
+        y = y * POS_SPACE + POS_SPACE // 2
+        converted_path.append((x, y))
+    print('converted_path =', converted_path)
+    return converted_path
 
 
 def order(outer_instance, unit):
@@ -172,44 +181,6 @@ def order(outer_instance, unit):
             selected.building_start_time = outer_instance.frame_count
     else:
         print("Not enough minerals")
-
-
-def give_next_target(x, y, angle, flying):
-    # print('give_next_target input:', x, y, angle)
-    if not flying:
-        dict_to_check = ground_pos_coords_dict
-    else:
-        dict_to_check = air_pos_coords_dict
-    if angle == 0:
-        target = (x + POS_SPACE, y)
-        target_id = dict_to_check[target]
-    elif angle == 45:
-        target = round_coords(x + DISTANCE_PER_JUMP, y + DISTANCE_PER_JUMP)
-        target_id = dict_to_check[target]
-    elif angle == 90:
-        target = (x, y + POS_SPACE)
-        target_id = dict_to_check[target]
-    elif angle == 135:
-        target = round_coords(x - DISTANCE_PER_JUMP, y + DISTANCE_PER_JUMP)
-        target_id = dict_to_check[target]
-    elif angle in [-180, 180]:
-        target = (x - POS_SPACE, y)
-        target_id = dict_to_check[target]
-    elif angle == -135:
-        target = round_coords(x - DISTANCE_PER_JUMP, y - DISTANCE_PER_JUMP)
-        target_id = dict_to_check[target]
-    elif angle == -90:
-        target = (x, y - POS_SPACE)
-        target_id = dict_to_check[target]
-    elif angle == -45:
-        target = round_coords(x + DISTANCE_PER_JUMP, y - DISTANCE_PER_JUMP)
-        target_id = dict_to_check[target]
-    else:
-        raise Exception('bad angle')
-    if target_id is None:
-        return target
-    else:
-        return None
 
 
 def to_minimap(x, y):  # unit.x and unit.y
@@ -490,29 +461,37 @@ class Unit(pyglet.sprite.Sprite):
         self.x, self.y = self.x + self.velocity_x, self.y + self.velocity_y
 
     def move(self, destination):
+        print("moved called")
         # Called once by RMB or when a unit is created
         destination_x, destination_y = destination[0], destination[1]
-        # # print('destination_x =', destination_x, 'destination_y =', destination_y)
+        print('self.x =', self.x, 'self.y =', self.y)
+        print('destination_x =', destination_x, 'destination_y =', destination_y)
         # Not moving: same coords
         if self.x == destination_x and self.y == destination_y:
-            if not self.flying:
-                ground_pos_coords_dict[(self.x, self.y)] = self
-            else:
-                air_pos_coords_dict[(self.x, self.y)] = self
             self.destination_reached = True
             return
+        # Moving or just rotating
         self.destination_reached = False
         self.destination_x = destination_x
         self.destination_y = destination_y
         diff_x = self.destination_x - self.x
         diff_y = self.destination_y - self.y
         angle = math.atan2(diff_y, diff_x)  # Rad
-        d_angle = math.degrees(angle)
         self.rotation = -math.degrees(angle) + 90
         self.shadow.rotation = -math.degrees(angle) + 90
-        target = give_next_target(self.x, self.y, round_angle(d_angle), self.flying)
+        self.pfi = 0
+        if not self.flying:
+            print('ground')
+            self.destination_reached = True
+            self.path = find_path((self.x, self.y + 32), (destination_x, destination_y))
+            return
+        else:
+            pass
+        target = self.path[self.pfi]
+        # Target used to return None or (12, 13)
         # print('target =', target)
         if target:  # If destination not reached and update_movement will be called (I think)
+            print('target =', target)
             self.target_x = target[0]
             self.target_y = target[1]
             self.pixel.x, self.pixel.y = to_minimap(self.target_x, self.target_y)
@@ -542,11 +521,9 @@ class Unit(pyglet.sprite.Sprite):
         else:
             air_pos_coords_dict[(self.target_x, self.target_y)] = self
 
-    def distance_to_target(self):
-        return ((self.target_x - self.x) ** 2 + (self.target_y - self.y) ** 2) ** 0.5
-
     def eta(self):
-        return self.distance_to_target() / self.speed
+        dist_to_target = ((self.target_x - self.x) ** 2 + (self.target_y - self.y) ** 2) ** 0.5
+        return dist_to_target / self.speed
 
     def update_movement(self):
         # Called by update to move to the next point
@@ -1020,7 +997,7 @@ class PlanetEleven(pyglet.window.Window):
         self.npa = np.fromstring(self.minimap_fow_ImageData.get_data('RGBA', self.minimap_fow_ImageData.width * 4),
                                  dtype=np.uint8)
         self.npa = self.npa.reshape((102, 102, 4))
-        self.mineral_count = 5000
+        self.mineral_count = 50000
         self.mineral_count_label = pyglet.text.Label(str(self.mineral_count), x=SCREEN_WIDTH - 200, y=SCREEN_HEIGHT - 30)
 
 
@@ -1427,10 +1404,11 @@ class PlanetEleven(pyglet.window.Window):
                 bottom_view_border += POS_SPACE
                 self.update_viewport()
             elif symbol == key.Q:
-                print(POS_COORDS)
+                print('POS_COORDS =', POS_COORDS)
             elif symbol == key.W:
-                print(convert_map())
+                print('convert_map() =', convert_map())
             elif symbol == key.E:
+                print('find_path()')
                 find_path()
             elif symbol == key.R:
                 for y in convert_map():
@@ -1501,7 +1479,7 @@ class PlanetEleven(pyglet.window.Window):
                 if x < SCREEN_WIDTH - 139:
                     x, y = round_coords(x, y)
                     x, y = mc(x=x, y=y)
-                    # print('\nglobal click coords:', x, y)
+                    print('\nglobal click coords:', x, y)
                     if button == mouse.LEFT:
                         # Selection
                         selected = None
