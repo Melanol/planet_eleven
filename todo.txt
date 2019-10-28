@@ -1,0 +1,29 @@
+# Priority #1: finalize the 1st version of the game
+
+# Important
+-Unit control buttons
+-AI
+-Building costs and building time
+-Building 2-block-wide buldings
+
+# Not important
+-Proper pathfinding
+-Unit-following-unit movement bug
+-Selected info
+-Spawning in the direction of the rally point?
+-Try turret's base dark color as a color for our units
+-Transitional unit selection
+-Remove rally points?
+-World editor?
+-Diagonal movement interception: if not fixed, it will be possible for up to 4 units to have the same coordinate (2 ground, 2 air)
+-Get rid of excess globals
+-Proper unit-following-unit movement
+-Finalize minimap
+-Screen edge cam scrolling
+-Implement in-game id?
+-Units should check for close enemies only when an enemy moves or is spawned (useless optimization?)
+-Something should indicate that there is a ground unit present below an air unit
+-Shift for selecting ground units below air units?
+-Add players as object attributes instead of is_enemy
+
+# Ideas

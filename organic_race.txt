@@ -1,0 +1,7 @@
+Very big buildings with blocks that can be destroyed. A building is alive as long as at least one of its block is alive. They regenerate only by reclaming their original space. If something blocks it, it limits their max hp. Production speed is reduced for every missing block. All buildings have odd width/height, all start from one central block, and can already produce since the 1st block is ready. Buildings grow counter-clockwise from the center ourwards and from the leftmost and lowest block. There will be a button to stop growth so that it does not interfere with other buildings. Growth will probably be killing stuck units.
+
+
+
+Buildings:
+-Big Base:
+	Main building. Cheap and big enough to be used for walling. One can delete some of its internal blocks and hide something there, like a defence building. Outter layers have most hp.

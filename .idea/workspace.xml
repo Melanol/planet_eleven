@@ -1,0 +1,775 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="8699b466-fa9b-4e8c-b41f-e5bbe759696d" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/art/GjmU55UDMsQ.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/art/GjmU55UDMsQ.psd" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/art/X3zYy0oexgA.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/art/X3zYy0oexgA.psd" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/art/photo_2019-10-15_03-49-48 (2).jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/art/photo_2019-10-15_03-49-48.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/disdoc.rtf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/example/resources/asteroid.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/example/resources/bullet.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/example/resources/bullet.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/example/resources/engine_flame.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/example/resources/player.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/example/resources/player1.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/example/version5/asteroid.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/example/version5/game/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/example/version5/game/asteroid.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/example/version5/game/bullet.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/example/version5/game/load.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/example/version5/game/physicalobject.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/example/version5/game/player.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/example/version5/game/resources.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/example/version5/game/util.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/first_tech_race.rtf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lore.rtf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/main.tmx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/minimap_cam_frame.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/most popular pc screen resolutions.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/organic_race.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pathfinding.docx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/save.p" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/screenshots/(23-10-2019 04-30-10).wmv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/screenshots/(25-10-2019 01-38-07).wmv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/screenshots/1.gif" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/screenshots/1.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/screenshots/2.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/screenshots/3.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/screenshots/4.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/screenshots/5.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/screenshots/6.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/16/attack.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/16/attack.psd" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/16/background.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/16/base.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/16/base.psd" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/16/big_base.psd" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/16/blue_laser.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/16/builder.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/16/builder.psd" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/16/builder_shadow.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/16/builder_shadow.psd" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/16/control_panel.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/16/control_panel.psd" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/16/control_panel_buttons_background.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/16/control_panel_buttons_background.psd" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/16/cursor.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/16/cursor.psd" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/16/cursor_fullscreen.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/16/defiler.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/16/defiler.psd" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/16/defiler_shadow.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/16/defiler_shadow.psd" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/16/enemy_base.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/16/minimap_black_background.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/16/minimap_cam_frame.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/16/minimap_enemy.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/16/minimap_fow.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/16/minimap_our.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/16/minimap_textured_background.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/16/move.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/16/move.psd" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/16/rally_point.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/16/resolution_filler.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/16/resolution_filler.psd" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/16/resolution_filler_angle.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/16/resolution_filler_angle.psd" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/16/selection.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/16/stop.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/16/tank.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/16/tank.psd" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/16/tank_shadow.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/16/tank_shadow.psd" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/16/test_image.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/16/test_image1.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/16/test_pixel.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/16/utility_dot.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/16/vulture.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/16/vulture.psd" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/16/vulture_shadow.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/16/vulture_shadow.psd" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/Old/builder.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/Old/builder.psd" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/Old/soldier.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/Old/tank.psd" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/attack.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/attack.psd" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/attack_cursor.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/background.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/base.psd" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/big_base.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/big_base.psd" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/big_base_icon.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/black.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/black.psd" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/black_pixel.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/black_pixel.psd" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/builder.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/builder.psd" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/builder_shadow.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/builder_shadow.psd" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/control_panel_buttons_background.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/control_panel_buttons_background.psd" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/control_panel_filler.psd" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/cursor.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/cursor.psd" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/cursor_fullscreen.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/defiler.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/defiler.psd" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/defiler_shadow.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/defiler_shadow.psd" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/enemy_base.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/menu.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/menu.psd" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/mineral.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/mineral.psd" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/mineral_shadow.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/minimap_black_background.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/minimap_cam_frame.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/minimap_enemy.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/minimap_fow.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/minimap_our.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/minimap_textured_background.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/move.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/move.psd" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/move_cursor.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/organic_base.psd" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/organic_base_inner_block.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/organic_base_inner_block.psd" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/organic_base_mid_block.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/organic_base_mid_block.psd" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/organic_base_outer_block.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/organic_base_outer_block.psd" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/plasma.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/plasma.psd" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/resolution_filler.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/resolution_filler.psd" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/resolution_filler_angle.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/resolution_filler_angle.psd" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/selected_frame.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/selected_frame.psd" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/selection_big.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/stop.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/stop.psd" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/tank.psd" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/tank_shadow.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/tank_shadow.psd" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/test_image.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/test_image1.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/test_pixel.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/turret.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/turret.psd" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/turret_base.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/turret_button.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/utility_dot.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/vulture.psd" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/vulture_shadow.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/vulture_shadow.psd" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/zap.psd" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/zap1.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/zap2.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/zap3.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/style refs/74554-starcraft-brood-war-windows-screenshot-temporary-alliance-of.gif" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/style refs/maxresdefault.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/style refs/x1080.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tiles/background.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tiles/background.tmx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tiles/background1.tmx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tiles/horizontal.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tiles/horizontal.psd" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tiles/rocks.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tiles/rocks.psd" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tiles/rocks_emerald.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tiles/rocks_emerald.psd" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tiles/sand.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tiles/sand.psd" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tiles/sand_red.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tiles/sssr_angle.psd" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tiles/sssr_angle_transp.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tiles/top_right_angle.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tiles/top_right_angle.psd" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/todo.txt" afterDir="false" />
+    </list>
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="proper-movement" />
+      </map>
+    </option>
+  </component>
+  <component name="IgnoredFileRootStore">
+    <option name="generatedRoots">
+      <set>
+        <option value="$PROJECT_DIR$/.idea" />
+      </set>
+    </option>
+  </component>
+  <component name="ProjectId" id="1Pv31NeF9EQz9CUlPJpmGvYWGxu" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../stalagon_language" />
+    <property name="restartRequiresConfirmation" value="false" />
+    <property name="run.code.analysis.last.selected.profile" value="aDefault" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\PycharmProjects\planet_eleven" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\PycharmProjects\planet_eleven" />
+    </key>
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="RunManager" selected="Python.planet_eleven">
+    <configuration name="a_star" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="planet_eleven" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/a_star.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="planet_eleven" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="planet_eleven" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/planet_eleven.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="test" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="planet_eleven" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/test.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="Python.a_star" />
+      <item itemvalue="Python.planet_eleven" />
+      <item itemvalue="Python.test" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.planet_eleven" />
+        <item itemvalue="Python.a_star" />
+        <item itemvalue="Python.test" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="StructureViewFactory">
+    <option name="AUTOSCROLL_MODE" value="false" />
+    <option name="ACTIVE_ACTIONS" value=",SHOW_FIELDS,SHOW_INHERITED" />
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="8699b466-fa9b-4e8c-b41f-e5bbe759696d" name="Default Changelist" comment="" />
+      <created>1566740526093</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1566740526093</updated>
+    </task>
+    <task id="LOCAL-00091" summary="Revert minimap changes here">
+      <created>1569682711976</created>
+      <option name="number" value="00091" />
+      <option name="presentableId" value="LOCAL-00091" />
+      <option name="project" value="LOCAL" />
+      <updated>1569682711976</updated>
+    </task>
+    <task id="LOCAL-00092" summary="Minimap dragging fixed">
+      <created>1569707066096</created>
+      <option name="number" value="00092" />
+      <option name="presentableId" value="LOCAL-00092" />
+      <option name="project" value="LOCAL" />
+      <updated>1569707066097</updated>
+    </task>
+    <task id="LOCAL-00093" summary="Different resolution support added (to some extent)">
+      <created>1569869678093</created>
+      <option name="number" value="00093" />
+      <option name="presentableId" value="LOCAL-00093" />
+      <option name="project" value="LOCAL" />
+      <updated>1569869678094</updated>
+    </task>
+    <task id="LOCAL-00094" summary="Blacks added">
+      <created>1570120657587</created>
+      <option name="number" value="00094" />
+      <option name="presentableId" value="LOCAL-00094" />
+      <option name="project" value="LOCAL" />
+      <updated>1570120657588</updated>
+    </task>
+    <task id="LOCAL-00095" summary="Minimap FOW alpha">
+      <created>1570368219373</created>
+      <option name="number" value="00095" />
+      <option name="presentableId" value="LOCAL-00095" />
+      <option name="project" value="LOCAL" />
+      <updated>1570368219373</updated>
+    </task>
+    <task id="LOCAL-00096" summary="np.array instead of bytearray">
+      <created>1570458896049</created>
+      <option name="number" value="00096" />
+      <option name="presentableId" value="LOCAL-00096" />
+      <option name="project" value="LOCAL" />
+      <updated>1570458896051</updated>
+    </task>
+    <task id="LOCAL-00097" summary="Revert here">
+      <created>1570473608061</created>
+      <option name="number" value="00097" />
+      <option name="presentableId" value="LOCAL-00097" />
+      <option name="project" value="LOCAL" />
+      <updated>1570473608061</updated>
+    </task>
+    <task id="LOCAL-00098" summary="Base moved inside Window">
+      <created>1570473857849</created>
+      <option name="number" value="00098" />
+      <option name="presentableId" value="LOCAL-00098" />
+      <option name="project" value="LOCAL" />
+      <updated>1570473857850</updated>
+    </task>
+    <task id="LOCAL-00099" summary="Revert &quot;Base moved inside Window&quot;&#10;&#10;This reverts commit 3917956f">
+      <created>1570474013476</created>
+      <option name="number" value="00099" />
+      <option name="presentableId" value="LOCAL-00099" />
+      <option name="project" value="LOCAL" />
+      <updated>1570474013476</updated>
+    </task>
+    <task id="LOCAL-00100" summary="Slow FPS due to units fixed">
+      <created>1570474967332</created>
+      <option name="number" value="00100" />
+      <option name="presentableId" value="LOCAL-00100" />
+      <option name="project" value="LOCAL" />
+      <updated>1570474967332</updated>
+    </task>
+    <task id="LOCAL-00101" summary="Revert here if changing resolution doesn't work">
+      <created>1570538309947</created>
+      <option name="number" value="00101" />
+      <option name="presentableId" value="LOCAL-00101" />
+      <option name="project" value="LOCAL" />
+      <updated>1570538309947</updated>
+    </task>
+    <task id="LOCAL-00102" summary="Keyboard stop command">
+      <created>1570560333630</created>
+      <option name="number" value="00102" />
+      <option name="presentableId" value="LOCAL-00102" />
+      <option name="project" value="LOCAL" />
+      <updated>1570560333630</updated>
+    </task>
+    <task id="LOCAL-00103" summary="Minimap rally setting">
+      <created>1570736181027</created>
+      <option name="number" value="00103" />
+      <option name="presentableId" value="LOCAL-00103" />
+      <option name="project" value="LOCAL" />
+      <updated>1570736181028</updated>
+    </task>
+    <task id="LOCAL-00104" summary="self instead of id(self) for minimap pixels dict">
+      <created>1570835524951</created>
+      <option name="number" value="00104" />
+      <option name="presentableId" value="LOCAL-00104" />
+      <option name="project" value="LOCAL" />
+      <updated>1570835524952</updated>
+    </task>
+    <task id="LOCAL-00105" summary="reset() works">
+      <created>1570836446301</created>
+      <option name="number" value="00105" />
+      <option name="presentableId" value="LOCAL-00105" />
+      <option name="project" value="LOCAL" />
+      <updated>1570836446301</updated>
+    </task>
+    <task id="LOCAL-00106" summary="Started working on save/load">
+      <created>1570886474037</created>
+      <option name="number" value="00106" />
+      <option name="presentableId" value="LOCAL-00106" />
+      <option name="project" value="LOCAL" />
+      <updated>1570886474038</updated>
+    </task>
+    <task id="LOCAL-00107" summary="ground_units_batch for ground units">
+      <created>1570891873637</created>
+      <option name="number" value="00107" />
+      <option name="presentableId" value="LOCAL-00107" />
+      <option name="project" value="LOCAL" />
+      <updated>1570891873637</updated>
+    </task>
+    <task id="LOCAL-00108" summary="Further save/load updates">
+      <created>1570903371441</created>
+      <option name="number" value="00108" />
+      <option name="presentableId" value="LOCAL-00108" />
+      <option name="project" value="LOCAL" />
+      <updated>1570903371441</updated>
+    </task>
+    <task id="LOCAL-00109" summary="Further save/load updates">
+      <created>1570924770155</created>
+      <option name="number" value="00109" />
+      <option name="presentableId" value="LOCAL-00109" />
+      <option name="project" value="LOCAL" />
+      <updated>1570924770155</updated>
+    </task>
+    <task id="LOCAL-00110" summary="save/load works, units attack closest enemy">
+      <created>1570979643816</created>
+      <option name="number" value="00110" />
+      <option name="presentableId" value="LOCAL-00110" />
+      <option name="project" value="LOCAL" />
+      <updated>1570979643818</updated>
+    </task>
+    <task id="LOCAL-00111" summary="None in control_buttons_to_render">
+      <created>1570980624115</created>
+      <option name="number" value="00111" />
+      <option name="presentableId" value="LOCAL-00111" />
+      <option name="project" value="LOCAL" />
+      <updated>1570980624116</updated>
+    </task>
+    <task id="LOCAL-00112" summary="ProductionBuilding">
+      <created>1570986444493</created>
+      <option name="number" value="00112" />
+      <option name="presentableId" value="LOCAL-00112" />
+      <option name="project" value="LOCAL" />
+      <updated>1570986444493</updated>
+    </task>
+    <task id="LOCAL-00113" summary="Building shooting">
+      <created>1570991773665</created>
+      <option name="number" value="00113" />
+      <option name="presentableId" value="LOCAL-00113" />
+      <option name="project" value="LOCAL" />
+      <updated>1570991773665</updated>
+    </task>
+    <task id="LOCAL-00114" summary="AttackingBuilding kill()">
+      <created>1570993115217</created>
+      <option name="number" value="00114" />
+      <option name="presentableId" value="LOCAL-00114" />
+      <option name="project" value="LOCAL" />
+      <updated>1570993115217</updated>
+    </task>
+    <task id="LOCAL-00115" summary="Stop button">
+      <created>1570994779095</created>
+      <option name="number" value="00115" />
+      <option name="presentableId" value="LOCAL-00115" />
+      <option name="project" value="LOCAL" />
+      <updated>1570994779095</updated>
+    </task>
+    <task id="LOCAL-00116" summary="Proper spawning">
+      <created>1571148572922</created>
+      <option name="number" value="00116" />
+      <option name="presentableId" value="LOCAL-00116" />
+      <option name="project" value="LOCAL" />
+      <updated>1571148572933</updated>
+    </task>
+    <task id="LOCAL-00117" summary="shadows_dict removed">
+      <created>1571152049364</created>
+      <option name="number" value="00117" />
+      <option name="presentableId" value="LOCAL-00117" />
+      <option name="project" value="LOCAL" />
+      <updated>1571152049365</updated>
+    </task>
+    <task id="LOCAL-00118" summary="revert here">
+      <created>1571153064260</created>
+      <option name="number" value="00118" />
+      <option name="presentableId" value="LOCAL-00118" />
+      <option name="project" value="LOCAL" />
+      <updated>1571153064260</updated>
+    </task>
+    <task id="LOCAL-00119" summary="pixel dict removed">
+      <created>1571154194297</created>
+      <option name="number" value="00119" />
+      <option name="presentableId" value="LOCAL-00119" />
+      <option name="project" value="LOCAL" />
+      <updated>1571154194298</updated>
+    </task>
+    <task id="LOCAL-00120" summary="bug fixing">
+      <created>1571156726096</created>
+      <option name="number" value="00120" />
+      <option name="presentableId" value="LOCAL-00120" />
+      <option name="project" value="LOCAL" />
+      <updated>1571156726096</updated>
+    </task>
+    <task id="LOCAL-00121" summary="revert here if changing builder does not work">
+      <created>1571163977654</created>
+      <option name="number" value="00121" />
+      <option name="presentableId" value="LOCAL-00121" />
+      <option name="project" value="LOCAL" />
+      <updated>1571163977654</updated>
+    </task>
+    <task id="LOCAL-00122" summary="Builders move to build">
+      <created>1571341662393</created>
+      <option name="number" value="00122" />
+      <option name="presentableId" value="LOCAL-00122" />
+      <option name="project" value="LOCAL" />
+      <updated>1571341662395</updated>
+    </task>
+    <task id="LOCAL-00123" summary="BigBuilding">
+      <created>1571410892065</created>
+      <option name="number" value="00123" />
+      <option name="presentableId" value="LOCAL-00123" />
+      <option name="project" value="LOCAL" />
+      <updated>1571410892067</updated>
+    </task>
+    <task id="LOCAL-00124" summary="BigBuildings spawn counter-clockwise">
+      <created>1571428945814</created>
+      <option name="number" value="00124" />
+      <option name="presentableId" value="LOCAL-00124" />
+      <option name="project" value="LOCAL" />
+      <updated>1571428945814</updated>
+    </task>
+    <task id="LOCAL-00125" summary="Default rally point">
+      <created>1571430123630</created>
+      <option name="number" value="00125" />
+      <option name="presentableId" value="LOCAL-00125" />
+      <option name="project" value="LOCAL" />
+      <updated>1571430123630</updated>
+    </task>
+    <task id="LOCAL-00126" summary="Basic resource gathering">
+      <created>1571691432073</created>
+      <option name="number" value="00126" />
+      <option name="presentableId" value="LOCAL-00126" />
+      <option name="project" value="LOCAL" />
+      <updated>1571691432075</updated>
+    </task>
+    <task id="LOCAL-00127" summary="Workers stop gathering when their mineral is no more">
+      <created>1571856368954</created>
+      <option name="number" value="00127" />
+      <option name="presentableId" value="LOCAL-00127" />
+      <option name="project" value="LOCAL" />
+      <updated>1571856368955</updated>
+    </task>
+    <task id="LOCAL-00128" summary="task_x and task_y">
+      <created>1571857966663</created>
+      <option name="number" value="00128" />
+      <option name="presentableId" value="LOCAL-00128" />
+      <option name="project" value="LOCAL" />
+      <updated>1571857966663</updated>
+    </task>
+    <task id="LOCAL-00129" summary="Unit.stop() and Builder.clear_task()">
+      <created>1571858859440</created>
+      <option name="number" value="00129" />
+      <option name="presentableId" value="LOCAL-00129" />
+      <option name="project" value="LOCAL" />
+      <updated>1571858859442</updated>
+    </task>
+    <task id="LOCAL-00130" summary="Units cost minerals">
+      <created>1571937655040</created>
+      <option name="number" value="00130" />
+      <option name="presentableId" value="LOCAL-00130" />
+      <option name="project" value="LOCAL" />
+      <updated>1571937655042</updated>
+    </task>
+    <task id="LOCAL-00131" summary="Enemy detection algorithm performance optimised">
+      <created>1572032095064</created>
+      <option name="number" value="00131" />
+      <option name="presentableId" value="LOCAL-00131" />
+      <option name="project" value="LOCAL" />
+      <updated>1572032095066</updated>
+    </task>
+    <task id="LOCAL-00132" summary="Enemy detection algorithm for buildings performance optimised">
+      <created>1572036674382</created>
+      <option name="number" value="00132" />
+      <option name="presentableId" value="LOCAL-00132" />
+      <option name="project" value="LOCAL" />
+      <updated>1572036674382</updated>
+    </task>
+    <task id="LOCAL-00133" summary="A* works on the map. No proper movement yet">
+      <created>1572138760128</created>
+      <option name="number" value="00133" />
+      <option name="presentableId" value="LOCAL-00133" />
+      <option name="project" value="LOCAL" />
+      <updated>1572138760131</updated>
+    </task>
+    <task id="LOCAL-00134" summary="A* bug fix">
+      <created>1572215525436</created>
+      <option name="number" value="00134" />
+      <option name="presentableId" value="LOCAL-00134" />
+      <option name="project" value="LOCAL" />
+      <updated>1572215525437</updated>
+    </task>
+    <task id="LOCAL-00135" summary="A* bug fix">
+      <created>1572215963562</created>
+      <option name="number" value="00135" />
+      <option name="presentableId" value="LOCAL-00135" />
+      <option name="project" value="LOCAL" />
+      <updated>1572215963563</updated>
+    </task>
+    <task id="LOCAL-00136" summary="A* bug fix">
+      <created>1572219154387</created>
+      <option name="number" value="00136" />
+      <option name="presentableId" value="LOCAL-00136" />
+      <option name="project" value="LOCAL" />
+      <updated>1572219154388</updated>
+    </task>
+    <task id="LOCAL-00137" summary="Path-finding works">
+      <created>1572223450326</created>
+      <option name="number" value="00137" />
+      <option name="presentableId" value="LOCAL-00137" />
+      <option name="project" value="LOCAL" />
+      <updated>1572223450328</updated>
+    </task>
+    <task id="LOCAL-00138" summary="Minor path-finding modifications">
+      <created>1572226474069</created>
+      <option name="number" value="00138" />
+      <option name="presentableId" value="LOCAL-00138" />
+      <option name="project" value="LOCAL" />
+      <updated>1572226474069</updated>
+    </task>
+    <task id="LOCAL-00139" summary="Minor path-finding modifications">
+      <created>1572227421021</created>
+      <option name="number" value="00139" />
+      <option name="presentableId" value="LOCAL-00139" />
+      <option name="project" value="LOCAL" />
+      <updated>1572227421021</updated>
+    </task>
+    <option name="localTasksCounter" value="140" />
+    <servers />
+  </component>
+  <component name="Vcs.Log.History.Properties">
+    <option name="COLUMN_ORDER">
+      <list>
+        <option value="0" />
+        <option value="2" />
+        <option value="3" />
+        <option value="1" />
+      </list>
+    </option>
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="RECENT_FILTERS">
+      <map>
+        <entry key="Branch">
+          <value>
+            <list />
+          </value>
+        </entry>
+        <entry key="User">
+          <value>
+            <list />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="CHECK_NEW_TODO" value="false" />
+    <ignored-roots>
+      <path value="$PROJECT_DIR$" />
+    </ignored-roots>
+    <MESSAGE value="ProductionBuilding" />
+    <MESSAGE value="Building shooting" />
+    <MESSAGE value="AttackingBuilding kill()" />
+    <MESSAGE value="Stop button" />
+    <MESSAGE value="Proper spawning" />
+    <MESSAGE value="shadows_dict removed" />
+    <MESSAGE value="revert here" />
+    <MESSAGE value="pixel dict removed" />
+    <MESSAGE value="bug fixing" />
+    <MESSAGE value="revert here if changing builder does not work" />
+    <MESSAGE value="Builders move to build" />
+    <MESSAGE value="BigBuilding" />
+    <MESSAGE value="BigBuildings spawn counter-clockwise" />
+    <MESSAGE value="Default rally point" />
+    <MESSAGE value="Basic resource gathering" />
+    <MESSAGE value="Workers stop gathering when their mineral is no more" />
+    <MESSAGE value="task_x and task_y" />
+    <MESSAGE value="Unit.stop() and Builder.clear_task()" />
+    <MESSAGE value="Units cost minerals" />
+    <MESSAGE value="Enemy detection algorithm performance optimised" />
+    <MESSAGE value="Enemy detection algorithm for buildings performance optimised" />
+    <MESSAGE value="A* works on the map. No proper movement yet" />
+    <MESSAGE value="A* bug fix" />
+    <MESSAGE value="Path-finding works" />
+    <MESSAGE value="Minor path-finding modifications" />
+    <option name="LAST_COMMIT_MESSAGE" value="Minor path-finding modifications" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <default-breakpoints>
+        <breakpoint type="python-exception">
+          <properties notifyOnTerminate="true" exception="BaseException">
+            <option name="notifyOnTerminate" value="true" />
+          </properties>
+        </breakpoint>
+      </default-breakpoints>
+    </breakpoint-manager>
+  </component>
+</project>
