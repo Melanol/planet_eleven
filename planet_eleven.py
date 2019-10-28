@@ -39,21 +39,16 @@ def gen_pos_coords():
 gen_pos_coords()
 
 
-class Node:
-    """A node class for A* Pathfinding"""
+def astar(map, start, end):
+    class Node:
+        def __init__(self, parent=None, pos=None):
+            self.parent = parent
+            self.pos = pos
+            self.g = 0
+            self.f = 0
 
-    def __init__(self, parent=None, pos=None):
-        self.parent = parent
-        self.pos = pos
-        self.g = 0
-        self.f = 0
-
-    def __eq__(self, other):
-        return self.pos == other.pos
-
-
-def astar(maze, start, end):
-    """Returns a list of tuples as a path from the given start to the given end in the given maze"""
+        def __eq__(self, other):
+            return self.pos == other.pos
 
     # Create start and end node
     start_node = Node(None, start)
@@ -78,8 +73,7 @@ def astar(maze, start, end):
                 current_index = index
 
         # Pop current off open_list, add to closed list
-        open_list.pop(current_index)
-        closed_list.append(current_node)
+        closed_list.append(open_list.pop(current_index))
 
         # Return path
         if current_node == end_node:
@@ -96,13 +90,13 @@ def astar(maze, start, end):
             # Get node position
             node_pos = (current_node.pos[0] + new_pos[0], current_node.pos[1] + new_pos[1])
 
-            # Make sure within range. Strange code
-            if node_pos[0] > (len(maze) - 1) or node_pos[0] < 0 \
-                    or node_pos[1] > (len(maze[len(maze)-1]) - 1) or node_pos[1] < 0:
+            # Make sure within range
+            if node_pos[0] > len(map[0]) - 1 or node_pos[0] < 0 \
+                    or node_pos[1] > len(map) - 1 or node_pos[1] < 0:
                 continue
 
             # Make sure walkable terrain
-            if maze[node_pos[0]][node_pos[1]] != 0:
+            if map[node_pos[1]][node_pos[0]] != 0:
                 continue
 
             # Create new node
@@ -114,6 +108,10 @@ def astar(maze, start, end):
         # Loop through children
         for child in children:
 
+            # Child is already in the open list
+            if child in open_list:
+                continue
+
             # Child is on the closed list
             if child in closed_list:
                 continue
@@ -121,10 +119,6 @@ def astar(maze, start, end):
             # Create the f, g, and h values
             child.g = current_node.g + 1
             child.f = child.g + (child.pos[0] - end_node.pos[0]) ** 2 + (child.pos[1] - end_node.pos[1]) ** 2
-
-            # Child is already in the open list
-            if child in open_list:
-                continue
 
             # Add the child to the open list
             open_list.append(child)
@@ -146,14 +140,13 @@ def convert_map():
     return new_map
 
 
-def find_path(start=(5, 5), end=(6, 7)):
-    # x and y are reversed for input
+def find_path(start=(3, 5), end=(7, 6)):
     print('start =', start, 'end =', end)
     def convert_c_to_simple(c):
         return int((c - POS_SPACE // 2) // POS_SPACE)
-    # start = convert_c_to_simple(start[0]), convert_c_to_simple(start[1])
-    # end = convert_c_to_simple(end[0]), convert_c_to_simple(end[1])
-    # print('start =', start, 'end =', end)
+    start = convert_c_to_simple(start[0]), convert_c_to_simple(start[1])
+    end = convert_c_to_simple(end[0]), convert_c_to_simple(end[1])
+    print('start =', start, 'end =', end)
     map = convert_map()
     print('map converted to simple')
     path = astar(map, start, end)
@@ -476,16 +469,13 @@ class Unit(pyglet.sprite.Sprite):
         self.shadow.rotation = -math.degrees(angle) + 90
         self.pfi = 0
         if not self.flying:
-            print('ground')
-            self.destination_reached = True
-            self.path = find_path((self.x, self.y + 32), (destination_x, destination_y))
-            return
+            self.path = find_path((self.x, self.y), (destination_x, destination_y))
         else:
             pass
         target = self.path[self.pfi]
         # Target used to return None or (12, 13)
         # print('target =', target)
-        if target:  # If destination not reached and update_movement will be called (I think)
+        if target:  # If we can reach there
             print('target =', target)
             self.target_x = target[0]
             self.target_y = target[1]
@@ -523,6 +513,7 @@ class Unit(pyglet.sprite.Sprite):
     def update_movement(self):
         # Called by update to move to the next point
         # print('\nupdate_movement: self.x = {}, self.y = {})'.format(self.x, self.y))
+        self.pfi += 1
         if not self.flying:
             ground_pos_coords_dict[(self.x, self.y)] = None
         else:
@@ -533,7 +524,7 @@ class Unit(pyglet.sprite.Sprite):
         d_angle = math.degrees(angle)
         self.rotation = -d_angle + 90
         self.shadow.rotation = -math.degrees(angle) + 90
-        next_target = give_next_target(self.x, self.y, round_angle(d_angle), self.flying)
+        next_target = self.path[self.pfi]
         # print('next_target =', next_target)
         if next_target:
             if not self.flying:
@@ -1261,6 +1252,7 @@ class PlanetEleven(pyglet.window.Window):
                             else:
                                 unit.update_movement()
                             unit.prev_loc_x, unit.prev_loc_y = unit.x, unit.y
+                        # Movement interrupted
                         else:
                             unit.x = unit.target_x
                             unit.y = unit.target_y
