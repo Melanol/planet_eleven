@@ -449,7 +449,6 @@ class Unit(pyglet.sprite.Sprite):
         self.x, self.y = self.x + self.velocity_x, self.y + self.velocity_y
 
     def move(self, destination):
-        print("moved called")
         # Called once by RMB or when a unit is created
         destination_x, destination_y = destination[0], destination[1]
         print('self.x =', self.x, 'self.y =', self.y)
@@ -460,21 +459,29 @@ class Unit(pyglet.sprite.Sprite):
             return
         # Moving or just rotating
         self.destination_reached = False
-        self.destination_x = destination_x
-        self.destination_y = destination_y
-        diff_x = self.destination_x - self.x
-        diff_y = self.destination_y - self.y
-        angle = math.atan2(diff_y, diff_x)  # Rad
-        self.rotation = -math.degrees(angle) + 90
-        self.shadow.rotation = -math.degrees(angle) + 90
+        self.destination_x, self.destination_y = destination_x, destination_y
+        if not self.flying:
+            # Find closest empty coord between unit and destination
+            if ground_pos_coords_dict[(destination_x, destination_y)]:
+                diff_x = self.x - self.destination_x
+                diff_y = self.y - self.destination_y
+                angle = math.atan2(diff_y, diff_x)  # Rad
+                d_angle = math.degrees(angle)
+
+        # Rotation without movement for workers
+        if isinstance(self, Builder):
+            diff_x = self.destination_x - self.x
+            diff_y = self.destination_y - self.y
+            angle = math.atan2(diff_y, diff_x)  # Rad
+            self.rotation = -math.degrees(angle) + 90
+            self.shadow.rotation = -math.degrees(angle) + 90
+
         self.pfi = 0
         if not self.flying:
             self.path = find_path((self.x, self.y), (destination_x, destination_y))
         else:
             pass
         target = self.path[self.pfi]
-        # Target used to return None or (12, 13)
-        # print('target =', target)
         if target:  # If we can reach there
             print('target =', target)
             self.target_x = target[0]
