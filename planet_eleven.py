@@ -467,6 +467,8 @@ class Unit(pyglet.sprite.Sprite):
                 diff_y = self.y - self.destination_y
                 angle = math.atan2(diff_y, diff_x)  # Rad
                 d_angle = math.degrees(angle)
+                rounded_d_angle = 45 * round(d_angle / 45)
+
 
         # Rotation without movement for workers
         if isinstance(self, Builder):
