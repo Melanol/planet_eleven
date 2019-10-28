@@ -2,197 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="8699b466-fa9b-4e8c-b41f-e5bbe759696d" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/art/GjmU55UDMsQ.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/art/GjmU55UDMsQ.psd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/art/X3zYy0oexgA.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/art/X3zYy0oexgA.psd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/art/photo_2019-10-15_03-49-48 (2).jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/art/photo_2019-10-15_03-49-48.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/disdoc.rtf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/example/resources/asteroid.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/example/resources/bullet.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/example/resources/bullet.wav" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/example/resources/engine_flame.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/example/resources/player.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/example/resources/player1.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/example/version5/asteroid.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/example/version5/game/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/example/version5/game/asteroid.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/example/version5/game/bullet.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/example/version5/game/load.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/example/version5/game/physicalobject.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/example/version5/game/player.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/example/version5/game/resources.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/example/version5/game/util.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/first_tech_race.rtf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lore.rtf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/main.tmx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/minimap_cam_frame.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/most popular pc screen resolutions.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/organic_race.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pathfinding.docx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/save.p" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/screenshots/(23-10-2019 04-30-10).wmv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/screenshots/(25-10-2019 01-38-07).wmv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/screenshots/1.gif" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/screenshots/1.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/screenshots/2.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/screenshots/3.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/screenshots/4.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/screenshots/5.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/screenshots/6.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/16/attack.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/16/attack.psd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/16/background.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/16/base.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/16/base.psd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/16/big_base.psd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/16/blue_laser.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/16/builder.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/16/builder.psd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/16/builder_shadow.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/16/builder_shadow.psd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/16/control_panel.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/16/control_panel.psd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/16/control_panel_buttons_background.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/16/control_panel_buttons_background.psd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/16/cursor.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/16/cursor.psd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/16/cursor_fullscreen.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/16/defiler.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/16/defiler.psd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/16/defiler_shadow.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/16/defiler_shadow.psd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/16/enemy_base.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/16/minimap_black_background.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/16/minimap_cam_frame.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/16/minimap_enemy.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/16/minimap_fow.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/16/minimap_our.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/16/minimap_textured_background.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/16/move.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/16/move.psd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/16/rally_point.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/16/resolution_filler.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/16/resolution_filler.psd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/16/resolution_filler_angle.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/16/resolution_filler_angle.psd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/16/selection.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/16/stop.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/16/tank.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/16/tank.psd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/16/tank_shadow.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/16/tank_shadow.psd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/16/test_image.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/16/test_image1.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/16/test_pixel.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/16/utility_dot.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/16/vulture.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/16/vulture.psd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/16/vulture_shadow.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/16/vulture_shadow.psd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/Old/builder.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/Old/builder.psd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/Old/soldier.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/Old/tank.psd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/attack.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/attack.psd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/attack_cursor.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/background.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/base.psd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/big_base.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/big_base.psd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/big_base_icon.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/black.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/black.psd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/black_pixel.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/black_pixel.psd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/builder.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/builder.psd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/builder_shadow.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/builder_shadow.psd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/control_panel_buttons_background.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/control_panel_buttons_background.psd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/control_panel_filler.psd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/cursor.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/cursor.psd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/cursor_fullscreen.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/defiler.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/defiler.psd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/defiler_shadow.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/defiler_shadow.psd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/enemy_base.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/menu.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/menu.psd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/mineral.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/mineral.psd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/mineral_shadow.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/minimap_black_background.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/minimap_cam_frame.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/minimap_enemy.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/minimap_fow.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/minimap_our.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/minimap_textured_background.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/move.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/move.psd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/move_cursor.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/organic_base.psd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/organic_base_inner_block.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/organic_base_inner_block.psd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/organic_base_mid_block.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/organic_base_mid_block.psd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/organic_base_outer_block.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/organic_base_outer_block.psd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/plasma.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/plasma.psd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/resolution_filler.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/resolution_filler.psd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/resolution_filler_angle.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/resolution_filler_angle.psd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/selected_frame.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/selected_frame.psd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/selection_big.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/stop.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/stop.psd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/tank.psd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/tank_shadow.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/tank_shadow.psd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/test_image.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/test_image1.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/test_pixel.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/turret.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/turret.psd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/turret_base.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/turret_button.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/utility_dot.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/vulture.psd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/vulture_shadow.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/vulture_shadow.psd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/zap.psd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/zap1.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/zap2.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sprites/zap3.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/style refs/74554-starcraft-brood-war-windows-screenshot-temporary-alliance-of.gif" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/style refs/maxresdefault.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/style refs/x1080.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tiles/background.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tiles/background.tmx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tiles/background1.tmx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tiles/horizontal.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tiles/horizontal.psd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tiles/rocks.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tiles/rocks.psd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tiles/rocks_emerald.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tiles/rocks_emerald.psd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tiles/sand.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tiles/sand.psd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tiles/sand_red.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tiles/sssr_angle.psd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tiles/sssr_angle_transp.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tiles/top_right_angle.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tiles/top_right_angle.psd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/todo.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/planet_eleven.py" beforeDir="false" afterPath="$PROJECT_DIR$/planet_eleven.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -345,13 +156,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1566740526093</updated>
-    </task>
-    <task id="LOCAL-00091" summary="Revert minimap changes here">
-      <created>1569682711976</created>
-      <option name="number" value="00091" />
-      <option name="presentableId" value="LOCAL-00091" />
-      <option name="project" value="LOCAL" />
-      <updated>1569682711976</updated>
     </task>
     <task id="LOCAL-00092" summary="Minimap dragging fixed">
       <created>1569707066096</created>
@@ -689,7 +493,14 @@
       <option name="project" value="LOCAL" />
       <updated>1572227421021</updated>
     </task>
-    <option name="localTasksCounter" value="140" />
+    <task id="LOCAL-00140" summary="Added a lot of files to VCS">
+      <created>1572227650588</created>
+      <option name="number" value="00140" />
+      <option name="presentableId" value="LOCAL-00140" />
+      <option name="project" value="LOCAL" />
+      <updated>1572227650592</updated>
+    </task>
+    <option name="localTasksCounter" value="141" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -734,7 +545,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$" />
     </ignored-roots>
-    <MESSAGE value="ProductionBuilding" />
     <MESSAGE value="Building shooting" />
     <MESSAGE value="AttackingBuilding kill()" />
     <MESSAGE value="Stop button" />
@@ -759,7 +569,8 @@
     <MESSAGE value="A* bug fix" />
     <MESSAGE value="Path-finding works" />
     <MESSAGE value="Minor path-finding modifications" />
-    <option name="LAST_COMMIT_MESSAGE" value="Minor path-finding modifications" />
+    <MESSAGE value="Added a lot of files to VCS" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added a lot of files to VCS" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
