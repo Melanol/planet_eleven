@@ -467,7 +467,6 @@ class Unit(pyglet.sprite.Sprite):
             angle = math.atan2(diff_y, diff_x)  # Rad
             self.rotation = -math.degrees(angle) + 90
             self.shadow.rotation = -math.degrees(angle) + 90
-
         if not self.flying:
             # Find closest empty coord between unit and destination
             if ground_pos_coords_dict[(destination[0], destination[1])]:
@@ -774,6 +773,7 @@ class PlanetEleven(pyglet.window.Window):
                       double_buffer=True)
         super().__init__(width, height, title, config=conf, fullscreen=False)
         self.set_mouse_cursor(res.cursor)
+        self.show_fps = True
         self.fps_display = pyglet.window.FPSDisplay(window=self)
 
     def clear_level(self):
@@ -1193,7 +1193,8 @@ class PlanetEleven(pyglet.window.Window):
             projectile.draw()
 
         self.mineral_count_label.draw()
-        self.fps_display.draw()
+        if self.show_fps:
+            self.fps_display.draw()
 
         # Remove default modelview matrix
         glPopMatrix()
@@ -1207,13 +1208,13 @@ class PlanetEleven(pyglet.window.Window):
                 try:
                     if building.building_queue:
                         unit = building.building_queue[0]
-                        if str(unit) == "<class '__main__.Defiler'>":
+                        if isinstance(unit, Defiler):
                             building.current_building_time = Defiler.building_time
-                        elif str(unit) == "<class '__main__.Tank'>":
+                        elif isinstance(unit, Tank):
                             building.current_building_time = Tank.building_time
-                        elif str(unit) == "<class '__main__.Vulture'>":
+                        elif isinstance(unit, Vulture):
                             building.current_building_time = Vulture.building_time
-                        elif str(unit) == "<class '__main__.Builder'>":
+                        elif isinstance(unit, Builder):
                             building.current_building_time = Builder.building_time
                         if self.frame_count - building.building_start_time == building.current_building_time:
                             if str(building.building_queue[0]) not in LIST_OF_FLYING:
@@ -1251,16 +1252,16 @@ class PlanetEleven(pyglet.window.Window):
                                     break
                             if place_found:
                                 unit = building.building_queue.pop(0)
-                                if str(unit) == "<class '__main__.Defiler'>":
+                                if isinstance(unit, Defiler):
                                     unit = Defiler(self, x=x, y=y)
                                     unit.spawn()
-                                elif str(unit) == "<class '__main__.Tank'>":
+                                elif isinstance(unit, Tank):
                                     unit = Tank(self, x=x, y=y)
                                     unit.spawn()
-                                elif str(unit) == "<class '__main__.Vulture'>":
+                                elif isinstance(unit, Vulture):
                                     unit = Vulture(self, x=x, y=y)
                                     unit.spawn()
-                                elif str(unit) == "<class '__main__.Builder'>":
+                                elif isinstance(unit, Builder):
                                     unit = Builder(self, x=x, y=y)
                                     unit.spawn()
                                 building.building_start_time += building.current_building_time
@@ -1276,7 +1277,7 @@ class PlanetEleven(pyglet.window.Window):
             # Gathering resources
             for builder in builders_list:
                 if builder.mineral_to_gather:
-                    if not builder.is_gathering:
+                    if not builder.is_gathering and builder.destination_reached:
                         if is_melee_distance(builder, builder.task_x, builder.task_y):
                             builder.gather()
                     else:
@@ -1440,7 +1441,10 @@ class PlanetEleven(pyglet.window.Window):
                 except AttributeError:
                     pass
             elif symbol == key.F1:
-                self.reset()
+                if self.show_fps == False:
+                    self.show_fps = True
+                else:
+                    self.show_fps = False
             elif symbol == key.F2:
                 self.save()
             elif symbol == key.F3:

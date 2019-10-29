@@ -3,6 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="8699b466-fa9b-4e8c-b41f-e5bbe759696d" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/constants_and_utilities.py" beforeDir="false" afterPath="$PROJECT_DIR$/constants_and_utilities.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/planet_eleven.py" beforeDir="false" afterPath="$PROJECT_DIR$/planet_eleven.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/todo.txt" beforeDir="false" afterPath="$PROJECT_DIR$/todo.txt" afterDir="false" />
     </list>
@@ -157,13 +158,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1566740526093</updated>
-    </task>
-    <task id="LOCAL-00093" summary="Different resolution support added (to some extent)">
-      <created>1569869678093</created>
-      <option name="number" value="00093" />
-      <option name="presentableId" value="LOCAL-00093" />
-      <option name="project" value="LOCAL" />
-      <updated>1569869678094</updated>
     </task>
     <task id="LOCAL-00094" summary="Blacks added">
       <created>1570120657587</created>
@@ -501,7 +495,14 @@
       <option name="project" value="LOCAL" />
       <updated>1572306701897</updated>
     </task>
-    <option name="localTasksCounter" value="142" />
+    <task id="LOCAL-00142" summary="Path-finding for air works">
+      <created>1572308044295</created>
+      <option name="number" value="00142" />
+      <option name="presentableId" value="LOCAL-00142" />
+      <option name="project" value="LOCAL" />
+      <updated>1572308044296</updated>
+    </task>
+    <option name="localTasksCounter" value="143" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -546,7 +547,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$" />
     </ignored-roots>
-    <MESSAGE value="AttackingBuilding kill()" />
     <MESSAGE value="Stop button" />
     <MESSAGE value="Proper spawning" />
     <MESSAGE value="shadows_dict removed" />
@@ -571,7 +571,8 @@
     <MESSAGE value="Minor path-finding modifications" />
     <MESSAGE value="Added a lot of files to VCS" />
     <MESSAGE value="Path-finding bug fixes" />
-    <option name="LAST_COMMIT_MESSAGE" value="Path-finding bug fixes" />
+    <MESSAGE value="Path-finding for air works" />
+    <option name="LAST_COMMIT_MESSAGE" value="Path-finding for air works" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

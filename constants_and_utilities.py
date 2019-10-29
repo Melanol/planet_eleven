@@ -71,10 +71,6 @@ minimap_fow_x = MINIMAP_ZERO_COORDS[0] - 1
 minimap_fow_y = MINIMAP_ZERO_COORDS[1] - 1
 
 
-def round_angle(angle):
-    return 45 * round(angle / 45)
-
-
 def round_coords(x, y):
     global left_view_border, bottom_view_border
     sel_x = POS_SPACE / 2 * round(x / (POS_SPACE / 2))
