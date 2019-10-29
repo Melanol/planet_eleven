@@ -1,12 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="8699b466-fa9b-4e8c-b41f-e5bbe759696d" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/constants_and_utilities.py" beforeDir="false" afterPath="$PROJECT_DIR$/constants_and_utilities.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/planet_eleven.py" beforeDir="false" afterPath="$PROJECT_DIR$/planet_eleven.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/todo.txt" beforeDir="false" afterPath="$PROJECT_DIR$/todo.txt" afterDir="false" />
-    </list>
+    <list default="true" id="8699b466-fa9b-4e8c-b41f-e5bbe759696d" name="Default Changelist" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -158,13 +153,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1566740526093</updated>
-    </task>
-    <task id="LOCAL-00094" summary="Blacks added">
-      <created>1570120657587</created>
-      <option name="number" value="00094" />
-      <option name="presentableId" value="LOCAL-00094" />
-      <option name="project" value="LOCAL" />
-      <updated>1570120657588</updated>
     </task>
     <task id="LOCAL-00095" summary="Minimap FOW alpha">
       <created>1570368219373</created>
@@ -502,7 +490,14 @@
       <option name="project" value="LOCAL" />
       <updated>1572308044296</updated>
     </task>
-    <option name="localTasksCounter" value="143" />
+    <task id="LOCAL-00143" summary="Some cleaning">
+      <created>1572387475932</created>
+      <option name="number" value="00143" />
+      <option name="presentableId" value="LOCAL-00143" />
+      <option name="project" value="LOCAL" />
+      <updated>1572387475933</updated>
+    </task>
+    <option name="localTasksCounter" value="144" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -547,7 +542,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$" />
     </ignored-roots>
-    <MESSAGE value="Stop button" />
     <MESSAGE value="Proper spawning" />
     <MESSAGE value="shadows_dict removed" />
     <MESSAGE value="revert here" />
@@ -572,7 +566,8 @@
     <MESSAGE value="Added a lot of files to VCS" />
     <MESSAGE value="Path-finding bug fixes" />
     <MESSAGE value="Path-finding for air works" />
-    <option name="LAST_COMMIT_MESSAGE" value="Path-finding for air works" />
+    <MESSAGE value="Some cleaning" />
+    <option name="LAST_COMMIT_MESSAGE" value="Some cleaning" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

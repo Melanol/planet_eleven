@@ -1208,13 +1208,13 @@ class PlanetEleven(pyglet.window.Window):
                 try:
                     if building.building_queue:
                         unit = building.building_queue[0]
-                        if isinstance(unit, Defiler):
+                        if str(unit) == "<class '__main__.Defiler'>":
                             building.current_building_time = Defiler.building_time
-                        elif isinstance(unit, Tank):
+                        elif str(unit) == "<class '__main__.Tank'>":
                             building.current_building_time = Tank.building_time
-                        elif isinstance(unit, Vulture):
+                        elif str(unit) == "<class '__main__.Vulture'>":
                             building.current_building_time = Vulture.building_time
-                        elif isinstance(unit, Builder):
+                        elif str(unit) == "<class '__main__.Builder'>":
                             building.current_building_time = Builder.building_time
                         if self.frame_count - building.building_start_time == building.current_building_time:
                             if str(building.building_queue[0]) not in LIST_OF_FLYING:
@@ -1252,16 +1252,16 @@ class PlanetEleven(pyglet.window.Window):
                                     break
                             if place_found:
                                 unit = building.building_queue.pop(0)
-                                if isinstance(unit, Defiler):
+                                if str(unit) == "<class '__main__.Defiler'>":
                                     unit = Defiler(self, x=x, y=y)
                                     unit.spawn()
-                                elif isinstance(unit, Tank):
+                                elif str(unit) == "<class '__main__.Tank'>":
                                     unit = Tank(self, x=x, y=y)
                                     unit.spawn()
-                                elif isinstance(unit, Vulture):
+                                elif str(unit) == "<class '__main__.Vulture'>":
                                     unit = Vulture(self, x=x, y=y)
                                     unit.spawn()
-                                elif isinstance(unit, Builder):
+                                elif str(unit) == "<class '__main__.Builder'>":
                                     unit = Builder(self, x=x, y=y)
                                     unit.spawn()
                                 building.building_start_time += building.current_building_time
