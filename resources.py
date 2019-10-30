@@ -120,10 +120,10 @@ big_base_image = pyglet.resource.image("big_base.png")
 big_building_anchor(big_base_image)
 
 # Units
-tank_image = pyglet.resource.image("centurion.png")
-center_anchor(tank_image)
-tank_shadow_image = pyglet.resource.image("centurion_shadow.png")
-center_anchor(tank_shadow_image)
+centurion_image = pyglet.resource.image("centurion.png")
+center_anchor(centurion_image)
+centurion_shadow_image = pyglet.resource.image("centurion_shadow.png")
+center_anchor(centurion_shadow_image)
 
 vulture_image = pyglet.resource.image("vulture.png")
 center_anchor(vulture_image)
@@ -135,10 +135,10 @@ center_anchor(defiler_image)
 defiler_shadow_image = pyglet.resource.image("defiler_shadow.png")
 center_anchor(defiler_shadow_image)
 
-builder_image = pyglet.resource.image("pioneer.png")
-center_anchor(builder_image)
-builder_shadow_image = pyglet.resource.image("pioneer_shadow.png")
-center_anchor(builder_shadow_image)
+pioneer_image = pyglet.resource.image("pioneer.png")
+center_anchor(pioneer_image)
+pioneer_shadow_image = pyglet.resource.image("pioneer_shadow.png")
+center_anchor(pioneer_shadow_image)
 
 # Other
 projectile_image = pyglet.resource.image("laser.png")

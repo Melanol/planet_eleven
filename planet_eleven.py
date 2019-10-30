@@ -592,7 +592,7 @@ class Unit(pyglet.sprite.Sprite):
             del our_units_list[our_units_list.index(self)]
         self.delete()
         try:
-            del builders_list[builders_list.index(self)]
+            del workers_list[workers_list.index(self)]
         except ValueError:
             pass
 
@@ -614,11 +614,11 @@ class Centurion(Unit):
     building_time = 10
 
     def __init__(self, outer_instance, x, y):
-        super().__init__(outer_instance=outer_instance, img=res.tank_image, hp=100, vision_radius=6,
+        super().__init__(outer_instance=outer_instance, img=res.centurion_image, hp=100, vision_radius=6,
                          damage=10, cooldown=60, speed=0.6, x=x, y=y, projectile_sprite='sprites/laser.png',
                          projectile_speed=5)
         self.flying = False
-        self.shadow_sprite = res.tank_shadow_image
+        self.shadow_sprite = res.centurion_shadow_image
 
 
 class Vulture(Unit):
@@ -638,13 +638,13 @@ class Pioneer(Unit):
     building_time = 10
 
     def __init__(self, outer_instance, x, y):
-        super().__init__(outer_instance=outer_instance, img=res.builder_image, hp=10, vision_radius=2,
+        super().__init__(outer_instance=outer_instance, img=res.pioneer_image, hp=10, vision_radius=2,
                          damage=0, cooldown=60, speed=5, x=x, y=y, has_weapon=False,
                          projectile_sprite='sprites/laser.png', projectile_speed=5)
-        builders_list.append(self)
+        workers_list.append(self)
         self.flying = False
         self.outer_instance = outer_instance
-        self.shadow_sprite = res.builder_shadow_image
+        self.shadow_sprite = res.pioneer_shadow_image
         self.to_build = None
         self.mineral_to_gather = None
         self.task_x = None
@@ -756,12 +756,12 @@ class PlanetEleven(pyglet.window.Window):
         pickle.dump(self.base_button.y, savefile)
         pickle.dump(self.defiler_button.x, savefile)
         pickle.dump(self.defiler_button.y, savefile)
-        pickle.dump(self.tank_button.x, savefile)
-        pickle.dump(self.tank_button.y, savefile)
+        pickle.dump(self.centurion_button.x, savefile)
+        pickle.dump(self.centurion_button.y, savefile)
         pickle.dump(self.vulture_button.x, savefile)
         pickle.dump(self.vulture_button.y, savefile)
-        pickle.dump(self.builder_button.x, savefile)
-        pickle.dump(self.builder_button.y, savefile)
+        pickle.dump(self.pioneer_button.x, savefile)
+        pickle.dump(self.pioneer_button.y, savefile)
         pickle.dump(minimap_fow_x, savefile)
         pickle.dump(minimap_fow_y, savefile)
         pickle.dump(self.minimap_cam_frame_sprite.x, savefile)
@@ -852,12 +852,12 @@ class PlanetEleven(pyglet.window.Window):
         self.base_button.y = pickle.load(savefile)
         self.defiler_button.x = pickle.load(savefile)
         self.defiler_button.y = pickle.load(savefile)
-        self.tank_button.x = pickle.load(savefile)
-        self.tank_button.y = pickle.load(savefile)
+        self.centurion_button.x = pickle.load(savefile)
+        self.centurion_button.y = pickle.load(savefile)
         self.vulture_button.x = pickle.load(savefile)
         self.vulture_button.y = pickle.load(savefile)
-        self.builder_button.x = pickle.load(savefile)
-        self.builder_button.y = pickle.load(savefile)
+        self.pioneer_button.x = pickle.load(savefile)
+        self.pioneer_button.y = pickle.load(savefile)
         minimap_fow_x = pickle.load(savefile)
         minimap_fow_y = pickle.load(savefile)
         self.minimap_cam_frame_sprite.x = pickle.load(savefile)
@@ -1008,10 +1008,10 @@ class PlanetEleven(pyglet.window.Window):
                                     y=CONTROL_BUTTONS_COORDS[2][1])
         self.defiler_button = Button(img=res.defiler_image, x=CONTROL_BUTTONS_COORDS[0][0],
                                      y=CONTROL_BUTTONS_COORDS[0][1])
-        self.tank_button = Button(img=res.tank_image, x=CONTROL_BUTTONS_COORDS[1][0], y=CONTROL_BUTTONS_COORDS[1][1])
+        self.centurion_button = Button(img=res.centurion_image, x=CONTROL_BUTTONS_COORDS[1][0], y=CONTROL_BUTTONS_COORDS[1][1])
         self.vulture_button = Button(img=res.vulture_image, x=CONTROL_BUTTONS_COORDS[2][0],
                                      y=CONTROL_BUTTONS_COORDS[2][1])
-        self.builder_button = Button(img=res.builder_image, x=CONTROL_BUTTONS_COORDS[3][0],
+        self.pioneer_button = Button(img=res.pioneer_image, x=CONTROL_BUTTONS_COORDS[3][0],
                                      y=CONTROL_BUTTONS_COORDS[3][1])
 
         self.selection_sprite = pyglet.sprite.Sprite(img=res.selection_image, x=self.our_1st_base.x,
@@ -1028,10 +1028,10 @@ class PlanetEleven(pyglet.window.Window):
 
         self.basic_unit_control_buttons = [self.move_button, self.stop_button, self.attack_button]
         self.controls_dict = {"<class 'NoneType'>": None,
-                              "<class '__main__.Base'>": [self.defiler_button, self.tank_button, self.vulture_button,
-                                                          self.builder_button],
-                              "<class '__main__.BigBase'>": [self.defiler_button, self.tank_button, self.vulture_button,
-                                                             self.builder_button],
+                              "<class '__main__.Base'>": [self.defiler_button, self.centurion_button, self.vulture_button,
+                                                          self.pioneer_button],
+                              "<class '__main__.BigBase'>": [self.defiler_button, self.centurion_button, self.vulture_button,
+                                                             self.pioneer_button],
                               "<class '__main__.Defiler'>": self.basic_unit_control_buttons,
                               "<class '__main__.Centurion'>": self.basic_unit_control_buttons,
                               "<class '__main__.Vulture'>": self.basic_unit_control_buttons,
@@ -1202,21 +1202,21 @@ class PlanetEleven(pyglet.window.Window):
                     pass
             # Units
             # Gathering resources
-            for builder in builders_list:
-                if builder.mineral_to_gather:
-                    if not builder.is_gathering and builder.destination_reached:
-                        if is_melee_distance(builder, builder.task_x, builder.task_y):
+            for worker in workers_list:
+                if worker.mineral_to_gather:
+                    if not worker.is_gathering and worker.destination_reached:
+                        if is_melee_distance(worker, worker.task_x, worker.task_y):
                             print("melee dist")
-                            builder.gather()
+                            worker.gather()
                     else:
-                        builder.mineral_to_gather.amount -= 0.03
+                        worker.mineral_to_gather.amount -= 0.03
                         self.mineral_count += 0.03
                         self.mineral_count_label.text = str(int(self.mineral_count))
             # Build buildings
-            for builder in builders_list:
-                if builder.to_build:
-                    if is_melee_distance(builder, builder.task_x, builder.task_y):
-                        builder.build()
+            for worker in workers_list:
+                if worker.to_build:
+                    if is_melee_distance(worker, worker.task_x, worker.task_y):
+                        worker.build()
             # Movement
             for unit in our_units_list:
                 # Selection
@@ -1583,17 +1583,17 @@ class PlanetEleven(pyglet.window.Window):
                         if self.defiler_button.x - 16 <= x <= self.defiler_button.x + 16 and \
                                 self.defiler_button.y - 16 <= y <= self.defiler_button.y + 16:
                             order(self, Defiler)
-                        # Create tank
-                        elif self.tank_button.x - 16 <= x <= self.tank_button.x + 16 and \
-                                self.tank_button.y - 16 <= y <= self.tank_button.y + 16:
+                        # Create centurion
+                        elif self.centurion_button.x - 16 <= x <= self.centurion_button.x + 16 and \
+                                self.centurion_button.y - 16 <= y <= self.centurion_button.y + 16:
                             order(self, Centurion)
                         # Create vulture
                         elif self.vulture_button.x - 16 <= x <= self.vulture_button.x + 16 and \
                                 self.vulture_button.y - 16 <= y <= self.vulture_button.y + 16:
                             order(self, Vulture)
-                        # Create builder
-                        elif self.builder_button.x - 16 <= x <= self.builder_button.x + 16 and \
-                                self.builder_button.y - 16 <= y <= self.builder_button.y + 16:
+                        # Create worker
+                        elif self.pioneer_button.x - 16 <= x <= self.pioneer_button.x + 16 and \
+                                self.pioneer_button.y - 16 <= y <= self.pioneer_button.y + 16:
                             order(self, Pioneer)
                     elif selected in our_units_list:
                         # Move
@@ -1763,12 +1763,12 @@ class PlanetEleven(pyglet.window.Window):
         self.big_base_button.y = CONTROL_BUTTONS_COORDS[5][1] + bottom_view_border
         self.defiler_button.x = CONTROL_BUTTONS_COORDS[0][0] + left_view_border
         self.defiler_button.y = CONTROL_BUTTONS_COORDS[0][1] + bottom_view_border
-        self.tank_button.x = CONTROL_BUTTONS_COORDS[1][0] + left_view_border
-        self.tank_button.y = CONTROL_BUTTONS_COORDS[1][1] + bottom_view_border
+        self.centurion_button.x = CONTROL_BUTTONS_COORDS[1][0] + left_view_border
+        self.centurion_button.y = CONTROL_BUTTONS_COORDS[1][1] + bottom_view_border
         self.vulture_button.x = CONTROL_BUTTONS_COORDS[2][0] + left_view_border
         self.vulture_button.y = CONTROL_BUTTONS_COORDS[2][1] + bottom_view_border
-        self.builder_button.x = CONTROL_BUTTONS_COORDS[3][0] + left_view_border
-        self.builder_button.y = CONTROL_BUTTONS_COORDS[3][1] + bottom_view_border
+        self.pioneer_button.x = CONTROL_BUTTONS_COORDS[3][0] + left_view_border
+        self.pioneer_button.y = CONTROL_BUTTONS_COORDS[3][1] + bottom_view_border
         self.mineral_count_label.x = SCREEN_WIDTH - 200 + left_view_border
         self.mineral_count_label.y = SCREEN_HEIGHT - 30 + bottom_view_border
         for unit in our_units_list:
