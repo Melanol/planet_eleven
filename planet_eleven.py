@@ -152,7 +152,6 @@ def convert_c_to_simple(c):
 def find_path(start, end, is_flying):
     """Main path-finding function. Calls other PF functions."""
     print('start =', start, 'end =', end)
-
     start = convert_c_to_simple(start[0]), convert_c_to_simple(start[1])
     end = convert_c_to_simple(end[0]), convert_c_to_simple(end[1])
     print('start =', start, 'end =', end)
@@ -161,6 +160,7 @@ def find_path(start, end, is_flying):
     else:
         map = convert_map(air_pos_coords_dict)
     print('map converted to simple')
+    map[end[1]][end[0]] = 0
     path = astar(map, start, end)
     print('path =', path)
     converted_path = []
@@ -518,9 +518,9 @@ class Unit(pyglet.sprite.Sprite):
         # print('\nupdate_movement: self.x = {}, self.y = {})'.format(self.x, self.y))
         self.pfi += 1
         if not self.flying:
-            ground_pos_coords_dict[(self.x, self.y)] = None
+            selected_dict = ground_pos_coords_dict
         else:
-            air_pos_coords_dict[(self.x, self.y)] = None
+            selected_dict = air_pos_coords_dict
         diff_x = self.destination_x - self.x
         diff_y = self.destination_y - self.y
         angle = math.atan2(diff_y, diff_x)  # Rad
@@ -528,19 +528,19 @@ class Unit(pyglet.sprite.Sprite):
         self.rotation = -d_angle + 90
         self.shadow.rotation = -math.degrees(angle) + 90
         next_target = self.path[self.pfi]
-        # print('next_target =', next_target)
-        if next_target:
-            if not self.flying:
-                ground_pos_coords_dict[(self.x, self.y)] = None
-            else:
-                air_pos_coords_dict[(self.x, self.y)] = None
+        if selected_dict[(next_target[0], next_target[1])]:  # Obstruction detected
+            self.move((self.destination_x, self.destination_y))
+            return
+        if next_target:  # Moving
+            if next_target[0] == self.destination_x and next_target[1] == self.destination_y:
+                if selected_dict[(next_target[0], next_target[1])]:  # We are there
+                    self.destination_reached = True
+                    return
+            selected_dict[(self.x, self.y)] = None
             self.target_x = next_target[0]
             self.target_y = next_target[1]
             self.pixel.x, self.pixel.y = to_minimap(self.target_x, self.target_y)
-            if not self.flying:
-                ground_pos_coords_dict[(self.target_x, self.target_y)] = self
-            else:
-                air_pos_coords_dict[(self.target_x, self.target_y)] = self
+            selected_dict[(self.target_x, self.target_y)] = self
             diff_x = self.target_x - self.x
             diff_y = self.target_y - self.y
             angle = math.atan2(diff_y, diff_x)  # Rad
@@ -558,10 +558,8 @@ class Unit(pyglet.sprite.Sprite):
                 air_pos_coords_dict[(self.x, self.y)] = self
             self.destination_reached = True
         if self.x == self.destination_x and self.y == self.destination_y:
-            # print('Destination reached')
+            print('Destination reached')
             self.destination_reached = True
-            # print('self.destination_reached =', self.destination_reached)
-        # print()
 
     def shoot(self, frame_count):
         global projectile_list
