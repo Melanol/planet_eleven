@@ -41,147 +41,7 @@ def gen_pos_coords():
 gen_pos_coords()
 
 
-def astar(map, start, end):
-    """A* pathfinding."""
-    class Node:
-        def __init__(self, parent=None, pos=None):
-            self.parent = parent
-            self.pos = pos
-            self.g = 0
-            self.f = 0
 
-        def __eq__(self, other):
-            return self.pos == other.pos
-
-    # Create start and end node
-    start_node = Node(None, start)
-    start_node.g = start_node.f = 0
-    end_node = Node(None, end)
-    end_node.g = end_node.f = 0
-
-    # open_list is where you can go now
-    open_list = [start_node]
-    # closed_list is where we already were
-    closed_list = []
-
-    # Loop until you find the end
-    while len(open_list) > 0:
-
-        # Get the current node. Which is the node with lowest f of the entire open_list
-        current_node = open_list[0]
-        current_index = 0
-        for index, item in enumerate(open_list):
-            if item.f < current_node.f:
-                current_node = item
-                current_index = index
-
-        # Pop current off open_list, add to closed list
-        closed_list.append(open_list.pop(current_index))
-
-        # Return path
-        if current_node == end_node:
-            path = []
-            while current_node:
-                path.append(current_node.pos)
-                current_node = current_node.parent
-            return path[::-1]  # Return reversed path
-
-        # Generate children
-        children = []
-        for new_pos in [(0, -1), (0, 1), (-1, 0), (1, 0), (-1, -1), (-1, 1), (1, -1), (1, 1)]:  # Adjacent squares
-
-            # Get node position
-            node_pos = (current_node.pos[0] + new_pos[0], current_node.pos[1] + new_pos[1])
-
-            # Make sure within range
-            if node_pos[0] > len(map[0]) - 1 or node_pos[0] < 0 \
-                    or node_pos[1] > len(map) - 1 or node_pos[1] < 0:
-                continue
-
-            # Make sure walkable terrain
-            if map[node_pos[1]][node_pos[0]] != 0:
-                continue
-
-            # Create new node
-            new_node = Node(current_node, node_pos)
-
-            # Append
-            children.append(new_node)
-
-        # Loop through children
-        for child in children:
-
-            # Child is already in the open list
-            if child in open_list:
-                continue
-
-            # Child is on the closed list
-            if child in closed_list:
-                continue
-
-            # Create the f, g, and h values
-            child.g = current_node.g + 1
-            child.f = child.g + (child.pos[0] - end_node.pos[0]) ** 2 + (child.pos[1] - end_node.pos[1]) ** 2
-
-            # Add the child to the open list
-            open_list.append(child)
-
-
-def convert_map(pos_coords_dict):
-    """Converts the map for path-finding."""
-    new_map = []
-    i = 1
-    row = []
-    for x, y in POS_COORDS:
-        if pos_coords_dict[(x, y)]:
-            row.append(1)
-        else:
-            row.append(0)
-        if i % 100 == 0:
-            new_map.append(row)
-            row = []
-        i += 1
-    return new_map
-
-
-def convert_c_to_simple(c):
-    """Called by find_path() only."""
-    return int((c - POS_SPACE // 2) // POS_SPACE)
-
-
-def find_path(start, end, is_flying):
-    """Main path-finding function. Calls other PF functions."""
-    print('start =', start, 'end =', end)
-    start = convert_c_to_simple(start[0]), convert_c_to_simple(start[1])
-    end = convert_c_to_simple(end[0]), convert_c_to_simple(end[1])
-    print('start =', start, 'end =', end)
-    if not is_flying:
-        map = convert_map(ground_pos_coords_dict)
-    else:
-        map = convert_map(air_pos_coords_dict)
-    print('map converted to simple')
-    map[end[1]][end[0]] = 0
-    path = astar(map, start, end)
-    print('path =', path)
-    converted_path = []
-    for x, y in path:
-        x = x * POS_SPACE + POS_SPACE // 2
-        y = y * POS_SPACE + POS_SPACE // 2
-        converted_path.append((x, y))
-    print('converted_path =', converted_path)
-    return converted_path
-
-
-def order(outer_instance, unit):
-    """Orders units in buildings. Checks if you have enough minerals."""
-    if outer_instance.mineral_count - unit.cost >= 0:
-        outer_instance.mineral_count -= unit.cost
-        outer_instance.mineral_count_label.text = str(int(outer_instance.mineral_count))
-        selected.building_queue.append(unit)
-        if len(selected.building_queue) == 1:
-            selected.building_start_time = outer_instance.frame_count
-    else:
-        print("Not enough minerals")
 
 
 def to_minimap(x, y):  # unit.x and unit.y
@@ -401,6 +261,149 @@ class Turret(AttackingBuilding):
                          hp=100, is_enemy=is_enemy, damage=10, vision_radius=500, cooldown=60)
 
 
+def astar(map, start, end):
+    """A* pathfinding."""
+    class Node:
+        def __init__(self, parent=None, pos=None):
+            self.parent = parent
+            self.pos = pos
+            self.g = 0
+            self.f = 0
+
+        def __eq__(self, other):
+            return self.pos == other.pos
+
+    # Create start and end node
+    start_node = Node(None, start)
+    start_node.g = start_node.f = 0
+    end_node = Node(None, end)
+    end_node.g = end_node.f = 0
+
+    # open_list is where you can go now
+    open_list = [start_node]
+    # closed_list is where we already were
+    closed_list = []
+
+    # Loop until you find the end
+    while len(open_list) > 0:
+
+        # Get the current node. Which is the node with lowest f of the entire open_list
+        current_node = open_list[0]
+        current_index = 0
+        for index, item in enumerate(open_list):
+            if item.f < current_node.f:
+                current_node = item
+                current_index = index
+
+        # Pop current off open_list, add to closed list
+        closed_list.append(open_list.pop(current_index))
+
+        # Return path
+        if current_node == end_node:
+            path = []
+            while current_node:
+                path.append(current_node.pos)
+                current_node = current_node.parent
+            return path[::-1]  # Return reversed path
+
+        # Generate children
+        children = []
+        for new_pos in [(0, -1), (0, 1), (-1, 0), (1, 0), (-1, -1), (-1, 1), (1, -1), (1, 1)]:  # Adjacent squares
+
+            # Get node position
+            node_pos = (current_node.pos[0] + new_pos[0], current_node.pos[1] + new_pos[1])
+
+            # Make sure within range
+            if node_pos[0] > len(map[0]) - 1 or node_pos[0] < 0 \
+                    or node_pos[1] > len(map) - 1 or node_pos[1] < 0:
+                continue
+
+            # Make sure walkable terrain
+            if map[node_pos[1]][node_pos[0]] != 0:
+                continue
+
+            # Create new node
+            new_node = Node(current_node, node_pos)
+
+            # Append
+            children.append(new_node)
+
+        # Loop through children
+        for child in children:
+
+            # Child is already in the open list
+            if child in open_list:
+                continue
+
+            # Child is on the closed list
+            if child in closed_list:
+                continue
+
+            # Create the f, g, and h values
+            child.g = current_node.g + 1
+            child.f = child.g + (child.pos[0] - end_node.pos[0]) ** 2 + (child.pos[1] - end_node.pos[1]) ** 2
+
+            # Add the child to the open list
+            open_list.append(child)
+
+
+def convert_map(pos_coords_dict):
+    """Converts the map for path-finding."""
+    new_map = []
+    i = 1
+    row = []
+    for x, y in POS_COORDS:
+        if pos_coords_dict[(x, y)]:
+            row.append(1)
+        else:
+            row.append(0)
+        if i % 100 == 0:
+            new_map.append(row)
+            row = []
+        i += 1
+    return new_map
+
+
+def convert_c_to_simple(c):
+    """Called by find_path() only."""
+    return int((c - POS_SPACE // 2) // POS_SPACE)
+
+
+def find_path(start, end, is_flying):
+    """Main path-finding function. Calls other PF functions."""
+    print('start =', start, 'end =', end)
+    start = convert_c_to_simple(start[0]), convert_c_to_simple(start[1])
+    end = convert_c_to_simple(end[0]), convert_c_to_simple(end[1])
+    print('start =', start, 'end =', end)
+    if not is_flying:
+        map = convert_map(ground_pos_coords_dict)
+    else:
+        map = convert_map(air_pos_coords_dict)
+    print('map converted to simple')
+    map[end[1]][end[0]] = 0
+    path = astar(map, start, end)
+    print('path =', path)
+    converted_path = []
+    for x, y in path:
+        x = x * POS_SPACE + POS_SPACE // 2
+        y = y * POS_SPACE + POS_SPACE // 2
+        converted_path.append((x, y))
+    print('converted_path =', converted_path)
+    return converted_path
+
+
+def order(outer_instance, unit):
+    """Orders units in buildings. Checks if you have enough minerals."""
+    if outer_instance.mineral_count - unit.cost >= 0:
+        outer_instance.mineral_count -= unit.cost
+        outer_instance.mineral_count_label.text = str(int(outer_instance.mineral_count))
+        selected.building_queue.append(unit)
+        if len(selected.building_queue) == 1:
+            selected.building_start_time = outer_instance.frame_count
+    else:
+        print("Not enough minerals")
+
+
 class Unit(pyglet.sprite.Sprite):
     def __init__(self, outer_instance, img, hp, vision_radius, damage, cooldown, speed, x, y,
                  projectile_sprite, projectile_speed, has_weapon=True, projectile_color=(255, 255, 255),
@@ -529,13 +532,12 @@ class Unit(pyglet.sprite.Sprite):
         self.shadow.rotation = -math.degrees(angle) + 90
         next_target = self.path[self.pfi]
         if selected_dict[(next_target[0], next_target[1])]:  # Obstruction detected
+            if next_target[0] == self.destination_x and next_target[1] == self.destination_y:  # Our stop
+                    self.destination_reached = True
+                    return
             self.move((self.destination_x, self.destination_y))
             return
         if next_target:  # Moving
-            if next_target[0] == self.destination_x and next_target[1] == self.destination_y:
-                if selected_dict[(next_target[0], next_target[1])]:  # We are there
-                    self.destination_reached = True
-                    return
             selected_dict[(self.x, self.y)] = None
             self.target_x = next_target[0]
             self.target_y = next_target[1]
