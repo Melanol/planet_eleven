@@ -609,7 +609,7 @@ class Defiler(Unit):
         self.shadow_sprite = res.defiler_shadow_image
 
 
-class Tank(Unit):
+class Centurion(Unit):
     cost = 400
     building_time = 10
 
@@ -633,7 +633,7 @@ class Vulture(Unit):
         self.shadow_sprite = res.vulture_shadow_image
 
 
-class Builder(Unit):
+class Pioneer(Unit):
     cost = 50
     building_time = 10
 
@@ -886,12 +886,12 @@ class PlanetEleven(pyglet.window.Window):
             rotation = pickle.load(savefile)
             if unit_type == "<class '__main__.Defiler'>":
                 unit = Defiler(self, x=x, y=y)
-            elif unit_type == "<class '__main__.Tank'>":
-                unit = Tank(self, x=x, y=y)
+            elif unit_type == "<class '__main__.Centurion'>":
+                unit = Centurion(self, x=x, y=y)
             elif unit_type == "<class '__main__.Vulture'>":
                 unit = Vulture(self, x=x, y=y)
-            elif unit_type == "<class '__main__.Builder'>":
-                unit = Builder(self, x=x, y=y)
+            elif unit_type == "<class '__main__.Pioneer'>":
+                unit = Pioneer(self, x=x, y=y)
             unit.spawn()
             unit.rotation = rotation
             unit.hp = pickle.load(savefile)
@@ -1033,9 +1033,9 @@ class PlanetEleven(pyglet.window.Window):
                               "<class '__main__.BigBase'>": [self.defiler_button, self.tank_button, self.vulture_button,
                                                              self.builder_button],
                               "<class '__main__.Defiler'>": self.basic_unit_control_buttons,
-                              "<class '__main__.Tank'>": self.basic_unit_control_buttons,
+                              "<class '__main__.Centurion'>": self.basic_unit_control_buttons,
                               "<class '__main__.Vulture'>": self.basic_unit_control_buttons,
-                              "<class '__main__.Builder'>": self.basic_unit_control_buttons + [self.base_button] +
+                              "<class '__main__.Pioneer'>": self.basic_unit_control_buttons + [self.base_button] +
                                                             [self.turret_button] + [self.big_base_button]
                               }
         self.control_buttons_to_render = self.controls_dict["<class '__main__.Base'>"]
@@ -1137,12 +1137,12 @@ class PlanetEleven(pyglet.window.Window):
                         unit = building.building_queue[0]
                         if str(unit) == "<class '__main__.Defiler'>":
                             building.current_building_time = Defiler.building_time
-                        elif str(unit) == "<class '__main__.Tank'>":
-                            building.current_building_time = Tank.building_time
+                        elif str(unit) == "<class '__main__.Centurion'>":
+                            building.current_building_time = Centurion.building_time
                         elif str(unit) == "<class '__main__.Vulture'>":
                             building.current_building_time = Vulture.building_time
-                        elif str(unit) == "<class '__main__.Builder'>":
-                            building.current_building_time = Builder.building_time
+                        elif str(unit) == "<class '__main__.Pioneer'>":
+                            building.current_building_time = Pioneer.building_time
                         if self.frame_count - building.building_start_time == building.current_building_time:
                             if str(building.building_queue[0]) not in LIST_OF_FLYING:
                                 dict_to_check = ground_pos_coords_dict
@@ -1182,14 +1182,14 @@ class PlanetEleven(pyglet.window.Window):
                                 if str(unit) == "<class '__main__.Defiler'>":
                                     unit = Defiler(self, x=x, y=y)
                                     unit.spawn()
-                                elif str(unit) == "<class '__main__.Tank'>":
-                                    unit = Tank(self, x=x, y=y)
+                                elif str(unit) == "<class '__main__.Centurion'>":
+                                    unit = Centurion(self, x=x, y=y)
                                     unit.spawn()
                                 elif str(unit) == "<class '__main__.Vulture'>":
                                     unit = Vulture(self, x=x, y=y)
                                     unit.spawn()
-                                elif str(unit) == "<class '__main__.Builder'>":
-                                    unit = Builder(self, x=x, y=y)
+                                elif str(unit) == "<class '__main__.Pioneer'>":
+                                    unit = Pioneer(self, x=x, y=y)
                                     unit.spawn()
                                 building.building_start_time += building.current_building_time
                                 if not building.default_rally_point:
@@ -1525,7 +1525,7 @@ class PlanetEleven(pyglet.window.Window):
                                     # Movement interruption
                                     else:
                                         unit.stop(x, y)
-                            if str(type(selected)) == "<class '__main__.Builder'>":
+                            if str(type(selected)) == "<class '__main__.Pioneer'>":
                                 selected.clear_task()
                                 obj = ground_pos_coords_dict[(x, y)]
                                 if str(type(obj)) == "<class '__main__.Mineral'>":
@@ -1586,7 +1586,7 @@ class PlanetEleven(pyglet.window.Window):
                         # Create tank
                         elif self.tank_button.x - 16 <= x <= self.tank_button.x + 16 and \
                                 self.tank_button.y - 16 <= y <= self.tank_button.y + 16:
-                            order(self, Tank)
+                            order(self, Centurion)
                         # Create vulture
                         elif self.vulture_button.x - 16 <= x <= self.vulture_button.x + 16 and \
                                 self.vulture_button.y - 16 <= y <= self.vulture_button.y + 16:
@@ -1594,7 +1594,7 @@ class PlanetEleven(pyglet.window.Window):
                         # Create builder
                         elif self.builder_button.x - 16 <= x <= self.builder_button.x + 16 and \
                                 self.builder_button.y - 16 <= y <= self.builder_button.y + 16:
-                            order(self, Builder)
+                            order(self, Pioneer)
                     elif selected in our_units_list:
                         # Move
                         # Stop
@@ -1603,7 +1603,7 @@ class PlanetEleven(pyglet.window.Window):
                             selected.stop()
                         # Attack
                         # Build
-                        if str(type(selected)) == "<class '__main__.Builder'>":
+                        if str(type(selected)) == "<class '__main__.Pioneer'>":
                             if self.base_button.x - 16 <= x <= self.base_button.x + 16 and \
                                     self.base_button.y - 16 <= y <= self.base_button.y + 16:
                                 self.base_building_sprite.color = (0, 255, 0)

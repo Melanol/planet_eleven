@@ -120,9 +120,9 @@ big_base_image = pyglet.resource.image("big_base.png")
 big_building_anchor(big_base_image)
 
 # Units
-tank_image = pyglet.resource.image("tank.png")
+tank_image = pyglet.resource.image("centurion.png")
 center_anchor(tank_image)
-tank_shadow_image = pyglet.resource.image("tank_shadow.png")
+tank_shadow_image = pyglet.resource.image("centurion_shadow.png")
 center_anchor(tank_shadow_image)
 
 vulture_image = pyglet.resource.image("vulture.png")
@@ -135,9 +135,9 @@ center_anchor(defiler_image)
 defiler_shadow_image = pyglet.resource.image("defiler_shadow.png")
 center_anchor(defiler_shadow_image)
 
-builder_image = pyglet.resource.image("builder.png")
+builder_image = pyglet.resource.image("pioneer.png")
 center_anchor(builder_image)
-builder_shadow_image = pyglet.resource.image("builder_shadow.png")
+builder_shadow_image = pyglet.resource.image("pioneer_shadow.png")
 center_anchor(builder_shadow_image)
 
 # Other

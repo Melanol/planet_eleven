@@ -43,7 +43,7 @@ class SolarSystem(pyglet.window.Window):
         super().__init__(width, height, title)
 
     def setup(self):
-        sun_image = pyglet.image.load('sprites/tank.png')
+        sun_image = pyglet.image.load('sprites/centurion.png')
         self.sun = pyglet.sprite.Sprite(sun_image, CENTER_X, CENTER_Y)
 
         mercury_image = pyglet.image.load('sprites/base.png')
@@ -58,7 +58,7 @@ class SolarSystem(pyglet.window.Window):
         self.earth = pyglet.sprite.Sprite(earth_image, -100, -100)
         self.earth_angle = 90
 
-        mars_image = pyglet.image.load('sprites/builder.png')
+        mars_image = pyglet.image.load('sprites/pioneer.png')
         self.mars = pyglet.sprite.Sprite(mars_image, -100, -100)
         self.mars_angle = 0
 

@@ -19,7 +19,7 @@ class App(pyglet.window.Window):
 
         pyglet.resource.path = ['sprites']
         pyglet.resource.reindex()
-        tank_image = pyglet.resource.image("tank.png")
+        tank_image = pyglet.resource.image("centurion.png")
         self.tank_sprite = pyglet.sprite.Sprite(img=tank_image, x=300, y=300)
 
     def on_key_press(self, symbol, modifiers):

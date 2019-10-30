@@ -257,7 +257,7 @@ class Tank(Unit):
     building_time = 60
 
     def __init__(self, center_x, center_y):
-        super().__init__(sprite='sprites/tank.png', hp=100, damage=10, cooldown=60, speed=0.6, center_x=center_x,
+        super().__init__(sprite='sprites/centurion.png', hp=100, damage=10, cooldown=60, speed=0.6, center_x=center_x,
                          center_y=center_y, projectile_sprite='sprites/laser.png',
                          projectile_speed=10)
 
@@ -321,7 +321,7 @@ class Planet_Eleven(arcade.Window):
             pos_coords_dict[(x, y)] = id(wall)'''
 
         self.defiler_button = Button(sprite='sprites/defiler.png', center_x=570, center_y=130)
-        self.tank_button = Button(sprite='sprites/tank.png', center_x=615, center_y=130)
+        self.tank_button = Button(sprite='sprites/centurion.png', center_x=615, center_y=130)
         self.vulture_button = Button(sprite='sprites/vulture.png', center_x=660, center_y=130)
 
         self.selection_sprite = arcade.Sprite(filename='sprites/selection.png', center_x=self.our_base.center_x,
