@@ -41,9 +41,6 @@ def gen_pos_coords():
 gen_pos_coords()
 
 
-
-
-
 def to_minimap(x, y):  # unit.x and unit.y
     """Converts global coords into minimap coords. For positioning minimap pixels."""
     x = x / POS_SPACE
@@ -261,8 +258,8 @@ class Turret(AttackingBuilding):
                          hp=100, is_enemy=is_enemy, damage=10, vision_radius=500, cooldown=60)
 
 
-def astar(map, start, end):
-    """A* pathfinding."""
+def astar(map, start, end, acc_ends):
+    """A* pathfinding. acc_ends are other acceptable end coords that are used when we cannot reach the exact end."""
     class Node:
         def __init__(self, parent=None, pos=None):
             self.parent = parent
@@ -273,12 +270,16 @@ def astar(map, start, end):
         def __eq__(self, other):
             return self.pos == other.pos
 
-    # Create start and end node
+    # Create start, end, and acc_ends nodes
     start_node = Node(None, start)
     start_node.g = start_node.f = 0
     end_node = Node(None, end)
     end_node.g = end_node.f = 0
-
+    print(acc_ends)
+    acc_end_nodes = []
+    for acc_end in acc_ends:
+        print(acc_end)
+        acc_end_nodes.append(Node(None, acc_end))
     # open_list is where you can go now
     open_list = [start_node]
     # closed_list is where we already were
@@ -299,12 +300,17 @@ def astar(map, start, end):
         closed_list.append(open_list.pop(current_index))
 
         # Return path
-        if current_node == end_node:
-            path = []
-            while current_node:
-                path.append(current_node.pos)
-                current_node = current_node.parent
-            return path[::-1]  # Return reversed path
+        print("current_node.pos =", current_node.pos)
+        for node in acc_end_nodes:
+            print("node.pos =", node.pos)
+            if node == current_node:
+                print(1)
+                path = []
+                while current_node:
+                    path.append(current_node.pos)
+                    current_node = current_node.parent
+                print(2)
+                return path[::-1]  # Return reversed path
 
         # Generate children
         children = []
@@ -372,16 +378,62 @@ def convert_c_to_simple(c):
 def find_path(start, end, is_flying):
     """Main path-finding function. Calls other PF functions."""
     print('start =', start, 'end =', end)
+    # Check end neighbors
+    if not is_flying:
+        selected_dict = ground_pos_coords_dict
+    else:
+        selected_dict = air_pos_coords_dict
+    if selected_dict[(end[0], end[1])] is None:
+        acc_ends = [(convert_c_to_simple(end[0]), convert_c_to_simple(end[1]))]
+    else:
+        width = 3
+        while True:
+            acc_ends = []
+            dx = dy = -POS_SPACE
+            for i in range(width):
+                coord = (end[0] + dx, end[1] + dy)
+                try:
+                    if selected_dict[coord] is None:
+                        acc_ends.append((convert_c_to_simple(coord[0]), convert_c_to_simple(coord[1])))
+                except KeyError:  # Out of the map borders
+                    pass
+                dx += POS_SPACE
+            dx -= POS_SPACE
+            for i in range(width-1):
+                dy += POS_SPACE
+                coord = (end[0] + dx, end[1] + dy)
+                try:
+                    if selected_dict[coord] is None:
+                        acc_ends.append((convert_c_to_simple(coord[0]), convert_c_to_simple(coord[1])))
+                except KeyError:  # Out of the map borders
+                    pass
+            for i in range(width-1):
+                dx -= POS_SPACE
+                coord = (end[0] + dx, end[1] + dy)
+                try:
+                    if selected_dict[coord] is None:
+                        acc_ends.append((convert_c_to_simple(coord[0]), convert_c_to_simple(coord[1])))
+                except KeyError:  # Out of the map borders
+                    pass
+            for i in range(width-2):
+                dy -= POS_SPACE
+                coord = (end[0] + dx, end[1] + dy)
+                try:
+                    if selected_dict[coord] is None:
+                        acc_ends.append((convert_c_to_simple(coord[0]), convert_c_to_simple(coord[1])))
+                except KeyError:  # Out of the map borders
+                    pass
+            if acc_ends:
+                break
+            width += 1
+    print("acc_ends =", acc_ends)
     start = convert_c_to_simple(start[0]), convert_c_to_simple(start[1])
     end = convert_c_to_simple(end[0]), convert_c_to_simple(end[1])
     print('start =', start, 'end =', end)
-    if not is_flying:
-        map = convert_map(ground_pos_coords_dict)
-    else:
-        map = convert_map(air_pos_coords_dict)
+    map = convert_map(selected_dict)
     print('map converted to simple')
     map[end[1]][end[0]] = 0
-    path = astar(map, start, end)
+    path = astar(map, start, end, acc_ends)
     print('path =', path)
     converted_path = []
     for x, y in path:
@@ -530,11 +582,12 @@ class Unit(pyglet.sprite.Sprite):
         d_angle = math.degrees(angle)
         self.rotation = -d_angle + 90
         self.shadow.rotation = -math.degrees(angle) + 90
-        next_target = self.path[self.pfi]
+        try:
+            next_target = self.path[self.pfi]
+        except IndexError:
+            self.destination_reached = True
+            return
         if selected_dict[(next_target[0], next_target[1])]:  # Obstruction detected
-            if next_target[0] == self.destination_x and next_target[1] == self.destination_y:  # Our stop
-                    self.destination_reached = True
-                    return
             self.move((self.destination_x, self.destination_y))
             return
         if next_target:  # Moving
