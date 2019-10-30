@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="8699b466-fa9b-4e8c-b41f-e5bbe759696d" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/planet_eleven.py" beforeDir="false" afterPath="$PROJECT_DIR$/planet_eleven.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -156,13 +155,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1566740526093</updated>
-    </task>
-    <task id="LOCAL-00102" summary="Keyboard stop command">
-      <created>1570560333630</created>
-      <option name="number" value="00102" />
-      <option name="presentableId" value="LOCAL-00102" />
-      <option name="project" value="LOCAL" />
-      <updated>1570560333630</updated>
     </task>
     <task id="LOCAL-00103" summary="Minimap rally setting">
       <created>1570736181027</created>
@@ -500,7 +492,14 @@
       <option name="project" value="LOCAL" />
       <updated>1572417351107</updated>
     </task>
-    <option name="localTasksCounter" value="151" />
+    <task id="LOCAL-00151" summary="PF fixes">
+      <created>1572419164190</created>
+      <option name="number" value="00151" />
+      <option name="presentableId" value="LOCAL-00151" />
+      <option name="project" value="LOCAL" />
+      <updated>1572419164191</updated>
+    </task>
+    <option name="localTasksCounter" value="152" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -545,7 +544,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$" />
     </ignored-roots>
-    <MESSAGE value="bug fixing" />
     <MESSAGE value="revert here if changing builder does not work" />
     <MESSAGE value="Builders move to build" />
     <MESSAGE value="BigBuilding" />
@@ -570,7 +568,8 @@
     <MESSAGE value="Cleaning" />
     <MESSAGE value="PF cleaning" />
     <MESSAGE value="Renamed 2 units" />
-    <option name="LAST_COMMIT_MESSAGE" value="Renamed 2 units" />
+    <MESSAGE value="PF fixes" />
+    <option name="LAST_COMMIT_MESSAGE" value="PF fixes" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
