@@ -552,13 +552,7 @@ class Unit(pyglet.sprite.Sprite):
             self.shadow.velocity_x = math.cos(angle) * self.speed
             self.shadow.velocity_y = math.sin(angle) * self.speed
         else:
-            if not self.flying:
-                ground_pos_coords_dict[(self.x, self.y)] = self
-            else:
-                air_pos_coords_dict[(self.x, self.y)] = self
-            self.destination_reached = True
-        if self.x == self.destination_x and self.y == self.destination_y:
-            print('Destination reached')
+            selected_dict[(self.x, self.y)] = self
             self.destination_reached = True
 
     def shoot(self, frame_count):

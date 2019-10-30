@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="8699b466-fa9b-4e8c-b41f-e5bbe759696d" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/planet_eleven.py" beforeDir="false" afterPath="$PROJECT_DIR$/planet_eleven.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -156,13 +155,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1566740526093</updated>
-    </task>
-    <task id="LOCAL-00098" summary="Base moved inside Window">
-      <created>1570473857849</created>
-      <option name="number" value="00098" />
-      <option name="presentableId" value="LOCAL-00098" />
-      <option name="project" value="LOCAL" />
-      <updated>1570473857850</updated>
     </task>
     <task id="LOCAL-00099" summary="Revert &quot;Base moved inside Window&quot;&#10;&#10;This reverts commit 3917956f">
       <created>1570474013476</created>
@@ -500,7 +492,14 @@
       <option name="project" value="LOCAL" />
       <updated>1572412225137</updated>
     </task>
-    <option name="localTasksCounter" value="147" />
+    <task id="LOCAL-00147" summary="PF cleaning">
+      <created>1572414988473</created>
+      <option name="number" value="00147" />
+      <option name="presentableId" value="LOCAL-00147" />
+      <option name="project" value="LOCAL" />
+      <updated>1572414988474</updated>
+    </task>
+    <option name="localTasksCounter" value="148" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -545,7 +544,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$" />
     </ignored-roots>
-    <MESSAGE value="revert here" />
     <MESSAGE value="pixel dict removed" />
     <MESSAGE value="bug fixing" />
     <MESSAGE value="revert here if changing builder does not work" />
@@ -570,7 +568,8 @@
     <MESSAGE value="Some cleaning" />
     <MESSAGE value="Fixed one of the PF bugs" />
     <MESSAGE value="Cleaning" />
-    <option name="LAST_COMMIT_MESSAGE" value="Cleaning" />
+    <MESSAGE value="PF cleaning" />
+    <option name="LAST_COMMIT_MESSAGE" value="PF cleaning" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
