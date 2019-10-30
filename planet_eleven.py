@@ -258,10 +258,14 @@ class Turret(AttackingBuilding):
                          hp=100, is_enemy=is_enemy, damage=10, vision_radius=500, cooldown=60)
 
 
+node_count = 0
 def astar(map, start, end, acc_ends):
     """A* pathfinding. acc_ends are other acceptable end coords that are used when we cannot reach the exact end."""
+    global node_count
     class Node:
         def __init__(self, parent=None, pos=None):
+            global node_count
+            node_count += 1
             self.parent = parent
             self.pos = pos
             self.g = 0
@@ -285,6 +289,8 @@ def astar(map, start, end, acc_ends):
     # closed_list is where we already were
     closed_list = []
 
+    max_nodes = ((start[0] + end[0]) ** 2 + (start[1] + end[1]) ** 2) ** 0.5 * 7
+
     # Loop until you find the end
     while len(open_list) > 0:
 
@@ -299,6 +305,10 @@ def astar(map, start, end, acc_ends):
         # Pop current off open_list, add to closed list
         closed_list.append(open_list.pop(current_index))
 
+        if node_count > max_nodes:
+            node_count = 0
+            return []
+
         # Return path
         print("current_node.pos =", current_node.pos)
         for node in acc_end_nodes:
@@ -310,6 +320,7 @@ def astar(map, start, end, acc_ends):
                     path.append(current_node.pos)
                     current_node = current_node.parent
                 print(2)
+                node_count = 0
                 return path[::-1]  # Return reversed path
 
         # Generate children
@@ -435,6 +446,8 @@ def find_path(start, end, is_flying):
     map[end[1]][end[0]] = 0
     path = astar(map, start, end, acc_ends)
     print('path =', path)
+    if not path:
+        return []
     converted_path = []
     for x, y in path:
         x = x * POS_SPACE + POS_SPACE // 2
@@ -540,7 +553,11 @@ class Unit(pyglet.sprite.Sprite):
             selected_dict = air_pos_coords_dict
         self.pfi = 0
         self.path = find_path((self.x, self.y), (self.destination_x, self.destination_y), self.flying)
-        target = self.path[self.pfi]
+        try:
+            target = self.path[self.pfi]
+        except IndexError:
+            self.destination_reached = True
+            return
         if target:  # If we can reach there
             print('target =', target)
             self.target_x = target[0]

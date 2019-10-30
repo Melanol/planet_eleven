@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="8699b466-fa9b-4e8c-b41f-e5bbe759696d" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/planet_eleven.py" beforeDir="false" afterPath="$PROJECT_DIR$/planet_eleven.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/todo.txt" beforeDir="false" afterPath="$PROJECT_DIR$/todo.txt" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -157,13 +157,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1566740526093</updated>
-    </task>
-    <task id="LOCAL-00104" summary="self instead of id(self) for minimap pixels dict">
-      <created>1570835524951</created>
-      <option name="number" value="00104" />
-      <option name="presentableId" value="LOCAL-00104" />
-      <option name="project" value="LOCAL" />
-      <updated>1570835524952</updated>
     </task>
     <task id="LOCAL-00105" summary="reset() works">
       <created>1570836446301</created>
@@ -501,7 +494,14 @@
       <option name="project" value="LOCAL" />
       <updated>1572420334309</updated>
     </task>
-    <option name="localTasksCounter" value="153" />
+    <task id="LOCAL-00153" summary="No-space PF">
+      <created>1572467784439</created>
+      <option name="number" value="00153" />
+      <option name="presentableId" value="LOCAL-00153" />
+      <option name="project" value="LOCAL" />
+      <updated>1572467784440</updated>
+    </task>
+    <option name="localTasksCounter" value="154" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -546,7 +546,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$" />
     </ignored-roots>
-    <MESSAGE value="revert here if changing builder does not work" />
     <MESSAGE value="Builders move to build" />
     <MESSAGE value="BigBuilding" />
     <MESSAGE value="BigBuildings spawn counter-clockwise" />
@@ -571,7 +570,8 @@
     <MESSAGE value="PF cleaning" />
     <MESSAGE value="Renamed 2 units" />
     <MESSAGE value="PF fixes" />
-    <option name="LAST_COMMIT_MESSAGE" value="PF fixes" />
+    <MESSAGE value="No-space PF" />
+    <option name="LAST_COMMIT_MESSAGE" value="No-space PF" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
