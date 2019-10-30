@@ -22,7 +22,9 @@ POS_COORDS = []
 ground_pos_coords_dict = {}
 air_pos_coords_dict = {}
 
+
 def gen_pos_coords():
+    """Generates a field of allowed positional coords. Declared as a fucntion for resetting these."""
     global POS_COORDS, ground_pos_coords_dict, air_pos_coords_dict
     POS_COORDS = []
     for yi in range(1, POS_COORDS_N_ROWS + 1):
@@ -40,6 +42,7 @@ gen_pos_coords()
 
 
 def astar(map, start, end):
+    """A* pathfinding."""
     class Node:
         def __init__(self, parent=None, pos=None):
             self.parent = parent
@@ -125,6 +128,7 @@ def astar(map, start, end):
 
 
 def convert_map(pos_coords_dict):
+    """Converts the map for path-finding."""
     new_map = []
     i = 1
     row = []
@@ -140,10 +144,15 @@ def convert_map(pos_coords_dict):
     return new_map
 
 
+def convert_c_to_simple(c):
+    """Called by find_path() only."""
+    return int((c - POS_SPACE // 2) // POS_SPACE)
+
+
 def find_path(start, end, is_flying):
+    """Main path-finding function. Calls other PF functions."""
     print('start =', start, 'end =', end)
-    def convert_c_to_simple(c):
-        return int((c - POS_SPACE // 2) // POS_SPACE)
+
     start = convert_c_to_simple(start[0]), convert_c_to_simple(start[1])
     end = convert_c_to_simple(end[0]), convert_c_to_simple(end[1])
     print('start =', start, 'end =', end)
@@ -164,6 +173,7 @@ def find_path(start, end, is_flying):
 
 
 def order(outer_instance, unit):
+    """Orders units in buildings. Checks if you have enough minerals."""
     if outer_instance.mineral_count - unit.cost >= 0:
         outer_instance.mineral_count -= unit.cost
         outer_instance.mineral_count_label.text = str(int(outer_instance.mineral_count))
@@ -175,6 +185,7 @@ def order(outer_instance, unit):
 
 
 def to_minimap(x, y):  # unit.x and unit.y
+    """Converts global coords into minimap coords. For positioning minimap pixels."""
     x = x / POS_SPACE
     if not x.is_integer():
         x += 1
@@ -186,8 +197,8 @@ def to_minimap(x, y):  # unit.x and unit.y
     return x, y
 
 
-# Modify coords for different viewports
 def mc(**kwargs):
+    """Modifies coords for different viewports."""
     if len(kwargs) == 1:
         try:
             return kwargs['x'] + left_view_border
@@ -406,8 +417,6 @@ class Unit(pyglet.sprite.Sprite):
         self.speed = speed
         self.destination_reached = True
         self.movement_interrupted = False
-        self.prev_loc_x = x
-        self.prev_loc_y = y
         self.target_x = None
         self.target_y = None
         self.destination_x = None
@@ -450,7 +459,16 @@ class Unit(pyglet.sprite.Sprite):
         self.outer_instance.update_fow(self.x, self.y, self.vision_radius)
 
     def update(self):
+        """Updates position."""
         self.x, self.y = self.x + self.velocity_x, self.y + self.velocity_y
+
+    def rotate(self, x, y):
+        """Rotates a unit in the direction of his task (mining, building, etc.)"""
+        diff_x = x - self.x
+        diff_y = y - self.y
+        angle = math.atan2(diff_y, diff_x)  # Rad
+        self.rotation = -math.degrees(angle) + 90
+        self.shadow.rotation = -math.degrees(angle) + 90
 
     def move(self, destination):
         """Called once by RMB or when a unit is created by a building with a non-default rally point."""
@@ -461,53 +479,10 @@ class Unit(pyglet.sprite.Sprite):
         # Moving or just rotating
         self.destination_reached = False
         self.destination_x, self.destination_y = destination[0], destination[1]
-        # Rotation without movement for workers
-        # if isinstance(self, Builder):
-        #     diff_x = self.destination_x - self.x
-        #     diff_y = self.destination_y - self.y
-        #     angle = math.atan2(diff_y, diff_x)  # Rad
-        #     self.rotation = -math.degrees(angle) + 90
-        #     self.shadow.rotation = -math.degrees(angle) + 90
         if not self.flying:
-            dict_to_check = ground_pos_coords_dict
+            selected_dict = ground_pos_coords_dict
         else:
-            dict_to_check = air_pos_coords_dict
-        # Find closest empty coord between unit and destination
-        if ground_pos_coords_dict[(destination[0], destination[1])]:  # The place is occupied
-            # The origin of the angle here is the destination point
-            diff_x = self.x - self.destination_x
-            diff_y = self.y - self.destination_y
-            angle = math.atan2(diff_y, diff_x)  # Rad
-            d_angle = math.degrees(angle)
-            rounded_d_angle = 45 * round(d_angle / 45)
-            if rounded_d_angle <= 0:
-                rounded_d_angle += 360
-            if rounded_d_angle == 360:
-                dx, dy = POS_SPACE, 0
-            elif rounded_d_angle == 45:
-                dx, dy = POS_SPACE, POS_SPACE
-            elif rounded_d_angle == 90:
-                dx, dy = 0, POS_SPACE
-            elif rounded_d_angle == 135:
-                dx, dy = -POS_SPACE, POS_SPACE
-            elif rounded_d_angle == 180:
-                dx, dy = -POS_SPACE, 0
-            elif rounded_d_angle == 225:
-                dx, dy = -POS_SPACE, -POS_SPACE
-            elif rounded_d_angle == 270:
-                dx, dy = 0, -POS_SPACE
-            elif rounded_d_angle == 315:
-                dx, dy = POS_SPACE, -POS_SPACE
-            print('rounded_d_angle =', rounded_d_angle)
-            print('dx =', dx, 'dy =', dy)
-            while True:
-                if ground_pos_coords_dict[(self.destination_x, self.destination_y)] is None:
-                    break
-                self.destination_x += dx
-                self.destination_y += dy
-                if self.x == self.destination_x and self.y == self.destination_y:
-                    self.destination_reached = True
-                    return
+            selected_dict = air_pos_coords_dict
         self.pfi = 0
         self.path = find_path((self.x, self.y), (self.destination_x, self.destination_y), self.flying)
         target = self.path[self.pfi]
@@ -519,13 +494,7 @@ class Unit(pyglet.sprite.Sprite):
         # Not moving
         else:
             self.destination_reached = True
-            if not self.flying:
-                ground_pos_coords_dict[(self.prev_loc_x, self.prev_loc_y)] = None
-                ground_pos_coords_dict[(self.x, self.y)] = self
-            else:
-                air_pos_coords_dict[(self.prev_loc_x, self.prev_loc_y)] = None
-                air_pos_coords_dict[(self.x, self.y)] = self
-            self.prev_loc_x, self.prev_loc_y = self.x, self.y
+            selected_dict[(self.x, self.y)] = self
             return
         diff_x = self.target_x - self.x
         diff_y = self.target_y - self.y
@@ -536,18 +505,16 @@ class Unit(pyglet.sprite.Sprite):
         self.shadow.rotation = -math.degrees(angle) + 90
         self.shadow.velocity_x = math.cos(angle) * self.speed
         self.shadow.velocity_y = math.sin(angle) * self.speed
-
-        if not self.flying:
-            ground_pos_coords_dict[(self.target_x, self.target_y)] = self
-        else:
-            air_pos_coords_dict[(self.target_x, self.target_y)] = self
+        selected_dict[(self.x, self.y)] = None
+        selected_dict[(self.target_x, self.target_y)] = self
 
     def eta(self):
+        """Estimated time of arrival to the target location (not destination)."""
         dist_to_target = ((self.target_x - self.x) ** 2 + (self.target_y - self.y) ** 2) ** 0.5
         return dist_to_target / self.speed
 
     def update_movement(self):
-        # Called by update to move to the next point
+        """Called by update to move to the next point."""
         # print('\nupdate_movement: self.x = {}, self.y = {})'.format(self.x, self.y))
         self.pfi += 1
         if not self.flying:
@@ -611,6 +578,7 @@ class Unit(pyglet.sprite.Sprite):
         projectile_list.append(projectile)
 
     def stop(self, x=None, y=None):
+        """Stops movement and clears commands."""
         if not x:
             x = self.target_x
             y = self.target_y
@@ -713,6 +681,7 @@ class Builder(Unit):
         self.to_build = None
 
     def gather(self):
+        self.rotate(self.mineral_to_gather.x, self.mineral_to_gather.y)
         self.is_gathering = True
         self.zap_sprite.x = self.x
         self.zap_sprite.y = self.y
@@ -836,8 +805,6 @@ class PlanetEleven(pyglet.window.Window):
             pickle.dump(unit.velocity_y, savefile)
             pickle.dump(unit.on_cooldown, savefile)
             pickle.dump(unit.cooldown_started, savefile)
-            pickle.dump(unit.prev_loc_x, savefile)
-            pickle.dump(unit.prev_loc_y, savefile)
 
         pickle.dump(len(enemy_buildings_list), savefile)
         for building in enemy_buildings_list:
@@ -946,8 +913,6 @@ class PlanetEleven(pyglet.window.Window):
             unit.velocity_y = pickle.load(savefile)
             unit.on_cooldown = pickle.load(savefile)
             unit.cooldown_started = pickle.load(savefile)
-            unit.prev_loc_x = pickle.load(savefile)
-            unit.prev_loc_y = pickle.load(savefile)
             unit.shadow.rotation = unit.rotation
             unit.shadow.velocity_x = unit.velocity_x
             unit.shadow.velocity_y = unit.velocity_y
@@ -1239,7 +1204,7 @@ class PlanetEleven(pyglet.window.Window):
                                     unit.move((building.rally_point_x, building.rally_point_y))
                             else:
                                 building.building_start_time += 1
-                                # print('No space')
+                                print('No space')
 
                 except AttributeError:
                     pass
@@ -1249,6 +1214,7 @@ class PlanetEleven(pyglet.window.Window):
                 if builder.mineral_to_gather:
                     if not builder.is_gathering and builder.destination_reached:
                         if is_melee_distance(builder, builder.task_x, builder.task_y):
+                            print("melee dist")
                             builder.gather()
                     else:
                         builder.mineral_to_gather.amount -= 0.03
@@ -1278,18 +1244,15 @@ class PlanetEleven(pyglet.window.Window):
                             if not unit.flying:
                                 unit.shadow.x = unit.target_x + 3
                                 unit.shadow.y = unit.target_y - 3
-                                ground_pos_coords_dict[(unit.prev_loc_x, unit.prev_loc_y)] = None
                                 ground_pos_coords_dict[(unit.target_x, unit.target_y)] = unit
                             else:
                                 unit.shadow.x = unit.target_x + 10
                                 unit.shadow.y = unit.target_y - 10
-                                air_pos_coords_dict[(unit.prev_loc_x, unit.prev_loc_y)] = None
                                 air_pos_coords_dict[(unit.target_x, unit.target_y)] = unit
                             if unit.x == unit.destination_x and unit.y == unit.destination_y:
                                 unit.destination_reached = True
                             else:
                                 unit.update_movement()
-                            unit.prev_loc_x, unit.prev_loc_y = unit.x, unit.y
                         # Movement interrupted
                         else:
                             unit.x = unit.target_x
@@ -1297,17 +1260,14 @@ class PlanetEleven(pyglet.window.Window):
                             if not unit.flying:
                                 unit.shadow.x = unit.target_x + 3
                                 unit.shadow.y = unit.target_y - 3
-                                ground_pos_coords_dict[(unit.prev_loc_x, unit.prev_loc_y)] = None
                                 ground_pos_coords_dict[(unit.target_x, unit.target_y)] = unit
                             else:
                                 unit.shadow.x = unit.target_x + 10
                                 unit.shadow.y = unit.target_y - 10
-                                air_pos_coords_dict[(unit.prev_loc_x, unit.prev_loc_y)] = None
                                 air_pos_coords_dict[(unit.target_x, unit.target_y)] = unit
                             unit.destination_reached = True
                             unit.move((unit.new_dest_x, unit.new_dest_y))
                             unit.movement_interrupted = False
-                            unit.prev_loc_x, unit.prev_loc_y = unit.x, unit.y
                         self.update_fow(unit.x, unit.y, unit.vision_radius)
                 else:
                     try:

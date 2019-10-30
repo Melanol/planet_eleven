@@ -2,8 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="8699b466-fa9b-4e8c-b41f-e5bbe759696d" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/ray_path_finding.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/constants_and_utilities.py" beforeDir="false" afterPath="$PROJECT_DIR$/constants_and_utilities.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes.txt" beforeDir="false" afterPath="$PROJECT_DIR$/notes.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/planet_eleven.py" beforeDir="false" afterPath="$PROJECT_DIR$/planet_eleven.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test.py" beforeDir="false" afterPath="$PROJECT_DIR$/test.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -65,7 +69,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.planet_eleven">
+  <component name="RunManager" selected="Python.test">
     <configuration name="a_star" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="planet_eleven" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -136,9 +140,9 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.test" />
         <item itemvalue="Python.planet_eleven" />
         <item itemvalue="Python.a_star" />
-        <item itemvalue="Python.test" />
       </list>
     </recent_temporary>
   </component>
@@ -156,13 +160,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1566740526093</updated>
-    </task>
-    <task id="LOCAL-00096" summary="np.array instead of bytearray">
-      <created>1570458896049</created>
-      <option name="number" value="00096" />
-      <option name="presentableId" value="LOCAL-00096" />
-      <option name="project" value="LOCAL" />
-      <updated>1570458896051</updated>
     </task>
     <task id="LOCAL-00097" summary="Revert here">
       <created>1570473608061</created>
@@ -500,7 +497,14 @@
       <option name="project" value="LOCAL" />
       <updated>1572388098967</updated>
     </task>
-    <option name="localTasksCounter" value="145" />
+    <task id="LOCAL-00145" summary="Fixed one of the PF bugs">
+      <created>1572396553325</created>
+      <option name="number" value="00145" />
+      <option name="presentableId" value="LOCAL-00145" />
+      <option name="project" value="LOCAL" />
+      <updated>1572396553325</updated>
+    </task>
+    <option name="localTasksCounter" value="146" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -545,7 +549,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$" />
     </ignored-roots>
-    <MESSAGE value="Proper spawning" />
     <MESSAGE value="shadows_dict removed" />
     <MESSAGE value="revert here" />
     <MESSAGE value="pixel dict removed" />
@@ -570,7 +573,8 @@
     <MESSAGE value="Path-finding bug fixes" />
     <MESSAGE value="Path-finding for air works" />
     <MESSAGE value="Some cleaning" />
-    <option name="LAST_COMMIT_MESSAGE" value="Some cleaning" />
+    <MESSAGE value="Fixed one of the PF bugs" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fixed one of the PF bugs" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

@@ -72,6 +72,7 @@ minimap_fow_y = MINIMAP_ZERO_COORDS[1] - 1
 
 
 def round_coords(x, y):
+    """Receives mouse clicks. Returns closest positional coords."""
     global left_view_border, bottom_view_border
     sel_x = POS_SPACE / 2 * round(x / (POS_SPACE / 2))
     sel_y = POS_SPACE / 2 * round(y / (POS_SPACE / 2))
@@ -93,6 +94,7 @@ def round_coords(x, y):
 
 
 def is_melee_distance(unit, target_x, target_y):
+    """Checks if a unit is in the 8 neighboring blocks of the target object. Used for melee interaction."""
     if abs(unit.x - target_x) == POS_SPACE:
         if abs(unit.y - target_y) == POS_SPACE or unit.y == target_y:
             return True

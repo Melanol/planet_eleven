@@ -1,20 +1,9 @@
-class MyClass:
-    def __init__(self):
-        self.a = 1
-        self.b = 1
-
-    def stop(self):
-        self.a = 0
-
-class AnotherClass(MyClass):
-    def __init__(self):
-        super().__init__()
-
-    def stop(self):
-        super().stop()
-        self.b = 0
-
-unit = AnotherClass()
-unit.stop()
-print(unit.a)
-print(unit.b)
+def func1(x):
+    if x == 0:
+        def func2():
+            print("1")
+    else:
+        def func2():
+            print("2")
+    func2()
+func1(1)
