@@ -427,6 +427,7 @@ class Unit(pyglet.sprite.Sprite):
         self.attackers = []
 
     def spawn(self):
+        """Creates a unit at it's predefined self.x and self.y. Does not move it to the rally point."""
         if not self.flying:
             ground_pos_coords_dict[(self.x, self.y)] = self
         else:
@@ -452,7 +453,7 @@ class Unit(pyglet.sprite.Sprite):
         self.x, self.y = self.x + self.velocity_x, self.y + self.velocity_y
 
     def move(self, destination):
-        # Called once by RMB or when a unit is created
+        """Called once by RMB or when a unit is created by a building with a non-default rally point."""
         # Not moving: same coords
         if self.x == destination[0] and self.y == destination[1]:
             self.destination_reached = True
@@ -461,83 +462,52 @@ class Unit(pyglet.sprite.Sprite):
         self.destination_reached = False
         self.destination_x, self.destination_y = destination[0], destination[1]
         # Rotation without movement for workers
-        if isinstance(self, Builder):
-            diff_x = self.destination_x - self.x
-            diff_y = self.destination_y - self.y
-            angle = math.atan2(diff_y, diff_x)  # Rad
-            self.rotation = -math.degrees(angle) + 90
-            self.shadow.rotation = -math.degrees(angle) + 90
+        # if isinstance(self, Builder):
+        #     diff_x = self.destination_x - self.x
+        #     diff_y = self.destination_y - self.y
+        #     angle = math.atan2(diff_y, diff_x)  # Rad
+        #     self.rotation = -math.degrees(angle) + 90
+        #     self.shadow.rotation = -math.degrees(angle) + 90
         if not self.flying:
-            # Find closest empty coord between unit and destination
-            if ground_pos_coords_dict[(destination[0], destination[1])]:
-                diff_x = self.x - self.destination_x
-                diff_y = self.y - self.destination_y
-                angle = math.atan2(diff_y, diff_x)  # Rad
-                d_angle = math.degrees(angle)
-                rounded_d_angle = 45 * round(d_angle / 45)
-                if rounded_d_angle <= 0:
-                    rounded_d_angle += 360
-                if rounded_d_angle == 360:
-                    dx, dy = POS_SPACE, 0
-                elif rounded_d_angle == 45:
-                    dx, dy = POS_SPACE, POS_SPACE
-                elif rounded_d_angle == 90:
-                    dx, dy = 0, POS_SPACE
-                elif rounded_d_angle == 135:
-                    dx, dy = -POS_SPACE, POS_SPACE
-                elif rounded_d_angle == 180:
-                    dx, dy = -POS_SPACE, 0
-                elif rounded_d_angle == 225:
-                    dx, dy = -POS_SPACE, -POS_SPACE
-                elif rounded_d_angle == 270:
-                    dx, dy = 0, -POS_SPACE
-                elif rounded_d_angle == 315:
-                    dx, dy = POS_SPACE, -POS_SPACE
-                print('rounded_d_angle =', rounded_d_angle)
-                print('dx =', dx, 'dy =', dy)
-                while True:
-                    if ground_pos_coords_dict[(self.destination_x, self.destination_y)] is None:
-                        break
-                    self.destination_x += dx
-                    self.destination_y += dy
-                    if self.x == self.destination_x and self.y == self.destination_y:
-                        return
+            dict_to_check = ground_pos_coords_dict
         else:
-            # Find closest empty coord between unit and destination
-            if air_pos_coords_dict[(destination[0], destination[1])]:
-                diff_x = self.x - self.destination_x
-                diff_y = self.y - self.destination_y
-                angle = math.atan2(diff_y, diff_x)  # Rad
-                d_angle = math.degrees(angle)
-                rounded_d_angle = 45 * round(d_angle / 45)
-                if rounded_d_angle <= 0:
-                    rounded_d_angle += 360
-                if rounded_d_angle == 360:
-                    dx, dy = POS_SPACE, 0
-                elif rounded_d_angle == 45:
-                    dx, dy = POS_SPACE, POS_SPACE
-                elif rounded_d_angle == 90:
-                    dx, dy = 0, POS_SPACE
-                elif rounded_d_angle == 135:
-                    dx, dy = -POS_SPACE, POS_SPACE
-                elif rounded_d_angle == 180:
-                    dx, dy = -POS_SPACE, 0
-                elif rounded_d_angle == 225:
-                    dx, dy = -POS_SPACE, -POS_SPACE
-                elif rounded_d_angle == 270:
-                    dx, dy = 0, -POS_SPACE
-                elif rounded_d_angle == 315:
-                    dx, dy = POS_SPACE, -POS_SPACE
-                print('rounded_d_angle =', rounded_d_angle)
-                print('dx =', dx, 'dy =', dy)
-                while True:
-                    if air_pos_coords_dict[(self.destination_x, self.destination_y)] is None:
-                        break
-                    self.destination_x += dx
-                    self.destination_y += dy
-                    if self.x == self.destination_x and self.y == self.destination_y:
-                        return
-
+            dict_to_check = air_pos_coords_dict
+        # Find closest empty coord between unit and destination
+        if ground_pos_coords_dict[(destination[0], destination[1])]:  # The place is occupied
+            # The origin of the angle here is the destination point
+            diff_x = self.x - self.destination_x
+            diff_y = self.y - self.destination_y
+            angle = math.atan2(diff_y, diff_x)  # Rad
+            d_angle = math.degrees(angle)
+            rounded_d_angle = 45 * round(d_angle / 45)
+            if rounded_d_angle <= 0:
+                rounded_d_angle += 360
+            if rounded_d_angle == 360:
+                dx, dy = POS_SPACE, 0
+            elif rounded_d_angle == 45:
+                dx, dy = POS_SPACE, POS_SPACE
+            elif rounded_d_angle == 90:
+                dx, dy = 0, POS_SPACE
+            elif rounded_d_angle == 135:
+                dx, dy = -POS_SPACE, POS_SPACE
+            elif rounded_d_angle == 180:
+                dx, dy = -POS_SPACE, 0
+            elif rounded_d_angle == 225:
+                dx, dy = -POS_SPACE, -POS_SPACE
+            elif rounded_d_angle == 270:
+                dx, dy = 0, -POS_SPACE
+            elif rounded_d_angle == 315:
+                dx, dy = POS_SPACE, -POS_SPACE
+            print('rounded_d_angle =', rounded_d_angle)
+            print('dx =', dx, 'dy =', dy)
+            while True:
+                if ground_pos_coords_dict[(self.destination_x, self.destination_y)] is None:
+                    break
+                self.destination_x += dx
+                self.destination_y += dy
+                if self.x == self.destination_x and self.y == self.destination_y:
+                    self.destination_reached = True
+                    return
         self.pfi = 0
         self.path = find_path((self.x, self.y), (self.destination_x, self.destination_y), self.flying)
         target = self.path[self.pfi]
