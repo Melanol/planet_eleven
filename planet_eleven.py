@@ -443,6 +443,7 @@ def find_path(start, end, is_flying):
     print('start =', start, 'end =', end)
     map = convert_map(selected_dict)
     print('map converted to simple')
+    map[start[1]][start[0]] = 0
     map[end[1]][end[0]] = 0
     path = astar(map, start, end, acc_ends)
     print('path =', path)
@@ -544,13 +545,19 @@ class Unit(pyglet.sprite.Sprite):
         if self.x == destination[0] and self.y == destination[1]:
             self.destination_reached = True
             return
-        # Moving or just rotating
-        self.destination_reached = False
-        self.destination_x, self.destination_y = destination[0], destination[1]
+
         if not self.flying:
             selected_dict = ground_pos_coords_dict
         else:
             selected_dict = air_pos_coords_dict
+        # Not moving: melee distance and destination occupied
+        if is_melee_distance(self, destination[0], destination[1]) and selected_dict[(destination[0], destination[1])]:
+            self.destination_reached = True
+            return
+        # Moving or just rotating
+        self.destination_reached = False
+        self.destination_x, self.destination_y = destination[0], destination[1]
+
         self.pfi = 0
         self.path = find_path((self.x, self.y), (self.destination_x, self.destination_y), self.flying)
         try:
