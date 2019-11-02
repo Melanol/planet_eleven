@@ -140,12 +140,6 @@ class ProductionBuilding(Building):
         self.building_start_time = 0
 
 
-class Base(ProductionBuilding):
-    def __init__(self, outer_instance, x, y, is_enemy=False):
-        super().__init__(outer_instance, our_img=res.base_image, enemy_img=res.enemy_base_image, x=x, y=y,
-                         hp=100, is_enemy=is_enemy, vision_radius=4)
-
-
 class BigBuilding(pyglet.sprite.Sprite):
     # __init__ == spawn()
     def __init__(self, outer_instance, our_img, enemy_img, x, y, hp, is_enemy, vision_radius):
@@ -203,6 +197,9 @@ class BigBase(BigProductionBuilding):
     def __init__(self, outer_instance, x, y, is_enemy=False):
         super().__init__(outer_instance, our_img=res.big_base_image, enemy_img=res.enemy_base_image, x=x, y=y,
                          hp=100, is_enemy=is_enemy, vision_radius=4)
+        self.control_buttons = [outer_instance.defiler_button, outer_instance.centurion_button,
+                                outer_instance.vulture_button, outer_instance.apocalypse_button,
+                                outer_instance.pioneer_button]
 
 
 class AttackingBuilding(Building):
@@ -686,6 +683,7 @@ class Defiler(Unit):
                          projectile_speed=5, batch=air_batch)
         self.flying = True
         self.shadow_sprite = res.defiler_shadow_image
+        self.control_buttons = outer_instance.basic_unit_control_buttons
 
 
 class Centurion(Unit):
@@ -698,6 +696,7 @@ class Centurion(Unit):
                          projectile_speed=5)
         self.flying = False
         self.shadow_sprite = res.centurion_shadow_image
+        self.control_buttons = outer_instance.basic_unit_control_buttons
 
 
 class Vulture(Unit):
@@ -710,6 +709,7 @@ class Vulture(Unit):
                          projectile_speed=5)
         self.flying = False
         self.shadow_sprite = res.vulture_shadow_image
+        self.control_buttons = outer_instance.basic_unit_control_buttons
 
 
 class Apocalypse(Unit):
@@ -722,6 +722,7 @@ class Apocalypse(Unit):
                          projectile_speed=5, batch=air_batch)
         self.flying = True
         self.shadow_sprite = res.apocalypse_shadow_image
+        self.control_buttons = outer_instance.basic_unit_control_buttons
 
 
 class Pioneer(Unit):
@@ -753,6 +754,8 @@ class Pioneer(Unit):
         self.zap_sprite = pyglet.sprite.Sprite(anim, self.x, self.y, batch=zap_batch)
 
         self.zap_sprite.visible = False
+        self.control_buttons = outer_instance.basic_unit_control_buttons + [outer_instance.base_button] + \
+                                        [outer_instance.turret_button] + [outer_instance.big_base_button]
 
     def build(self):
         self.mineral_to_gather = None
@@ -760,8 +763,9 @@ class Pioneer(Unit):
         self.zap_sprite.visible = False
         self.destination_reached = True
         ground_pos_coords_dict[(self.x, self.y)] = self
-        if self.to_build == "base":
-            Base(self.outer_instance, self.task_x, self.task_y)
+        if self.to_build == "BigBase":
+            pass
+            # Base(self.outer_instance, self.task_x, self.task_y)
         elif self.to_build == "turret":
             Turret(self.outer_instance, self.task_x, self.task_y)
         self.to_build = None
@@ -825,226 +829,7 @@ class PlanetEleven(pyglet.window.Window):
     def reset(self):
         self.clear_level()
         self.setup()
-        # print('reset')
-
-    def save(self):
-        savefile = open("save.p", "wb")
-        pickle.dump(left_view_border, savefile)
-        pickle.dump(bottom_view_border, savefile)
-        pickle.dump(self.frame_count, savefile)
-        pickle.dump(self.npa, savefile)
-
-        pickle.dump(self.minimap_textured_background.x, savefile)
-        pickle.dump(self.minimap_textured_background.y, savefile)
-        pickle.dump(self.control_panel_sprite.x, savefile)
-        pickle.dump(self.control_panel_sprite.y, savefile)
-        pickle.dump(self.control_panel_buttons_background.x, savefile)
-        pickle.dump(self.control_panel_buttons_background.y, savefile)
-        pickle.dump(self.move_button.x, savefile)
-        pickle.dump(self.move_button.y, savefile)
-        pickle.dump(self.stop_button.x, savefile)
-        pickle.dump(self.stop_button.y, savefile)
-        pickle.dump(self.attack_button.x, savefile)
-        pickle.dump(self.attack_button.y, savefile)
-        pickle.dump(self.base_button.x, savefile)
-        pickle.dump(self.base_button.y, savefile)
-        pickle.dump(self.defiler_button.x, savefile)
-        pickle.dump(self.defiler_button.y, savefile)
-        pickle.dump(self.centurion_button.x, savefile)
-        pickle.dump(self.centurion_button.y, savefile)
-        pickle.dump(self.vulture_button.x, savefile)
-        pickle.dump(self.vulture_button.y, savefile)
-        pickle.dump(self.pioneer_button.x, savefile)
-        pickle.dump(self.pioneer_button.y, savefile)
-        pickle.dump(minimap_fow_x, savefile)
-        pickle.dump(minimap_fow_y, savefile)
-        pickle.dump(self.minimap_cam_frame_sprite.x, savefile)
-        pickle.dump(self.minimap_cam_frame_sprite.y, savefile)
-
-        pickle.dump(len(our_buildings_list), savefile)
-        for building in our_buildings_list:
-            pickle.dump(str(type(building)), savefile)
-            pickle.dump(building.x, savefile)
-            pickle.dump(building.y, savefile)
-            pickle.dump(building.hp, savefile)
-            pickle.dump(building.rally_point_x, savefile)
-            pickle.dump(building.rally_point_y, savefile)
-            pickle.dump(building.building_queue, savefile)
-            pickle.dump(building.current_building_time, savefile)
-            pickle.dump(building.building_complete, savefile)
-            pickle.dump(building.building_start_time, savefile)
-
-        pickle.dump(len(our_units_list), savefile)
-        for unit in our_units_list:
-            pickle.dump(str(type(unit)), savefile)
-            pickle.dump(unit.x, savefile)
-            pickle.dump(unit.y, savefile)
-            pickle.dump(unit.rotation, savefile)
-            pickle.dump(unit.hp, savefile)
-            pickle.dump(unit.destination_reached, savefile)
-            pickle.dump(unit.movement_interrupted, savefile)
-            pickle.dump(unit.target_x, savefile)
-            pickle.dump(unit.target_y, savefile)
-            pickle.dump(unit.destination_x, savefile)
-            pickle.dump(unit.destination_y, savefile)
-            pickle.dump(unit.velocity_x, savefile)
-            pickle.dump(unit.velocity_y, savefile)
-            pickle.dump(unit.on_cooldown, savefile)
-            pickle.dump(unit.cooldown_started, savefile)
-
-        pickle.dump(len(enemy_buildings_list), savefile)
-        for building in enemy_buildings_list:
-            pickle.dump(str(type(building)), savefile)
-            pickle.dump(building.x, savefile)
-            pickle.dump(building.y, savefile)
-            pickle.dump(building.hp, savefile)
-            pickle.dump(building.rally_point_x, savefile)
-            pickle.dump(building.rally_point_y, savefile)
-            pickle.dump(building.building_queue, savefile)
-            pickle.dump(building.current_building_time, savefile)
-            pickle.dump(building.building_complete, savefile)
-            pickle.dump(building.building_start_time, savefile)
-
-        pickle.dump(len(projectile_list), savefile)
-        for projectile in projectile_list:
-            pickle.dump(projectile.x, savefile)
-            pickle.dump(projectile.y, savefile)
-            pickle.dump(projectile.damage, savefile)
-            pickle.dump(projectile.speed, savefile)
-            pickle.dump(projectile.target_x, savefile)
-            pickle.dump(projectile.target_y, savefile)
-            pickle.dump(projectile.rotation, savefile)
-            pickle.dump(projectile.velocity_x, savefile)
-            pickle.dump(projectile.velocity_y, savefile)
-
-        # print('saved')
-
-    def load(self):
-        global left_view_border, bottom_view_border, minimap_fow_x, minimap_fow_y
-        self.clear_level()
-        savefile = open("save.p", "rb")
-        left_view_border = pickle.load(savefile)
-        bottom_view_border = pickle.load(savefile)
-        self.frame_count = pickle.load(savefile)
-        self.npa = pickle.load(savefile)
-        self.minimap_fow_ImageData.set_data('RGBA', self.minimap_fow_ImageData.width * 4,
-                                            data=self.npa.tobytes())
-
-        self.minimap_textured_background.x = pickle.load(savefile)
-        self.minimap_textured_background.y = pickle.load(savefile)
-        self.control_panel_sprite.x = pickle.load(savefile)
-        self.control_panel_sprite.y = pickle.load(savefile)
-        self.control_panel_buttons_background.x = pickle.load(savefile)
-        self.control_panel_buttons_background.y = pickle.load(savefile)
-        self.move_button.x = pickle.load(savefile)
-        self.move_button.y = pickle.load(savefile)
-        self.stop_button.x = pickle.load(savefile)
-        self.stop_button.y = pickle.load(savefile)
-        self.attack_button.x = pickle.load(savefile)
-        self.attack_button.y = pickle.load(savefile)
-        self.base_button.x = pickle.load(savefile)
-        self.base_button.y = pickle.load(savefile)
-        self.defiler_button.x = pickle.load(savefile)
-        self.defiler_button.y = pickle.load(savefile)
-        self.centurion_button.x = pickle.load(savefile)
-        self.centurion_button.y = pickle.load(savefile)
-        self.vulture_button.x = pickle.load(savefile)
-        self.vulture_button.y = pickle.load(savefile)
-        self.pioneer_button.x = pickle.load(savefile)
-        self.pioneer_button.y = pickle.load(savefile)
-        minimap_fow_x = pickle.load(savefile)
-        minimap_fow_y = pickle.load(savefile)
-        self.minimap_cam_frame_sprite.x = pickle.load(savefile)
-        self.minimap_cam_frame_sprite.y = pickle.load(savefile)
-
-        our_buildings_list_len = pickle.load(savefile)
-        for _ in range(our_buildings_list_len):
-            building_type = pickle.load(savefile)
-            x = pickle.load(savefile)
-            y = pickle.load(savefile)
-            if building_type == "<class '__main__.Base'>":
-                building = Base(self, x=x, y=y)
-                building.hp = pickle.load(savefile)
-                building.rally_point_x = pickle.load(savefile)
-                building.rally_point_y = pickle.load(savefile)
-                building.building_queue = pickle.load(savefile)
-                building.current_building_time = pickle.load(savefile)
-                building.building_complete = pickle.load(savefile)
-                building.building_start_time = pickle.load(savefile)
-
-        our_units_list_len = pickle.load(savefile)
-        for _ in range(our_units_list_len):
-            unit_type = pickle.load(savefile)
-            x = pickle.load(savefile)
-            y = pickle.load(savefile)
-            rotation = pickle.load(savefile)
-            if unit_type == "<class '__main__.Defiler'>":
-                unit = Defiler(self, x=x, y=y)
-            elif unit_type == "<class '__main__.Centurion'>":
-                unit = Centurion(self, x=x, y=y)
-            elif unit_type == "<class '__main__.Vulture'>":
-                unit = Vulture(self, x=x, y=y)
-            elif unit_type == "<class '__main__.Pioneer'>":
-                unit = Pioneer(self, x=x, y=y)
-            unit.spawn()
-            unit.rotation = rotation
-            unit.hp = pickle.load(savefile)
-            unit.destination_reached = pickle.load(savefile)
-            unit.movement_interrupted = pickle.load(savefile)
-            unit.target_x = pickle.load(savefile)
-            unit.target_y = pickle.load(savefile)
-            unit.destination_x = pickle.load(savefile)
-            unit.destination_y = pickle.load(savefile)
-            unit.velocity_x = pickle.load(savefile)
-            unit.velocity_y = pickle.load(savefile)
-            unit.on_cooldown = pickle.load(savefile)
-            unit.cooldown_started = pickle.load(savefile)
-            unit.shadow.rotation = unit.rotation
-            unit.shadow.velocity_x = unit.velocity_x
-            unit.shadow.velocity_y = unit.velocity_y
-
-        enemy_buildings_list_len = pickle.load(savefile)
-        for _ in range(enemy_buildings_list_len):
-            building_type = pickle.load(savefile)
-            x = pickle.load(savefile)
-            y = pickle.load(savefile)
-            if building_type == "<class '__main__.Base'>":
-                building = Base(self, x=x, y=y, is_enemy=True)
-                building.hp = pickle.load(savefile)
-                building.rally_point_x = pickle.load(savefile)
-                building.rally_point_y = pickle.load(savefile)
-                building.building_queue = pickle.load(savefile)
-                building.current_building_time = pickle.load(savefile)
-                building.building_complete = pickle.load(savefile)
-                building.building_start_time = pickle.load(savefile)
-
-        projectile_list_len = pickle.load(savefile)
-        for _ in range(projectile_list_len):
-            x = pickle.load(savefile)
-            y = pickle.load(savefile)
-            damage = pickle.load(savefile)
-            speed = pickle.load(savefile)
-            target_x = pickle.load(savefile)
-            target_y = pickle.load(savefile)
-            rotation = pickle.load(savefile)
-            velocity_x = pickle.load(savefile)
-            velocity_y = pickle.load(savefile)
-            projectile = Projectile(x, y, target_x, target_y, damage, speed, None)
-            projectile_list.append(projectile)
-            projectile.rotation = rotation
-            projectile.velocity_x = velocity_x
-            projectile.velocity_y = velocity_y
-            # print('target_x =', target_x)
-            # print('target_y =', target_y)
-            for building in enemy_buildings_list:
-                # print('building.x =', building.x)
-                # print('building.y =', building.y)
-                if building.x == target_x and building.y == target_y:
-                    projectile.target_obj = building
-                    break
-            # print(projectile.target_obj)
-
-        # print('loaded')
+        print('reset')
 
     def setup(self):
         global selected
@@ -1074,19 +859,6 @@ class PlanetEleven(pyglet.window.Window):
         self.mineral_count = 50000
         self.mineral_count_label = pyglet.text.Label(str(self.mineral_count), x=SCREEN_WIDTH - 200, y=SCREEN_HEIGHT - 30)
 
-
-        # Spawn
-        Mineral(self, POS_SPACE / 2 + POS_SPACE * 4, POS_SPACE / 2 + POS_SPACE * 7)
-        Mineral(self, POS_SPACE / 2 + POS_SPACE * 4, POS_SPACE / 2 + POS_SPACE * 8, amount=1)
-        self.our_1st_base = Base(self, POS_SPACE / 2 + POS_SPACE * 6, POS_SPACE / 2 + POS_SPACE * 6)
-        selected = self.our_1st_base
-        Base(self, POS_SPACE / 2 + POS_SPACE * 6, POS_SPACE / 2 + POS_SPACE * 5, is_enemy=True)
-        Base(self, POS_SPACE / 2 + POS_SPACE * 6, POS_SPACE / 2 + POS_SPACE * 4, is_enemy=True)
-        Base(self, POS_SPACE / 2 + POS_SPACE * 5, POS_SPACE / 2 + POS_SPACE * 4, is_enemy=True)
-        Base(self, POS_SPACE / 2 + POS_SPACE * 4, POS_SPACE / 2 + POS_SPACE * 4, is_enemy=True)
-        Base(self, POS_SPACE / 2 + POS_SPACE * 4, POS_SPACE / 2 + POS_SPACE * 5, is_enemy=True)
-        BigBase(self, POS_SPACE / 2 + POS_SPACE * 6, POS_SPACE / 2 + POS_SPACE * 7)
-
         # Buttons
         self.base_button = Button(img=res.base_image, x=CONTROL_BUTTONS_COORDS[3][0],
                                   y=CONTROL_BUTTONS_COORDS[3][1])
@@ -1111,31 +883,25 @@ class PlanetEleven(pyglet.window.Window):
         self.pioneer_button = Button(img=res.pioneer_image, x=CONTROL_BUTTONS_COORDS[4][0],
                                      y=CONTROL_BUTTONS_COORDS[4][1])
 
+        # Spawn
+        Mineral(self, POS_SPACE / 2 + POS_SPACE * 4, POS_SPACE / 2 + POS_SPACE * 7)
+        Mineral(self, POS_SPACE / 2 + POS_SPACE * 4, POS_SPACE / 2 + POS_SPACE * 8, amount=1)
+        self.our_1st_base = BigBase(self, POS_SPACE / 2 + POS_SPACE * 6, POS_SPACE / 2 + POS_SPACE * 7)
+        selected = self.our_1st_base
+
         self.selection_sprite = pyglet.sprite.Sprite(img=res.selection_image, x=self.our_1st_base.x,
                                                      y=self.our_1st_base.y)
-        self.selection_big_sprite = pyglet.sprite.Sprite(img=res.selection_big_image, x=self.our_1st_base.x,
-                                                         y=self.our_1st_base.y)
-        self.rally_point_sprite = pyglet.sprite.Sprite(img=res.rally_point_image, x=self.our_1st_base.rally_point_x,
-                                                       y=self.our_1st_base.rally_point_y)
-
+        self.selection_big_sprite = pyglet.sprite.Sprite(img=res.selection_big_image, x=self.our_1st_base.x + POS_SPACE / 2,
+                                                         y=self.our_1st_base.y + POS_SPACE / 2)
+        self.rally_point_sprite = pyglet.sprite.Sprite(img=res.rally_point_image, x=self.our_1st_base.rally_point_x + POS_SPACE / 2,
+                                                       y=self.our_1st_base.rally_point_y + POS_SPACE / 2)
         # self.dots = []
         # for x, y in POS_COORDS:
         #     dot = pyglet.sprite.Sprite(img=res.utility_dot_image, x=x, y=y, batch=utilities_batch)
         #     self.dots.append(dot)
 
         self.basic_unit_control_buttons = [self.move_button, self.stop_button, self.attack_button]
-        self.controls_dict = {"<class 'NoneType'>": None,
-                              "<class '__main__.Base'>": [self.defiler_button, self.centurion_button, self.vulture_button,
-                                                          self.apocalypse_button, self.pioneer_button],
-                              "<class '__main__.BigBase'>": [self.defiler_button, self.centurion_button, self.vulture_button,
-                                                          self.apocalypse_button, self.pioneer_button],
-                              "<class '__main__.Defiler'>": self.basic_unit_control_buttons,
-                              "<class '__main__.Centurion'>": self.basic_unit_control_buttons,
-                              "<class '__main__.Vulture'>": self.basic_unit_control_buttons,
-                              "<class '__main__.Pioneer'>": self.basic_unit_control_buttons + [self.base_button] +
-                                                            [self.turret_button] + [self.big_base_button]
-                              }
-        self.control_buttons_to_render = self.controls_dict["<class '__main__.Base'>"]
+        self.control_buttons_to_render = self.our_1st_base.control_buttons
         self.base_building_sprite = pyglet.sprite.Sprite(img=res.base_image, x=-100, y=-100)
         self.base_building_sprite.color = (0, 255, 0)
         self.turret_building_sprite = pyglet.sprite.Sprite(img=res.turret_button_image, x=-100, y=-100)
@@ -1600,8 +1366,8 @@ class PlanetEleven(pyglet.window.Window):
                                             self.rally_point_sprite.y = selected.rally_point_y
                                     break
                         try:
-                            self.control_buttons_to_render = self.controls_dict[str(type(selected))]
-                        except KeyError:
+                            self.control_buttons_to_render = selected.control_buttons
+                        except AttributeError:
                             pass
                         # print('SELECTED CLASS =', type(selected))
                     elif button == mouse.RIGHT:

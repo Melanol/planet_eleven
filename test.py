@@ -1,9 +1,10 @@
-def func1(x):
-    if x == 0:
-        def func2():
-            print("1")
-    else:
-        def func2():
-            print("2")
-    func2()
-func1(1)
+class MyClass:
+    def __init__(self, outer):
+        self.hp = outer.hp
+
+
+class AnotherClass:
+    def __init__(self):
+        self.hp = 100
+
+poop = AnotherClass

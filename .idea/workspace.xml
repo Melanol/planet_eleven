@@ -2,28 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="8699b466-fa9b-4e8c-b41f-e5bbe759696d" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/save-load.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/constants_and_utilities.py" beforeDir="false" afterPath="$PROJECT_DIR$/constants_and_utilities.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/disdoc.rtf" beforeDir="false" afterPath="$PROJECT_DIR$/disdoc.rtf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pathfinding.docx" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/planet_eleven.py" beforeDir="false" afterPath="$PROJECT_DIR$/planet_eleven.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/planet_eleven_arcade.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources.py" beforeDir="false" afterPath="$PROJECT_DIR$/resources.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/solar_system.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/base.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/base.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/base.psd" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/base.psd" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/big_base.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/big_base.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/big_base.psd" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/big_base.psd" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/enemy_base.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/enemy_base.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/turret.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/turret.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/sprites/turret.psd" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/turret.psd" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/turret_base.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/turret_base.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/turret_button.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/turret_button.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/vulture.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/vulture.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/vulture.psd" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/vulture.psd" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/vulture_shadow.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/vulture_shadow.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/vulture_shadow.psd" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/vulture_shadow.psd" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/todo.txt" beforeDir="false" afterPath="$PROJECT_DIR$/todo.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test.py" beforeDir="false" afterPath="$PROJECT_DIR$/test.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -176,13 +159,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1566740526093</updated>
-    </task>
-    <task id="LOCAL-00107" summary="ground_units_batch for ground units">
-      <created>1570891873637</created>
-      <option name="number" value="00107" />
-      <option name="presentableId" value="LOCAL-00107" />
-      <option name="project" value="LOCAL" />
-      <updated>1570891873637</updated>
     </task>
     <task id="LOCAL-00108" summary="Further save/load updates">
       <created>1570903371441</created>
@@ -520,7 +496,14 @@
       <option name="project" value="LOCAL" />
       <updated>1572491053429</updated>
     </task>
-    <option name="localTasksCounter" value="156" />
+    <task id="LOCAL-00156" summary="Revert here">
+      <created>1572670855212</created>
+      <option name="number" value="00156" />
+      <option name="presentableId" value="LOCAL-00156" />
+      <option name="project" value="LOCAL" />
+      <updated>1572670855213</updated>
+    </task>
+    <option name="localTasksCounter" value="157" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -565,7 +548,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$" />
     </ignored-roots>
-    <MESSAGE value="BigBuilding" />
     <MESSAGE value="BigBuildings spawn counter-clockwise" />
     <MESSAGE value="Default rally point" />
     <MESSAGE value="Basic resource gathering" />
@@ -590,7 +572,8 @@
     <MESSAGE value="PF fixes" />
     <MESSAGE value="No-space PF" />
     <MESSAGE value="PF improvements" />
-    <option name="LAST_COMMIT_MESSAGE" value="PF improvements" />
+    <MESSAGE value="Revert here" />
+    <option name="LAST_COMMIT_MESSAGE" value="Revert here" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
