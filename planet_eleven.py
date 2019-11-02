@@ -147,10 +147,10 @@ class BigBuilding(pyglet.sprite.Sprite):
         self.is_big = True
         self.hp = hp
         self.default_rally_point = True
-        ground_pos_coords_dict[(x, y)] = self
-        ground_pos_coords_dict[(x + POS_SPACE, y)] = self
-        ground_pos_coords_dict[(x, y + POS_SPACE)] = self
-        ground_pos_coords_dict[(x + POS_SPACE, y + POS_SPACE)] = self
+        ground_pos_coords_dict[(x - POS_SPACE / 2, y - POS_SPACE / 2)] = self
+        ground_pos_coords_dict[(x + POS_SPACE / 2, y - POS_SPACE / 2)] = self
+        ground_pos_coords_dict[(x + POS_SPACE / 2, y + POS_SPACE / 2)] = self
+        ground_pos_coords_dict[(x - POS_SPACE / 2, y + POS_SPACE / 2)] = self
         self.is_enemy = is_enemy
         if not self.is_enemy:
             our_buildings_list.append(self)
@@ -166,9 +166,9 @@ class BigBuilding(pyglet.sprite.Sprite):
             minimap_pixel = res.minimap_enemy_image
         super().__init__(img=img, x=x, y=y, batch=buildings_batch)
         pixel_minimap_coords = to_minimap(self.x, self.y)
-        self.pixel = pyglet.sprite.Sprite(img=minimap_pixel, x=pixel_minimap_coords[0],
-                                          y=pixel_minimap_coords[1],
+        self.pixel = pyglet.sprite.Sprite(img=minimap_pixel, x=pixel_minimap_coords[0], y=pixel_minimap_coords[1],
                                           batch=minimap_pixels_batch)
+        self.shadow = pyglet.sprite.Sprite(img=res.big_building_shadow_image, x=x, y=y, batch=ground_shadows_batch)
 
     def kill(self, delay_del=False):
         global ground_pos_coords_dict, our_buildings_list, enemy_buildings_list
@@ -886,15 +886,15 @@ class PlanetEleven(pyglet.window.Window):
         # Spawn
         Mineral(self, POS_SPACE / 2 + POS_SPACE * 4, POS_SPACE / 2 + POS_SPACE * 7)
         Mineral(self, POS_SPACE / 2 + POS_SPACE * 4, POS_SPACE / 2 + POS_SPACE * 8, amount=1)
-        self.our_1st_base = BigBase(self, POS_SPACE / 2 + POS_SPACE * 6, POS_SPACE / 2 + POS_SPACE * 7)
+        self.our_1st_base = BigBase(self, POS_SPACE * 7, POS_SPACE * 8)
         selected = self.our_1st_base
 
         self.selection_sprite = pyglet.sprite.Sprite(img=res.selection_image, x=self.our_1st_base.x,
                                                      y=self.our_1st_base.y)
-        self.selection_big_sprite = pyglet.sprite.Sprite(img=res.selection_big_image, x=self.our_1st_base.x + POS_SPACE / 2,
-                                                         y=self.our_1st_base.y + POS_SPACE / 2)
-        self.rally_point_sprite = pyglet.sprite.Sprite(img=res.rally_point_image, x=self.our_1st_base.rally_point_x + POS_SPACE / 2,
-                                                       y=self.our_1st_base.rally_point_y + POS_SPACE / 2)
+        self.selection_big_sprite = pyglet.sprite.Sprite(img=res.selection_big_image, x=self.our_1st_base.x,
+                                                         y=self.our_1st_base.y)
+        self.rally_point_sprite = pyglet.sprite.Sprite(img=res.rally_point_image, x=self.our_1st_base.rally_point_x,
+                                                       y=self.our_1st_base.rally_point_y)
         # self.dots = []
         # for x, y in POS_COORDS:
         #     dot = pyglet.sprite.Sprite(img=res.utility_dot_image, x=x, y=y, batch=utilities_batch)
@@ -1014,8 +1014,12 @@ class PlanetEleven(pyglet.window.Window):
                             else:
                                 dict_to_check = air_pos_coords_dict
                             # Searching for a place to build
-                            x = building.x - POS_SPACE
-                            y = building.y - POS_SPACE
+                            if building.width == POS_SPACE:
+                                x = building.x - POS_SPACE
+                                y = building.y - POS_SPACE
+                            else:
+                                x = building.x - POS_SPACE * 1.5
+                                y = building.y - POS_SPACE * 1.5
                             org_x = x
                             org_y = y
                             place_found = False
@@ -1269,11 +1273,9 @@ class PlanetEleven(pyglet.window.Window):
             elif symbol == key.H:
                 for _key, _value in ground_pos_coords_dict.items():
                     if _value:
-                        # print('key =', _key, 'value =', _value)
-                        pass
+                        print('key =', _key, 'value =', _value)
             elif symbol == key.J:
-                # print(selected.is_big)
-                pass
+                print(selected.width)
             # elif symbol == key.Z:
             #     i = 0
             #     for _key, value in ground_pos_coords_dict.items():
@@ -1344,26 +1346,11 @@ class PlanetEleven(pyglet.window.Window):
                             for _key, value in ground_pos_coords_dict.items():
                                 if x == _key[0] and y == _key[1]:
                                     selected = value
-                                    try:
-                                        selected.is_big
-                                        self.selection_big_sprite.x = selected.x + POS_SPACE / 2
-                                        self.selection_big_sprite.y = selected.y + POS_SPACE / 2
-                                    except AttributeError:
-                                        self.selection_sprite.x = x
-                                        self.selection_sprite.y = y
+                                    self.selection_sprite.x = x
+                                    self.selection_sprite.y = y
                                     if selected in our_buildings_list:
-                                        if selected.rally_point_x == selected.x and \
-                                                selected.rally_point_y == selected.y:
-                                            try:
-                                                selected.is_big
-                                                self.rally_point_sprite.x = selected.x + 16
-                                                self.rally_point_sprite.y = selected.y + 16
-                                            except AttributeError:
-                                                self.rally_point_sprite.x = selected.rally_point_x
-                                                self.rally_point_sprite.y = selected.rally_point_y
-                                        else:
-                                            self.rally_point_sprite.x = selected.rally_point_x
-                                            self.rally_point_sprite.y = selected.rally_point_y
+                                        self.rally_point_sprite.x = selected.rally_point_x
+                                        self.rally_point_sprite.y = selected.rally_point_y
                                     break
                         try:
                             self.control_buttons_to_render = selected.control_buttons

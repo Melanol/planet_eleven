@@ -8,6 +8,7 @@
 -There is a bug that does not allow you to select units that are in the right top corner of the map
 
 # Not important
+-Units blink-rotate the moment they are ordered to move
 -Selection frame dragging behind
 -Unit-following-unit movement bug
 -Selected info

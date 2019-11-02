@@ -109,15 +109,14 @@ center_anchor(turret_button_image)
 turret_image = pyglet.resource.image("turret.png")
 center_anchor(turret_image)
 
-# turret_image = pyglet.image.load("sprites/turret.png")
-# turret_image.anchor_x = turret_image.width / 2
-# turret_image.anchor_y = turret_image.height / 2
-
 turret_base_image = pyglet.resource.image("turret_base.png")
 center_anchor(turret_base_image)
 
 big_base_image = pyglet.resource.image("big_base.png")
-big_building_anchor(big_base_image)
+center_anchor(big_base_image)
+
+big_building_shadow_image = pyglet.resource.image("big_building_shadow.png")
+center_anchor(big_building_shadow_image)
 
 # Units
 centurion_image = pyglet.resource.image("centurion.png")
