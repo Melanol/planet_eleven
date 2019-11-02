@@ -1,11 +1,11 @@
 # Priority #1: finalize the 1st version of the game
 
 # Important
--Acceptable coords to be passed to astar(). If we get in one, we return path
 -Unit control buttons
 -AI
 -Building costs and building time
 -Building 2-block-wide buldings
+-There is a bug that does not allow you to select units that are in the right top corner of the map
 
 # Not important
 -Selection frame dragging behind

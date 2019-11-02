@@ -694,7 +694,7 @@ class Centurion(Unit):
 
     def __init__(self, outer_instance, x, y):
         super().__init__(outer_instance=outer_instance, img=res.centurion_image, hp=100, vision_radius=6,
-                         damage=10, cooldown=60, speed=0.6, x=x, y=y, projectile_sprite='sprites/laser.png',
+                         damage=20, cooldown=120, speed=1, x=x, y=y, projectile_sprite='sprites/laser.png',
                          projectile_speed=5)
         self.flying = False
         self.shadow_sprite = res.centurion_shadow_image
@@ -710,6 +710,18 @@ class Vulture(Unit):
                          projectile_speed=5)
         self.flying = False
         self.shadow_sprite = res.vulture_shadow_image
+
+
+class Apocalypse(Unit):
+    cost = 250
+    building_time = 10
+
+    def __init__(self, outer_instance, x, y):
+        super().__init__(outer_instance=outer_instance, img=res.apocalypse_image, hp=100, vision_radius=6,
+                         damage=10, cooldown=60, speed=6, x=x, y=y, projectile_sprite='sprites/laser.png',
+                         projectile_speed=5, batch=air_batch)
+        self.flying = True
+        self.shadow_sprite = res.apocalypse_shadow_image
 
 
 class Pioneer(Unit):
@@ -743,6 +755,9 @@ class Pioneer(Unit):
         self.zap_sprite.visible = False
 
     def build(self):
+        self.mineral_to_gather = None
+        self.is_gathering = False
+        self.zap_sprite.visible = False
         self.destination_reached = True
         ground_pos_coords_dict[(self.x, self.y)] = self
         if self.to_build == "base":
@@ -1090,8 +1105,11 @@ class PlanetEleven(pyglet.window.Window):
         self.centurion_button = Button(img=res.centurion_image, x=CONTROL_BUTTONS_COORDS[1][0], y=CONTROL_BUTTONS_COORDS[1][1])
         self.vulture_button = Button(img=res.vulture_image, x=CONTROL_BUTTONS_COORDS[2][0],
                                      y=CONTROL_BUTTONS_COORDS[2][1])
-        self.pioneer_button = Button(img=res.pioneer_image, x=CONTROL_BUTTONS_COORDS[3][0],
+        self.apocalypse_button = Button(img=res.apocalypse_image, x=CONTROL_BUTTONS_COORDS[3][0],
                                      y=CONTROL_BUTTONS_COORDS[3][1])
+
+        self.pioneer_button = Button(img=res.pioneer_image, x=CONTROL_BUTTONS_COORDS[4][0],
+                                     y=CONTROL_BUTTONS_COORDS[4][1])
 
         self.selection_sprite = pyglet.sprite.Sprite(img=res.selection_image, x=self.our_1st_base.x,
                                                      y=self.our_1st_base.y)
@@ -1108,9 +1126,9 @@ class PlanetEleven(pyglet.window.Window):
         self.basic_unit_control_buttons = [self.move_button, self.stop_button, self.attack_button]
         self.controls_dict = {"<class 'NoneType'>": None,
                               "<class '__main__.Base'>": [self.defiler_button, self.centurion_button, self.vulture_button,
-                                                          self.pioneer_button],
+                                                          self.apocalypse_button, self.pioneer_button],
                               "<class '__main__.BigBase'>": [self.defiler_button, self.centurion_button, self.vulture_button,
-                                                             self.pioneer_button],
+                                                          self.apocalypse_button, self.pioneer_button],
                               "<class '__main__.Defiler'>": self.basic_unit_control_buttons,
                               "<class '__main__.Centurion'>": self.basic_unit_control_buttons,
                               "<class '__main__.Vulture'>": self.basic_unit_control_buttons,
@@ -1220,6 +1238,8 @@ class PlanetEleven(pyglet.window.Window):
                             building.current_building_time = Centurion.building_time
                         elif str(unit) == "<class '__main__.Vulture'>":
                             building.current_building_time = Vulture.building_time
+                        elif str(unit) == "<class '__main__.Apocalypse'>":
+                            building.current_building_time = Apocalypse.building_time
                         elif str(unit) == "<class '__main__.Pioneer'>":
                             building.current_building_time = Pioneer.building_time
                         if self.frame_count - building.building_start_time == building.current_building_time:
@@ -1266,6 +1286,9 @@ class PlanetEleven(pyglet.window.Window):
                                     unit.spawn()
                                 elif str(unit) == "<class '__main__.Vulture'>":
                                     unit = Vulture(self, x=x, y=y)
+                                    unit.spawn()
+                                elif str(unit) == "<class '__main__.Apocalypse'>":
+                                    unit = Apocalypse(self, x=x, y=y)
                                     unit.spawn()
                                 elif str(unit) == "<class '__main__.Pioneer'>":
                                     unit = Pioneer(self, x=x, y=y)
@@ -1670,6 +1693,10 @@ class PlanetEleven(pyglet.window.Window):
                         elif self.vulture_button.x - 16 <= x <= self.vulture_button.x + 16 and \
                                 self.vulture_button.y - 16 <= y <= self.vulture_button.y + 16:
                             order(self, Vulture)
+                        # Create apocalypse
+                        elif self.apocalypse_button.x - 16 <= x <= self.apocalypse_button.x + 16 and \
+                                self.apocalypse_button.y - 16 <= y <= self.apocalypse_button.y + 16:
+                            order(self, Apocalypse)
                         # Create worker
                         elif self.pioneer_button.x - 16 <= x <= self.pioneer_button.x + 16 and \
                                 self.pioneer_button.y - 16 <= y <= self.pioneer_button.y + 16:
@@ -1846,8 +1873,10 @@ class PlanetEleven(pyglet.window.Window):
         self.centurion_button.y = CONTROL_BUTTONS_COORDS[1][1] + bottom_view_border
         self.vulture_button.x = CONTROL_BUTTONS_COORDS[2][0] + left_view_border
         self.vulture_button.y = CONTROL_BUTTONS_COORDS[2][1] + bottom_view_border
-        self.pioneer_button.x = CONTROL_BUTTONS_COORDS[3][0] + left_view_border
-        self.pioneer_button.y = CONTROL_BUTTONS_COORDS[3][1] + bottom_view_border
+        self.apocalypse_button.x = CONTROL_BUTTONS_COORDS[3][0] + left_view_border
+        self.apocalypse_button.y = CONTROL_BUTTONS_COORDS[3][1] + bottom_view_border
+        self.pioneer_button.x = CONTROL_BUTTONS_COORDS[4][0] + left_view_border
+        self.pioneer_button.y = CONTROL_BUTTONS_COORDS[4][1] + bottom_view_border
         self.mineral_count_label.x = SCREEN_WIDTH - 200 + left_view_border
         self.mineral_count_label.y = SCREEN_HEIGHT - 30 + bottom_view_border
         for unit in our_units_list:

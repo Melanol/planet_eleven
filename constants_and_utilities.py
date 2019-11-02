@@ -59,7 +59,7 @@ turret_batch = pyglet.graphics.Batch()
 zap_batch = pyglet.graphics.Batch()
 
 minerals = []
-LIST_OF_FLYING = ["<class '__main__.Defiler'>"]
+LIST_OF_FLYING = ["<class '__main__.Defiler'>", "<class '__main__.Apocalypse'>"]
 our_units_list = []
 workers_list = []
 our_buildings_list = []

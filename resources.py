@@ -140,6 +140,11 @@ center_anchor(pioneer_image)
 pioneer_shadow_image = pyglet.resource.image("pioneer_shadow.png")
 center_anchor(pioneer_shadow_image)
 
+apocalypse_image = pyglet.resource.image("apocalypse.png")
+center_anchor(apocalypse_image)
+apocalypse_shadow_image = pyglet.resource.image("apocalypse_shadow.png")
+center_anchor(apocalypse_shadow_image)
+
 # Other
 projectile_image = pyglet.resource.image("laser.png")
 center_anchor(projectile_image)
