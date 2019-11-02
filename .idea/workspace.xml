@@ -5,9 +5,6 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/planet_eleven.py" beforeDir="false" afterPath="$PROJECT_DIR$/planet_eleven.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources.py" beforeDir="false" afterPath="$PROJECT_DIR$/resources.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/turret.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/turret.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/turret.psd" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/turret.psd" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/todo.txt" beforeDir="false" afterPath="$PROJECT_DIR$/todo.txt" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -160,13 +157,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1566740526093</updated>
-    </task>
-    <task id="LOCAL-00109" summary="Further save/load updates">
-      <created>1570924770155</created>
-      <option name="number" value="00109" />
-      <option name="presentableId" value="LOCAL-00109" />
-      <option name="project" value="LOCAL" />
-      <updated>1570924770155</updated>
     </task>
     <task id="LOCAL-00110" summary="save/load works, units attack closest enemy">
       <created>1570979643816</created>
@@ -504,7 +494,14 @@
       <option name="project" value="LOCAL" />
       <updated>1572680490163</updated>
     </task>
-    <option name="localTasksCounter" value="158" />
+    <task id="LOCAL-00158" summary="Big buildings spawn with x and y at their sprites' center">
+      <created>1572687077567</created>
+      <option name="number" value="00158" />
+      <option name="presentableId" value="LOCAL-00158" />
+      <option name="project" value="LOCAL" />
+      <updated>1572687077568</updated>
+    </task>
+    <option name="localTasksCounter" value="159" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -549,7 +546,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$" />
     </ignored-roots>
-    <MESSAGE value="Default rally point" />
     <MESSAGE value="Basic resource gathering" />
     <MESSAGE value="Workers stop gathering when their mineral is no more" />
     <MESSAGE value="task_x and task_y" />
@@ -574,7 +570,8 @@
     <MESSAGE value="PF improvements" />
     <MESSAGE value="Revert here" />
     <MESSAGE value="Removed small base, control buttons moved to attributes" />
-    <option name="LAST_COMMIT_MESSAGE" value="Removed small base, control buttons moved to attributes" />
+    <MESSAGE value="Big buildings spawn with x and y at their sprites' center" />
+    <option name="LAST_COMMIT_MESSAGE" value="Big buildings spawn with x and y at their sprites' center" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

@@ -115,9 +115,6 @@ center_anchor(turret_base_image)
 big_base_image = pyglet.resource.image("big_base.png")
 center_anchor(big_base_image)
 
-big_building_shadow_image = pyglet.resource.image("big_building_shadow.png")
-center_anchor(big_building_shadow_image)
-
 # Units
 centurion_image = pyglet.resource.image("centurion.png")
 center_anchor(centurion_image)

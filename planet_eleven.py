@@ -168,7 +168,6 @@ class BigBuilding(pyglet.sprite.Sprite):
         pixel_minimap_coords = to_minimap(self.x, self.y)
         self.pixel = pyglet.sprite.Sprite(img=minimap_pixel, x=pixel_minimap_coords[0], y=pixel_minimap_coords[1],
                                           batch=minimap_pixels_batch)
-        self.shadow = pyglet.sprite.Sprite(img=res.big_building_shadow_image, x=x, y=y, batch=ground_shadows_batch)
 
     def kill(self, delay_del=False):
         global ground_pos_coords_dict, our_buildings_list, enemy_buildings_list
