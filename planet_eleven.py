@@ -8,7 +8,7 @@ from pyglet.gl import *
 from pyglet.window import key
 from pyglet.window import mouse
 
-from movable import Movable
+from shadow import Shadow
 import resources as res
 from projectile import Projectile
 from draw_dot import draw_dot
@@ -66,11 +66,10 @@ def mc(**kwargs):
 
 
 class Button(pyglet.sprite.Sprite):
-    pass
-
-
-class Shadow(Movable):
-    pass
+    def __init__(self, img, x, y):
+        super().__init__(img, x, y)
+        self.org_x = x
+        self.org_y = y
 
 
 class Mineral(pyglet.sprite.Sprite):
@@ -888,9 +887,11 @@ class PlanetEleven(pyglet.window.Window):
                                      y=CONTROL_BUTTONS_COORDS[2][1])
         self.apocalypse_button = Button(img=res.apocalypse_image, x=CONTROL_BUTTONS_COORDS[3][0],
                                      y=CONTROL_BUTTONS_COORDS[3][1])
-
         self.pioneer_button = Button(img=res.pioneer_image, x=CONTROL_BUTTONS_COORDS[4][0],
                                      y=CONTROL_BUTTONS_COORDS[4][1])
+        self.buttons = [self.base_button, self.turret_button, self.big_base_button, self.move_button, self.stop_button,
+                        self.attack_button, self.defiler_button, self.centurion_button, self.vulture_button,
+                        self.apocalypse_button, self.pioneer_button]
 
         # Spawn buildings and minerals
         Mineral(self, POS_SPACE / 2 + POS_SPACE * 4, POS_SPACE / 2 + POS_SPACE * 7)
@@ -1598,28 +1599,9 @@ class PlanetEleven(pyglet.window.Window):
         self.selected_frame_cp.y = SCREEN_HEIGHT - 90 + bottom_view_border
         self.control_panel_buttons_background.x = center_x + left_view_border
         self.control_panel_buttons_background.y = center_y + bottom_view_border
-        self.move_button.x = CONTROL_BUTTONS_COORDS[0][0] + left_view_border
-        self.move_button.y = CONTROL_BUTTONS_COORDS[0][1] + bottom_view_border
-        self.stop_button.x = CONTROL_BUTTONS_COORDS[1][0] + left_view_border
-        self.stop_button.y = CONTROL_BUTTONS_COORDS[1][1] + bottom_view_border
-        self.attack_button.x = CONTROL_BUTTONS_COORDS[2][0] + left_view_border
-        self.attack_button.y = CONTROL_BUTTONS_COORDS[2][1] + bottom_view_border
-        self.base_button.x = CONTROL_BUTTONS_COORDS[3][0] + left_view_border
-        self.base_button.y = CONTROL_BUTTONS_COORDS[3][1] + bottom_view_border
-        self.turret_button.x = CONTROL_BUTTONS_COORDS[4][0] + left_view_border
-        self.turret_button.y = CONTROL_BUTTONS_COORDS[4][1] + bottom_view_border
-        self.big_base_button.x = CONTROL_BUTTONS_COORDS[5][0] + left_view_border
-        self.big_base_button.y = CONTROL_BUTTONS_COORDS[5][1] + bottom_view_border
-        self.defiler_button.x = CONTROL_BUTTONS_COORDS[0][0] + left_view_border
-        self.defiler_button.y = CONTROL_BUTTONS_COORDS[0][1] + bottom_view_border
-        self.centurion_button.x = CONTROL_BUTTONS_COORDS[1][0] + left_view_border
-        self.centurion_button.y = CONTROL_BUTTONS_COORDS[1][1] + bottom_view_border
-        self.vulture_button.x = CONTROL_BUTTONS_COORDS[2][0] + left_view_border
-        self.vulture_button.y = CONTROL_BUTTONS_COORDS[2][1] + bottom_view_border
-        self.apocalypse_button.x = CONTROL_BUTTONS_COORDS[3][0] + left_view_border
-        self.apocalypse_button.y = CONTROL_BUTTONS_COORDS[3][1] + bottom_view_border
-        self.pioneer_button.x = CONTROL_BUTTONS_COORDS[4][0] + left_view_border
-        self.pioneer_button.y = CONTROL_BUTTONS_COORDS[4][1] + bottom_view_border
+        for button in self.buttons:
+            button.x = button.org_x + left_view_border
+            button.y = button.org_y + bottom_view_border
         self.mineral_count_label.x = SCREEN_WIDTH - 200 + left_view_border
         self.mineral_count_label.y = SCREEN_HEIGHT - 30 + bottom_view_border
         for unit in our_units_list:
