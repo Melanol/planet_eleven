@@ -1306,16 +1306,15 @@ class PlanetEleven(pyglet.window.Window):
                         to_be_selected = air_pos_coords_dict[(x, y)]
                         if to_be_selected:
                             selected = to_be_selected
-                            air_found = True
                             self.selection_sprite.x = x
                             self.selection_sprite.y = y
                         else:
                             to_be_selected = ground_pos_coords_dict[(x, y)]
                             if to_be_selected:
                                 try:
-                                    selected.is_big
-                                    self.selection_big_sprite.x = selected.x
-                                    self.selection_big_sprite.y = selected.y
+                                    to_be_selected.is_big
+                                    self.selection_big_sprite.x = to_be_selected.x
+                                    self.selection_big_sprite.y = to_be_selected.y
                                 except AttributeError:
                                     self.selection_sprite.x = x
                                     self.selection_sprite.y = y
