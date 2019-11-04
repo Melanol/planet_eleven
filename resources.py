@@ -118,6 +118,11 @@ big_base_enemy_image = pyglet.resource.image("big_base_enemy.png")
 center_anchor(big_base_enemy_image)
 
 # Units
+defiler_image = pyglet.resource.image("defiler.png")
+center_anchor(defiler_image)
+defiler_shadow_image = pyglet.resource.image("defiler_shadow.png")
+center_anchor(defiler_shadow_image)
+
 centurion_image = pyglet.resource.image("centurion.png")
 center_anchor(centurion_image)
 centurion_shadow_image = pyglet.resource.image("centurion_shadow.png")
@@ -125,13 +130,10 @@ center_anchor(centurion_shadow_image)
 
 vulture_image = pyglet.resource.image("vulture.png")
 center_anchor(vulture_image)
+vulture_enemy_image = pyglet.resource.image("vulture_enemy.png")
+center_anchor(vulture_enemy_image)
 vulture_shadow_image = pyglet.resource.image("vulture_shadow.png")
 center_anchor(vulture_shadow_image)
-
-defiler_image = pyglet.resource.image("defiler.png")
-center_anchor(defiler_image)
-defiler_shadow_image = pyglet.resource.image("defiler_shadow.png")
-center_anchor(defiler_shadow_image)
 
 pioneer_image = pyglet.resource.image("pioneer.png")
 center_anchor(pioneer_image)

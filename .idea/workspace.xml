@@ -3,8 +3,12 @@
   <component name="ChangeListManager">
     <list default="true" id="8699b466-fa9b-4e8c-b41f-e5bbe759696d" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/constants_and_utilities.py" beforeDir="false" afterPath="$PROJECT_DIR$/constants_and_utilities.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/planet_eleven.py" beforeDir="false" afterPath="$PROJECT_DIR$/planet_eleven.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/turret.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/turret.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources.py" beforeDir="false" afterPath="$PROJECT_DIR$/resources.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/turret.psd" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/turret.psd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/vulture.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/vulture.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/vulture.psd" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/vulture.psd" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -134,13 +138,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1566740526093</updated>
-    </task>
-    <task id="LOCAL-00112" summary="ProductionBuilding">
-      <created>1570986444493</created>
-      <option name="number" value="00112" />
-      <option name="presentableId" value="LOCAL-00112" />
-      <option name="project" value="LOCAL" />
-      <updated>1570986444493</updated>
     </task>
     <task id="LOCAL-00113" summary="Building shooting">
       <created>1570991773665</created>
@@ -478,7 +475,14 @@
       <option name="project" value="LOCAL" />
       <updated>1572839756804</updated>
     </task>
-    <option name="localTasksCounter" value="161" />
+    <task id="LOCAL-00161" summary="Fixed a selection bug">
+      <created>1572841910302</created>
+      <option name="number" value="00161" />
+      <option name="presentableId" value="LOCAL-00161" />
+      <option name="project" value="LOCAL" />
+      <updated>1572841910302</updated>
+    </task>
+    <option name="localTasksCounter" value="162" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -523,7 +527,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$" />
     </ignored-roots>
-    <MESSAGE value="Workers stop gathering when their mineral is no more" />
     <MESSAGE value="task_x and task_y" />
     <MESSAGE value="Unit.stop() and Builder.clear_task()" />
     <MESSAGE value="Units cost minerals" />
@@ -548,7 +551,8 @@
     <MESSAGE value="Removed small base, control buttons moved to attributes" />
     <MESSAGE value="Big buildings spawn with x and y at their sprites' center" />
     <MESSAGE value="Various" />
-    <option name="LAST_COMMIT_MESSAGE" value="Various" />
+    <MESSAGE value="Fixed a selection bug" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fixed a selection bug" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

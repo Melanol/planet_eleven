@@ -458,9 +458,16 @@ def order(outer_instance, unit):
 
 
 class Unit(pyglet.sprite.Sprite):
-    def __init__(self, outer_instance, img, hp, vision_radius, damage, cooldown, speed, x, y,
-                 projectile_sprite, projectile_speed, has_weapon=True, projectile_color=(255, 255, 255),
+    def __init__(self, outer_instance, our_img, enemy_img, hp, vision_radius, damage, cooldown, speed, x, y,
+                 projectile_sprite, projectile_speed, is_enemy, has_weapon=True, projectile_color=(255, 255, 255),
                  batch=ground_units_batch):
+        self.is_enemy = is_enemy
+        if not is_enemy:
+            img = our_img
+            our_units_list.append(self)
+        else:
+            img = enemy_img
+            enemy_units_list.append(self)
         super().__init__(img=img, x=x, y=y, batch=batch)
         self.outer_instance = outer_instance
         self.hp = hp
@@ -497,11 +504,14 @@ class Unit(pyglet.sprite.Sprite):
             ground_pos_coords_dict[(self.x, self.y)] = self
         else:
             air_pos_coords_dict[(self.x, self.y)] = self
-        our_units_list.append(self)
 
         # Minimap pixel
         pixel_minimap_coords = to_minimap(self.x, self.y)
-        self.pixel = pyglet.sprite.Sprite(img=res.minimap_our_image, x=pixel_minimap_coords[0],
+        if not self.is_enemy:
+            pixel = res.minimap_our_image
+        else:
+            pixel = res.minimap_enemy_image
+        self.pixel = pyglet.sprite.Sprite(img=pixel, x=pixel_minimap_coords[0],
                                           y=pixel_minimap_coords[1],
                                           batch=minimap_pixels_batch)
 
@@ -654,8 +664,17 @@ class Unit(pyglet.sprite.Sprite):
     def kill(self, delay_del=False):
         self.pixel.delete()
         self.shadow.delete()
+        for attacker in self.attackers:
+            attacker.has_target_p = False
         if not delay_del:
-            del our_units_list[our_units_list.index(self)]
+            if not self.is_enemy:
+                del our_units_list[our_units_list.index(self)]
+            else:
+                del enemy_units_list[enemy_units_list.index(self)]
+        if not self.flying:
+            ground_pos_coords_dict[(self.x, self.y)] = None
+        else:
+            air_pos_coords_dict[(self.x, self.y)] = None
         self.delete()
         try:
             del workers_list[workers_list.index(self)]
@@ -668,9 +687,9 @@ class Defiler(Unit):
     building_time = 10
 
     def __init__(self, outer_instance, x, y):
-        super().__init__(outer_instance=outer_instance, img=res.defiler_image, hp=100, vision_radius=6,
-                         damage=10, cooldown=60, speed=6, x=x, y=y, projectile_sprite='sprites/laser.png',
-                         projectile_speed=5, batch=air_batch)
+        super().__init__(outer_instance=outer_instance, our_img=res.defiler_image, enemy_img=res.defiler_image, hp=100,
+                         vision_radius=6, damage=10, cooldown=60, speed=6, x=x, y=y,
+                         projectile_sprite='sprites/laser.png', projectile_speed=5, is_enemy=False, batch=air_batch)
         self.flying = True
         self.shadow_sprite = res.defiler_shadow_image
         self.control_buttons = outer_instance.basic_unit_control_buttons
@@ -681,9 +700,9 @@ class Centurion(Unit):
     building_time = 10
 
     def __init__(self, outer_instance, x, y):
-        super().__init__(outer_instance=outer_instance, img=res.centurion_image, hp=100, vision_radius=6,
-                         damage=20, cooldown=120, speed=1, x=x, y=y, projectile_sprite='sprites/laser.png',
-                         projectile_speed=5)
+        super().__init__(outer_instance=outer_instance, our_img=res.centurion_image, enemy_img=res.centurion_image,
+                         hp=100, vision_radius=6, damage=20, cooldown=120, speed=1, x=x, y=y,
+                         projectile_sprite='sprites/laser.png', projectile_speed=5, is_enemy=False)
         self.flying = False
         self.shadow_sprite = res.centurion_shadow_image
         self.control_buttons = outer_instance.basic_unit_control_buttons
@@ -693,10 +712,10 @@ class Vulture(Unit):
     cost = 150
     building_time = 10
 
-    def __init__(self, outer_instance, x, y):
-        super().__init__(outer_instance=outer_instance, img=res.vulture_image, hp=50, vision_radius=3,
-                         damage=10, cooldown=60, speed=10, x=x, y=y, projectile_sprite='sprites/laser.png',
-                         projectile_speed=5)
+    def __init__(self, outer_instance, x, y, is_enemy=False):
+        super().__init__(outer_instance=outer_instance, our_img=res.vulture_image, enemy_img=res.vulture_enemy_image,
+                         hp=50, vision_radius=3, damage=10, cooldown=60, speed=10, x=x, y=y, projectile_sprite='sprites/laser.png',
+                         projectile_speed=5, is_enemy=is_enemy)
         self.flying = False
         self.shadow_sprite = res.vulture_shadow_image
         self.control_buttons = outer_instance.basic_unit_control_buttons
@@ -707,9 +726,9 @@ class Apocalypse(Unit):
     building_time = 10
 
     def __init__(self, outer_instance, x, y):
-        super().__init__(outer_instance=outer_instance, img=res.apocalypse_image, hp=100, vision_radius=6,
-                         damage=10, cooldown=60, speed=6, x=x, y=y, projectile_sprite='sprites/laser.png',
-                         projectile_speed=5, batch=air_batch)
+        super().__init__(outer_instance=outer_instance, our_img=res.apocalypse_image, enemy_img=res.apocalypse_image,
+                         hp=100, vision_radius=6, damage=10, cooldown=60, speed=6, x=x, y=y,
+                         projectile_sprite='sprites/laser.png', projectile_speed=5, is_enemy=False, batch=air_batch)
         self.flying = True
         self.shadow_sprite = res.apocalypse_shadow_image
         self.control_buttons = outer_instance.basic_unit_control_buttons
@@ -720,9 +739,9 @@ class Pioneer(Unit):
     building_time = 10
 
     def __init__(self, outer_instance, x, y):
-        super().__init__(outer_instance=outer_instance, img=res.pioneer_image, hp=10, vision_radius=2,
-                         damage=0, cooldown=60, speed=5, x=x, y=y, has_weapon=False,
-                         projectile_sprite='sprites/laser.png', projectile_speed=5)
+        super().__init__(outer_instance=outer_instance, our_img=res.pioneer_image, enemy_img=res.pioneer_image, hp=10,
+                         vision_radius=2, damage=0, cooldown=60, speed=5, x=x, y=y, has_weapon=False,
+                         projectile_sprite='sprites/laser.png', projectile_speed=5, is_enemy=False)
         workers_list.append(self)
         self.flying = False
         self.outer_instance = outer_instance
@@ -873,12 +892,13 @@ class PlanetEleven(pyglet.window.Window):
         self.pioneer_button = Button(img=res.pioneer_image, x=CONTROL_BUTTONS_COORDS[4][0],
                                      y=CONTROL_BUTTONS_COORDS[4][1])
 
-        # Spawn
+        # Spawn buildings and minerals
         Mineral(self, POS_SPACE / 2 + POS_SPACE * 4, POS_SPACE / 2 + POS_SPACE * 7)
         Mineral(self, POS_SPACE / 2 + POS_SPACE * 4, POS_SPACE / 2 + POS_SPACE * 8, amount=1)
         self.our_1st_base = BigBase(self, POS_SPACE * 7, POS_SPACE * 8)
         selected = self.our_1st_base
         BigBase(self, POS_SPACE * 5, POS_SPACE * 6, is_enemy=True)
+        BigBase(self, POS_SPACE * 13, POS_SPACE * 13, is_enemy=True)
 
         self.selection_sprite = pyglet.sprite.Sprite(img=res.selection_image, x=self.our_1st_base.x,
                                                      y=self.our_1st_base.y)
@@ -897,6 +917,9 @@ class PlanetEleven(pyglet.window.Window):
         self.base_building_sprite.color = (0, 255, 0)
         self.turret_building_sprite = pyglet.sprite.Sprite(img=res.turret_button_image, x=-100, y=-100)
         self.turret_building_sprite.color = (0, 255, 0)
+
+        # Spawn units
+        Vulture(self, POS_SPACE / 2 + POS_SPACE * 4, POS_SPACE / 2 + POS_SPACE * 9, is_enemy=True).spawn()
 
     def on_draw(self):
         """
@@ -1145,7 +1168,7 @@ class PlanetEleven(pyglet.window.Window):
                         if not entity.has_target_p:
                             closest_enemy = None
                             closest_enemy_dist = None
-                            for enemy in enemy_buildings_list:
+                            for enemy in enemy_buildings_list + enemy_units_list:
                                 distance_to_enemy = ((enemy.x - entity.x) ** 2 + (enemy.y - entity.y) ** 2) ** 0.5
                                 if distance_to_enemy <= entity.shooting_radius:
                                     if not closest_enemy:
@@ -1185,9 +1208,9 @@ class PlanetEleven(pyglet.window.Window):
             for mineral in minerals_to_del:
                 minerals.remove(mineral)
             # Destroying targets
-            for enemy in enemy_buildings_list:
-                if enemy.hp <= 0:
-                    enemy.kill()
+            for entity in our_buildings_list + our_units_list + enemy_buildings_list + enemy_units_list:
+                if entity.hp <= 0:
+                    entity.kill()
 
     def on_key_press(self, symbol, modifiers):
         """Called whenever a key is pressed. """

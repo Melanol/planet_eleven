@@ -65,6 +65,7 @@ workers_list = []
 our_buildings_list = []
 shooting_buildings_list = []
 enemy_buildings_list = []
+enemy_units_list = []
 projectile_list = []
 
 minimap_fow_x = MINIMAP_ZERO_COORDS[0] - 1
