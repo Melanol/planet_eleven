@@ -114,6 +114,8 @@ center_anchor(turret_base_image)
 
 big_base_image = pyglet.resource.image("big_base.png")
 center_anchor(big_base_image)
+big_base_enemy_image = pyglet.resource.image("big_base_enemy.png")
+center_anchor(big_base_enemy_image)
 
 # Units
 centurion_image = pyglet.resource.image("centurion.png")

@@ -93,14 +93,8 @@ class Mineral(pyglet.sprite.Sprite):
 
 class Building(pyglet.sprite.Sprite):
     # __init__ == spawn()
-    def __init__(self, outer_instance, our_img, enemy_img, x, y, hp, is_enemy, vision_radius=4):
-        self.outer_instance = outer_instance
-        self.hp = hp
-        ground_pos_coords_dict[(x, y)] = self
-        self.default_rally_point = True
-        self.is_enemy = is_enemy
-        self.attackers = []
-        if not self.is_enemy:
+    def __init__(self, outer_instance, our_img, enemy_img, x, y, hp, is_enemy, vision_radius=3):
+        if not is_enemy:
             our_buildings_list.append(self)
             img = our_img
             minimap_pixel = res.minimap_our_image
@@ -110,14 +104,56 @@ class Building(pyglet.sprite.Sprite):
             img = enemy_img
             minimap_pixel = res.minimap_enemy_image
         super().__init__(img=img, x=x, y=y, batch=buildings_batch)
+        self.outer_instance = outer_instance
+        self.hp = hp
+        print(self.width)
+        if self.width / 32 % 2 == 1:
+            d = self.width / POS_SPACE // 2 * POS_SPACE
+            n = self.width // POS_SPACE
+            width = 1
+        else:
+            n = int(self.width / POS_SPACE // 2)
+            d = self.width / POS_SPACE // 2 * POS_SPACE - POS_SPACE / 2
+            width = 2
+        print('d =', d, 'n =', n, 'width =', width)
+        x -= d
+        y -= d
+        self.blocks = [(x, y)]
+        for _ in range(n):
+            for _ in range(width):
+                self.blocks.append((x, y))
+                ground_pos_coords_dict[(x, y)] = self
+                x += POS_SPACE
+            x -= POS_SPACE
+            for _ in range(width - 1):
+                y += POS_SPACE
+                self.blocks.append((x, y))
+                ground_pos_coords_dict[(x, y)] = self
+            for _ in range(width - 1):
+                x -= POS_SPACE
+                self.blocks.append((x, y))
+                ground_pos_coords_dict[(x, y)] = self
+            for _ in range(width - 2):
+                self.blocks.append((x, y))
+                ground_pos_coords_dict[(x, y)] = self
+                y -= POS_SPACE
+            width += 2
+        if not is_enemy:
+            for block in self.blocks:
+                outer_instance.update_fow(x=block[0], y=block[1], radius=vision_radius)
+        self.default_rally_point = True
+        self.is_enemy = is_enemy
+        self.attackers = []
+
         pixel_minimap_coords = to_minimap(self.x, self.y)
         self.pixel = pyglet.sprite.Sprite(img=minimap_pixel, x=pixel_minimap_coords[0],
                                           y=pixel_minimap_coords[1],
                                           batch=minimap_pixels_batch)
 
     def kill(self, delay_del=False):
-        global ground_pos_coords_dict, our_buildings_list, enemy_buildings_list
-        ground_pos_coords_dict[(self.x, self.y)] = None
+        global our_buildings_list, enemy_buildings_list
+        for block in self.blocks:
+            ground_pos_coords_dict[(block[0], block[1])] = None
         self.pixel.delete()
         if not delay_del:
             if not self.is_enemy:
@@ -127,6 +163,12 @@ class Building(pyglet.sprite.Sprite):
         for attacker in self.attackers:
             attacker.has_target_p = False
         self.delete()
+
+
+class Armory(Building):
+    def __init__(self):
+        super().__init__()
+
 
 
 class ProductionBuilding(Building):
@@ -140,65 +182,14 @@ class ProductionBuilding(Building):
         self.building_start_time = 0
 
 
-class BigBuilding(pyglet.sprite.Sprite):
-    # __init__ == spawn()
-    def __init__(self, outer_instance, our_img, enemy_img, x, y, hp, is_enemy, vision_radius):
-        self.outer_instance = outer_instance
-        self.is_big = True
-        self.hp = hp
-        self.default_rally_point = True
-        ground_pos_coords_dict[(x - POS_SPACE / 2, y - POS_SPACE / 2)] = self
-        ground_pos_coords_dict[(x + POS_SPACE / 2, y - POS_SPACE / 2)] = self
-        ground_pos_coords_dict[(x + POS_SPACE / 2, y + POS_SPACE / 2)] = self
-        ground_pos_coords_dict[(x - POS_SPACE / 2, y + POS_SPACE / 2)] = self
-        self.is_enemy = is_enemy
-        if not self.is_enemy:
-            our_buildings_list.append(self)
-            img = our_img
-            minimap_pixel = res.minimap_our_image
-            outer_instance.update_fow(x=x, y=y, radius=3)
-            outer_instance.update_fow(x=x + POS_SPACE, y=y, radius=3)
-            outer_instance.update_fow(x=x + POS_SPACE, y=y + POS_SPACE, radius=3)
-            outer_instance.update_fow(x=x, y=y + POS_SPACE, radius=3)
-        else:
-            enemy_buildings_list.append(self)
-            img = enemy_img
-            minimap_pixel = res.minimap_enemy_image
-        super().__init__(img=img, x=x, y=y, batch=buildings_batch)
-        pixel_minimap_coords = to_minimap(self.x, self.y)
-        self.pixel = pyglet.sprite.Sprite(img=minimap_pixel, x=pixel_minimap_coords[0], y=pixel_minimap_coords[1],
-                                          batch=minimap_pixels_batch)
-
-    def kill(self, delay_del=False):
-        global ground_pos_coords_dict, our_buildings_list, enemy_buildings_list
-        ground_pos_coords_dict[(self.x, self.y)] = None
-        self.pixel.delete()
-        if not delay_del:
-            if not self.is_enemy:
-                del our_buildings_list[our_buildings_list.index(self)]
-            else:
-                del enemy_buildings_list[enemy_buildings_list.index(self)]
-        self.delete()
-
-
-class BigProductionBuilding(BigBuilding):
-    def __init__(self, outer_instance, our_img, enemy_img, x, y, hp, is_enemy, vision_radius=4):
-        super().__init__(outer_instance, our_img, enemy_img, x, y, hp, is_enemy, vision_radius)
-        self.rally_point_x = x
-        self.rally_point_y = y
-        self.building_queue = []
-        self.current_building_time = None
-        self.building_complete = True
-        self.building_start_time = 0
-
-
-class BigBase(BigProductionBuilding):
+class BigBase(ProductionBuilding):
     def __init__(self, outer_instance, x, y, is_enemy=False):
-        super().__init__(outer_instance, our_img=res.big_base_image, enemy_img=res.enemy_base_image, x=x, y=y,
+        super().__init__(outer_instance, our_img=res.big_base_image, enemy_img=res.big_base_enemy_image, x=x, y=y,
                          hp=100, is_enemy=is_enemy, vision_radius=4)
         self.control_buttons = [outer_instance.defiler_button, outer_instance.centurion_button,
                                 outer_instance.vulture_button, outer_instance.apocalypse_button,
                                 outer_instance.pioneer_button]
+        self.is_big = True
 
 
 class AttackingBuilding(Building):
@@ -251,7 +242,7 @@ class AttackingBuilding(Building):
 class Turret(AttackingBuilding):
     def __init__(self, outer_instance, x, y, is_enemy=False):
         super().__init__(outer_instance, our_img=res.turret_base_image, enemy_img=res.turret_base_image, x=x, y=y,
-                         hp=100, is_enemy=is_enemy, damage=10, vision_radius=500, cooldown=60)
+                         hp=100, is_enemy=is_enemy, damage=10, vision_radius=5, cooldown=60)
 
 
 node_count = 0
@@ -574,10 +565,10 @@ class Unit(pyglet.sprite.Sprite):
         diff_x = self.target_x - self.x
         diff_y = self.target_y - self.y
         angle = math.atan2(diff_y, diff_x)  # Rad
-        self.rotation = -math.degrees(angle) + 90
+        self.rotation = -math.degrees(angle) - 90
         self.velocity_x = math.cos(angle) * self.speed
         self.velocity_y = math.sin(angle) * self.speed
-        self.shadow.rotation = -math.degrees(angle) + 90
+        self.shadow.rotation = -math.degrees(angle) - 90
         self.shadow.velocity_x = math.cos(angle) * self.speed
         self.shadow.velocity_y = math.sin(angle) * self.speed
         selected_dict[(self.x, self.y)] = None
@@ -887,6 +878,7 @@ class PlanetEleven(pyglet.window.Window):
         Mineral(self, POS_SPACE / 2 + POS_SPACE * 4, POS_SPACE / 2 + POS_SPACE * 8, amount=1)
         self.our_1st_base = BigBase(self, POS_SPACE * 7, POS_SPACE * 8)
         selected = self.our_1st_base
+        BigBase(self, POS_SPACE * 5, POS_SPACE * 6, is_enemy=True)
 
         self.selection_sprite = pyglet.sprite.Sprite(img=res.selection_image, x=self.our_1st_base.x,
                                                      y=self.our_1st_base.y)
@@ -941,11 +933,12 @@ class PlanetEleven(pyglet.window.Window):
         turret_batch.draw()
         air_shadows_batch.draw()
         air_batch.draw()
-        try:
-            if selected.is_big:
+        if selected:
+            try:
+                selected.is_big
                 self.selection_big_sprite.draw()
-        except AttributeError:
-            self.selection_sprite.draw()
+            except AttributeError:
+                self.selection_sprite.draw()
 
         glEnable(GL_BLEND)
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
@@ -1139,16 +1132,22 @@ class PlanetEleven(pyglet.window.Window):
                         unit.task_y = None
                     except AttributeError:
                         pass
-            # Units shooting
-            for unit in our_units_list:
-                if unit.has_weapon and unit.destination_reached:
-                    if not unit.on_cooldown:
-                        if not unit.has_target_p:
+            # Shooting
+            for entity in our_units_list + shooting_buildings_list:
+                try:
+                    entity.has_weapon
+                    entity.destination_reached
+                except AttributeError:
+                    entity.has_weapon = True
+                    entity.destination_reached = True
+                if entity.has_weapon and entity.destination_reached:
+                    if not entity.on_cooldown:
+                        if not entity.has_target_p:
                             closest_enemy = None
                             closest_enemy_dist = None
                             for enemy in enemy_buildings_list:
-                                distance_to_enemy = ((enemy.x - unit.x) ** 2 + (enemy.y - unit.y) ** 2) ** 0.5
-                                if distance_to_enemy <= unit.shooting_radius:
+                                distance_to_enemy = ((enemy.x - entity.x) ** 2 + (enemy.y - entity.y) ** 2) ** 0.5
+                                if distance_to_enemy <= entity.shooting_radius:
                                     if not closest_enemy:
                                         closest_enemy = enemy
                                         closest_enemy_dist = distance_to_enemy
@@ -1157,43 +1156,16 @@ class PlanetEleven(pyglet.window.Window):
                                             closest_enemy = enemy
                                             closest_enemy_dist = distance_to_enemy
                             if closest_enemy:
-                                unit.has_target_p = True
-                                unit.target_p = closest_enemy
-                                unit.target_p_x = closest_enemy.x
-                                unit.target_p_y = closest_enemy.y
-                                unit.target_p.attackers.append(unit)
+                                entity.has_target_p = True
+                                entity.target_p = closest_enemy
+                                entity.target_p_x = closest_enemy.x
+                                entity.target_p_y = closest_enemy.y
+                                entity.target_p.attackers.append(entity)
                         else:
-                            unit.shoot(self.frame_count)
+                            entity.shoot(self.frame_count)
                     else:
-                        if (self.frame_count - unit.cooldown_started) % unit.cooldown == 0:
-                            unit.on_cooldown = False
-            # Buildings shooting
-            for building in shooting_buildings_list:
-                if not building.on_cooldown:
-                    if not building.has_target_p:
-                        closest_enemy = None
-                        closest_enemy_dist = None
-                        for enemy in enemy_buildings_list:
-                            distance_to_enemy = ((enemy.x - building.x) ** 2 + (enemy.y - building.y) ** 2) ** 0.5
-                            if distance_to_enemy <= building.shooting_radius:
-                                if not closest_enemy:
-                                    closest_enemy = enemy
-                                    closest_enemy_dist = distance_to_enemy
-                                else:
-                                    if distance_to_enemy < closest_enemy_dist:
-                                        closest_enemy = enemy
-                                        closest_enemy_dist = distance_to_enemy
-                        if closest_enemy:
-                            building.has_target_p = True
-                            building.target_p = closest_enemy
-                            building.target_p_x = closest_enemy.x
-                            building.target_p_y = closest_enemy.y
-                            building.target_p.attackers.append(building)
-                    else:
-                        building.shoot(self.frame_count)
-                else:
-                    if (self.frame_count - building.cooldown_started) % building.cooldown == 0:
-                        building.on_cooldown = False
+                        if (self.frame_count - entity.cooldown_started) % entity.cooldown == 0:
+                            entity.on_cooldown = False
             # Projectiles
             for i, projectile in enumerate(projectile_list):
                 if not projectile.eta() <= 1:
@@ -1331,54 +1303,51 @@ class PlanetEleven(pyglet.window.Window):
                     print('\nglobal click coords:', x, y)
                     if button == mouse.LEFT:
                         # Selection
-                        selected = None
-                        air_found = False
-                        for _key, value in air_pos_coords_dict.items():
-                            if x == _key[0] and y == _key[1]:
-                                selected = value
-                                if selected:
-                                    air_found = True
+                        to_be_selected = air_pos_coords_dict[(x, y)]
+                        if to_be_selected:
+                            selected = to_be_selected
+                            air_found = True
+                            self.selection_sprite.x = x
+                            self.selection_sprite.y = y
+                        else:
+                            to_be_selected = ground_pos_coords_dict[(x, y)]
+                            if to_be_selected:
+                                try:
+                                    selected.is_big
+                                    self.selection_big_sprite.x = selected.x
+                                    self.selection_big_sprite.y = selected.y
+                                except AttributeError:
                                     self.selection_sprite.x = x
                                     self.selection_sprite.y = y
-                                break
-                        if not air_found:
-                            for _key, value in ground_pos_coords_dict.items():
-                                if x == _key[0] and y == _key[1]:
-                                    selected = value
-                                    self.selection_sprite.x = x
-                                    self.selection_sprite.y = y
-                                    if selected in our_buildings_list:
-                                        self.rally_point_sprite.x = selected.rally_point_x
-                                        self.rally_point_sprite.y = selected.rally_point_y
-                                    break
+                                selected = to_be_selected
                         try:
                             self.control_buttons_to_render = selected.control_buttons
                         except AttributeError:
                             pass
-                        # print('SELECTED CLASS =', type(selected))
+                        print('SELECTED CLASS =', type(selected))
                     elif button == mouse.RIGHT:
                         # Rally point
                         if selected in our_buildings_list:
-                            selected.rally_point_x = x
-                            selected.rally_point_y = y
-                            if ground_pos_coords_dict[x, y] == selected:
-                                selected.default_rally_point = True
-                                self.rally_point_sprite.x = selected.x + (selected.width - POS_SPACE) // 2
-                                self.rally_point_sprite.y = selected.y + (selected.width - POS_SPACE) // 2
-                            else:
+                            if ground_pos_coords_dict[x, y] != selected:
+                                selected.rally_point_x = x
+                                selected.rally_point_y = y
                                 selected.default_rally_point = False
                                 self.rally_point_sprite.x = x
                                 self.rally_point_sprite.y = y
-                            # print('Rally set to ({}, {})'.format(x, y))
+                            else:
+                                selected.default_rally_point = True
+                                self.rally_point_sprite.x = selected.x
+                                self.rally_point_sprite.y = selected.y
+                            print('Rally set to ({}, {})'.format(x, y))
                         # A unit is selected
                         else:
-                            for unit in our_units_list:
-                                if unit == selected:
-                                    if unit.destination_reached:
-                                        unit.move((x, y))
-                                    # Movement interruption
-                                    else:
-                                        unit.stop(x, y)
+                            if selected in our_units_list:
+                                if selected.destination_reached:
+                                    selected.move((x, y))
+                                # Movement interruption
+                                else:
+                                    selected.stop(x, y)
+                                selected.has_target_p = False
                             if str(type(selected)) == "<class '__main__.Pioneer'>":
                                 selected.clear_task()
                                 obj = ground_pos_coords_dict[(x, y)]
