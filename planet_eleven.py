@@ -65,6 +65,48 @@ def mc(**kwargs):
         return kwargs['x'] + left_view_border, kwargs['y'] + bottom_view_border
 
 
+def update_shooting(game_instance, our_entities, enemy_entities):
+    for entity in our_entities:
+        try:
+            entity.has_weapon
+            entity.destination_reached
+        except AttributeError:
+            entity.has_weapon = True
+            entity.destination_reached = True
+        if entity.has_weapon and entity.destination_reached:
+            if not entity.on_cooldown:
+                if not entity.has_target_p:
+                    closest_enemy = None
+                    closest_enemy_dist = None
+                    for enemy in enemy_entities:
+                        distance_to_enemy = ((enemy.x - entity.x) ** 2 + (enemy.y - entity.y) ** 2) ** 0.5
+                        if distance_to_enemy <= entity.shooting_radius:
+                            if not closest_enemy:
+                                closest_enemy = enemy
+                                closest_enemy_dist = distance_to_enemy
+                            else:
+                                if distance_to_enemy < closest_enemy_dist:
+                                    closest_enemy = enemy
+                                    closest_enemy_dist = distance_to_enemy
+                    if closest_enemy:
+                        entity.has_target_p = True
+                        entity.target_p = closest_enemy
+                        entity.target_p_x = closest_enemy.x
+                        entity.target_p_y = closest_enemy.y
+                        entity.target_p.attackers.append(entity)
+                else:
+                    entity.shoot(game_instance.frame_count)
+            else:
+                if (game_instance.frame_count - entity.cooldown_started) % entity.cooldown == 0:
+                    entity.on_cooldown = False
+
+
+class Player:
+    def __init__(self, name):
+        self.mineral_count = 50000
+        self.name = name
+
+
 class Button(pyglet.sprite.Sprite):
     def __init__(self, img, x, y):
         super().__init__(img, x, y)
@@ -92,18 +134,19 @@ class Mineral(pyglet.sprite.Sprite):
 
 class Building(pyglet.sprite.Sprite):
     # __init__ == spawn()
-    def __init__(self, outer_instance, our_img, enemy_img, x, y, hp, is_enemy, vision_radius=3):
-        if not is_enemy:
+    def __init__(self, game_instance, our_img, enemy_img, x, y, hp, owner, vision_radius=3):
+        self.owner = owner
+        if owner == game_instance.this_player:
             our_buildings_list.append(self)
             img = our_img
             minimap_pixel = res.minimap_our_image
-            outer_instance.update_fow(x=x, y=y, radius=vision_radius)
+            game_instance.update_fow(x=x, y=y, radius=vision_radius)
         else:
             enemy_buildings_list.append(self)
             img = enemy_img
             minimap_pixel = res.minimap_enemy_image
         super().__init__(img=img, x=x, y=y, batch=buildings_batch)
-        self.outer_instance = outer_instance
+        self.outer_instance = game_instance
         self.hp = hp
         print(self.width)
         if self.width / 32 % 2 == 1:
@@ -137,11 +180,10 @@ class Building(pyglet.sprite.Sprite):
                 ground_pos_coords_dict[(x, y)] = self
                 y -= POS_SPACE
             width += 2
-        if not is_enemy:
+        if self.owner == game_instance.this_player:
             for block in self.blocks:
-                outer_instance.update_fow(x=block[0], y=block[1], radius=vision_radius)
+                game_instance.update_fow(x=block[0], y=block[1], radius=vision_radius)
         self.default_rally_point = True
-        self.is_enemy = is_enemy
         self.attackers = []
 
         pixel_minimap_coords = to_minimap(self.x, self.y)
@@ -155,7 +197,7 @@ class Building(pyglet.sprite.Sprite):
             ground_pos_coords_dict[(block[0], block[1])] = None
         self.pixel.delete()
         if not delay_del:
-            if not self.is_enemy:
+            if self.owner.name == 'player1':
                 del our_buildings_list[our_buildings_list.index(self)]
             else:
                 del enemy_buildings_list[enemy_buildings_list.index(self)]
@@ -169,10 +211,9 @@ class Armory(Building):
         super().__init__()
 
 
-
 class ProductionBuilding(Building):
-    def __init__(self, outer_instance, our_img, enemy_img, x, y, hp, is_enemy, vision_radius=3):
-        super().__init__(outer_instance, our_img, enemy_img, x, y, hp, is_enemy, vision_radius)
+    def __init__(self, game_instance, our_img, enemy_img, x, y, hp, owner, vision_radius=3):
+        super().__init__(game_instance, our_img, enemy_img, x, y, hp, owner, vision_radius)
         self.rally_point_x = x
         self.rally_point_y = y
         self.building_queue = []
@@ -182,18 +223,20 @@ class ProductionBuilding(Building):
 
 
 class BigBase(ProductionBuilding):
-    def __init__(self, outer_instance, x, y, is_enemy=False):
-        super().__init__(outer_instance, our_img=res.big_base_image, enemy_img=res.big_base_enemy_image, x=x, y=y,
-                         hp=100, is_enemy=is_enemy, vision_radius=4)
-        self.control_buttons = [outer_instance.defiler_button, outer_instance.centurion_button,
-                                outer_instance.vulture_button, outer_instance.apocalypse_button,
-                                outer_instance.pioneer_button]
+    def __init__(self, game_instance, x, y, owner=None):
+        if owner == None:
+            owner = game_instance.this_player
+        super().__init__(game_instance, our_img=res.big_base_image, enemy_img=res.big_base_enemy_image, x=x, y=y,
+                         hp=100, owner=owner, vision_radius=4)
+        self.control_buttons = [game_instance.defiler_button, game_instance.centurion_button,
+                                game_instance.vulture_button, game_instance.apocalypse_button,
+                                game_instance.pioneer_button]
         self.is_big = True
 
 
 class AttackingBuilding(Building):
-    def __init__(self, outer_instance, our_img, enemy_img, x, y, hp, is_enemy, damage, vision_radius, cooldown):
-        super().__init__(outer_instance, our_img, enemy_img, x, y, hp, is_enemy)
+    def __init__(self, game_instance, our_img, enemy_img, x, y, hp, owner, damage, vision_radius, cooldown):
+        super().__init__(game_instance, our_img, enemy_img, x, y, hp, owner)
         self.rotating_sprite = pyglet.sprite.Sprite(res.turret_image, x, y, batch=turret_batch)
         self.damage = damage
         self.shooting_radius = vision_radius * 32
@@ -239,9 +282,11 @@ class AttackingBuilding(Building):
 
 
 class Turret(AttackingBuilding):
-    def __init__(self, outer_instance, x, y, is_enemy=False):
-        super().__init__(outer_instance, our_img=res.turret_base_image, enemy_img=res.turret_base_image, x=x, y=y,
-                         hp=100, is_enemy=is_enemy, damage=10, vision_radius=5, cooldown=60)
+    def __init__(self, game_instance, x, y, owner=None):
+        if owner is None:
+            owner = game_instance.this_player
+        super().__init__(game_instance, our_img=res.turret_base_image, enemy_img=res.turret_base_image, x=x, y=y,
+                         hp=100, owner=owner, damage=10, vision_radius=5, cooldown=60)
 
 
 node_count = 0
@@ -444,31 +489,33 @@ def find_path(start, end, is_flying):
     return converted_path
 
 
-def order(outer_instance, unit):
+def order(game_instance, building, unit):
     """Orders units in buildings. Checks if you have enough minerals."""
-    if outer_instance.mineral_count - unit.cost >= 0:
-        outer_instance.mineral_count -= unit.cost
-        outer_instance.mineral_count_label.text = str(int(outer_instance.mineral_count))
-        selected.building_queue.append(unit)
-        if len(selected.building_queue) == 1:
-            selected.building_start_time = outer_instance.frame_count
+    owner = building.owner
+    if owner.mineral_count - unit.cost >= 0:
+        owner.mineral_count -= unit.cost
+        game_instance.mineral_count_label.text = str(int(game_instance.this_player.mineral_count))
+        building.building_queue.append(unit)
+        if len(building.building_queue) == 1:
+            building.building_start_time = game_instance.frame_count
     else:
-        print("Not enough minerals")
+        if owner == game_instance.this_player:
+            print("Not enough minerals")
 
 
 class Unit(pyglet.sprite.Sprite):
-    def __init__(self, outer_instance, our_img, enemy_img, hp, vision_radius, damage, cooldown, speed, x, y,
-                 projectile_sprite, projectile_speed, is_enemy, has_weapon=True, projectile_color=(255, 255, 255),
+    def __init__(self, game_instance, our_img, enemy_img, hp, vision_radius, damage, cooldown, speed, x, y,
+                 projectile_sprite, projectile_speed, owner, has_weapon=True, projectile_color=(255, 255, 255),
                  batch=ground_units_batch):
-        self.is_enemy = is_enemy
-        if not is_enemy:
+        self.owner = owner
+        if owner.name == 'player1':
             img = our_img
             our_units_list.append(self)
         else:
             img = enemy_img
             enemy_units_list.append(self)
         super().__init__(img=img, x=x, y=y, batch=batch)
-        self.outer_instance = outer_instance
+        self.outer_instance = game_instance
         self.hp = hp
         self.x = x
         self.y = y
@@ -506,7 +553,7 @@ class Unit(pyglet.sprite.Sprite):
 
         # Minimap pixel
         pixel_minimap_coords = to_minimap(self.x, self.y)
-        if not self.is_enemy:
+        if self.owner.name == 'player1':
             pixel = res.minimap_our_image
         else:
             pixel = res.minimap_enemy_image
@@ -666,7 +713,7 @@ class Unit(pyglet.sprite.Sprite):
         for attacker in self.attackers:
             attacker.has_target_p = False
         if not delay_del:
-            if not self.is_enemy:
+            if self.owner.name == 'player1':
                 del our_units_list[our_units_list.index(self)]
             else:
                 del enemy_units_list[enemy_units_list.index(self)]
@@ -685,65 +732,77 @@ class Defiler(Unit):
     cost = 250
     building_time = 10
 
-    def __init__(self, outer_instance, x, y):
-        super().__init__(outer_instance=outer_instance, our_img=res.defiler_image, enemy_img=res.defiler_image, hp=100,
-                         vision_radius=6, damage=10, cooldown=60, speed=6, x=x, y=y,
-                         projectile_sprite='sprites/laser.png', projectile_speed=5, is_enemy=False, batch=air_batch)
+    def __init__(self, game_instance, x, y, owner=None):
+        if owner is None:
+            owner = game_instance.this_player
+        super().__init__(game_instance=game_instance, our_img=res.defiler_image, enemy_img=res.defiler_enemy_image,
+                         hp=100, vision_radius=6, damage=10, cooldown=60, speed=6, x=x, y=y,
+                         projectile_sprite='sprites/laser.png', projectile_speed=5, owner=owner, batch=air_batch)
+
         self.flying = True
         self.shadow_sprite = res.defiler_shadow_image
-        self.control_buttons = outer_instance.basic_unit_control_buttons
+        self.control_buttons = game_instance.basic_unit_control_buttons
 
 
 class Centurion(Unit):
     cost = 400
     building_time = 10
 
-    def __init__(self, outer_instance, x, y):
-        super().__init__(outer_instance=outer_instance, our_img=res.centurion_image, enemy_img=res.centurion_image,
-                         hp=100, vision_radius=6, damage=20, cooldown=120, speed=1, x=x, y=y,
-                         projectile_sprite='sprites/laser.png', projectile_speed=5, is_enemy=False)
+    def __init__(self, game_instance, x, y, owner=None):
+        if owner is None:
+            owner = game_instance.this_player
+        super().__init__(game_instance=game_instance, our_img=res.centurion_image,
+                         enemy_img=res.centurion_enemy_image, hp=100, vision_radius=6, damage=20, cooldown=120, speed=1,
+                         x=x, y=y, projectile_sprite='sprites/laser.png', projectile_speed=5, owner=owner)
         self.flying = False
         self.shadow_sprite = res.centurion_shadow_image
-        self.control_buttons = outer_instance.basic_unit_control_buttons
+        self.control_buttons = game_instance.basic_unit_control_buttons
 
 
 class Vulture(Unit):
     cost = 150
     building_time = 10
 
-    def __init__(self, outer_instance, x, y, is_enemy=False):
-        super().__init__(outer_instance=outer_instance, our_img=res.vulture_image, enemy_img=res.vulture_enemy_image,
-                         hp=50, vision_radius=3, damage=10, cooldown=60, speed=10, x=x, y=y, projectile_sprite='sprites/laser.png',
-                         projectile_speed=5, is_enemy=is_enemy)
+    def __init__(self, game_instance, x, y, owner):
+        if owner is None:
+            owner = game_instance.this_player
+        super().__init__(game_instance=game_instance, our_img=res.vulture_image, enemy_img=res.vulture_enemy_image,
+                         hp=50, vision_radius=3, damage=10, cooldown=60, speed=10, x=x, y=y,
+                         projectile_sprite='sprites/laser.png', projectile_speed=5, owner=owner)
         self.flying = False
         self.shadow_sprite = res.vulture_shadow_image
-        self.control_buttons = outer_instance.basic_unit_control_buttons
+        self.control_buttons = game_instance.basic_unit_control_buttons
 
 
 class Apocalypse(Unit):
     cost = 250
     building_time = 10
 
-    def __init__(self, outer_instance, x, y):
-        super().__init__(outer_instance=outer_instance, our_img=res.apocalypse_image, enemy_img=res.apocalypse_image,
-                         hp=100, vision_radius=6, damage=10, cooldown=60, speed=6, x=x, y=y,
-                         projectile_sprite='sprites/laser.png', projectile_speed=5, is_enemy=False, batch=air_batch)
+    def __init__(self, game_instance, x, y, owner):
+        if owner is None:
+            owner = game_instance.this_player
+        super().__init__(game_instance=game_instance, our_img=res.apocalypse_image,
+                         enemy_img=res.apocalypse_enemy_image, hp=100, vision_radius=6, damage=10, cooldown=60, speed=6,
+                         x=x, y=y, projectile_sprite='sprites/laser.png', projectile_speed=5, owner=owner,
+                         batch=air_batch)
         self.flying = True
         self.shadow_sprite = res.apocalypse_shadow_image
-        self.control_buttons = outer_instance.basic_unit_control_buttons
+        self.control_buttons = game_instance.basic_unit_control_buttons
 
 
 class Pioneer(Unit):
     cost = 50
     building_time = 10
 
-    def __init__(self, outer_instance, x, y):
-        super().__init__(outer_instance=outer_instance, our_img=res.pioneer_image, enemy_img=res.pioneer_image, hp=10,
-                         vision_radius=2, damage=0, cooldown=60, speed=5, x=x, y=y, has_weapon=False,
-                         projectile_sprite='sprites/laser.png', projectile_speed=5, is_enemy=False)
+    def __init__(self, game_instance, x, y, owner):
+        if owner is None:
+            owner = game_instance.this_player
+        super().__init__(game_instance=game_instance, our_img=res.pioneer_image, enemy_img=res.pioneer_enemy_image,
+                         hp=10, vision_radius=2, damage=0, cooldown=60, speed=5, x=x, y=y, has_weapon=False,
+                         projectile_sprite='sprites/laser.png', projectile_speed=5, owner=owner)
         workers_list.append(self)
         self.flying = False
-        self.outer_instance = outer_instance
+        self.outer_instance = game_instance
         self.shadow_sprite = res.pioneer_shadow_image
         self.to_build = None
         self.mineral_to_gather = None
@@ -762,8 +821,8 @@ class Pioneer(Unit):
         self.zap_sprite = pyglet.sprite.Sprite(anim, self.x, self.y, batch=zap_batch)
 
         self.zap_sprite.visible = False
-        self.control_buttons = outer_instance.basic_unit_control_buttons + [outer_instance.base_button] + \
-                                        [outer_instance.turret_button] + [outer_instance.big_base_button]
+        self.control_buttons = game_instance.basic_unit_control_buttons + [game_instance.base_button] + \
+                               [game_instance.turret_button] + [game_instance.big_base_button]
 
     def build(self):
         self.mineral_to_gather = None
@@ -843,6 +902,9 @@ class PlanetEleven(pyglet.window.Window):
         global selected
         self.paused = False
         self.frame_count = 0
+        self.this_player = Player("player1")
+        self.computer = Player("computer1")
+        self.computer.workers_count = 0
         self.dx = 0
         self.dy = 0
         self.minimap_drugging = False
@@ -864,8 +926,8 @@ class PlanetEleven(pyglet.window.Window):
         self.npa = np.fromstring(self.minimap_fow_ImageData.get_data('RGBA', self.minimap_fow_ImageData.width * 4),
                                  dtype=np.uint8)
         self.npa = self.npa.reshape((102, 102, 4))
-        self.mineral_count = 50000
-        self.mineral_count_label = pyglet.text.Label(str(self.mineral_count), x=SCREEN_WIDTH - 200, y=SCREEN_HEIGHT - 30)
+        self.mineral_count_label = pyglet.text.Label(str(self.this_player.mineral_count), x=SCREEN_WIDTH - 200,
+                                                     y=SCREEN_HEIGHT - 30)
 
         # Buttons
         self.base_button = Button(img=res.base_image, x=CONTROL_BUTTONS_COORDS[3][0],
@@ -898,8 +960,8 @@ class PlanetEleven(pyglet.window.Window):
         Mineral(self, POS_SPACE / 2 + POS_SPACE * 4, POS_SPACE / 2 + POS_SPACE * 8, amount=1)
         self.our_1st_base = BigBase(self, POS_SPACE * 7, POS_SPACE * 8)
         selected = self.our_1st_base
-        BigBase(self, POS_SPACE * 5, POS_SPACE * 6, is_enemy=True)
-        BigBase(self, POS_SPACE * 13, POS_SPACE * 13, is_enemy=True)
+        BigBase(self, POS_SPACE * 5, POS_SPACE * 6, owner=self.computer)
+        BigBase(self, POS_SPACE * 13, POS_SPACE * 13, owner=self.computer)
 
         self.selection_sprite = pyglet.sprite.Sprite(img=res.selection_image, x=self.our_1st_base.x,
                                                      y=self.our_1st_base.y)
@@ -920,7 +982,7 @@ class PlanetEleven(pyglet.window.Window):
         self.turret_building_sprite.color = (0, 255, 0)
 
         # Spawn units
-        Vulture(self, POS_SPACE / 2 + POS_SPACE * 4, POS_SPACE / 2 + POS_SPACE * 9, is_enemy=True).spawn()
+        Vulture(self, POS_SPACE / 2 + POS_SPACE * 3, POS_SPACE / 2 + POS_SPACE * 10, self.computer).spawn()
 
     def on_draw(self):
         """
@@ -1085,9 +1147,13 @@ class PlanetEleven(pyglet.window.Window):
                             else:
                                 building.building_start_time += 1
                                 print('No space')
-
                 except AttributeError:
                     pass
+            # AI building units
+            if self.frame_count % 60 == 0:
+                for building in enemy_buildings_list:
+                    if self.computer.workers_count <= 8:
+                        order(self, building, Pioneer)
             # Units
             # Gathering resources
             for worker in workers_list:
@@ -1098,8 +1164,10 @@ class PlanetEleven(pyglet.window.Window):
                             worker.gather()
                     else:
                         worker.mineral_to_gather.amount -= 0.03
-                        self.mineral_count += 0.03
-                        self.mineral_count_label.text = str(int(self.mineral_count))
+                        owner = worker.owner
+                        owner.mineral_count += 0.03
+                        if owner.name == 'player1':
+                            self.mineral_count_label.text = str(int(owner.mineral_count))
             # Build buildings
             for worker in workers_list:
                 if worker.to_build:
@@ -1157,39 +1225,8 @@ class PlanetEleven(pyglet.window.Window):
                     except AttributeError:
                         pass
             # Shooting
-            for entity in our_units_list + shooting_buildings_list:
-                try:
-                    entity.has_weapon
-                    entity.destination_reached
-                except AttributeError:
-                    entity.has_weapon = True
-                    entity.destination_reached = True
-                if entity.has_weapon and entity.destination_reached:
-                    if not entity.on_cooldown:
-                        if not entity.has_target_p:
-                            closest_enemy = None
-                            closest_enemy_dist = None
-                            for enemy in enemy_buildings_list + enemy_units_list:
-                                distance_to_enemy = ((enemy.x - entity.x) ** 2 + (enemy.y - entity.y) ** 2) ** 0.5
-                                if distance_to_enemy <= entity.shooting_radius:
-                                    if not closest_enemy:
-                                        closest_enemy = enemy
-                                        closest_enemy_dist = distance_to_enemy
-                                    else:
-                                        if distance_to_enemy < closest_enemy_dist:
-                                            closest_enemy = enemy
-                                            closest_enemy_dist = distance_to_enemy
-                            if closest_enemy:
-                                entity.has_target_p = True
-                                entity.target_p = closest_enemy
-                                entity.target_p_x = closest_enemy.x
-                                entity.target_p_y = closest_enemy.y
-                                entity.target_p.attackers.append(entity)
-                        else:
-                            entity.shoot(self.frame_count)
-                    else:
-                        if (self.frame_count - entity.cooldown_started) % entity.cooldown == 0:
-                            entity.on_cooldown = False
+            update_shooting(self, shooting_buildings_list + our_units_list, enemy_buildings_list + enemy_units_list)
+            update_shooting(self, enemy_units_list, our_buildings_list + our_units_list)
             # Projectiles
             for i, projectile in enumerate(projectile_list):
                 if not projectile.eta() <= 1:
@@ -1212,6 +1249,8 @@ class PlanetEleven(pyglet.window.Window):
             for entity in our_buildings_list + our_units_list + enemy_buildings_list + enemy_units_list:
                 if entity.hp <= 0:
                     entity.kill()
+                    if entity == selected:
+                        selected = None
 
     def on_key_press(self, symbol, modifiers):
         """Called whenever a key is pressed. """
@@ -1428,23 +1467,23 @@ class PlanetEleven(pyglet.window.Window):
                         # Create defiler
                         if self.defiler_button.x - 16 <= x <= self.defiler_button.x + 16 and \
                                 self.defiler_button.y - 16 <= y <= self.defiler_button.y + 16:
-                            order(self, Defiler)
+                            order(self, selected, Defiler)
                         # Create centurion
                         elif self.centurion_button.x - 16 <= x <= self.centurion_button.x + 16 and \
                                 self.centurion_button.y - 16 <= y <= self.centurion_button.y + 16:
-                            order(self, Centurion)
+                            order(self, selected, Centurion)
                         # Create vulture
                         elif self.vulture_button.x - 16 <= x <= self.vulture_button.x + 16 and \
                                 self.vulture_button.y - 16 <= y <= self.vulture_button.y + 16:
-                            order(self, Vulture)
+                            order(self, selected, Vulture)
                         # Create apocalypse
                         elif self.apocalypse_button.x - 16 <= x <= self.apocalypse_button.x + 16 and \
                                 self.apocalypse_button.y - 16 <= y <= self.apocalypse_button.y + 16:
-                            order(self, Apocalypse)
+                            order(self, selected, Apocalypse)
                         # Create worker
                         elif self.pioneer_button.x - 16 <= x <= self.pioneer_button.x + 16 and \
                                 self.pioneer_button.y - 16 <= y <= self.pioneer_button.y + 16:
-                            order(self, Pioneer)
+                            order(self, selected, Pioneer)
                     elif selected in our_units_list:
                         # Move
                         # Stop
