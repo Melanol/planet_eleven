@@ -3,15 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="8699b466-fa9b-4e8c-b41f-e5bbe759696d" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/a_star.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/planet_eleven.py" beforeDir="false" afterPath="$PROJECT_DIR$/planet_eleven.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources.py" beforeDir="false" afterPath="$PROJECT_DIR$/resources.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/apocalypse.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/apocalypse.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/apocalypse.psd" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/apocalypse.psd" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/centurion.psd" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/centurion.psd" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/defiler.psd" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/defiler.psd" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/pioneer.psd" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/pioneer.psd" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/vulture.psd" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/vulture.psd" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -141,13 +133,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1566740526093</updated>
-    </task>
-    <task id="LOCAL-00116" summary="Proper spawning">
-      <created>1571148572922</created>
-      <option name="number" value="00116" />
-      <option name="presentableId" value="LOCAL-00116" />
-      <option name="project" value="LOCAL" />
-      <updated>1571148572933</updated>
     </task>
     <task id="LOCAL-00117" summary="shadows_dict removed">
       <created>1571152049364</created>
@@ -485,7 +470,14 @@
       <option name="project" value="LOCAL" />
       <updated>1572859061538</updated>
     </task>
-    <option name="localTasksCounter" value="165" />
+    <task id="LOCAL-00165" summary="Players added">
+      <created>1572923812540</created>
+      <option name="number" value="00165" />
+      <option name="presentableId" value="LOCAL-00165" />
+      <option name="project" value="LOCAL" />
+      <updated>1572923812541</updated>
+    </task>
+    <option name="localTasksCounter" value="166" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -530,7 +522,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$" />
     </ignored-roots>
-    <MESSAGE value="Units cost minerals" />
     <MESSAGE value="Enemy detection algorithm performance optimised" />
     <MESSAGE value="Enemy detection algorithm for buildings performance optimised" />
     <MESSAGE value="A* works on the map. No proper movement yet" />
@@ -555,7 +546,8 @@
     <MESSAGE value="Fixed a selection bug" />
     <MESSAGE value="Entities attack enemy units" />
     <MESSAGE value="buttons list" />
-    <option name="LAST_COMMIT_MESSAGE" value="buttons list" />
+    <MESSAGE value="Players added" />
+    <option name="LAST_COMMIT_MESSAGE" value="Players added" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

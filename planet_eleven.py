@@ -132,6 +132,96 @@ class Mineral(pyglet.sprite.Sprite):
         self.delete()
 
 
+def order(game_instance, building, unit):
+    """Orders units in buildings. Checks if you have enough minerals."""
+    owner = building.owner
+    if owner.mineral_count - unit.cost >= 0:
+        owner.mineral_count -= unit.cost
+        game_instance.mineral_count_label.text = str(int(game_instance.this_player.mineral_count))
+        building.building_queue.append(unit)
+        if len(building.building_queue) == 1:
+            building.building_start_time = game_instance.frame_count
+    else:
+        if owner == game_instance.this_player:
+            print("Not enough minerals")
+
+
+def building_spawn_unit(game_instance, building):
+    if building.building_queue:
+        unit = building.building_queue[0]
+        if str(unit) == "<class '__main__.Defiler'>":
+            building.current_building_time = Defiler.building_time
+        elif str(unit) == "<class '__main__.Centurion'>":
+            building.current_building_time = Centurion.building_time
+        elif str(unit) == "<class '__main__.Vulture'>":
+            building.current_building_time = Vulture.building_time
+        elif str(unit) == "<class '__main__.Apocalypse'>":
+            building.current_building_time = Apocalypse.building_time
+        elif str(unit) == "<class '__main__.Pioneer'>":
+            building.current_building_time = Pioneer.building_time
+        if game_instance.frame_count - building.building_start_time == building.current_building_time:
+            if str(building.building_queue[0]) not in LIST_OF_FLYING:
+                dict_to_check = ground_pos_coords_dict
+            else:
+                dict_to_check = air_pos_coords_dict
+            # Searching for a place to build
+            if building.width == POS_SPACE:
+                x = building.x - POS_SPACE
+                y = building.y - POS_SPACE
+            else:
+                x = building.x - POS_SPACE * 1.5
+                y = building.y - POS_SPACE * 1.5
+            org_x = x
+            org_y = y
+            place_found = False
+            n = building.width // POS_SPACE + 2
+            for i in range(n):
+                x = org_x + POS_SPACE * i
+                if dict_to_check[(x, y)] is None:
+                    place_found = True
+                    break
+            for i in range(n):
+                y = org_y + POS_SPACE * i
+                if dict_to_check[(x, y)] is None:
+                    place_found = True
+                    break
+            org_x = x
+            for i in range(n):
+                x = org_x - POS_SPACE * i
+                if dict_to_check[(x, y)] is None:
+                    place_found = True
+                    break
+            org_y = y
+            for i in range(n):
+                y = org_y - POS_SPACE * i
+                if dict_to_check[(x, y)] is None:
+                    place_found = True
+                    break
+            if place_found:
+                unit = building.building_queue.pop(0)
+                if str(unit) == "<class '__main__.Defiler'>":
+                    unit = Defiler(game_instance, x=x, y=y, owner=building.owner)
+                    unit.spawn()
+                elif str(unit) == "<class '__main__.Centurion'>":
+                    unit = Centurion(game_instance, x=x, y=y, owner=building.owner)
+                    unit.spawn()
+                elif str(unit) == "<class '__main__.Vulture'>":
+                    unit = Vulture(game_instance, x=x, y=y, owner=building.owner)
+                    unit.spawn()
+                elif str(unit) == "<class '__main__.Apocalypse'>":
+                    unit = Apocalypse(game_instance, x=x, y=y, owner=building.owner)
+                    unit.spawn()
+                elif str(unit) == "<class '__main__.Pioneer'>":
+                    unit = Pioneer(game_instance, x=x, y=y, owner=building.owner)
+                    unit.spawn()
+                building.building_start_time += building.current_building_time
+                if not building.default_rally_point:
+                    unit.move((building.rally_point_x, building.rally_point_y))
+            else:
+                building.building_start_time += 1
+                print('No space')
+
+
 class Building(pyglet.sprite.Sprite):
     # __init__ == spawn()
     def __init__(self, game_instance, our_img, enemy_img, x, y, hp, owner, vision_radius=3):
@@ -272,7 +362,7 @@ class AttackingBuilding(Building):
         ground_pos_coords_dict[(self.x, self.y)] = None
         self.pixel.delete()
         if not delay_del:
-            if not self.is_enemy:
+            if self.owner.name == 'player1':
                 del our_buildings_list[our_buildings_list.index(self)]
             else:
                 del enemy_buildings_list[enemy_buildings_list.index(self)]
@@ -489,20 +579,6 @@ def find_path(start, end, is_flying):
     return converted_path
 
 
-def order(game_instance, building, unit):
-    """Orders units in buildings. Checks if you have enough minerals."""
-    owner = building.owner
-    if owner.mineral_count - unit.cost >= 0:
-        owner.mineral_count -= unit.cost
-        game_instance.mineral_count_label.text = str(int(game_instance.this_player.mineral_count))
-        building.building_queue.append(unit)
-        if len(building.building_queue) == 1:
-            building.building_start_time = game_instance.frame_count
-    else:
-        if owner == game_instance.this_player:
-            print("Not enough minerals")
-
-
 class Unit(pyglet.sprite.Sprite):
     def __init__(self, game_instance, our_img, enemy_img, hp, vision_radius, damage, cooldown, speed, x, y,
                  projectile_sprite, projectile_speed, owner, has_weapon=True, projectile_color=(255, 255, 255),
@@ -551,10 +627,11 @@ class Unit(pyglet.sprite.Sprite):
         else:
             air_pos_coords_dict[(self.x, self.y)] = self
 
-        # Minimap pixel
+        # Minimap pixel and fow
         pixel_minimap_coords = to_minimap(self.x, self.y)
         if self.owner.name == 'player1':
             pixel = res.minimap_our_image
+            self.outer_instance.update_fow(self.x, self.y, self.vision_radius)
         else:
             pixel = res.minimap_enemy_image
         self.pixel = pyglet.sprite.Sprite(img=pixel, x=pixel_minimap_coords[0],
@@ -568,7 +645,7 @@ class Unit(pyglet.sprite.Sprite):
         else:
             self.shadow = Shadow(img=self.shadow_sprite, x=self.x + 3, y=self.y - 3)
             self.shadow.batch = ground_shadows_batch
-        self.outer_instance.update_fow(self.x, self.y, self.vision_radius)
+
 
     def update(self):
         """Updates position."""
@@ -621,10 +698,10 @@ class Unit(pyglet.sprite.Sprite):
         diff_x = self.target_x - self.x
         diff_y = self.target_y - self.y
         angle = math.atan2(diff_y, diff_x)  # Rad
-        self.rotation = -math.degrees(angle) - 90
+        self.rotation = -math.degrees(angle) + 90
         self.velocity_x = math.cos(angle) * self.speed
         self.velocity_y = math.sin(angle) * self.speed
-        self.shadow.rotation = -math.degrees(angle) - 90
+        self.shadow.rotation = -math.degrees(angle) + 90
         self.shadow.velocity_x = math.cos(angle) * self.speed
         self.shadow.velocity_y = math.sin(angle) * self.speed
         selected_dict[(self.x, self.y)] = None
@@ -763,7 +840,7 @@ class Vulture(Unit):
     cost = 150
     building_time = 10
 
-    def __init__(self, game_instance, x, y, owner):
+    def __init__(self, game_instance, x, y, owner=None):
         if owner is None:
             owner = game_instance.this_player
         super().__init__(game_instance=game_instance, our_img=res.vulture_image, enemy_img=res.vulture_enemy_image,
@@ -778,12 +855,12 @@ class Apocalypse(Unit):
     cost = 250
     building_time = 10
 
-    def __init__(self, game_instance, x, y, owner):
+    def __init__(self, game_instance, x, y, owner=None):
         if owner is None:
             owner = game_instance.this_player
         super().__init__(game_instance=game_instance, our_img=res.apocalypse_image,
-                         enemy_img=res.apocalypse_enemy_image, hp=100, vision_radius=6, damage=10, cooldown=60, speed=6,
-                         x=x, y=y, projectile_sprite='sprites/laser.png', projectile_speed=5, owner=owner,
+                         enemy_img=res.apocalypse_enemy_image, hp=100, vision_radius=6, damage=10, cooldown=120, speed=2,
+                         x=x, y=y, projectile_sprite='sprites/laser.png', projectile_speed=4, owner=owner,
                          batch=air_batch)
         self.flying = True
         self.shadow_sprite = res.apocalypse_shadow_image
@@ -794,7 +871,7 @@ class Pioneer(Unit):
     cost = 50
     building_time = 10
 
-    def __init__(self, game_instance, x, y, owner):
+    def __init__(self, game_instance, x, y, owner=None):
         if owner is None:
             owner = game_instance.this_player
         super().__init__(game_instance=game_instance, our_img=res.pioneer_image, enemy_img=res.pioneer_enemy_image,
@@ -1072,88 +1149,17 @@ class PlanetEleven(pyglet.window.Window):
         if not self.paused:
             self.frame_count += 1
             # Build units
-            for building in our_buildings_list:
+            for building in our_buildings_list + enemy_buildings_list:
                 try:
-                    if building.building_queue:
-                        unit = building.building_queue[0]
-                        if str(unit) == "<class '__main__.Defiler'>":
-                            building.current_building_time = Defiler.building_time
-                        elif str(unit) == "<class '__main__.Centurion'>":
-                            building.current_building_time = Centurion.building_time
-                        elif str(unit) == "<class '__main__.Vulture'>":
-                            building.current_building_time = Vulture.building_time
-                        elif str(unit) == "<class '__main__.Apocalypse'>":
-                            building.current_building_time = Apocalypse.building_time
-                        elif str(unit) == "<class '__main__.Pioneer'>":
-                            building.current_building_time = Pioneer.building_time
-                        if self.frame_count - building.building_start_time == building.current_building_time:
-                            if str(building.building_queue[0]) not in LIST_OF_FLYING:
-                                dict_to_check = ground_pos_coords_dict
-                            else:
-                                dict_to_check = air_pos_coords_dict
-                            # Searching for a place to build
-                            if building.width == POS_SPACE:
-                                x = building.x - POS_SPACE
-                                y = building.y - POS_SPACE
-                            else:
-                                x = building.x - POS_SPACE * 1.5
-                                y = building.y - POS_SPACE * 1.5
-                            org_x = x
-                            org_y = y
-                            place_found = False
-                            n = building.width // POS_SPACE + 2
-                            for i in range(n):
-                                x = org_x + POS_SPACE * i
-                                if dict_to_check[(x, y)] is None:
-                                    place_found = True
-                                    break
-                            for i in range(n):
-                                y = org_y + POS_SPACE * i
-                                if dict_to_check[(x, y)] is None:
-                                    place_found = True
-                                    break
-                            org_x = x
-                            for i in range(n):
-                                x = org_x - POS_SPACE * i
-                                if dict_to_check[(x, y)] is None:
-                                    place_found = True
-                                    break
-                            org_y = y
-                            for i in range(n):
-                                y = org_y - POS_SPACE * i
-                                if dict_to_check[(x, y)] is None:
-                                    place_found = True
-                                    break
-                            if place_found:
-                                unit = building.building_queue.pop(0)
-                                if str(unit) == "<class '__main__.Defiler'>":
-                                    unit = Defiler(self, x=x, y=y)
-                                    unit.spawn()
-                                elif str(unit) == "<class '__main__.Centurion'>":
-                                    unit = Centurion(self, x=x, y=y)
-                                    unit.spawn()
-                                elif str(unit) == "<class '__main__.Vulture'>":
-                                    unit = Vulture(self, x=x, y=y)
-                                    unit.spawn()
-                                elif str(unit) == "<class '__main__.Apocalypse'>":
-                                    unit = Apocalypse(self, x=x, y=y)
-                                    unit.spawn()
-                                elif str(unit) == "<class '__main__.Pioneer'>":
-                                    unit = Pioneer(self, x=x, y=y)
-                                    unit.spawn()
-                                building.building_start_time += building.current_building_time
-                                if not building.default_rally_point:
-                                    unit.move((building.rally_point_x, building.rally_point_y))
-                            else:
-                                building.building_start_time += 1
-                                print('No space')
+                    building_spawn_unit(self, building)
                 except AttributeError:
                     pass
-            # AI building units
+            # AI ordering units
             if self.frame_count % 60 == 0:
                 for building in enemy_buildings_list:
-                    if self.computer.workers_count <= 8:
+                    if self.computer.workers_count < 8:
                         order(self, building, Pioneer)
+                        self.computer.workers_count += 1
             # Units
             # Gathering resources
             for worker in workers_list:
@@ -1248,6 +1254,8 @@ class PlanetEleven(pyglet.window.Window):
             # Destroying targets
             for entity in our_buildings_list + our_units_list + enemy_buildings_list + enemy_units_list:
                 if entity.hp <= 0:
+                    if entity.owner.name == 'computer1' and isinstance(entity, Pioneer):
+                        self.computer.workers_count -= 1
                     entity.kill()
                     if entity == selected:
                         selected = None
@@ -1643,12 +1651,8 @@ class PlanetEleven(pyglet.window.Window):
             button.y = button.org_y + bottom_view_border
         self.mineral_count_label.x = SCREEN_WIDTH - 200 + left_view_border
         self.mineral_count_label.y = SCREEN_HEIGHT - 30 + bottom_view_border
-        for unit in our_units_list:
-            unit.pixel.x, unit.pixel.y = to_minimap(unit.x, unit.y)
-        for building in our_buildings_list:
-            building.pixel.x, building.pixel.y = to_minimap(building.x, building.y)
-        for enemy in enemy_buildings_list:
-            enemy.pixel.x, enemy.pixel.y = to_minimap(enemy.x, enemy.y)
+        for entity in our_buildings_list + our_units_list + enemy_buildings_list + enemy_units_list:
+            entity.pixel.x, entity.pixel.y = to_minimap(entity.x, entity.y)
         self.minimap_cam_frame_sprite.x, self.minimap_cam_frame_sprite.y = to_minimap(left_view_border - 2,
                                                                                       bottom_view_border - 2)
         minimap_fow_x = MINIMAP_ZERO_COORDS[0] - 1 + left_view_border
