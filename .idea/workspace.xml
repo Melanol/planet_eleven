@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="8699b466-fa9b-4e8c-b41f-e5bbe759696d" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/planet_eleven.py" beforeDir="false" afterPath="$PROJECT_DIR$/planet_eleven.py" afterDir="false" />
     </list>
@@ -43,7 +44,7 @@
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../stalagon_language" />
     <property name="restartRequiresConfirmation" value="false" />
     <property name="run.code.analysis.last.selected.profile" value="aDefault" />
-    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+    <property name="settings.editor.selected.configurable" value="preferences.sourceCode" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -133,20 +134,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1566740526093</updated>
-    </task>
-    <task id="LOCAL-00117" summary="shadows_dict removed">
-      <created>1571152049364</created>
-      <option name="number" value="00117" />
-      <option name="presentableId" value="LOCAL-00117" />
-      <option name="project" value="LOCAL" />
-      <updated>1571152049365</updated>
-    </task>
-    <task id="LOCAL-00118" summary="revert here">
-      <created>1571153064260</created>
-      <option name="number" value="00118" />
-      <option name="presentableId" value="LOCAL-00118" />
-      <option name="project" value="LOCAL" />
-      <updated>1571153064260</updated>
     </task>
     <task id="LOCAL-00119" summary="pixel dict removed">
       <created>1571154194297</created>
@@ -477,7 +464,21 @@
       <option name="project" value="LOCAL" />
       <updated>1572923812541</updated>
     </task>
-    <option name="localTasksCounter" value="166" />
+    <task id="LOCAL-00166" summary="Various">
+      <created>1572934947491</created>
+      <option name="number" value="00166" />
+      <option name="presentableId" value="LOCAL-00166" />
+      <option name="project" value="LOCAL" />
+      <updated>1572934947491</updated>
+    </task>
+    <task id="LOCAL-00167" summary="Various">
+      <created>1572934966054</created>
+      <option name="number" value="00167" />
+      <option name="presentableId" value="LOCAL-00167" />
+      <option name="project" value="LOCAL" />
+      <updated>1572934966054</updated>
+    </task>
+    <option name="localTasksCounter" value="168" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -542,12 +543,12 @@
     <MESSAGE value="Revert here" />
     <MESSAGE value="Removed small base, control buttons moved to attributes" />
     <MESSAGE value="Big buildings spawn with x and y at their sprites' center" />
-    <MESSAGE value="Various" />
     <MESSAGE value="Fixed a selection bug" />
     <MESSAGE value="Entities attack enemy units" />
     <MESSAGE value="buttons list" />
     <MESSAGE value="Players added" />
-    <option name="LAST_COMMIT_MESSAGE" value="Players added" />
+    <MESSAGE value="Various" />
+    <option name="LAST_COMMIT_MESSAGE" value="Various" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
