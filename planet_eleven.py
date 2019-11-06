@@ -1309,20 +1309,22 @@ class PlanetEleven(pyglet.window.Window):
                         worker.build()
             # Movement
             for unit in our_units_list + enemy_units_list:
-                # Selection
-                if selected == unit:
-                    self.selection_sprite.x = unit.x
-                    self.selection_sprite.y = unit.y
                 # Do not jump
                 if not unit.dest_reached:
                     if not unit.eta() <= 1:
                         unit.update()
                         unit.shadow.update()
+                        if selected == unit:
+                            self.selection_sprite.x = unit.x
+                            self.selection_sprite.y = unit.y
                     # Jump
                     else:
                         if not unit.move_interd:
                             unit.x = unit.target_x
                             unit.y = unit.target_y
+                            if selected == unit:
+                                self.selection_sprite.x = unit.x
+                                self.selection_sprite.y = unit.y
                             if not unit.flying:
                                 unit.shadow.x = unit.target_x + 3
                                 unit.shadow.y = unit.target_y - 3
