@@ -1018,29 +1018,6 @@ class Pioneer(Unit):
         self.zap_sprite.visible = False
 
 
-def ai_gather_resources(delta):
-    """AI gathering resources"""
-    try:
-        closest_min = minerals[0]
-        for worker in workers_list:
-            if all((not worker.is_gathering, worker.dest_reached,
-                   worker.owner.name == 'computer1')):
-                dist_2_closest_min = dist(closest_min, worker)
-                for mineral in minerals[1:]:
-                    dist_2_min = dist(mineral, worker)
-                    if dist_2_min < dist_2_closest_min:
-                        closest_min = mineral
-                        dist_2_closest_min = dist_2_min
-                worker.move((mineral.x, mineral.y))
-                worker.clear_task()
-                print('go gather, lazy worker!')
-                worker.mineral_to_gather = mineral
-                worker.task_x = mineral.x
-                worker.task_y = mineral.y
-    except IndexError:
-        pass
-
-
 class PlanetEleven(pyglet.window.Window):
     def __init__(self, width, height, title):
         conf = Config(sample_buffers=1,
@@ -1311,6 +1288,29 @@ class PlanetEleven(pyglet.window.Window):
                         if owner.name == 'player1':
                             self.mineral_count_label.text = str(
                                 int(owner.mineral_count))
+                        # AI gathering resources
+                        if self.frame_count % 120 == 0:
+                            try:
+                                closest_min = minerals[0]
+                                for worker in workers_list:
+                                    if all((not worker.is_gathering,
+                                            worker.dest_reached,
+                                            worker.owner.name == 'computer1')):
+                                        dist_2_closest_min = dist(closest_min,
+                                                                  worker)
+                                        for mineral in minerals[1:]:
+                                            dist_2_min = dist(mineral, worker)
+                                            if dist_2_min < dist_2_closest_min:
+                                                closest_min = mineral
+                                                dist_2_closest_min = dist_2_min
+                                        worker.move((mineral.x, mineral.y))
+                                        worker.clear_task()
+                                        print('go gather, lazy worker!')
+                                        worker.mineral_to_gather = mineral
+                                        worker.task_x = mineral.x
+                                        worker.task_y = mineral.y
+                            except IndexError:
+                                pass
 
             # Build buildings
             for worker in workers_list:
@@ -1862,7 +1862,6 @@ def main():
     game_window = PlanetEleven(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
     game_window.setup()
     pyglet.clock.schedule_interval(game_window.update, 1 / 60)
-    pyglet.clock.schedule_interval(ai_gather_resources, 1 / 120)
     pyglet.app.run()
 
 
