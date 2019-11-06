@@ -36,9 +36,12 @@ pyglet.resource.path = ['sprites']
 pyglet.resource.reindex()
 
 # Utilities
-cursor = pyglet.window.ImageMouseCursor(pyglet.image.load('sprites/cursor.png'), 0, 16)
-cursor_fullscreen = pyglet.window.ImageMouseCursor(pyglet.image.load('sprites/cursor_fullscreen.png'), 0, 32)
-move_cursor = pyglet.window.ImageMouseCursor(pyglet.image.load('sprites/move_cursor.png'), 0, 16)
+cursor = pyglet.window.ImageMouseCursor(pyglet.image.load(
+    'sprites/cursor.png'), 0, 16)
+cursor_fullscreen = pyglet.window.ImageMouseCursor(pyglet.image.load(
+    'sprites/cursor_fullscreen.png'), 0, 32)
+move_cursor = pyglet.window.ImageMouseCursor(pyglet.image.load(
+    'sprites/move_cursor.png'), 0, 16)
 
 background_image = pyglet.resource.image("background.png")
 
@@ -54,7 +57,8 @@ center_anchor(rally_point_image)
 control_panel_image = pyglet.resource.image("control_panel.png")
 right_bottom_anchor(control_panel_image)
 
-control_panel_buttons_background_image = pyglet.resource.image("control_panel_buttons_background.png")
+control_panel_buttons_background_image = pyglet.resource.image(
+    "control_panel_buttons_background.png")
 center_anchor(control_panel_buttons_background_image)
 
 menu_image = pyglet.resource.image("menu.png")
@@ -63,9 +67,11 @@ center_anchor(menu_image)
 selected_frame_image = pyglet.resource.image("selected_frame.png")
 center_anchor(selected_frame_image)
 
-minimap_black_background_image = pyglet.resource.image("minimap_black_background.png")
+minimap_black_background_image = pyglet.resource.image(
+    "minimap_black_background.png")
 
-minimap_textured_background_image = pyglet.resource.image("minimap_textured_background.png")
+minimap_textured_background_image = pyglet.resource.image(
+    "minimap_textured_background.png")
 
 utility_dot_image = pyglet.resource.image("utility_dot.png")
 center_anchor(utility_dot_image)
@@ -94,8 +100,6 @@ center_anchor(big_base_icon_image)
 # Resources
 mineral = pyglet.resource.image("mineral.png")
 center_anchor(mineral)
-mineral_shadow = pyglet.resource.image("mineral_shadow.png")
-center_anchor(mineral_shadow)
 
 # Buildings
 base_image = pyglet.resource.image("base.png")

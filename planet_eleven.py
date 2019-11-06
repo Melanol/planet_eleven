@@ -69,28 +69,34 @@ def mc(**kwargs):
 
 def update_shooting(game_instance, our_entities, enemy_entities):
     for entity in our_entities:
-        try:
+        try:  # For shooting buildings
             entity.has_weapon
-            entity.destination_reached
+            entity.dest_reached
         except AttributeError:
             entity.has_weapon = True
-            entity.destination_reached = True
-        if entity.has_weapon and entity.destination_reached:
+            entity.dest_reached = True
+        if entity.has_weapon and entity.dest_reached:
             if not entity.on_cooldown:
                 if not entity.has_target_p:
                     closest_enemy = None
                     closest_enemy_dist = None
                     for enemy in enemy_entities:
-                        distance_to_enemy = ((enemy.x - entity.x) ** 2 + (
-                                    enemy.y - entity.y) ** 2) ** 0.5
-                        if distance_to_enemy <= entity.shooting_radius:
+                        try:
+                            if not entity.attacks_air and enemy.flying:
+                                continue
+                            if not entity.attacks_ground and not enemy.flying:
+                                continue
+                        except AttributeError:
+                            pass
+                        dist_to_enemy = dist(enemy, entity)
+                        if dist_to_enemy <= entity.shooting_radius:
                             if not closest_enemy:
                                 closest_enemy = enemy
-                                closest_enemy_dist = distance_to_enemy
+                                closest_enemy_dist = dist_to_enemy
                             else:
-                                if distance_to_enemy < closest_enemy_dist:
+                                if dist_to_enemy < closest_enemy_dist:
                                     closest_enemy = enemy
-                                    closest_enemy_dist = distance_to_enemy
+                                    closest_enemy_dist = dist_to_enemy
                     if closest_enemy:
                         entity.has_target_p = True
                         entity.target_p = closest_enemy
@@ -111,6 +117,12 @@ class Player:
         self.name = name
 
 
+class Point:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+
+
 class Button(pyglet.sprite.Sprite):
     def __init__(self, img, x, y):
         super().__init__(img, x, y)
@@ -126,14 +138,12 @@ class Mineral(pyglet.sprite.Sprite):
         self.amount = amount
         minerals.append(self)
         ground_pos_coords_dict[(x, y)] = self
-        self.shadow = Shadow(img=res.mineral_shadow, x=x, y=y,
-                             batch=ground_shadows_batch)
 
     def kill(self):
         for worker in self.workers:
+            worker.clear_task()
             worker.stop()
         ground_pos_coords_dict[(self.x, self.y)] = None
-        self.shadow.delete()
         self.delete()
 
 
@@ -442,7 +452,7 @@ def astar(map, start, end, acc_ends):
     closed_list = []
 
     max_nodes = ((start[0] + end[0]) ** 2 + (
-                start[1] + end[1]) ** 2) ** 0.5 * 7
+            start[1] + end[1]) ** 2) ** 0.5 * 7
 
     # Loop until you find the end
     while len(open_list) > 0:
@@ -484,7 +494,8 @@ def astar(map, start, end, acc_ends):
 
             # Get node position
             node_pos = (
-            current_node.pos[0] + new_pos[0], current_node.pos[1] + new_pos[1])
+                current_node.pos[0] + new_pos[0],
+                current_node.pos[1] + new_pos[1])
 
             # Make sure within range
             if node_pos[0] > len(map[0]) - 1 or node_pos[0] < 0 \
@@ -515,7 +526,7 @@ def astar(map, start, end, acc_ends):
             # Create the f, g, and h values
             child.g = current_node.g + 1
             child.f = child.g + (child.pos[0] - end_node.pos[0]) ** 2 + (
-                        child.pos[1] - end_node.pos[1]) ** 2
+                    child.pos[1] - end_node.pos[1]) ** 2
 
             # Add the child to the open list
             open_list.append(child)
@@ -620,10 +631,10 @@ def find_path(start, end, is_flying):
 
 
 class Unit(pyglet.sprite.Sprite):
-    def __init__(self, game_instance, owner, flying, our_img, enemy_img,
-                 vision_radius, hp, x, y, speed, has_weapon,
-                 damage, cooldown, attacks_ground, attacks_air,
-                 shadow_sprite, control_buttons):
+    def __init__(self, game_inst, owner, our_img, enemy_img, flying,
+                 vision_radius, hp, x, y, speed, has_weapon, damage, cooldown,
+                 attacks_ground, attacks_air, shadow_sprite, ctrl_buttons):
+        self.outer_instance = game_inst
         self.owner = owner
         if owner.name == 'player1':
             img = our_img
@@ -631,7 +642,6 @@ class Unit(pyglet.sprite.Sprite):
         else:
             img = enemy_img
             enemy_units_list.append(self)
-        self.outer_instance = game_instance
         self.flying = flying
         if not self.flying:
             self.pos_dict = ground_pos_coords_dict
@@ -640,32 +650,34 @@ class Unit(pyglet.sprite.Sprite):
             self.pos_dict = air_pos_coords_dict
             batch = air_batch
         super().__init__(img=img, x=x, y=y, batch=batch)
+        self.vision_radius = vision_radius
         self.attacks_ground = attacks_ground
         self.attacks_air = attacks_air
         self.hp = hp
         self.x = x
         self.y = y
-        self.vision_radius = vision_radius
+        self.speed = speed
         self.has_weapon = has_weapon
         self.damage = damage
+        self.cooldown = cooldown
+        self.attacks_ground = attacks_ground
+        self.attacks_air = attacks_air
         self.shooting_radius = vision_radius * 32
-        self.speed = speed
         self.shadow_sprite = shadow_sprite
-        self.control_buttons = control_buttons
+        self.control_buttons = ctrl_buttons
 
-        self.destination_reached = True
-        self.movement_interrupted = False
+        self.dest_reached = True
+        self.move_interd = False
         self.target_x = None
         self.target_y = None
-        self.destination_x = None
-        self.destination_y = None
+        self.dest_x = None
+        self.dest_y = None
         self.velocity_x = 0
         self.velocity_y = 0
         self.has_target_p = False
         self.target_p = None
         self.target_p_x = None
         self.target_p_y = None
-        self.cooldown = cooldown
         self.on_cooldown = False
         self.cooldown_started = None
         self.attackers = []
@@ -712,35 +724,35 @@ class Unit(pyglet.sprite.Sprite):
         self.rotation = -math.degrees(angle) + 90
         self.shadow.rotation = -math.degrees(angle) + 90
 
-    def move(self, destination):
+    def move(self, dest):
         """Called once by RMB or when a unit is created by a building with
         a non-default rally point."""
         # Not moving: same coords
-        if self.x == destination[0] and self.y == destination[1]:
-            self.destination_reached = True
+        if self.x == dest[0] and self.y == dest[1]:
+            self.dest_reached = True
             return
 
         if not self.flying:
             selected_dict = ground_pos_coords_dict
         else:
             selected_dict = air_pos_coords_dict
-        # Not moving: melee distance and destination occupied
-        if is_melee_distance(self, destination[0], destination[1]) and \
-                selected_dict[(destination[0], destination[1])]:
-            self.destination_reached = True
+        # Not moving: melee distance and dest occupied
+        if is_melee_dist(self, dest[0], dest[1]) and \
+                selected_dict[(dest[0], dest[1])]:
+            self.dest_reached = True
             return
         # Moving or just rotating
-        self.destination_reached = False
-        self.destination_x, self.destination_y = destination[0], destination[1]
+        self.dest_reached = False
+        self.dest_x, self.dest_y = dest[0], dest[1]
 
         self.pfi = 0
         self.path = find_path((self.x, self.y),
-                              (self.destination_x, self.destination_y),
+                              (self.dest_x, self.dest_y),
                               self.flying)
         try:
             target = self.path[self.pfi]
         except IndexError:
-            self.destination_reached = True
+            self.dest_reached = True
             return
         if target:  # If we can reach there
             print('target =', target)
@@ -750,7 +762,7 @@ class Unit(pyglet.sprite.Sprite):
                                                     self.target_y)
         # Not moving
         else:
-            self.destination_reached = True
+            self.dest_reached = True
             selected_dict[(self.x, self.y)] = self
             return
         diff_x = self.target_x - self.x
@@ -767,20 +779,20 @@ class Unit(pyglet.sprite.Sprite):
 
     def eta(self):
         """Estimated time of arrival to the target location (not
-        destination)."""
+        dest)."""
         dist_to_target = ((self.target_x - self.x) ** 2 + (
-                    self.target_y - self.y) ** 2) ** 0.5
+                self.target_y - self.y) ** 2) ** 0.5
         return dist_to_target / self.speed
 
-    def update_movement(self):
+    def update_move(self):
         """Called by update to move to the next point."""
         self.pfi += 1
         if not self.flying:
             selected_dict = ground_pos_coords_dict
         else:
             selected_dict = air_pos_coords_dict
-        diff_x = self.destination_x - self.x
-        diff_y = self.destination_y - self.y
+        diff_x = self.dest_x - self.x
+        diff_y = self.dest_y - self.y
         angle = math.atan2(diff_y, diff_x)  # Rad
         d_angle = math.degrees(angle)
         self.rotation = -d_angle + 90
@@ -788,11 +800,11 @@ class Unit(pyglet.sprite.Sprite):
         try:
             next_target = self.path[self.pfi]
         except IndexError:
-            self.destination_reached = True
+            self.dest_reached = True
             return
         if selected_dict[
             (next_target[0], next_target[1])]:  # Obstruction detected
-            self.move((self.destination_x, self.destination_y))
+            self.move((self.dest_x, self.dest_y))
             return
         if next_target:  # Moving
             selected_dict[(self.x, self.y)] = None
@@ -813,7 +825,7 @@ class Unit(pyglet.sprite.Sprite):
             self.shadow.velocity_y = math.sin(angle) * self.speed
         else:
             selected_dict[(self.x, self.y)] = self
-            self.destination_reached = True
+            self.dest_reached = True
 
     def shoot(self, frame_count):
         global projectile_list
@@ -821,7 +833,7 @@ class Unit(pyglet.sprite.Sprite):
                                 target_x=self.target_p.x,
                                 target_y=self.target_p.y,
                                 damage=self.damage,
-                                speed=self.projectile_speed,
+                                speed=5,
                                 target_obj=self.target_p)
         x_diff = self.target_p.x - self.x
         y_diff = self.target_p.y - self.y
@@ -833,14 +845,14 @@ class Unit(pyglet.sprite.Sprite):
         projectile_list.append(projectile)
 
     def stop(self, x=None, y=None):
-        """Stops movement and clears commands."""
+        """Stops move and clears commands."""
         if not x:
             x = self.target_x
             y = self.target_y
-        if not self.destination_reached:
-            self.destination_x = self.target_x
-            self.destination_y = self.target_y
-            self.movement_interrupted = True
+        if not self.dest_reached:
+            self.dest_x = self.target_x
+            self.dest_y = self.target_y
+            self.move_interd = True
             self.new_dest_x = x
             self.new_dest_y = y
         try:
@@ -873,95 +885,83 @@ class Defiler(Unit):
     cost = 250
     building_time = 10
 
-    def __init__(self, game_instance, x, y, owner=None):
+    def __init__(self, game_inst, x, y, owner=None):
         if owner is None:
-            owner = game_instance.this_player
-        super().__init__(game_instance=game_instance, flying=True,
-                         our_img=res.defiler_image,
-                         enemy_img=res.defiler_enemy_image,
-                         hp=100, vision_radius=6, damage=10, cooldown=60,
-                         speed=6, x=x, y=y,
-                         projectile_sprite='sprites/laser.png',
-                         projectile_speed=5, owner=owner, batch=air_batch)
-
-        self.shadow_sprite = res.defiler_shadow_image
-        self.control_buttons = game_instance.basic_unit_control_buttons
+            owner = game_inst.this_player
+        super().__init__(game_inst, owner, res.defiler_image,
+                         res.defiler_enemy_image, flying=True, vision_radius=6,
+                         hp=100, x=x, y=y, speed=6, has_weapon=True, damage=10,
+                         cooldown=60, attacks_ground=True, attacks_air=True,
+                         shadow_sprite=res.defiler_shadow_image,
+                         ctrl_buttons=game_inst.basic_unit_control_buttons)
 
 
 class Centurion(Unit):
     cost = 400
     building_time = 10
 
-    def __init__(self, game_instance, x, y, owner=None):
+    def __init__(self, game_inst, x, y, owner=None):
         if owner is None:
-            owner = game_instance.this_player
-        super().__init__(game_instance=game_instance,
-                         our_img=res.centurion_image,
-                         enemy_img=res.centurion_enemy_image, hp=100,
-                         vision_radius=6, damage=20, cooldown=120, speed=1,
-                         x=x, y=y, projectile_sprite='sprites/laser.png',
-                         projectile_speed=5, owner=owner)
-        self.flying = False
-        self.shadow_sprite = res.centurion_shadow_image
-        self.control_buttons = game_instance.basic_unit_control_buttons
+            owner = game_inst.this_player
+        super().__init__(game_inst, owner, res.centurion_image,
+                         res.centurion_enemy_image, flying=False,
+                         vision_radius=6, hp=100, x=x, y=y, speed=3,
+                         has_weapon=True, damage=10, cooldown=120,
+                         attacks_ground=True, attacks_air=False,
+                         shadow_sprite=res.centurion_shadow_image,
+                         ctrl_buttons=game_inst.basic_unit_control_buttons)
 
 
 class Vulture(Unit):
     cost = 150
     building_time = 10
 
-    def __init__(self, game_instance, x, y, owner=None):
+    def __init__(self, game_inst, x, y, owner=None):
         if owner is None:
-            owner = game_instance.this_player
-        super().__init__(game_instance=game_instance,
-                         our_img=res.vulture_image,
-                         enemy_img=res.vulture_enemy_image,
-                         hp=50, vision_radius=3, damage=10, cooldown=60,
-                         speed=10, x=x, y=y,
-                         projectile_sprite='sprites/laser.png',
-                         projectile_speed=5, owner=owner)
-        self.flying = False
-        self.shadow_sprite = res.vulture_shadow_image
-        self.control_buttons = game_instance.basic_unit_control_buttons
+            owner = game_inst.this_player
+        super().__init__(game_inst, owner, res.vulture_image,
+                         res.vulture_enemy_image, flying=False,
+                         vision_radius=3, hp=50, x=x, y=y, speed=7,
+                         has_weapon=True, damage=5, cooldown=60,
+                         attacks_ground=True, attacks_air=False,
+                         shadow_sprite=res.vulture_shadow_image,
+                         ctrl_buttons=game_inst.basic_unit_control_buttons)
 
 
 class Apocalypse(Unit):
     cost = 250
     building_time = 10
 
-    def __init__(self, game_instance, x, y, owner=None):
+    def __init__(self, game_inst, x, y, owner=None):
         if owner is None:
-            owner = game_instance.this_player
-        super().__init__(game_instance=game_instance,
-                         our_img=res.apocalypse_image,
-                         enemy_img=res.apocalypse_enemy_image, hp=100,
-                         vision_radius=6, damage=10, cooldown=120, speed=2,
-                         x=x, y=y, projectile_sprite='sprites/laser.png',
-                         projectile_speed=4, owner=owner,
-                         batch=air_batch)
-        self.flying = True
-        self.shadow_sprite = res.apocalypse_shadow_image
-        self.control_buttons = game_instance.basic_unit_control_buttons
+            owner = game_inst.this_player
+        super().__init__(game_inst, owner, res.apocalypse_image,
+                         res.apocalypse_enemy_image, flying=True,
+                         vision_radius=6, hp=100, x=x, y=y, speed=4,
+                         has_weapon=True, damage=30, cooldown=120,
+                         attacks_ground=True, attacks_air=False,
+                         shadow_sprite=res.apocalypse_shadow_image,
+                         ctrl_buttons=game_inst.basic_unit_control_buttons)
 
 
 class Pioneer(Unit):
     cost = 50
     building_time = 10
 
-    def __init__(self, game_instance, x, y, owner=None):
+    def __init__(self, game_inst, x, y, owner=None):
         if owner is None:
-            owner = game_instance.this_player
-        super().__init__(game_instance=game_instance,
-                         our_img=res.pioneer_image,
-                         enemy_img=res.pioneer_enemy_image,
-                         hp=10, vision_radius=2, damage=0, cooldown=60,
-                         speed=5, x=x, y=y, has_weapon=False,
-                         projectile_sprite='sprites/laser.png',
-                         projectile_speed=5, owner=owner)
+            owner = game_inst.this_player
+        super().__init__(game_inst, owner, res.pioneer_image,
+                         res.pioneer_enemy_image, flying=False,
+                         vision_radius=2, hp=10, x=x, y=y, speed=4,
+                         has_weapon=False, damage=0, cooldown=0,
+                         attacks_ground=False, attacks_air=False,
+                         shadow_sprite=res.pioneer_shadow_image,
+                         ctrl_buttons=game_inst.basic_unit_control_buttons + [
+                             game_inst.base_button] + [
+                                          game_inst.turret_button] + [
+                                          game_inst.big_base_button])
         workers_list.append(self)
-        self.flying = False
-        self.outer_instance = game_instance
-        self.shadow_sprite = res.pioneer_shadow_image
         self.to_build = None
         self.mineral_to_gather = None
         self.task_x = None
@@ -980,16 +980,12 @@ class Pioneer(Unit):
                                                batch=zap_batch)
 
         self.zap_sprite.visible = False
-        self.control_buttons = game_instance.basic_unit_control_buttons + [
-            game_instance.base_button] + \
-                               [game_instance.turret_button] + [
-                                   game_instance.big_base_button]
 
     def build(self):
         self.mineral_to_gather = None
         self.is_gathering = False
         self.zap_sprite.visible = False
-        self.destination_reached = True
+        self.dest_reached = True
         ground_pos_coords_dict[(self.x, self.y)] = self
         if self.to_build == "BigBase":
             pass
@@ -1020,6 +1016,29 @@ class Pioneer(Unit):
         self.task_y = None
         self.is_gathering = False
         self.zap_sprite.visible = False
+
+
+def ai_gather_resources(delta):
+    """AI gathering resources"""
+    try:
+        closest_min = minerals[0]
+        for worker in workers_list:
+            if all((not worker.is_gathering, worker.dest_reached,
+                   worker.owner.name == 'computer1')):
+                dist_2_closest_min = dist(closest_min, worker)
+                for mineral in minerals[1:]:
+                    dist_2_min = dist(mineral, worker)
+                    if dist_2_min < dist_2_closest_min:
+                        closest_min = mineral
+                        dist_2_closest_min = dist_2_min
+                worker.move((mineral.x, mineral.y))
+                worker.clear_task()
+                print('go gather, lazy worker!')
+                worker.mineral_to_gather = mineral
+                worker.task_x = mineral.x
+                worker.task_y = mineral.y
+    except IndexError:
+        pass
 
 
 class PlanetEleven(pyglet.window.Window):
@@ -1093,9 +1112,8 @@ class PlanetEleven(pyglet.window.Window):
             y=MINIMAP_ZERO_COORDS[1] - 1)
         self.minimap_fow_image = pyglet.image.load('sprites/minimap_fow.png')
         self.minimap_fow_ImageData = self.minimap_fow_image.get_image_data()
-        self.npa = np.fromstring(self.minimap_fow_ImageData.get_data('RGBA',
-                                    self.minimap_fow_ImageData.width * 4),
-                                 dtype=np.uint8)
+        self.npa = np.fromstring(self.minimap_fow_ImageData.get_data(
+            'RGBA', self.minimap_fow_ImageData.width * 4), dtype=np.uint8)
         self.npa = self.npa.reshape((102, 102, 4))
         self.mineral_count_label = pyglet.text.Label(
             str(self.this_player.mineral_count), x=SCREEN_WIDTH - 200,
@@ -1281,9 +1299,9 @@ class PlanetEleven(pyglet.window.Window):
             # Gathering resources
             for worker in workers_list:
                 if worker.mineral_to_gather:
-                    if not worker.is_gathering and worker.destination_reached:
-                        if is_melee_distance(worker, worker.task_x,
-                                             worker.task_y):
+                    if not worker.is_gathering and worker.dest_reached:
+                        if is_melee_dist(worker, worker.task_x,
+                                         worker.task_y):
                             print("melee dist")
                             worker.gather()
                     else:
@@ -1293,25 +1311,26 @@ class PlanetEleven(pyglet.window.Window):
                         if owner.name == 'player1':
                             self.mineral_count_label.text = str(
                                 int(owner.mineral_count))
+
             # Build buildings
             for worker in workers_list:
                 if worker.to_build:
-                    if is_melee_distance(worker, worker.task_x, worker.task_y):
+                    if is_melee_dist(worker, worker.task_x, worker.task_y):
                         worker.build()
             # Movement
-            for unit in our_units_list:
+            for unit in our_units_list + enemy_units_list:
                 # Selection
                 if selected == unit:
                     self.selection_sprite.x = unit.x
                     self.selection_sprite.y = unit.y
                 # Do not jump
-                if not unit.destination_reached:
+                if not unit.dest_reached:
                     if not unit.eta() <= 1:
                         unit.update()
                         unit.shadow.update()
                     # Jump
                     else:
-                        if not unit.movement_interrupted:
+                        if not unit.move_interd:
                             unit.x = unit.target_x
                             unit.y = unit.target_y
                             if not unit.flying:
@@ -1324,11 +1343,11 @@ class PlanetEleven(pyglet.window.Window):
                                 unit.shadow.y = unit.target_y - 10
                                 air_pos_coords_dict[
                                     (unit.target_x, unit.target_y)] = unit
-                            if unit.x == unit.destination_x and unit.y == \
-                                    unit.destination_y:
-                                unit.destination_reached = True
+                            if unit.x == unit.dest_x and unit.y == \
+                                    unit.dest_y:
+                                unit.dest_reached = True
                             else:
-                                unit.update_movement()
+                                unit.update_move()
                         # Movement interrupted
                         else:
                             unit.x = unit.target_x
@@ -1343,9 +1362,9 @@ class PlanetEleven(pyglet.window.Window):
                                 unit.shadow.y = unit.target_y - 10
                                 air_pos_coords_dict[
                                     (unit.target_x, unit.target_y)] = unit
-                            unit.destination_reached = True
+                            unit.dest_reached = True
                             unit.move((unit.new_dest_x, unit.new_dest_y))
-                            unit.movement_interrupted = False
+                            unit.move_interd = False
                         self.update_fow(unit.x, unit.y, unit.vision_radius)
                 else:
                     try:
@@ -1371,8 +1390,6 @@ class PlanetEleven(pyglet.window.Window):
             minerals_to_del = []
             for mineral in minerals:
                 if mineral.amount <= 0:
-                    for worker in mineral.workers:
-                        worker.stop()
                     mineral.kill()
                     minerals_to_del.append(mineral)
             for mineral in minerals_to_del:
@@ -1381,8 +1398,8 @@ class PlanetEleven(pyglet.window.Window):
             for entity in our_buildings_list + our_units_list + \
                           enemy_buildings_list + enemy_units_list:
                 if entity.hp <= 0:
-                    if entity.owner.name == 'computer1' and isinstance(entity,
-                                                                      Pioneer):
+                    if entity.owner.name == 'computer1' and \
+                            isinstance(entity, Pioneer):
                         self.computer.workers_count -= 1
                     entity.kill()
                     if entity == selected:
@@ -1476,7 +1493,7 @@ class PlanetEleven(pyglet.window.Window):
                                              self.selection_sprite.y)] = None
                     else:
                         ground_pos_coords_dict[(self.selection_sprite.x,
-                                            self.selection_sprite.y)] = None
+                            self.selection_sprite.y)] = None
                     selected = None
                 elif selected in our_buildings_list:
                     selected.kill()
@@ -1545,19 +1562,19 @@ class PlanetEleven(pyglet.window.Window):
                         # A unit is selected
                         else:
                             if selected in our_units_list:
-                                if selected.destination_reached:
+                                if selected.dest_reached:
                                     selected.move((x, y))
                                 # Movement interruption
                                 else:
                                     selected.stop(x, y)
                                 selected.has_target_p = False
-                            if str(type(
-                                    selected)) == "<class '__main__.Pioneer'>":
+                            if str(type(selected)) == \
+                                    "<class '__main__.Pioneer'>":
                                 selected.clear_task()
                                 obj = ground_pos_coords_dict[(x, y)]
-                                if str(type(
-                                        obj)) == "<class '__main__.Mineral'>":
-                                    # print('go gather, lazy worker!')
+                                if str(type(obj)) == \
+                                        "<class '__main__.Mineral'>":
+                                    print('go gather, lazy worker!')
                                     selected.mineral_to_gather = obj
                                     selected.task_x = obj.x
                                     selected.task_y = obj.y
@@ -1583,12 +1600,12 @@ class PlanetEleven(pyglet.window.Window):
                         for unit in our_units_list:
                             if unit == selected:
                                 unit_found = True
-                                if unit.destination_reached:
+                                if unit.dest_reached:
                                     unit.move((x, y))
                                 else:  # Movement interruption
-                                    unit.destination_x = unit.target_x
-                                    unit.destination_y = unit.target_y
-                                    unit.movement_interrupted = True
+                                    unit.dest_x = unit.target_x
+                                    unit.dest_y = unit.target_y
+                                    unit.move_interd = True
                                     unit.new_dest_x = x
                                     unit.new_dest_y = y
                         if not unit_found:
@@ -1605,7 +1622,8 @@ class PlanetEleven(pyglet.window.Window):
                     # print('x =', x, 'y =', y)
                     w = self.menu_button.width
                     h = self.menu_button.height
-                    if self.menu_button.x - w // 2 <= x <= self.menu_button.x + w // 2 and \
+                    if self.menu_button.x - w // 2 <= x <= \
+                            self.menu_button.x + w // 2 and \
                             self.menu_button.y - h // 2 <= y <= \
                             self.menu_button.y + h // 2:
                         pass
@@ -1633,7 +1651,7 @@ class PlanetEleven(pyglet.window.Window):
                         # Create apocalypse
                         elif self.apocalypse_button.x - 16 <= x <= \
                                 self.apocalypse_button.x + 16 and \
-                                self.apocalypse_button.y - 16 <= y <=\
+                                self.apocalypse_button.y - 16 <= y <= \
                                 self.apocalypse_button.y + 16:
                             order(self, selected, Apocalypse)
                         # Create worker
@@ -1713,7 +1731,7 @@ class PlanetEleven(pyglet.window.Window):
                     y = int((y - 16) / 32) + 1
                     if ground_pos_coords_dict[self.turret_building_sprite.x,
                                               self.turret_building_sprite.y] \
-                                                or self.npa[y, x, 3] != 0:
+                            or self.npa[y, x, 3] != 0:
                         self.turret_building_sprite.color = (255, 0, 0)
                     else:
                         self.turret_building_sprite.color = (0, 255, 0)
@@ -1821,8 +1839,8 @@ class PlanetEleven(pyglet.window.Window):
             entity.pixel.x, entity.pixel.y = to_minimap(entity.x, entity.y)
         self.minimap_cam_frame_sprite.x, self.minimap_cam_frame_sprite.y = \
             to_minimap(
-            left_view_border - 2,
-            bottom_view_border - 2)
+                left_view_border - 2,
+                bottom_view_border - 2)
         minimap_fow_x = MINIMAP_ZERO_COORDS[0] - 1 + left_view_border
         minimap_fow_y = MINIMAP_ZERO_COORDS[1] - 1 + bottom_view_border
 
@@ -1837,14 +1855,14 @@ class PlanetEleven(pyglet.window.Window):
                             self.npa[yi, xi, 3] = 0
         self.minimap_fow_ImageData.set_data('RGBA',
                                             self.minimap_fow_ImageData.width
-                                            * 4,
-                                            data=self.npa.tobytes())
+                                            * 4, data=self.npa.tobytes())
 
 
 def main():
     game_window = PlanetEleven(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
     game_window.setup()
     pyglet.clock.schedule_interval(game_window.update, 1 / 60)
+    pyglet.clock.schedule_interval(ai_gather_resources, 1 / 120)
     pyglet.app.run()
 
 

@@ -23,9 +23,14 @@ center_x = CONTROL_PANEL_CENTER_X
 center_y = (SCREEN_HEIGHT / 2 - 50) / 2
 x_space = 34
 y_space = 34
-CONTROL_BUTTONS_COORDS = [(center_x - x_space, center_y + y_space), (center_x, center_y + y_space), (center_x + x_space, center_y + y_space),
-                          (center_x - x_space, center_y), (center_x, center_y), (center_x + x_space, center_y),
-                          (center_x - x_space, center_y - y_space), (center_x, center_y - y_space), (center_x + x_space, center_y - y_space)
+CONTROL_BUTTONS_COORDS = [(center_x - x_space, center_y + y_space),
+                          (center_x, center_y + y_space),
+                          (center_x + x_space, center_y + y_space),
+                          (center_x - x_space, center_y),
+                          (center_x, center_y), (center_x + x_space, center_y),
+                          (center_x - x_space, center_y - y_space),
+                          (center_x, center_y - y_space),
+                          (center_x + x_space, center_y - y_space)
                           ]
 
 # Generate minimap_cam_frame
@@ -59,7 +64,8 @@ turret_batch = pyglet.graphics.Batch()
 zap_batch = pyglet.graphics.Batch()
 
 minerals = []
-LIST_OF_FLYING = ["<class '__main__.Defiler'>", "<class '__main__.Apocalypse'>"]
+LIST_OF_FLYING = ["<class '__main__.Defiler'>",
+                  "<class '__main__.Apocalypse'>"]
 our_units_list = []
 workers_list = []
 our_buildings_list = []
@@ -94,8 +100,9 @@ def round_coords(x, y):
     return sel_x, sel_y
 
 
-def is_melee_distance(unit, target_x, target_y):
-    """Checks if a unit is in the 8 neighboring blocks of the target object. Used for melee interaction."""
+def is_melee_dist(unit, target_x, target_y):
+    """Checks if a unit is in the 8 neighboring blocks of the target object.
+    Used for melee interaction."""
     if abs(unit.x - target_x) == POS_SPACE:
         if abs(unit.y - target_y) == POS_SPACE or unit.y == target_y:
             return True
@@ -104,3 +111,5 @@ def is_melee_distance(unit, target_x, target_y):
     return False
 
 
+def dist(obj1, obj2):
+    return ((obj1.x - obj2.x) ** 2 + (obj1.y - obj2.y) ** 2) ** 0.5

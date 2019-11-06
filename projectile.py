@@ -4,7 +4,8 @@ import resources as res
 
 
 class Projectile(pyglet.sprite.Sprite):
-    def __init__(self, x, y, target_x, target_y, damage, speed, target_obj, color=(150, 150, 255), vs_air=False):
+    def __init__(self, x, y, target_x, target_y, damage, speed, target_obj,
+                 color=(150, 150, 255), vs_air=False):
         img = res.projectile_image
         super().__init__(img=img, x=x, y=y)
         self.color = color
@@ -24,7 +25,8 @@ class Projectile(pyglet.sprite.Sprite):
         self.x, self.y = self.x + self.velocity_x, self.y + self.velocity_y
 
     def distance_to_target(self):
-        return ((self.target_x - self.x) ** 2 + (self.target_y - self.y) ** 2) ** 0.5
+        return ((self.target_x - self.x) ** 2 +
+                (self.target_y - self.y) ** 2) ** 0.5
 
     def eta(self):
         return self.distance_to_target() / self.speed
