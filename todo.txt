@@ -6,6 +6,8 @@
 -Building costs and building time
 -Building 2-block-wide buldings
 -There is a bug that does not allow you to select units that are in the right top corner of the map
+-Workers gather resources from long distance
+-Make building spawn units only every 60 secs
 
 # Not important
 -Units blink-rotate the moment they are ordered to move

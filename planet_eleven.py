@@ -142,7 +142,7 @@ class Mineral(pyglet.sprite.Sprite):
     def kill(self):
         for worker in self.workers:
             worker.clear_task()
-            worker.stop()
+            worker.stop_move()
         ground_pos_coords_dict[(self.x, self.y)] = None
         self.delete()
 
@@ -844,21 +844,11 @@ class Unit(pyglet.sprite.Sprite):
         self.cooldown_started = frame_count
         projectile_list.append(projectile)
 
-    def stop(self, x=None, y=None):
-        """Stops move and clears commands."""
-        if not x:
-            x = self.target_x
-            y = self.target_y
+    def stop_move(self):
+        """Stops movement."""
         if not self.dest_reached:
             self.dest_x = self.target_x
             self.dest_y = self.target_y
-            self.move_interd = True
-            self.new_dest_x = x
-            self.new_dest_y = y
-        try:
-            self.clear_task()
-        except AttributeError:
-            pass
 
     def kill(self, delay_del=False):
         self.pixel.delete()
@@ -905,7 +895,7 @@ class Centurion(Unit):
             owner = game_inst.this_player
         super().__init__(game_inst, owner, res.centurion_image,
                          res.centurion_enemy_image, flying=False,
-                         vision_radius=6, hp=100, x=x, y=y, speed=3,
+                         vision_radius=6, hp=100, x=x, y=y, speed=1,
                          has_weapon=True, damage=10, cooldown=120,
                          attacks_ground=True, attacks_air=False,
                          shadow_sprite=res.centurion_shadow_image,
@@ -1288,29 +1278,29 @@ class PlanetEleven(pyglet.window.Window):
                         if owner.name == 'player1':
                             self.mineral_count_label.text = str(
                                 int(owner.mineral_count))
-                        # AI gathering resources
-                        if self.frame_count % 120 == 0:
-                            try:
-                                closest_min = minerals[0]
-                                for worker in workers_list:
-                                    if all((not worker.is_gathering,
-                                            worker.dest_reached,
-                                            worker.owner.name == 'computer1')):
-                                        dist_2_closest_min = dist(closest_min,
-                                                                  worker)
-                                        for mineral in minerals[1:]:
-                                            dist_2_min = dist(mineral, worker)
-                                            if dist_2_min < dist_2_closest_min:
-                                                closest_min = mineral
-                                                dist_2_closest_min = dist_2_min
-                                        worker.move((mineral.x, mineral.y))
-                                        worker.clear_task()
-                                        print('go gather, lazy worker!')
-                                        worker.mineral_to_gather = mineral
-                                        worker.task_x = mineral.x
-                                        worker.task_y = mineral.y
-                            except IndexError:
-                                pass
+            # AI gathering resources
+            # if self.frame_count % 120 == 0:
+            #     try:
+            #         closest_min = minerals[0]
+            #         for worker in workers_list:
+            #             if all((not worker.is_gathering,
+            #                     worker.dest_reached,
+            #                     worker.owner.name == 'computer1')):
+            #                 dist_2_closest_min = dist(closest_min,
+            #                                           worker)
+            #                 for mineral in minerals[1:]:
+            #                     dist_2_min = dist(mineral, worker)
+            #                     if dist_2_min < dist_2_closest_min:
+            #                         closest_min = mineral
+            #                         dist_2_closest_min = dist_2_min
+            #                 worker.move((mineral.x, mineral.y))
+            #                 worker.clear_task()
+            #                 print('go gather, lazy worker!')
+            #                 worker.mineral_to_gather = mineral
+            #                 worker.task_x = mineral.x
+            #                 worker.task_y = mineral.y
+            #     except IndexError:
+            #         pass
 
             # Build buildings
             for worker in workers_list:
@@ -1418,7 +1408,7 @@ class PlanetEleven(pyglet.window.Window):
         if not self.paused:
             if symbol == key.S:
                 try:
-                    selected.stop()
+                    selected.stop_move()
                 except AttributeError:
                     pass
             elif symbol == key.F1:
@@ -1539,11 +1529,14 @@ class PlanetEleven(pyglet.window.Window):
                                     self.selection_sprite.x = x
                                     self.selection_sprite.y = y
                                 selected = to_be_selected
-                        try:
-                            self.control_buttons_to_render = \
-                                selected.control_buttons
-                        except AttributeError:
-                            pass
+                        if selected.owner.name == 'player1':
+                            try:
+                                self.control_buttons_to_render = \
+                                    selected.control_buttons
+                            except AttributeError:
+                                pass
+                        else:
+                            self.control_buttons_to_render = None
                         print('SELECTED CLASS =', type(selected))
                     elif button == mouse.RIGHT:
                         # Rally point
@@ -1566,7 +1559,9 @@ class PlanetEleven(pyglet.window.Window):
                                     selected.move((x, y))
                                 # Movement interruption
                                 else:
-                                    selected.stop(x, y)
+                                    selected.move_interd = True
+                                    selected.new_dest_x = x
+                                    selected.new_dest_y = y
                                 selected.has_target_p = False
                             if str(type(selected)) == \
                                     "<class '__main__.Pioneer'>":
@@ -1667,7 +1662,7 @@ class PlanetEleven(pyglet.window.Window):
                                 self.stop_button.x + 16 and \
                                 self.stop_button.y - 16 <= y <= \
                                 self.stop_button.y + 16:
-                            selected.stop()
+                            selected.stop_move()
                         # Attack
                         # Build
                         if str(type(selected)) == "<class '__main__.Pioneer'>":
