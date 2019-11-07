@@ -102,17 +102,15 @@ mineral = pyglet.resource.image("mineral.png")
 center_anchor(mineral)
 
 # Buildings
-base_img = pyglet.resource.image("base.png")
-center_anchor(base_img)
-
-enemy_base_img = pyglet.resource.image("enemy_base.png")
-center_anchor(enemy_base_img)
+armory_img = pyglet.resource.image("armory.png")
+center_anchor(armory_img)
+armory_enemy_img = pyglet.resource.image("armory_enemy.png")
+center_anchor(armory_enemy_img)
 
 turret_b_img = pyglet.resource.image("turret_b.png")
 center_anchor(turret_b_img)
 turret_img = pyglet.resource.image("turret.png")
 center_anchor(turret_img)
-
 turret_base_img = pyglet.resource.image("turret_base.png")
 center_anchor(turret_base_img)
 
@@ -158,5 +156,15 @@ apocalypse_shadow_img = pyglet.resource.image("apocalypse_shadow.png")
 center_anchor(apocalypse_shadow_img)
 
 # Other
-pj_img = pyglet.resource.image("laser.png")
-center_anchor(pj_img)
+laser_img = pyglet.resource.image("laser.png")
+center_anchor(laser_img)
+
+plasma1 = pyglet.image.load('sprites/plasma16_1.png')
+plasma1.anchor_x = 8; plasma1.anchor_y = 8
+plasma2 = pyglet.image.load('sprites/plasma16_2.png')
+plasma2.anchor_x = 8; plasma2.anchor_y = 8
+plasma3 = pyglet.image.load('sprites/plasma16_3.png')
+plasma3.anchor_x = 8; plasma3.anchor_y = 8
+plasma_spts = [plasma1, plasma2, plasma3]
+plasma_anim = pyglet.image.Animation.from_image_sequence(plasma_spts, 0.1,
+                                                         True)

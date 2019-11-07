@@ -6,25 +6,25 @@
 -Building costs and building time
 -Building 2-block-wide buldings
 -There is a bug that does not allow you to select units that are in the right top corner of the map
--Workers gather resources from long distance
 -Make building spawn units only every 60 secs
+-Enemy units can shoot our units after locking on them from any distance
+-After 5 mins of letting AI build workers non-stop, FPS drops to 5, and memory usage increases. Looks like garbage collection is not working for workers or projectiles. I think it's the workers.
+-Rally-point moving like 20 workers to a distant location significantly lowers FPS. Killem them does not this this. Movement significantly lowers FPS, but only workers do not fix this after stopping (tried vulture)
+-Workers rotate strangely while building
 
 # Not important
 -Units blink-rotate the moment they are ordered to move
--Selection frame dragging behind
--Unit-following-unit movement bug
 -Selected info
 -Spawning in the direction of the rally point?
--World editor?
+-World editor? Required for terrain pos_coords
 -Diagonal movement interception: if not fixed, it will be possible for up to 4 units to have the same coordinate (2 ground, 2 air)
--Proper unit-following-unit movement
 -Finalize minimap
 -Screen edge cam scrolling
 -Implement in-game id?
 -Units should check for close enemies only when an enemy moves or is spawned (useless optimization?)
 -Something should indicate that there is a ground unit present below an air unit
 -Shift for selecting ground units below air units?
--Add players as object attributes instead of is_enemy
 -HP bars?
 
 # Ideas
+-None

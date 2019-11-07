@@ -6,7 +6,7 @@ import resources as res
 class Projectile(pyglet.sprite.Sprite):
     def __init__(self, x, y, target_x, target_y, damage, speed, target_obj,
                  color=(150, 150, 255), vs_air=False):
-        img = res.pj_img
+        img = res.laser_img
         super().__init__(img=img, x=x, y=y)
         self.color = color
         self.damage = damage

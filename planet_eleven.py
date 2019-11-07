@@ -247,9 +247,9 @@ def building_spawn_unit(game_instance, building):
 
 
 class Building(pyglet.sprite.Sprite):
-    # __init__ == spawn()
-    def __init__(self, game_inst, our_img, enemy_img, x, y, hp, owner,
-                 vision_radius=3):
+    """__init__ == spawn()"""
+    def __init__(self, game_inst, owner, our_img, enemy_img, vision_radius,
+                 hp, x, y):
         self.owner = owner
         if owner == game_inst.this_player:
             our_buildings_list.append(self)
@@ -263,7 +263,6 @@ class Building(pyglet.sprite.Sprite):
         super().__init__(img=img, x=x, y=y, batch=buildings_batch)
         self.game_inst = game_inst
         self.hp = hp
-        print(self.width)
         if self.width / 32 % 2 == 1:
             d = self.width / POS_SPACE // 2 * POS_SPACE
             n = self.width // POS_SPACE
@@ -324,15 +323,19 @@ class Building(pyglet.sprite.Sprite):
 
 
 class Armory(Building):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, game_inst, x, y, owner=None):
+        if owner is None:
+            owner = game_inst.this_player
+        super().__init__(game_inst, owner, res.armory_img,
+                         res.armory_enemy_img, vision_radius=2, hp=100, x=x,
+                         y=y)
 
 
 class ProductionBuilding(Building):
-    def __init__(self, game_inst, our_img, enemy_img, x, y, hp, owner,
-                 vision_radius=3):
-        super().__init__(game_inst, our_img, enemy_img, x, y, hp, owner,
-                         vision_radius)
+    def __init__(self, game_inst, owner, our_img, enemy_img, vision_radius, hp,
+                 x, y):
+        super().__init__(game_inst, owner, our_img, enemy_img, vision_radius,
+                         hp, x, y)
         self.rp_x = x
         self.rp_y = y
         self.building_queue = []
@@ -343,7 +346,7 @@ class ProductionBuilding(Building):
 
 class BigBase(ProductionBuilding):
     def __init__(self, game_inst, x, y, owner=None):
-        if owner == None:
+        if owner is None:
             owner = game_inst.this_player
         super().__init__(game_inst, our_img=res.big_base_img,
                          enemy_img=res.big_base_enemy_img, x=x, y=y,
@@ -355,11 +358,12 @@ class BigBase(ProductionBuilding):
 
 
 class AttackingBuilding(Building):
-    def __init__(self, game_inst, our_img, enemy_img, x, y, hp, owner,
-                 damage, vision_radius, cooldown):
-        super().__init__(game_inst, our_img, enemy_img, x, y, hp, owner)
-        self.rotating_sprite = pyglet.sprite.Sprite(res.turret_img, x, y,
-                                                    batch=turret_batch)
+    def __init__(self, game_inst, owner, our_img, enemy_img, vision_radius, hp,
+                 x, y, damage, cooldown):
+        super().__init__(game_inst, owner, our_img, enemy_img, vision_radius,
+                         hp, x, y)
+        self.plasma_spt = pyglet.sprite.Sprite(res.plasma_anim, x, y,
+                                               batch=ground_units_batch)
         self.damage = damage
         self.shooting_radius = vision_radius * 32
         self.target_x = None
@@ -368,7 +372,7 @@ class AttackingBuilding(Building):
         self.on_cooldown = False
         self.cooldown_started = None
         shooting_buildings_list.append(self)
-        self.projectile_sprite = res.pj_img
+        self.projectile_sprite = res.laser_img
         self.projectile_speed = 10
         self.projectile_color = (255, 0, 0)
         self.has_target_p = False
@@ -386,8 +390,6 @@ class AttackingBuilding(Building):
                                 target_obj=self.target_p)
         x_diff = self.target_p.x - self.x
         y_diff = self.target_p.y - self.y
-        angle = -math.degrees(math.atan2(y_diff, x_diff)) + 90
-        self.rotating_sprite.rotation = angle
         self.on_cooldown = True
         self.cooldown_started = frame_count
         projectile_list.append(projectile)
@@ -402,7 +404,7 @@ class AttackingBuilding(Building):
             else:
                 del enemy_buildings_list[enemy_buildings_list.index(self)]
         del shooting_buildings_list[shooting_buildings_list.index(self)]
-        self.rotating_sprite.delete()
+        self.plasma_spt.delete()
         self.delete()
 
 
@@ -410,10 +412,9 @@ class Turret(AttackingBuilding):
     def __init__(self, game_inst, x, y, owner=None):
         if owner is None:
             owner = game_inst.this_player
-        super().__init__(game_inst, our_img=res.turret_base_img,
-                         enemy_img=res.turret_base_img, x=x, y=y,
-                         hp=100, owner=owner, damage=10, vision_radius=5,
-                         cooldown=60)
+        super().__init__(game_inst, owner=owner, our_img=res.turret_base_img,
+                         enemy_img=res.turret_base_img, vision_radius=5,
+                         hp=100, x=x, y=y, damage=10, cooldown=60)
 
 
 node_count = 0
@@ -948,7 +949,7 @@ class Pioneer(Unit):
                          attacks_ground=False, attacks_air=False,
                          shadow_sprite=res.pioneer_shadow_img,
                          ctrl_buttons=game_inst.basic_unit_c_bs +
-                                      [game_inst.base_b] +
+                                      [game_inst.armory_b] +
                                       [game_inst.turret_b] +
                                       [game_inst.big_base_b])
         workers_list.append(self)
@@ -958,13 +959,13 @@ class Pioneer(Unit):
         self.task_y = None
         self.is_gathering = False
 
-        s0 = pyglet.image.load('sprites/zap1.png')
-        s0.anchor_y = 8
-        s1 = pyglet.image.load('sprites/zap2.png')
+        s1 = pyglet.image.load('sprites/zap1.png')
         s1.anchor_y = 8
-        s2 = pyglet.image.load('sprites/zap3.png')
+        s2 = pyglet.image.load('sprites/zap2.png')
         s2.anchor_y = 8
-        sprites = [s0, s1, s2]
+        s3 = pyglet.image.load('sprites/zap3.png')
+        s3.anchor_y = 8
+        sprites = [s1, s2, s3]
         anim = pyglet.image.Animation.from_image_sequence(sprites, 0.1, True)
         self.zap_sprite = pyglet.sprite.Sprite(anim, self.x, self.y,
                                                batch=zap_batch)
@@ -977,9 +978,8 @@ class Pioneer(Unit):
         self.zap_sprite.visible = False
         self.dest_reached = True
         ground_pos_coords_dict[(self.x, self.y)] = self
-        if self.to_build == "BigBase":
-            pass
-            # Base(self.outer_instance, self.task_x, self.task_y)
+        if self.to_build == "armory":
+            Armory(self.outer_instance, self.task_x, self.task_y)
         elif self.to_build == "turret":
             Turret(self.outer_instance, self.task_x, self.task_y)
         self.to_build = None
@@ -996,7 +996,6 @@ class Pioneer(Unit):
         angle = math.atan2(diff_y, diff_x)  # Rad
         self.zap_sprite.rotation = -math.degrees(angle)
         self.zap_sprite.visible = True
-        self.mineral_to_gather.workers.append(self)
         self.cycle_started = self.outer_instance.frame_count
 
     def clear_task(self):
@@ -1054,8 +1053,8 @@ class PlanetEleven(pyglet.window.Window):
             y=SCREEN_H - 30)
 
         # Buttons
-        self.base_b = UI(self, res.base_img, CTRL_B_COORDS[3][0],
-                         CTRL_B_COORDS[3][1])
+        self.armory_b = UI(self, res.armory_img, CTRL_B_COORDS[3][0],
+                           CTRL_B_COORDS[3][1])
         self.turret_b = UI(self, res.turret_b_img, CTRL_B_COORDS[4][0],
                            CTRL_B_COORDS[4][1])
         self.big_base_b = UI(self, res.big_base_icon_img,
@@ -1099,9 +1098,9 @@ class PlanetEleven(pyglet.window.Window):
 
         self.basic_unit_c_bs = [self.move_b, self.stop_b, self.attack_b]
         self.c_bs_to_render = self.our_1st_base.ctrl_buttons
-        self.base_building_spt = pyglet.sprite.Sprite(img=res.base_img,
-                                                      x=-100, y=-100)
-        self.base_building_spt.color = (0, 255, 0)
+        self.armory_building_spt = pyglet.sprite.Sprite(img=res.armory_img,
+                                                        x=-100, y=-100)
+        self.armory_building_spt.color = (0, 255, 0)
         self.turret_building_spt = pyglet.sprite.Sprite(
             img=res.turret_b_img, x=-100, y=-100)
         self.turret_building_spt.color = (0, 255, 0)
@@ -1143,7 +1142,6 @@ class PlanetEleven(pyglet.window.Window):
         zap_batch.draw()
         buildings_batch.draw()
         ground_units_batch.draw()
-        turret_batch.draw()
         air_shadows_batch.draw()
         air_batch.draw()
         if selected:
@@ -1161,8 +1159,8 @@ class PlanetEleven(pyglet.window.Window):
         self.fow_texture.blit(-32, -32)
         utilities_batch.draw()
         if self.build_loc_sel_phase:
-            if self.to_build == "base":
-                self.base_building_spt.draw()
+            if self.to_build == "armory":
+                self.armory_building_spt.draw()
             elif self.to_build == "turret":
                 self.turret_building_spt.draw()
         self.cp_spt.draw()
@@ -1242,12 +1240,13 @@ class PlanetEleven(pyglet.window.Window):
             #                     if dist_2_min < dist_2_closest_min:
             #                         closest_min = mineral
             #                         dist_2_closest_min = dist_2_min
-            #                 worker.move((mineral.x, mineral.y))
+            #                 worker.move((closest_min.x, closest_min.y))
             #                 worker.clear_task()
             #                 print('go gather, lazy worker!')
-            #                 worker.mineral_to_gather = mineral
-            #                 worker.task_x = mineral.x
-            #                 worker.task_y = mineral.y
+            #                 worker.mineral_to_gather = closest_min
+            #                 worker.task_x = closest_min.x
+            #                 worker.task_y = closest_min.y
+            #                 closest_min.workers.append(worker)
             #     except IndexError:
             #         pass
 
@@ -1500,13 +1499,13 @@ class PlanetEleven(pyglet.window.Window):
                         # Rally point
                         if selected in our_buildings_list:
                             if ground_pos_coords_dict[x, y] != selected:
-                                selected.rally_point_x = x
-                                selected.rally_point_y = y
-                                selected.default_rally_point = False
+                                selected.rp_x = x
+                                selected.rp_y = y
+                                selected.default_rp = False
                                 self.rp_spt.x = x
                                 self.rp_spt.y = y
                             else:
-                                selected.default_rally_point = True
+                                selected.default_rp = True
                                 self.rp_spt.x = selected.x
                                 self.rp_spt.y = selected.y
                             print('Rally set to ({}, {})'.format(x, y))
@@ -1531,6 +1530,7 @@ class PlanetEleven(pyglet.window.Window):
                                         selected.mineral_to_gather = obj
                                         selected.task_x = obj.x
                                         selected.task_y = obj.y
+                                        obj.workers.append(selected)
                 # Minimap
                 elif MINIMAP_ZERO_COORDS[0] <= x <= MINIMAP_ZERO_COORDS[
                     0] + 100 and \
@@ -1622,13 +1622,13 @@ class PlanetEleven(pyglet.window.Window):
                         # Attack
                         # Build
                         if str(type(selected)) == "<class '__main__.Pioneer'>":
-                            if self.base_b.x - 16 <= x <= \
-                                    self.base_b.x + 16 and \
-                                    self.base_b.y - 16 <= y <= \
-                                    self.base_b.y + 16:
-                                self.base_building_spt.color = (0, 255, 0)
+                            if self.armory_b.x - 16 <= x <= \
+                                    self.armory_b.x + 16 and \
+                                    self.armory_b.y - 16 <= y <= \
+                                    self.armory_b.y + 16:
+                                self.armory_building_spt.color = (0, 255, 0)
                                 self.build_loc_sel_phase = True
-                                self.to_build = "base"
+                                self.to_build = "armory"
                             elif self.turret_b.x - 16 <= x <= \
                                     self.turret_b.x + 16 and \
                                     self.turret_b.y - 16 <= y <= \
@@ -1662,18 +1662,18 @@ class PlanetEleven(pyglet.window.Window):
                     x /= 2
                     y /= 2
                 x, y = round_coords(x, y)
-                if self.to_build == "base":
-                    self.base_building_spt.x = x + left_view_border
-                    self.base_building_spt.y = y + bottom_view_border
+                if self.to_build == "armory":
+                    self.armory_building_spt.x = x + left_view_border
+                    self.armory_building_spt.y = y + bottom_view_border
                     x, y = mc(x=x, y=y)
                     x = int((x - 16) / 32) + 1
                     y = int((y - 16) / 32) + 1
-                    if ground_pos_coords_dict[self.base_building_spt.x,
-                                              self.base_building_spt.y] or \
+                    if ground_pos_coords_dict[self.armory_building_spt.x,
+                                              self.armory_building_spt.y] or \
                             self.npa[y, x, 3] != 0:
-                        self.base_building_spt.color = (255, 0, 0)
+                        self.armory_building_spt.color = (255, 0, 0)
                     else:
-                        self.base_building_spt.color = (0, 255, 0)
+                        self.armory_building_spt.color = (0, 255, 0)
                 elif self.to_build == "turret":
                     self.turret_building_spt.x = x + left_view_border
                     self.turret_building_spt.y = y + bottom_view_border

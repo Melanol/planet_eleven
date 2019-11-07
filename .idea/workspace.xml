@@ -5,28 +5,16 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/constants_and_utilities.py" beforeDir="false" afterPath="$PROJECT_DIR$/constants_and_utilities.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/planet_eleven.py" beforeDir="false" afterPath="$PROJECT_DIR$/planet_eleven.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/projectile.py" beforeDir="false" afterPath="$PROJECT_DIR$/projectile.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources.py" beforeDir="false" afterPath="$PROJECT_DIR$/resources.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/building_shadow32.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/building_shadow32.psd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/building_shadow64.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/building_shadow64.psd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/control_panel.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/cp.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/control_panel.psd" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/cp.psd" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/control_panel_buttons_background.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/cp_b_bg.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/control_panel_buttons_background.psd" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/cp_b_bg.psd" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/control_panel_filler.psd" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/cp_filler.psd" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/minimap_black_background.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/mm_black_bg.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/minimap_cam_frame.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/mm_cam_frame.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/minimap_enemy.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/mm_enemy.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/minimap_fow.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/mm_fow.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/minimap_our.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/mm_our.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/minimap_textured_background.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/mm_textured_bg.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/rally_point.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/rp.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/selected_frame.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/sel_frame.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/selected_frame.psd" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/sel_frame.psd" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/selection.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/sel.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/selection_big.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/sel_big.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/turret_button.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/turret_b.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/base.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/armory.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/base.psd" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/armory.psd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/enemy_base.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/plasma.psd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/turret.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/turret.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/turret.psd" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/turret.psd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/turret_base.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/turret_base.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/todo.txt" beforeDir="false" afterPath="$PROJECT_DIR$/todo.txt" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -156,13 +144,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1566740526093</updated>
-    </task>
-    <task id="LOCAL-00125" summary="Default rally point">
-      <created>1571430123630</created>
-      <option name="number" value="00125" />
-      <option name="presentableId" value="LOCAL-00125" />
-      <option name="project" value="LOCAL" />
-      <updated>1571430123630</updated>
     </task>
     <task id="LOCAL-00126" summary="Basic resource gathering">
       <created>1571691432073</created>
@@ -500,7 +481,14 @@
       <option name="project" value="LOCAL" />
       <updated>1573102427469</updated>
     </task>
-    <option name="localTasksCounter" value="174" />
+    <task id="LOCAL-00174" summary="Pioneer init bug fixed">
+      <created>1573109084131</created>
+      <option name="number" value="00174" />
+      <option name="presentableId" value="LOCAL-00174" />
+      <option name="project" value="LOCAL" />
+      <updated>1573109084131</updated>
+    </task>
+    <option name="localTasksCounter" value="175" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -545,7 +533,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$" />
     </ignored-roots>
-    <MESSAGE value="Path-finding works" />
     <MESSAGE value="Minor path-finding modifications" />
     <MESSAGE value="Added a lot of files to VCS" />
     <MESSAGE value="Path-finding bug fixes" />
@@ -570,7 +557,8 @@
     <MESSAGE value="Control buttons hide for selected enemy units" />
     <MESSAGE value="Selection sprite is not dragging behind" />
     <MESSAGE value="Mass renaming" />
-    <option name="LAST_COMMIT_MESSAGE" value="Mass renaming" />
+    <MESSAGE value="Pioneer init bug fixed" />
+    <option name="LAST_COMMIT_MESSAGE" value="Pioneer init bug fixed" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
