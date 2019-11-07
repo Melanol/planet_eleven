@@ -49,7 +49,7 @@ for _ in range(fully_visible_height):
     arr.append(row)
 arr.append(non_transparent_row)
 image = png.from_array(arr, mode='LA')
-image.save('sprites/minimap_cam_frame.png')
+image.save('sprites/mm_cam_frame.png')
 
 DISTANCE_PER_JUMP = (2 * POS_SPACE ** 2) ** 0.5
 

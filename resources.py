@@ -45,43 +45,43 @@ move_cursor = pyglet.window.ImageMouseCursor(pyglet.image.load(
 
 terrain_img = pyglet.resource.image("terrain.png")
 
-sel_img = pyglet.resource.image("selection.png")
+sel_img = pyglet.resource.image("sel.png")
 center_anchor(sel_img)
 
-sel_big_img = pyglet.resource.image("selection_big.png")
+sel_big_img = pyglet.resource.image("sel_big.png")
 center_anchor(sel_big_img)
 
-rp_img = pyglet.resource.image("rally_point.png")
+rp_img = pyglet.resource.image("rp.png")
 center_anchor(rp_img)
 
-cp_img = pyglet.resource.image("control_panel.png")
+cp_img = pyglet.resource.image("cp.png")
 right_bottom_anchor(cp_img)
 
 cp_buttons_bg_img = pyglet.resource.image(
-    "control_panel_buttons_background.png")
+    "cp_b_bg.png")
 center_anchor(cp_buttons_bg_img)
 
 menu_img = pyglet.resource.image("menu.png")
 center_anchor(menu_img)
 
-sel_frame_img = pyglet.resource.image("selected_frame.png")
+sel_frame_img = pyglet.resource.image("sel_frame.png")
 center_anchor(sel_frame_img)
 
 mm_black_bg_img = pyglet.resource.image(
-    "minimap_black_background.png")
+    "mm_black_bg.png")
 
 mm_textured_bg_img = pyglet.resource.image(
-    "minimap_textured_background.png")
+    "mm_textured_bg.png")
 
 utility_dot_img = pyglet.resource.image("utility_dot.png")
 center_anchor(utility_dot_img)
 
-mm_cam_frame_img = pyglet.resource.image("minimap_cam_frame.png")
+mm_cam_frame_img = pyglet.resource.image("mm_cam_frame.png")
 
-mm_our_img = pyglet.resource.image("minimap_our.png")
+mm_our_img = pyglet.resource.image("mm_our.png")
 center_anchor(mm_our_img)
 
-mm_enemy_img = pyglet.resource.image("minimap_enemy.png")
+mm_enemy_img = pyglet.resource.image("mm_enemy.png")
 center_anchor(mm_enemy_img)
 
 # Controls
@@ -108,7 +108,7 @@ center_anchor(base_img)
 enemy_base_img = pyglet.resource.image("enemy_base.png")
 center_anchor(enemy_base_img)
 
-turret_b_img = pyglet.resource.image("turret_button.png")
+turret_b_img = pyglet.resource.image("turret_b.png")
 center_anchor(turret_b_img)
 turret_img = pyglet.resource.image("turret.png")
 center_anchor(turret_img)
