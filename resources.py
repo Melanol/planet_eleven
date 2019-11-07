@@ -43,120 +43,120 @@ cursor_fullscreen = pyglet.window.ImageMouseCursor(pyglet.image.load(
 move_cursor = pyglet.window.ImageMouseCursor(pyglet.image.load(
     'sprites/move_cursor.png'), 0, 16)
 
-background_image = pyglet.resource.image("background.png")
+terrain_img = pyglet.resource.image("terrain.png")
 
-selection_image = pyglet.resource.image("selection.png")
-center_anchor(selection_image)
+sel_img = pyglet.resource.image("selection.png")
+center_anchor(sel_img)
 
-selection_big_image = pyglet.resource.image("selection_big.png")
-center_anchor(selection_big_image)
+sel_big_img = pyglet.resource.image("selection_big.png")
+center_anchor(sel_big_img)
 
-rally_point_image = pyglet.resource.image("rally_point.png")
-center_anchor(rally_point_image)
+rp_img = pyglet.resource.image("rally_point.png")
+center_anchor(rp_img)
 
-control_panel_image = pyglet.resource.image("control_panel.png")
-right_bottom_anchor(control_panel_image)
+cp_img = pyglet.resource.image("control_panel.png")
+right_bottom_anchor(cp_img)
 
-control_panel_buttons_background_image = pyglet.resource.image(
+cp_buttons_bg_img = pyglet.resource.image(
     "control_panel_buttons_background.png")
-center_anchor(control_panel_buttons_background_image)
+center_anchor(cp_buttons_bg_img)
 
-menu_image = pyglet.resource.image("menu.png")
-center_anchor(menu_image)
+menu_img = pyglet.resource.image("menu.png")
+center_anchor(menu_img)
 
-selected_frame_image = pyglet.resource.image("selected_frame.png")
-center_anchor(selected_frame_image)
+sel_frame_img = pyglet.resource.image("selected_frame.png")
+center_anchor(sel_frame_img)
 
-minimap_black_background_image = pyglet.resource.image(
+mm_black_bg_img = pyglet.resource.image(
     "minimap_black_background.png")
 
-minimap_textured_background_image = pyglet.resource.image(
+mm_textured_bg_img = pyglet.resource.image(
     "minimap_textured_background.png")
 
-utility_dot_image = pyglet.resource.image("utility_dot.png")
-center_anchor(utility_dot_image)
+utility_dot_img = pyglet.resource.image("utility_dot.png")
+center_anchor(utility_dot_img)
 
-minimap_cam_frame_image = pyglet.resource.image("minimap_cam_frame.png")
+mm_cam_frame_img = pyglet.resource.image("minimap_cam_frame.png")
 
-minimap_our_image = pyglet.resource.image("minimap_our.png")
-center_anchor(minimap_our_image)
+mm_our_img = pyglet.resource.image("minimap_our.png")
+center_anchor(mm_our_img)
 
-minimap_enemy_image = pyglet.resource.image("minimap_enemy.png")
-center_anchor(minimap_enemy_image)
+mm_enemy_img = pyglet.resource.image("minimap_enemy.png")
+center_anchor(mm_enemy_img)
 
 # Controls
-move_image = pyglet.resource.image("move.png")
-center_anchor(move_image)
+move_img = pyglet.resource.image("move.png")
+center_anchor(move_img)
 
-stop_image = pyglet.resource.image("stop.png")
-center_anchor(stop_image)
+stop_img = pyglet.resource.image("stop.png")
+center_anchor(stop_img)
 
-attack_image = pyglet.resource.image("attack.png")
-center_anchor(attack_image)
+attack_img = pyglet.resource.image("attack.png")
+center_anchor(attack_img)
 
-big_base_icon_image = pyglet.resource.image("big_base_icon.png")
-center_anchor(big_base_icon_image)
+big_base_icon_img = pyglet.resource.image("big_base_icon.png")
+center_anchor(big_base_icon_img)
 
 # Resources
 mineral = pyglet.resource.image("mineral.png")
 center_anchor(mineral)
 
 # Buildings
-base_image = pyglet.resource.image("base.png")
-center_anchor(base_image)
+base_img = pyglet.resource.image("base.png")
+center_anchor(base_img)
 
-enemy_base_image = pyglet.resource.image("enemy_base.png")
-center_anchor(enemy_base_image)
+enemy_base_img = pyglet.resource.image("enemy_base.png")
+center_anchor(enemy_base_img)
 
-turret_button_image = pyglet.resource.image("turret_button.png")
-center_anchor(turret_button_image)
-turret_image = pyglet.resource.image("turret.png")
-center_anchor(turret_image)
+turret_b_img = pyglet.resource.image("turret_button.png")
+center_anchor(turret_b_img)
+turret_img = pyglet.resource.image("turret.png")
+center_anchor(turret_img)
 
-turret_base_image = pyglet.resource.image("turret_base.png")
-center_anchor(turret_base_image)
+turret_base_img = pyglet.resource.image("turret_base.png")
+center_anchor(turret_base_img)
 
-big_base_image = pyglet.resource.image("big_base.png")
-center_anchor(big_base_image)
-big_base_enemy_image = pyglet.resource.image("big_base_enemy.png")
-center_anchor(big_base_enemy_image)
+big_base_img = pyglet.resource.image("big_base.png")
+center_anchor(big_base_img)
+big_base_enemy_img = pyglet.resource.image("big_base_enemy.png")
+center_anchor(big_base_enemy_img)
 
 # Units
-defiler_image = pyglet.resource.image("defiler.png")
-center_anchor(defiler_image)
-defiler_enemy_image = pyglet.resource.image("defiler_enemy.png")
-center_anchor(defiler_enemy_image)
-defiler_shadow_image = pyglet.resource.image("defiler_shadow.png")
-center_anchor(defiler_shadow_image)
+defiler_img = pyglet.resource.image("defiler.png")
+center_anchor(defiler_img)
+defiler_enemy_img = pyglet.resource.image("defiler_enemy.png")
+center_anchor(defiler_enemy_img)
+defiler_shadow_img = pyglet.resource.image("defiler_shadow.png")
+center_anchor(defiler_shadow_img)
 
-centurion_image = pyglet.resource.image("centurion.png")
-center_anchor(centurion_image)
-centurion_enemy_image = pyglet.resource.image("centurion_enemy.png")
-center_anchor(centurion_enemy_image)
-centurion_shadow_image = pyglet.resource.image("centurion_shadow.png")
-center_anchor(centurion_shadow_image)
+centurion_img = pyglet.resource.image("centurion.png")
+center_anchor(centurion_img)
+centurion_enemy_img = pyglet.resource.image("centurion_enemy.png")
+center_anchor(centurion_enemy_img)
+centurion_shadow_img = pyglet.resource.image("centurion_shadow.png")
+center_anchor(centurion_shadow_img)
 
-vulture_image = pyglet.resource.image("vulture.png")
-center_anchor(vulture_image)
-vulture_enemy_image = pyglet.resource.image("vulture_enemy.png")
-center_anchor(vulture_enemy_image)
-vulture_shadow_image = pyglet.resource.image("vulture_shadow.png")
-center_anchor(vulture_shadow_image)
+vulture_img = pyglet.resource.image("vulture.png")
+center_anchor(vulture_img)
+vulture_enemy_img = pyglet.resource.image("vulture_enemy.png")
+center_anchor(vulture_enemy_img)
+vulture_shadow_img = pyglet.resource.image("vulture_shadow.png")
+center_anchor(vulture_shadow_img)
 
-pioneer_image = pyglet.resource.image("pioneer.png")
-center_anchor(pioneer_image)
-pioneer_enemy_image = pyglet.resource.image("pioneer_enemy.png")
-center_anchor(pioneer_enemy_image)
-pioneer_shadow_image = pyglet.resource.image("pioneer_shadow.png")
-center_anchor(pioneer_shadow_image)
+pioneer_img = pyglet.resource.image("pioneer.png")
+center_anchor(pioneer_img)
+pioneer_enemy_img = pyglet.resource.image("pioneer_enemy.png")
+center_anchor(pioneer_enemy_img)
+pioneer_shadow_img = pyglet.resource.image("pioneer_shadow.png")
+center_anchor(pioneer_shadow_img)
 
-apocalypse_image = pyglet.resource.image("apocalypse.png")
-center_anchor(apocalypse_image)
-apocalypse_enemy_image = pyglet.resource.image("apocalypse_enemy.png")
-center_anchor(apocalypse_enemy_image)
-apocalypse_shadow_image = pyglet.resource.image("apocalypse_shadow.png")
-center_anchor(apocalypse_shadow_image)
+apocalypse_img = pyglet.resource.image("apocalypse.png")
+center_anchor(apocalypse_img)
+apocalypse_enemy_img = pyglet.resource.image("apocalypse_enemy.png")
+center_anchor(apocalypse_enemy_img)
+apocalypse_shadow_img = pyglet.resource.image("apocalypse_shadow.png")
+center_anchor(apocalypse_shadow_img)
 
 # Other
-projectile_image = pyglet.resource.image("laser.png")
-center_anchor(projectile_image)
+pj_img = pyglet.resource.image("laser.png")
+center_anchor(pj_img)

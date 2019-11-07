@@ -123,11 +123,12 @@ class Point:
         self.y = y
 
 
-class Button(pyglet.sprite.Sprite):
-    def __init__(self, img, x, y):
+class UI(pyglet.sprite.Sprite):
+    def __init__(self, game_inst, img, x, y):
         super().__init__(img, x, y)
         self.org_x = x
         self.org_y = y
+        game_inst.ui.append(self)
 
 
 class Mineral(pyglet.sprite.Sprite):
@@ -152,7 +153,7 @@ def order(game_instance, building, unit):
     owner = building.owner
     if owner.mineral_count - unit.cost >= 0:
         owner.mineral_count -= unit.cost
-        game_instance.mineral_count_label.text = str(
+        game_instance.min_count_label.text = str(
             int(game_instance.this_player.mineral_count))
         building.building_queue.append(unit)
         if len(building.building_queue) == 1:
@@ -252,12 +253,12 @@ class Building(pyglet.sprite.Sprite):
         if owner == game_instance.this_player:
             our_buildings_list.append(self)
             img = our_img
-            minimap_pixel = res.minimap_our_image
+            minimap_pixel = res.mm_our_img
             game_instance.update_fow(x=x, y=y, radius=vision_radius)
         else:
             enemy_buildings_list.append(self)
             img = enemy_img
-            minimap_pixel = res.minimap_enemy_image
+            minimap_pixel = res.mm_enemy_img
         super().__init__(img=img, x=x, y=y, batch=buildings_batch)
         self.outer_instance = game_instance
         self.hp = hp
@@ -331,8 +332,8 @@ class ProductionBuilding(Building):
                  vision_radius=3):
         super().__init__(game_instance, our_img, enemy_img, x, y, hp, owner,
                          vision_radius)
-        self.rally_point_x = x
-        self.rally_point_y = y
+        self.rp_x = x
+        self.rp_y = y
         self.building_queue = []
         self.current_building_time = None
         self.building_complete = True
@@ -343,14 +344,14 @@ class BigBase(ProductionBuilding):
     def __init__(self, game_instance, x, y, owner=None):
         if owner == None:
             owner = game_instance.this_player
-        super().__init__(game_instance, our_img=res.big_base_image,
-                         enemy_img=res.big_base_enemy_image, x=x, y=y,
+        super().__init__(game_instance, our_img=res.big_base_img,
+                         enemy_img=res.big_base_enemy_img, x=x, y=y,
                          hp=100, owner=owner, vision_radius=4)
-        self.control_buttons = [game_instance.defiler_button,
-                                game_instance.centurion_button,
-                                game_instance.vulture_button,
-                                game_instance.apocalypse_button,
-                                game_instance.pioneer_button]
+        self.c_bs = [game_instance.defiler_button,
+                     game_instance.centurion_button,
+                     game_instance.vulture_button,
+                     game_instance.apocalypse_button,
+                     game_instance.pioneer_button]
         self.is_big = True
 
 
@@ -358,7 +359,7 @@ class AttackingBuilding(Building):
     def __init__(self, game_instance, our_img, enemy_img, x, y, hp, owner,
                  damage, vision_radius, cooldown):
         super().__init__(game_instance, our_img, enemy_img, x, y, hp, owner)
-        self.rotating_sprite = pyglet.sprite.Sprite(res.turret_image, x, y,
+        self.rotating_sprite = pyglet.sprite.Sprite(res.turret_img, x, y,
                                                     batch=turret_batch)
         self.damage = damage
         self.shooting_radius = vision_radius * 32
@@ -368,7 +369,7 @@ class AttackingBuilding(Building):
         self.on_cooldown = False
         self.cooldown_started = None
         shooting_buildings_list.append(self)
-        self.projectile_sprite = res.projectile_image
+        self.projectile_sprite = res.pj_img
         self.projectile_speed = 10
         self.projectile_color = (255, 0, 0)
         self.has_target_p = False
@@ -410,8 +411,8 @@ class Turret(AttackingBuilding):
     def __init__(self, game_instance, x, y, owner=None):
         if owner is None:
             owner = game_instance.this_player
-        super().__init__(game_instance, our_img=res.turret_base_image,
-                         enemy_img=res.turret_base_image, x=x, y=y,
+        super().__init__(game_instance, our_img=res.turret_base_img,
+                         enemy_img=res.turret_base_img, x=x, y=y,
                          hp=100, owner=owner, damage=10, vision_radius=5,
                          cooldown=60)
 
@@ -693,10 +694,10 @@ class Unit(pyglet.sprite.Sprite):
         # Minimap pixel and fow
         pixel_minimap_coords = to_minimap(self.x, self.y)
         if self.owner.name == 'player1':
-            pixel = res.minimap_our_image
+            pixel = res.mm_our_img
             self.outer_instance.update_fow(self.x, self.y, self.vision_radius)
         else:
-            pixel = res.minimap_enemy_image
+            pixel = res.mm_enemy_img
         self.pixel = pyglet.sprite.Sprite(img=pixel, x=pixel_minimap_coords[0],
                                           y=pixel_minimap_coords[1],
                                           batch=minimap_pixels_batch)
@@ -878,12 +879,12 @@ class Defiler(Unit):
     def __init__(self, game_inst, x, y, owner=None):
         if owner is None:
             owner = game_inst.this_player
-        super().__init__(game_inst, owner, res.defiler_image,
-                         res.defiler_enemy_image, flying=True, vision_radius=6,
-                         hp=100, x=x, y=y, speed=6, has_weapon=True, damage=10,
+        super().__init__(game_inst, owner, res.defiler_img,
+                         res.defiler_enemy_img, flying=True, vision_radius=6,
+                         hp=70, x=x, y=y, speed=6, has_weapon=True, damage=10,
                          cooldown=60, attacks_ground=True, attacks_air=True,
-                         shadow_sprite=res.defiler_shadow_image,
-                         ctrl_buttons=game_inst.basic_unit_control_buttons)
+                         shadow_sprite=res.defiler_shadow_img,
+                         ctrl_buttons=game_inst.basic_unit_c_bs)
 
 
 class Centurion(Unit):
@@ -893,13 +894,13 @@ class Centurion(Unit):
     def __init__(self, game_inst, x, y, owner=None):
         if owner is None:
             owner = game_inst.this_player
-        super().__init__(game_inst, owner, res.centurion_image,
-                         res.centurion_enemy_image, flying=False,
+        super().__init__(game_inst, owner, res.centurion_img,
+                         res.centurion_enemy_img, flying=False,
                          vision_radius=6, hp=100, x=x, y=y, speed=1,
                          has_weapon=True, damage=10, cooldown=120,
                          attacks_ground=True, attacks_air=False,
-                         shadow_sprite=res.centurion_shadow_image,
-                         ctrl_buttons=game_inst.basic_unit_control_buttons)
+                         shadow_sprite=res.centurion_shadow_img,
+                         ctrl_buttons=game_inst.basic_unit_c_bs)
 
 
 class Vulture(Unit):
@@ -909,13 +910,13 @@ class Vulture(Unit):
     def __init__(self, game_inst, x, y, owner=None):
         if owner is None:
             owner = game_inst.this_player
-        super().__init__(game_inst, owner, res.vulture_image,
-                         res.vulture_enemy_image, flying=False,
-                         vision_radius=3, hp=50, x=x, y=y, speed=7,
+        super().__init__(game_inst, owner, res.vulture_img,
+                         res.vulture_enemy_img, flying=False,
+                         vision_radius=3, hp=25, x=x, y=y, speed=7,
                          has_weapon=True, damage=5, cooldown=60,
                          attacks_ground=True, attacks_air=False,
-                         shadow_sprite=res.vulture_shadow_image,
-                         ctrl_buttons=game_inst.basic_unit_control_buttons)
+                         shadow_sprite=res.vulture_shadow_img,
+                         ctrl_buttons=game_inst.basic_unit_c_bs)
 
 
 class Apocalypse(Unit):
@@ -925,13 +926,13 @@ class Apocalypse(Unit):
     def __init__(self, game_inst, x, y, owner=None):
         if owner is None:
             owner = game_inst.this_player
-        super().__init__(game_inst, owner, res.apocalypse_image,
-                         res.apocalypse_enemy_image, flying=True,
+        super().__init__(game_inst, owner, res.apocalypse_img,
+                         res.apocalypse_enemy_img, flying=True,
                          vision_radius=6, hp=100, x=x, y=y, speed=4,
                          has_weapon=True, damage=30, cooldown=120,
                          attacks_ground=True, attacks_air=False,
-                         shadow_sprite=res.apocalypse_shadow_image,
-                         ctrl_buttons=game_inst.basic_unit_control_buttons)
+                         shadow_sprite=res.apocalypse_shadow_img,
+                         ctrl_buttons=game_inst.basic_unit_c_bs)
 
 
 class Pioneer(Unit):
@@ -941,16 +942,16 @@ class Pioneer(Unit):
     def __init__(self, game_inst, x, y, owner=None):
         if owner is None:
             owner = game_inst.this_player
-        super().__init__(game_inst, owner, res.pioneer_image,
-                         res.pioneer_enemy_image, flying=False,
+        super().__init__(game_inst, owner, res.pioneer_img,
+                         res.pioneer_enemy_img, flying=False,
                          vision_radius=2, hp=10, x=x, y=y, speed=4,
                          has_weapon=False, damage=0, cooldown=0,
                          attacks_ground=False, attacks_air=False,
-                         shadow_sprite=res.pioneer_shadow_image,
-                         ctrl_buttons=game_inst.basic_unit_control_buttons + [
-                             game_inst.base_button] + [
-                                          game_inst.turret_button] + [
-                                          game_inst.big_base_button])
+                         shadow_sprite=res.pioneer_shadow_img,
+                         ctrl_buttons=game_inst.basic_unit_c_bs + \
+                                      [game_inst.base_b] + \
+                                      [game_inst.turret_b] + \
+                                      [game_inst.big_base_b])
         workers_list.append(self)
         self.to_build = None
         self.mineral_to_gather = None
@@ -1018,34 +1019,7 @@ class PlanetEleven(pyglet.window.Window):
         self.set_mouse_cursor(res.cursor)
         self.show_fps = True
         self.fps_display = pyglet.window.FPSDisplay(window=self)
-
-    def clear_level(self):
-        global our_units_list, our_buildings_list, enemy_buildings_list, \
-            projectile_list, left_view_border, bottom_view_border, \
-            minimap_fow_x, minimap_fow_y
-        for unit in our_units_list:
-            unit.kill(delay_del=True)
-        for building in our_buildings_list:
-            building.kill(delay_del=True)
-        for enemy_building in enemy_buildings_list:
-            enemy_building.kill(delay_del=True)
-        for projectile in projectile_list:
-            projectile.delete()
-
-        our_units_list = []
-        our_buildings_list = []
-        enemy_buildings_list = []
-        projectile_list = []
-        left_view_border = 0
-        bottom_view_border = 0
-        gen_pos_coords()
-        minimap_fow_x, minimap_fow_y = MINIMAP_ZERO_COORDS[0] - 1, \
-                                       MINIMAP_ZERO_COORDS[1] - 1
-
-    def reset(self):
-        self.clear_level()
-        self.setup()
-        print('reset')
+        self.ui = []
 
     def setup(self):
         global selected
@@ -1057,75 +1031,52 @@ class PlanetEleven(pyglet.window.Window):
         self.dx = 0
         self.dy = 0
         self.minimap_drugging = False
-        self.building_location_selection_phase = False
+        self.build_loc_sel_phase = False
 
-        self.background = pyglet.sprite.Sprite(img=res.background_image, x=0,
-                                               y=0)
-        self.control_panel_sprite = pyglet.sprite.Sprite(
-            img=res.control_panel_image, x=SCREEN_WIDTH, y=0)
-        self.menu_button = pyglet.sprite.Sprite(img=res.menu_image, x=center_x,
-                                                y=SCREEN_HEIGHT - 30)
-        self.selected_frame_cp = pyglet.sprite.Sprite(
-            img=res.selected_frame_image, x=center_x, y=SCREEN_HEIGHT - 90)
-        self.control_panel_buttons_background = pyglet.sprite.Sprite(
-            img=res.control_panel_buttons_background_image,
-            x=center_x, y=center_y)
-        self.minimap_textured_background = pyglet.sprite.Sprite(
-            img=res.minimap_textured_background_image,
-            x=MINIMAP_ZERO_COORDS[0], y=MINIMAP_ZERO_COORDS[1])
-        self.minimap_cam_frame_sprite = pyglet.sprite.Sprite(
-            img=res.minimap_cam_frame_image,
-            x=MINIMAP_ZERO_COORDS[0] - 1,
-            y=MINIMAP_ZERO_COORDS[1] - 1)
-        self.minimap_fow_image = pyglet.image.load('sprites/minimap_fow.png')
-        self.minimap_fow_ImageData = self.minimap_fow_image.get_image_data()
-        self.npa = np.fromstring(self.minimap_fow_ImageData.get_data(
-            'RGBA', self.minimap_fow_ImageData.width * 4), dtype=np.uint8)
+        self.terrain = pyglet.sprite.Sprite(img=res.terrain_img, x=0, y=0)
+        self.cp_spt = UI(self, res.cp_img, SCREEN_W, 0)
+        self.menu_b = UI(self, res.menu_img, cp_c_x, SCREEN_H - 30)
+        self.sel_frame_cp = UI(self, res.sel_frame_img, cp_c_x,
+                               SCREEN_H - 90)
+        self.cp_b_bg = UI(self, res.cp_buttons_bg_img, cp_c_x, cp_c_y)
+        self.mm_textured_bg = UI(self, res.mm_textured_bg_img,
+                                 MINIMAP_ZERO_COORDS[0],
+                                 MINIMAP_ZERO_COORDS[1])
+        self.mm_cam_frame_spt = UI(self, res.mm_cam_frame_img,
+                                   MINIMAP_ZERO_COORDS[0] - 1,
+                                   MINIMAP_ZERO_COORDS[1] - 1)
+        self.mm_fow_img = pyglet.image.load('sprites/minimap_fow.png')
+        self.mm_fow_ImageData = self.mm_fow_img.get_image_data()
+        self.npa = np.fromstring(self.mm_fow_ImageData.get_data(
+            'RGBA', self.mm_fow_ImageData.width * 4), dtype=np.uint8)
         self.npa = self.npa.reshape((102, 102, 4))
-        self.mineral_count_label = pyglet.text.Label(
-            str(self.this_player.mineral_count), x=SCREEN_WIDTH - 200,
-            y=SCREEN_HEIGHT - 30)
+        self.min_count_label = pyglet.text.Label(
+            str(self.this_player.mineral_count), x=SCREEN_W - 200,
+            y=SCREEN_H - 30)
 
         # Buttons
-        self.base_button = Button(img=res.base_image,
-                                  x=CONTROL_BUTTONS_COORDS[3][0],
-                                  y=CONTROL_BUTTONS_COORDS[3][1])
-        self.turret_button = Button(img=res.turret_button_image,
-                                    x=CONTROL_BUTTONS_COORDS[4][0],
-                                    y=CONTROL_BUTTONS_COORDS[4][1])
-        self.big_base_button = Button(img=res.big_base_icon_image,
-                                      x=CONTROL_BUTTONS_COORDS[5][0],
-                                      y=CONTROL_BUTTONS_COORDS[5][1])
-        self.move_button = Button(img=res.move_image,
-                                  x=CONTROL_BUTTONS_COORDS[0][0],
-                                  y=CONTROL_BUTTONS_COORDS[0][1])
-        self.stop_button = Button(img=res.stop_image,
-                                  x=CONTROL_BUTTONS_COORDS[1][0],
-                                  y=CONTROL_BUTTONS_COORDS[1][1])
-        self.attack_button = Button(img=res.attack_image,
-                                    x=CONTROL_BUTTONS_COORDS[2][0],
-                                    y=CONTROL_BUTTONS_COORDS[2][1])
-        self.defiler_button = Button(img=res.defiler_image,
-                                     x=CONTROL_BUTTONS_COORDS[0][0],
-                                     y=CONTROL_BUTTONS_COORDS[0][1])
-        self.centurion_button = Button(img=res.centurion_image,
-                                       x=CONTROL_BUTTONS_COORDS[1][0],
-                                       y=CONTROL_BUTTONS_COORDS[1][1])
-        self.vulture_button = Button(img=res.vulture_image,
-                                     x=CONTROL_BUTTONS_COORDS[2][0],
-                                     y=CONTROL_BUTTONS_COORDS[2][1])
-        self.apocalypse_button = Button(img=res.apocalypse_image,
-                                        x=CONTROL_BUTTONS_COORDS[3][0],
-                                        y=CONTROL_BUTTONS_COORDS[3][1])
-        self.pioneer_button = Button(img=res.pioneer_image,
-                                     x=CONTROL_BUTTONS_COORDS[4][0],
-                                     y=CONTROL_BUTTONS_COORDS[4][1])
-        self.buttons = [self.base_button, self.turret_button,
-                        self.big_base_button, self.move_button,
-                        self.stop_button,
-                        self.attack_button, self.defiler_button,
-                        self.centurion_button, self.vulture_button,
-                        self.apocalypse_button, self.pioneer_button]
+        self.base_button = UI(self, res.base_img, CTRL_B_COORDS[3][0],
+                              CTRL_B_COORDS[3][1])
+        self.turret_button = UI(self, res.turret_b_img, CTRL_B_COORDS[4][0],
+                                CTRL_B_COORDS[4][1])
+        self.big_base_button = UI(self, res.big_base_icon_img,
+                                  CTRL_B_COORDS[5][0], CTRL_B_COORDS[5][1])
+        self.move_b = UI(self, res.move_img, CTRL_B_COORDS[0][0],
+                         CTRL_B_COORDS[0][1])
+        self.stop_b = UI(self, res.stop_img, CTRL_B_COORDS[1][0],
+                         CTRL_B_COORDS[1][1])
+        self.attack_b = UI(self, res.attack_img, CTRL_B_COORDS[2][0],
+                           CTRL_B_COORDS[2][1])
+        self.defiler_button = UI(self, res.defiler_img, CTRL_B_COORDS[0][0],
+                                 CTRL_B_COORDS[0][1])
+        self.centurion_button = UI(self, res.centurion_img,
+                                   CTRL_B_COORDS[1][0], CTRL_B_COORDS[1][1])
+        self.vulture_button = UI(self, res.vulture_img, CTRL_B_COORDS[2][0],
+                                 CTRL_B_COORDS[2][1])
+        self.apocalypse_button = UI(self, res.apocalypse_img,
+                                    CTRL_B_COORDS[3][0], CTRL_B_COORDS[3][1])
+        self.pioneer_button = UI(self, res.pioneer_img, CTRL_B_COORDS[4][0],
+                                 CTRL_B_COORDS[4][1])
 
         # Spawn buildings and minerals
         Mineral(self, POS_SPACE / 2 + POS_SPACE * 4,
@@ -1137,25 +1088,24 @@ class PlanetEleven(pyglet.window.Window):
         BigBase(self, POS_SPACE * 5, POS_SPACE * 6, owner=self.computer)
         BigBase(self, POS_SPACE * 13, POS_SPACE * 13, owner=self.computer)
 
-        self.selection_sprite = pyglet.sprite.Sprite(img=res.selection_image,
-                                                     x=self.our_1st_base.x,
-                                                     y=self.our_1st_base.y)
-        self.selection_big_sprite = pyglet.sprite.Sprite(
-            img=res.selection_big_image, x=self.our_1st_base.x,
-            y=self.our_1st_base.y)
-        self.rally_point_sprite = pyglet.sprite.Sprite(
-            img=res.rally_point_image, x=self.our_1st_base.rally_point_x,
-            y=self.our_1st_base.rally_point_y)
+        self.sel_spt = pyglet.sprite.Sprite(img=res.sel_img,
+                                            x=self.our_1st_base.x,
+                                            y=self.our_1st_base.y)
+        self.sel_big_spt = pyglet.sprite.Sprite(img=res.sel_big_img,
+                                                x=self.our_1st_base.x,
+                                                y=self.our_1st_base.y)
+        self.rp_spt = pyglet.sprite.Sprite(img=res.rp_img,
+                                           x=self.our_1st_base.rp_x,
+                                           y=self.our_1st_base.rp_y)
 
-        self.basic_unit_control_buttons = [self.move_button, self.stop_button,
-                                           self.attack_button]
-        self.control_buttons_to_render = self.our_1st_base.control_buttons
-        self.base_building_sprite = pyglet.sprite.Sprite(img=res.base_image,
-                                                         x=-100, y=-100)
-        self.base_building_sprite.color = (0, 255, 0)
-        self.turret_building_sprite = pyglet.sprite.Sprite(
-            img=res.turret_button_image, x=-100, y=-100)
-        self.turret_building_sprite.color = (0, 255, 0)
+        self.basic_unit_c_bs = [self.move_b, self.stop_b, self.attack_b]
+        self.c_bs_to_render = self.our_1st_base.c_bs
+        self.base_building_spt = pyglet.sprite.Sprite(img=res.base_img,
+                                                      x=-100, y=-100)
+        self.base_building_spt.color = (0, 255, 0)
+        self.turret_building_spt = pyglet.sprite.Sprite(
+            img=res.turret_b_img, x=-100, y=-100)
+        self.turret_building_spt.color = (0, 255, 0)
 
         # Spawn units
         Vulture(self, POS_SPACE / 2 + POS_SPACE * 3,
@@ -1182,14 +1132,14 @@ class PlanetEleven(pyglet.window.Window):
         # glViewport(0, 0, SCREEN_WIDTH - 179, SCREEN_HEIGHT)
 
         # Set orthographic projection matrix
-        glOrtho(left_view_border, left_view_border + SCREEN_WIDTH,
+        glOrtho(left_view_border, left_view_border + SCREEN_W,
                 bottom_view_border,
-                bottom_view_border + SCREEN_HEIGHT, 1, -1)
+                bottom_view_border + SCREEN_H, 1, -1)
 
         '''for x, y in POS_COORDS:
             draw_dot(x, y, 2)'''
 
-        self.background.draw()
+        self.terrain.draw()
         ground_shadows_batch.draw()
         zap_batch.draw()
         buildings_batch.draw()
@@ -1200,46 +1150,46 @@ class PlanetEleven(pyglet.window.Window):
         if selected:
             try:
                 selected.is_big
-                self.selection_big_sprite.draw()
+                self.sel_big_spt.draw()
             except AttributeError:
-                self.selection_sprite.draw()
+                self.sel_spt.draw()
 
         glEnable(GL_BLEND)
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
-        self.fow_texture = self.minimap_fow_image.get_texture()
+        self.fow_texture = self.mm_fow_img.get_texture()
         self.fow_texture.width = 3264
         self.fow_texture.height = 3264
         self.fow_texture.blit(-32, -32)
         utilities_batch.draw()
-        if self.building_location_selection_phase:
+        if self.build_loc_sel_phase:
             if self.to_build == "base":
-                self.base_building_sprite.draw()
+                self.base_building_spt.draw()
             elif self.to_build == "turret":
-                self.turret_building_sprite.draw()
-        self.control_panel_sprite.draw()
-        self.menu_button.draw()
-        self.selected_frame_cp.draw()
-        self.control_panel_buttons_background.draw()
-        self.minimap_textured_background.draw()
+                self.turret_building_spt.draw()
+        self.cp_spt.draw()
+        self.menu_b.draw()
+        self.sel_frame_cp.draw()
+        self.cp_b_bg.draw()
+        self.mm_textured_bg.draw()
         minimap_pixels_batch.draw()
 
-        if self.control_buttons_to_render:
-            for button in self.control_buttons_to_render:
+        if self.c_bs_to_render:
+            for button in self.c_bs_to_render:
                 button.draw()
             if selected in our_buildings_list and selected \
                     not in shooting_buildings_list:
-                self.rally_point_sprite.draw()
+                self.rp_spt.draw()
 
         self.fow_texture.width = 102
         self.fow_texture.height = 102
         self.fow_texture.blit(minimap_fow_x, minimap_fow_y)
 
-        self.minimap_cam_frame_sprite.draw()
+        self.mm_cam_frame_spt.draw()
 
         for projectile in projectile_list:
             projectile.draw()
 
-        self.mineral_count_label.draw()
+        self.min_count_label.draw()
         if self.show_fps:
             self.fps_display.draw()
 
@@ -1265,8 +1215,8 @@ class PlanetEleven(pyglet.window.Window):
             # Units
             # Gathering resources
             for worker in workers_list:
-                if worker.mineral_to_gather:
-                    if not worker.is_gathering and worker.dest_reached:
+                if worker.mineral_to_gather and worker.dest_reached:
+                    if not worker.is_gathering:
                         if is_melee_dist(worker, worker.task_x,
                                          worker.task_y):
                             print("melee dist")
@@ -1276,7 +1226,7 @@ class PlanetEleven(pyglet.window.Window):
                         owner = worker.owner
                         owner.mineral_count += 0.03
                         if owner.name == 'player1':
-                            self.mineral_count_label.text = str(
+                            self.min_count_label.text = str(
                                 int(owner.mineral_count))
             # AI gathering resources
             # if self.frame_count % 120 == 0:
@@ -1315,16 +1265,16 @@ class PlanetEleven(pyglet.window.Window):
                         unit.update()
                         unit.shadow.update()
                         if selected == unit:
-                            self.selection_sprite.x = unit.x
-                            self.selection_sprite.y = unit.y
+                            self.sel_spt.x = unit.x
+                            self.sel_spt.y = unit.y
                     # Jump
                     else:
                         if not unit.move_interd:
                             unit.x = unit.target_x
                             unit.y = unit.target_y
                             if selected == unit:
-                                self.selection_sprite.x = unit.x
-                                self.selection_sprite.y = unit.y
+                                self.sel_spt.x = unit.x
+                                self.sel_spt.y = unit.y
                             if not unit.flying:
                                 unit.shadow.x = unit.target_x + 3
                                 unit.shadow.y = unit.target_y - 3
@@ -1481,11 +1431,11 @@ class PlanetEleven(pyglet.window.Window):
                 if selected in our_units_list:
                     selected.kill()
                     if selected.flying:
-                        air_pos_coords_dict[(self.selection_sprite.x,
-                                             self.selection_sprite.y)] = None
+                        air_pos_coords_dict[(self.sel_spt.x,
+                                             self.sel_spt.y)] = None
                     else:
-                        ground_pos_coords_dict[(self.selection_sprite.x,
-                            self.selection_sprite.y)] = None
+                        ground_pos_coords_dict[(self.sel_spt.x,
+                            self.sel_spt.y)] = None
                     selected = None
                 elif selected in our_buildings_list:
                     selected.kill()
@@ -1505,9 +1455,9 @@ class PlanetEleven(pyglet.window.Window):
             if self.fullscreen:
                 x /= 2
                 y /= 2
-            if not self.building_location_selection_phase:
+            if not self.build_loc_sel_phase:
                 # Game field
-                if x < SCREEN_WIDTH - 139:
+                if x < SCREEN_W - 139:
                     x, y = round_coords(x, y)
                     x, y = mc(x=x, y=y)
                     print('\nglobal click coords:', x, y)
@@ -1516,30 +1466,33 @@ class PlanetEleven(pyglet.window.Window):
                         to_be_selected = air_pos_coords_dict[(x, y)]
                         if to_be_selected:
                             selected = to_be_selected
-                            self.selection_sprite.x = x
-                            self.selection_sprite.y = y
+                            self.sel_spt.x = x
+                            self.sel_spt.y = y
                         else:
                             to_be_selected = ground_pos_coords_dict[(x, y)]
                             if to_be_selected:
                                 try:
                                     to_be_selected.is_big
-                                    self.selection_big_sprite.x = \
+                                    self.sel_big_spt.x = \
                                         to_be_selected.x
-                                    self.selection_big_sprite.y = \
+                                    self.sel_big_spt.y = \
                                         to_be_selected.y
                                 except AttributeError:
-                                    self.selection_sprite.x = x
-                                    self.selection_sprite.y = y
+                                    self.sel_spt.x = x
+                                    self.sel_spt.y = y
                                 selected = to_be_selected
-                        if selected.owner.name == 'player1':
-                            try:
-                                self.control_buttons_to_render = \
-                                    selected.control_buttons
-                            except AttributeError:
-                                pass
+                        if isinstance(selected, Mineral):
+                            self.c_bs_to_render = None
                         else:
-                            self.control_buttons_to_render = None
-                        print('SELECTED CLASS =', type(selected))
+                            if selected.owner.name == 'player1':
+                                try:
+                                    self.c_bs_to_render = \
+                                        selected.control_buttons
+                                except AttributeError:
+                                    self.c_bs_to_render = None
+                            else:
+                                self.c_bs_to_render = None
+                            print('SELECTED CLASS =', type(selected))
                     elif button == mouse.RIGHT:
                         # Rally point
                         if selected in our_buildings_list:
@@ -1547,12 +1500,12 @@ class PlanetEleven(pyglet.window.Window):
                                 selected.rally_point_x = x
                                 selected.rally_point_y = y
                                 selected.default_rally_point = False
-                                self.rally_point_sprite.x = x
-                                self.rally_point_sprite.y = y
+                                self.rp_spt.x = x
+                                self.rp_spt.y = y
                             else:
                                 selected.default_rally_point = True
-                                self.rally_point_sprite.x = selected.x
-                                self.rally_point_sprite.y = selected.y
+                                self.rp_spt.x = selected.x
+                                self.rp_spt.y = selected.y
                             print('Rally set to ({}, {})'.format(x, y))
                         # A unit is selected
                         else:
@@ -1565,16 +1518,16 @@ class PlanetEleven(pyglet.window.Window):
                                     selected.new_dest_x = x
                                     selected.new_dest_y = y
                                 selected.has_target_p = False
-                            if str(type(selected)) == \
-                                    "<class '__main__.Pioneer'>":
-                                selected.clear_task()
-                                obj = ground_pos_coords_dict[(x, y)]
-                                if str(type(obj)) == \
-                                        "<class '__main__.Mineral'>":
-                                    print('go gather, lazy worker!')
-                                    selected.mineral_to_gather = obj
-                                    selected.task_x = obj.x
-                                    selected.task_y = obj.y
+                                if str(type(selected)) == \
+                                        "<class '__main__.Pioneer'>":
+                                    selected.clear_task()
+                                    obj = ground_pos_coords_dict[(x, y)]
+                                    if str(type(obj)) == \
+                                            "<class '__main__.Mineral'>":
+                                        print('go gather, lazy worker!')
+                                        selected.mineral_to_gather = obj
+                                        selected.task_x = obj.x
+                                        selected.task_y = obj.y
                 # Minimap
                 elif MINIMAP_ZERO_COORDS[0] <= x <= MINIMAP_ZERO_COORDS[
                     0] + 100 and \
@@ -1609,20 +1562,20 @@ class PlanetEleven(pyglet.window.Window):
                             if selected in our_buildings_list:
                                 selected.rally_point_x = x
                                 selected.rally_point_y = y
-                                self.rally_point_sprite.x = x
-                                self.rally_point_sprite.y = y
+                                self.rp_spt.x = x
+                                self.rp_spt.y = y
                                 # print('Rally set to ({}, {})'.format(x, y))
 
                 # Control panel other
                 else:
                     x, y = mc(x=x, y=y)
                     # print('x =', x, 'y =', y)
-                    w = self.menu_button.width
-                    h = self.menu_button.height
-                    if self.menu_button.x - w // 2 <= x <= \
-                            self.menu_button.x + w // 2 and \
-                            self.menu_button.y - h // 2 <= y <= \
-                            self.menu_button.y + h // 2:
+                    w = self.menu_b.width
+                    h = self.menu_b.height
+                    if self.menu_b.x - w // 2 <= x <= \
+                            self.menu_b.x + w // 2 and \
+                            self.menu_b.y - h // 2 <= y <= \
+                            self.menu_b.y + h // 2:
                         pass
 
                     # Build units
@@ -1660,10 +1613,10 @@ class PlanetEleven(pyglet.window.Window):
                     elif selected in our_units_list:
                         # Move
                         # Stop
-                        if self.stop_button.x - 16 <= x <= \
-                                self.stop_button.x + 16 and \
-                                self.stop_button.y - 16 <= y <= \
-                                self.stop_button.y + 16:
+                        if self.stop_b.x - 16 <= x <= \
+                                self.stop_b.x + 16 and \
+                                self.stop_b.y - 16 <= y <= \
+                                self.stop_b.y + 16:
                             selected.stop_move()
                         # Attack
                         # Build
@@ -1672,20 +1625,20 @@ class PlanetEleven(pyglet.window.Window):
                                     self.base_button.x + 16 and \
                                     self.base_button.y - 16 <= y <= \
                                     self.base_button.y + 16:
-                                self.base_building_sprite.color = (0, 255, 0)
-                                self.building_location_selection_phase = True
+                                self.base_building_spt.color = (0, 255, 0)
+                                self.build_loc_sel_phase = True
                                 self.to_build = "base"
                             elif self.turret_button.x - 16 <= x <= \
                                     self.turret_button.x + 16 and \
                                     self.turret_button.y - 16 <= y <= \
                                     self.turret_button.y + 16:
-                                self.turret_building_sprite.color = (0, 255, 0)
-                                self.building_location_selection_phase = True
+                                self.turret_building_spt.color = (0, 255, 0)
+                                self.build_loc_sel_phase = True
                                 self.to_build = "turret"
             # Building location selection
             else:
                 # Game field
-                if x < SCREEN_WIDTH - 139:
+                if x < SCREEN_W - 139:
                     x, y = round_coords(x, y)
                     x, y = mc(x=x, y=y)
                     if button == mouse.LEFT:
@@ -1697,41 +1650,41 @@ class PlanetEleven(pyglet.window.Window):
                             selected.task_x = x
                             selected.task_y = y
                             selected.move((x, y))
-                            self.building_location_selection_phase = False
+                            self.build_loc_sel_phase = False
                     elif button == mouse.RIGHT:
-                        self.building_location_selection_phase = False
+                        self.build_loc_sel_phase = False
 
     def on_mouse_motion(self, x, y, dx, dy):
         if not self.paused:
-            if self.building_location_selection_phase:
+            if self.build_loc_sel_phase:
                 if self.fullscreen:
                     x /= 2
                     y /= 2
                 x, y = round_coords(x, y)
                 if self.to_build == "base":
-                    self.base_building_sprite.x = x + left_view_border
-                    self.base_building_sprite.y = y + bottom_view_border
+                    self.base_building_spt.x = x + left_view_border
+                    self.base_building_spt.y = y + bottom_view_border
                     x, y = mc(x=x, y=y)
                     x = int((x - 16) / 32) + 1
                     y = int((y - 16) / 32) + 1
-                    if ground_pos_coords_dict[self.base_building_sprite.x,
-                                              self.base_building_sprite.y] or \
+                    if ground_pos_coords_dict[self.base_building_spt.x,
+                                              self.base_building_spt.y] or \
                             self.npa[y, x, 3] != 0:
-                        self.base_building_sprite.color = (255, 0, 0)
+                        self.base_building_spt.color = (255, 0, 0)
                     else:
-                        self.base_building_sprite.color = (0, 255, 0)
+                        self.base_building_spt.color = (0, 255, 0)
                 elif self.to_build == "turret":
-                    self.turret_building_sprite.x = x + left_view_border
-                    self.turret_building_sprite.y = y + bottom_view_border
+                    self.turret_building_spt.x = x + left_view_border
+                    self.turret_building_spt.y = y + bottom_view_border
                     x, y = mc(x=x, y=y)
                     x = int((x - 16) / 32) + 1
                     y = int((y - 16) / 32) + 1
-                    if ground_pos_coords_dict[self.turret_building_sprite.x,
-                                              self.turret_building_sprite.y] \
+                    if ground_pos_coords_dict[self.turret_building_spt.x,
+                                              self.turret_building_spt.y] \
                             or self.npa[y, x, 3] != 0:
-                        self.turret_building_sprite.color = (255, 0, 0)
+                        self.turret_building_spt.color = (255, 0, 0)
                     else:
-                        self.turret_building_sprite.color = (0, 255, 0)
+                        self.turret_building_spt.color = (0, 255, 0)
 
     def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
         global left_view_border, bottom_view_border
@@ -1743,7 +1696,7 @@ class PlanetEleven(pyglet.window.Window):
                 dy /= 2
             if not self.minimap_drugging:
                 # Game field
-                if x < SCREEN_WIDTH - 139 and buttons == 2:
+                if x < SCREEN_W - 139 and buttons == 2:
                     self.dx += dx * MMB_PAN_SPEED
                     self.dy += dy * MMB_PAN_SPEED
                     if abs(self.dx) >= POS_SPACE:
@@ -1802,7 +1755,7 @@ class PlanetEleven(pyglet.window.Window):
             minimap_fow_y
 
         # Viewport limits
-        a = POS_COORDS_N_COLUMNS * POS_SPACE - SCREEN_WIDTH // POS_SPACE \
+        a = POS_COORDS_N_COLUMNS * POS_SPACE - SCREEN_W // POS_SPACE \
             * POS_SPACE + POS_SPACE * 4
         if left_view_border < 0:
             left_view_border = 0
@@ -1811,30 +1764,20 @@ class PlanetEleven(pyglet.window.Window):
         if bottom_view_border < 0:
             bottom_view_border = 0
         elif bottom_view_border > POS_COORDS_N_ROWS * POS_SPACE \
-                - SCREEN_HEIGHT:
-            bottom_view_border = POS_COORDS_N_ROWS * POS_SPACE - SCREEN_HEIGHT
+                - SCREEN_H:
+            bottom_view_border = POS_COORDS_N_ROWS * POS_SPACE - SCREEN_H
 
-        self.minimap_textured_background.x = MINIMAP_ZERO_COORDS[
-                                                 0] + left_view_border
-        self.minimap_textured_background.y = MINIMAP_ZERO_COORDS[
-                                                 1] + bottom_view_border
-        self.control_panel_sprite.x = SCREEN_WIDTH + left_view_border
-        self.control_panel_sprite.y = bottom_view_border
-        self.menu_button.x = center_x + left_view_border
-        self.menu_button.y = SCREEN_HEIGHT - 30 + bottom_view_border
-        self.selected_frame_cp.x = center_x + left_view_border
-        self.selected_frame_cp.y = SCREEN_HEIGHT - 90 + bottom_view_border
-        self.control_panel_buttons_background.x = center_x + left_view_border
-        self.control_panel_buttons_background.y = center_y + bottom_view_border
-        for button in self.buttons:
-            button.x = button.org_x + left_view_border
-            button.y = button.org_y + bottom_view_border
-        self.mineral_count_label.x = SCREEN_WIDTH - 200 + left_view_border
-        self.mineral_count_label.y = SCREEN_HEIGHT - 30 + bottom_view_border
+        self.mm_textured_bg.x = MINIMAP_ZERO_COORDS[0] + left_view_border
+        self.mm_textured_bg.y = MINIMAP_ZERO_COORDS[1] + bottom_view_border
+        for el in self.ui:
+            el.x = el.org_x + left_view_border
+            el.y = el.org_y + bottom_view_border
+        self.min_count_label.x = SCREEN_W - 200 + left_view_border
+        self.min_count_label.y = SCREEN_H - 30 + bottom_view_border
         for entity in our_buildings_list + our_units_list \
                       + enemy_buildings_list + enemy_units_list:
             entity.pixel.x, entity.pixel.y = to_minimap(entity.x, entity.y)
-        self.minimap_cam_frame_sprite.x, self.minimap_cam_frame_sprite.y = \
+        self.mm_cam_frame_spt.x, self.mm_cam_frame_spt.y = \
             to_minimap(
                 left_view_border - 2,
                 bottom_view_border - 2)
@@ -1850,13 +1793,13 @@ class PlanetEleven(pyglet.window.Window):
                     if 0 <= xi <= 101:
                         if ((xi - x) ** 2 + (yi - y) ** 2) ** 0.5 <= radius:
                             self.npa[yi, xi, 3] = 0
-        self.minimap_fow_ImageData.set_data('RGBA',
-                                            self.minimap_fow_ImageData.width
-                                            * 4, data=self.npa.tobytes())
+        self.mm_fow_ImageData.set_data('RGBA',
+                                       self.mm_fow_ImageData.width
+                                       * 4, data=self.npa.tobytes())
 
 
 def main():
-    game_window = PlanetEleven(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+    game_window = PlanetEleven(SCREEN_W, SCREEN_H, SCREEN_TITLE)
     game_window.setup()
     pyglet.clock.schedule_interval(game_window.update, 1 / 60)
     pyglet.app.run()

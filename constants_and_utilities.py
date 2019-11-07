@@ -3,8 +3,8 @@ from screeninfo import get_monitors
 import png
 
 
-SCREEN_WIDTH = get_monitors()[0].width // 2
-SCREEN_HEIGHT = get_monitors()[0].height // 2
+SCREEN_W = get_monitors()[0].width // 2
+SCREEN_H = get_monitors()[0].height // 2
 SCREEN_TITLE = "Planet Eleven"
 POS_COORDS_N_ROWS = 100  # Should be 100 for the minimap to work
 POS_COORDS_N_COLUMNS = 100  # Should be 100 for the minimap to work
@@ -16,26 +16,26 @@ MMB_PAN_SPEED = 4
 # RIGHT_SCREEN_SCROLL_ZONE = (16 * POS_SPACE, 17 * POS_SPACE)
 # TOP_SCREEN_SCROLL_ZONE = (11 * POS_SPACE, 12 * POS_SPACE)
 
-CONTROL_PANEL_CENTER_X = SCREEN_WIDTH - 139 + 139 / 2
-MINIMAP_ZERO_COORDS = CONTROL_PANEL_CENTER_X - 50, SCREEN_HEIGHT / 2 - 50
+CONTROL_PANEL_CENTER_X = SCREEN_W - 139 + 139 / 2
+MINIMAP_ZERO_COORDS = CONTROL_PANEL_CENTER_X - 50, SCREEN_H / 2 - 50
 # Generate control button coords
-center_x = CONTROL_PANEL_CENTER_X
-center_y = (SCREEN_HEIGHT / 2 - 50) / 2
+cp_c_x = CONTROL_PANEL_CENTER_X
+cp_c_y = (SCREEN_H / 2 - 50) / 2
 x_space = 34
 y_space = 34
-CONTROL_BUTTONS_COORDS = [(center_x - x_space, center_y + y_space),
-                          (center_x, center_y + y_space),
-                          (center_x + x_space, center_y + y_space),
-                          (center_x - x_space, center_y),
-                          (center_x, center_y), (center_x + x_space, center_y),
-                          (center_x - x_space, center_y - y_space),
-                          (center_x, center_y - y_space),
-                          (center_x + x_space, center_y - y_space)
-                          ]
+CTRL_B_COORDS = [(cp_c_x - x_space, cp_c_y + y_space),
+                 (cp_c_x, cp_c_y + y_space),
+                 (cp_c_x + x_space, cp_c_y + y_space),
+                 (cp_c_x - x_space, cp_c_y),
+                 (cp_c_x, cp_c_y), (cp_c_x + x_space, cp_c_y),
+                 (cp_c_x - x_space, cp_c_y - y_space),
+                 (cp_c_x, cp_c_y - y_space),
+                 (cp_c_x + x_space, cp_c_y - y_space)
+                 ]
 
 # Generate minimap_cam_frame
-fully_visible_width = (SCREEN_WIDTH - 139) // POS_SPACE
-fully_visible_height = SCREEN_HEIGHT // POS_SPACE
+fully_visible_width = (SCREEN_W - 139) // POS_SPACE
+fully_visible_height = SCREEN_H // POS_SPACE
 arr = []
 non_transparent_row = []
 for _ in range(fully_visible_width + 2):
