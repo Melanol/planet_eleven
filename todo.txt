@@ -10,10 +10,9 @@
 -Enemy units can shoot our units after locking on them from any distance
 -After 5 mins of letting AI build workers non-stop, FPS drops to 5, and memory usage increases. Looks like garbage collection is not working for workers or projectiles. I think it's the workers.
 -Rally-point moving like 20 workers to a distant location significantly lowers FPS. Killem them does not this this. Movement significantly lowers FPS, but only workers do not fix this after stopping (tried vulture)
--Workers rotate strangely while building
 
 # Not important
--Units blink-rotate the moment they are ordered to move
+-Nexus animation
 -Selected info
 -Spawning in the direction of the rally point?
 -World editor? Required for terrain pos_coords

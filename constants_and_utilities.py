@@ -65,13 +65,13 @@ zap_batch = pyglet.graphics.Batch()
 minerals = []
 LIST_OF_FLYING = ["<class '__main__.Defiler'>",
                   "<class '__main__.Apocalypse'>"]
-our_units_list = []
-workers_list = []
-our_buildings_list = []
-shooting_buildings_list = []
-enemy_buildings_list = []
-enemy_units_list = []
-projectile_list = []
+our_units = []
+workers = []
+our_buildings = []
+shooting_buildings = []
+enemy_buildings = []
+enemy_units = []
+projectiles = []
 
 minimap_fow_x = MINIMAP_ZERO_COORDS[0] - 1
 minimap_fow_y = MINIMAP_ZERO_COORDS[1] - 1

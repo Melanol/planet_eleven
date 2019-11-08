@@ -252,12 +252,12 @@ class Building(pyglet.sprite.Sprite):
                  hp, x, y):
         self.owner = owner
         if owner == game_inst.this_player:
-            our_buildings_list.append(self)
+            our_buildings.append(self)
             img = our_img
             minimap_pixel = res.mm_our_img
             game_inst.update_fow(x=x, y=y, radius=vision_radius)
         else:
-            enemy_buildings_list.append(self)
+            enemy_buildings.append(self)
             img = enemy_img
             minimap_pixel = res.mm_enemy_img
         super().__init__(img=img, x=x, y=y, batch=buildings_batch)
@@ -308,15 +308,15 @@ class Building(pyglet.sprite.Sprite):
                                           batch=minimap_pixels_batch)
 
     def kill(self, delay_del=False):
-        global our_buildings_list, enemy_buildings_list
+        global our_buildings, enemy_buildings
         for block in self.blocks:
             ground_pos_coords_dict[(block[0], block[1])] = None
         self.pixel.delete()
         if not delay_del:
             if self.owner.name == 'player1':
-                del our_buildings_list[our_buildings_list.index(self)]
+                del our_buildings[our_buildings.index(self)]
             else:
-                del enemy_buildings_list[enemy_buildings_list.index(self)]
+                del enemy_buildings[enemy_buildings.index(self)]
         for attacker in self.attackers:
             attacker.has_target_p = False
         self.delete()
@@ -371,39 +371,36 @@ class AttackingBuilding(Building):
         self.cooldown = cooldown
         self.on_cooldown = False
         self.cooldown_started = None
-        shooting_buildings_list.append(self)
+        shooting_buildings.append(self)
         self.projectile_sprite = res.laser_img
-        self.projectile_speed = 10
-        self.projectile_color = (255, 0, 0)
+        self.projectile_speed = 5
         self.has_target_p = False
         self.target_p = None
         self.target_p_x = None
         self.target_p_y = None
 
     def shoot(self, frame_count):
-        global projectile_list
-        projectile = Projectile(x=self.x, y=self.y,
-                                target_x=self.target_p.x,
-                                target_y=self.target_p.y,
-                                damage=self.damage,
-                                speed=self.projectile_speed,
-                                target_obj=self.target_p)
+        global projectiles
+        projectile = Projectile(self.x, self.y, self.target_p.x,
+                                self.target_p.y, self.damage,
+                                self.projectile_speed, self.target_p,
+                                res.plasma_anim)
         x_diff = self.target_p.x - self.x
         y_diff = self.target_p.y - self.y
         self.on_cooldown = True
         self.cooldown_started = frame_count
-        projectile_list.append(projectile)
+        projectiles.append(projectile)
 
     def kill(self, delay_del=False):
-        global ground_pos_coords_dict, our_buildings_list, enemy_buildings_list
+        global ground_pos_coords_dict, our_buildings, enemy_buildings
         ground_pos_coords_dict[(self.x, self.y)] = None
         self.pixel.delete()
         if not delay_del:
             if self.owner.name == 'player1':
-                del our_buildings_list[our_buildings_list.index(self)]
+                del our_buildings[our_buildings.index(self)]
             else:
-                del enemy_buildings_list[enemy_buildings_list.index(self)]
-        del shooting_buildings_list[shooting_buildings_list.index(self)]
+                del enemy_buildings[enemy_buildings.index(self)]
+        del shooting_buildings[shooting_buildings.index(self)]
         self.plasma_spt.delete()
         self.delete()
 
@@ -639,10 +636,10 @@ class Unit(pyglet.sprite.Sprite):
         self.owner = owner
         if owner.name == 'player1':
             img = our_img
-            our_units_list.append(self)
+            our_units.append(self)
         else:
             img = enemy_img
-            enemy_units_list.append(self)
+            enemy_units.append(self)
         self.flying = flying
         if not self.flying:
             self.pos_dict = ground_pos_coords_dict
@@ -746,7 +743,8 @@ class Unit(pyglet.sprite.Sprite):
         self.dest_reached = False
         self.dest_x, self.dest_y = dest[0], dest[1]
 
-        self.pfi = 0
+        self.pfi = 1  # 0 creates a bug of rotating to math degree of 0
+        # because the 0 element in path is the starting location
         self.path = find_path((self.x, self.y),
                               (self.dest_x, self.dest_y),
                               self.flying)
@@ -829,7 +827,7 @@ class Unit(pyglet.sprite.Sprite):
             self.dest_reached = True
 
     def shoot(self, frame_count):
-        global projectile_list
+        global projectiles
         projectile = Projectile(x=self.x, y=self.y,
                                 target_x=self.target_p.x,
                                 target_y=self.target_p.y,
@@ -843,7 +841,7 @@ class Unit(pyglet.sprite.Sprite):
         self.shadow.rotation = angle
         self.on_cooldown = True
         self.cooldown_started = frame_count
-        projectile_list.append(projectile)
+        projectiles.append(projectile)
 
     def stop_move(self):
         """Stops movement."""
@@ -858,16 +856,16 @@ class Unit(pyglet.sprite.Sprite):
             attacker.has_target_p = False
         if not delay_del:
             if self.owner.name == 'player1':
-                del our_units_list[our_units_list.index(self)]
+                del our_units[our_units.index(self)]
             else:
-                del enemy_units_list[enemy_units_list.index(self)]
+                del enemy_units[enemy_units.index(self)]
         if not self.flying:
             ground_pos_coords_dict[(self.x, self.y)] = None
         else:
             air_pos_coords_dict[(self.x, self.y)] = None
         self.delete()
         try:
-            del workers_list[workers_list.index(self)]
+            del workers[workers.index(self)]
         except ValueError:
             pass
 
@@ -952,7 +950,7 @@ class Pioneer(Unit):
                                       [game_inst.armory_b] +
                                       [game_inst.turret_b] +
                                       [game_inst.big_base_b])
-        workers_list.append(self)
+        workers.append(self)
         self.to_build = None
         self.mineral_to_gather = None
         self.task_x = None
@@ -1173,8 +1171,8 @@ class PlanetEleven(pyglet.window.Window):
         if self.c_bs_to_render:
             for button in self.c_bs_to_render:
                 button.draw()
-            if selected in our_buildings_list and selected \
-                    not in shooting_buildings_list:
+            if selected in our_buildings and selected \
+                    not in shooting_buildings:
                 self.rp_spt.draw()
 
         self.fow_texture.width = 102
@@ -1183,7 +1181,7 @@ class PlanetEleven(pyglet.window.Window):
 
         self.mm_cam_frame_spt.draw()
 
-        for projectile in projectile_list:
+        for projectile in projectiles:
             projectile.draw()
 
         self.min_count_label.draw()
@@ -1198,20 +1196,20 @@ class PlanetEleven(pyglet.window.Window):
         if not self.paused:
             self.frame_count += 1
             # Build units
-            for building in our_buildings_list + enemy_buildings_list:
+            for building in our_buildings + enemy_buildings:
                 try:
                     building_spawn_unit(self, building)
                 except AttributeError:
                     pass
             # AI ordering units
-            if self.frame_count % 60 == 0:
-                for building in enemy_buildings_list:
-                    if self.computer.workers_count < 8:
-                        order(self, building, Pioneer)
-                        self.computer.workers_count += 1
+            # if self.frame_count % 60 == 0:
+            #     for building in enemy_buildings:
+            #         if self.computer.workers_count < 8:
+            #             order(self, building, Pioneer)
+            #             self.computer.workers_count += 1
             # Units
             # Gathering resources
-            for worker in workers_list:
+            for worker in workers:
                 if worker.mineral_to_gather and worker.dest_reached:
                     if not worker.is_gathering:
                         if is_melee_dist(worker, worker.task_x,
@@ -1229,7 +1227,7 @@ class PlanetEleven(pyglet.window.Window):
             # if self.frame_count % 120 == 0:
             #     try:
             #         closest_min = minerals[0]
-            #         for worker in workers_list:
+            #         for worker in workers:
             #             if all((not worker.is_gathering,
             #                     worker.dest_reached,
             #                     worker.owner.name == 'computer1')):
@@ -1251,12 +1249,12 @@ class PlanetEleven(pyglet.window.Window):
             #         pass
 
             # Build buildings
-            for worker in workers_list:
+            for worker in workers:
                 if worker.to_build:
                     if is_melee_dist(worker, worker.task_x, worker.task_y):
                         worker.build()
             # Movement
-            for unit in our_units_list + enemy_units_list:
+            for unit in our_units + enemy_units:
                 # Do not jump
                 if not unit.dest_reached:
                     if not unit.eta() <= 1:
@@ -1314,18 +1312,18 @@ class PlanetEleven(pyglet.window.Window):
                     except AttributeError:
                         pass
             # Shooting
-            update_shooting(self, shooting_buildings_list + our_units_list,
-                            enemy_buildings_list + enemy_units_list)
-            update_shooting(self, enemy_units_list,
-                            our_buildings_list + our_units_list)
+            update_shooting(self, shooting_buildings + our_units,
+                            enemy_buildings + enemy_units)
+            update_shooting(self, enemy_units,
+                            our_buildings + our_units)
             # Projectiles
-            for i, projectile in enumerate(projectile_list):
+            for i, projectile in enumerate(projectiles):
                 if not projectile.eta() <= 1:
                     projectile.update()
                 else:
                     projectile.target_obj.hp -= projectile.damage
                     projectile.delete()
-                    del projectile_list[i]
+                    del projectiles[i]
             # Destroying minerals
             minerals_to_del = []
             for mineral in minerals:
@@ -1335,8 +1333,8 @@ class PlanetEleven(pyglet.window.Window):
             for mineral in minerals_to_del:
                 minerals.remove(mineral)
             # Destroying targets
-            for entity in our_buildings_list + our_units_list + \
-                          enemy_buildings_list + enemy_units_list:
+            for entity in our_buildings + our_units + \
+                          enemy_buildings + enemy_units:
                 if entity.hp <= 0:
                     if entity.owner.name == 'computer1' and \
                             isinstance(entity, Pioneer):
@@ -1401,7 +1399,7 @@ class PlanetEleven(pyglet.window.Window):
                     if _value:
                         print('key =', _key, 'value =', _value)
             elif symbol == key.J:
-                print(selected.width)
+                print(workers)
             elif symbol == key.K:
                 try:
                     print(selected.building_queue)
@@ -1425,12 +1423,11 @@ class PlanetEleven(pyglet.window.Window):
                 for coord in coords_to_delete:
                     unit_id = ground_pos_coords_dict[coord]
                     ground_pos_coords_dict[coord] = None
-                    for unit in our_units_list:
+                    for unit in our_units:
                         if unit_id == id(unit):
                             unit.kill()
-                # print(len(our_units_list))
             elif symbol == key.DELETE:
-                if selected in our_units_list:
+                if selected in our_units:
                     selected.kill()
                     if selected.flying:
                         air_pos_coords_dict[(self.sel_spt.x,
@@ -1439,7 +1436,7 @@ class PlanetEleven(pyglet.window.Window):
                         ground_pos_coords_dict[(self.sel_spt.x,
                             self.sel_spt.y)] = None
                     selected = None
-                elif selected in our_buildings_list:
+                elif selected in our_buildings:
                     selected.kill()
                     selected = None
             elif symbol == key.SPACE:
@@ -1452,7 +1449,7 @@ class PlanetEleven(pyglet.window.Window):
                 self.paused = False
 
     def on_mouse_press(self, x, y, button, modifiers):
-        global selected, our_units_list, left_view_border, bottom_view_border
+        global selected, our_units, left_view_border, bottom_view_border
         if not self.paused:
             if self.fullscreen:
                 x /= 2
@@ -1497,7 +1494,7 @@ class PlanetEleven(pyglet.window.Window):
                             print('SELECTED CLASS =', type(selected))
                     elif button == mouse.RIGHT:
                         # Rally point
-                        if selected in our_buildings_list:
+                        if selected in our_buildings:
                             if ground_pos_coords_dict[x, y] != selected:
                                 selected.rp_x = x
                                 selected.rp_y = y
@@ -1511,7 +1508,7 @@ class PlanetEleven(pyglet.window.Window):
                             print('Rally set to ({}, {})'.format(x, y))
                         # A unit is selected
                         else:
-                            if selected in our_units_list:
+                            if selected in our_units:
                                 if selected.dest_reached:
                                     selected.move((x, y))
                                 # Movement interruption
@@ -1550,7 +1547,7 @@ class PlanetEleven(pyglet.window.Window):
                         x, y = round_coords(x, y)
                         # A unit is selected
                         unit_found = False
-                        for unit in our_units_list:
+                        for unit in our_units:
                             if unit == selected:
                                 unit_found = True
                                 if unit.dest_reached:
@@ -1562,7 +1559,7 @@ class PlanetEleven(pyglet.window.Window):
                                     unit.new_dest_x = x
                                     unit.new_dest_y = y
                         if not unit_found:
-                            if selected in our_buildings_list:
+                            if selected in our_buildings:
                                 selected.rp_x = x
                                 selected.rp_y = y
                                 self.rp_spt.x = x
@@ -1580,7 +1577,7 @@ class PlanetEleven(pyglet.window.Window):
                             self.menu_b.y + h // 2:
                         pass
                     # Build units
-                    if selected in our_buildings_list:
+                    if selected in our_buildings:
                         # Create defiler
                         if self.defiler_b.x - 16 <= x <= \
                                 self.defiler_b.x + 16 and \
@@ -1611,7 +1608,7 @@ class PlanetEleven(pyglet.window.Window):
                                 self.pioneer_b.y - 16 <= y <= \
                                 self.pioneer_b.y + 16:
                             order(self, selected, Pioneer)
-                    elif selected in our_units_list:
+                    elif selected in our_units:
                         # Move
                         # Stop
                         if self.stop_b.x - 16 <= x <= \
@@ -1775,8 +1772,8 @@ class PlanetEleven(pyglet.window.Window):
             el.y = el.org_y + bottom_view_border
         self.min_count_label.x = SCREEN_W - 200 + left_view_border
         self.min_count_label.y = SCREEN_H - 30 + bottom_view_border
-        for entity in our_buildings_list + our_units_list \
-                      + enemy_buildings_list + enemy_units_list:
+        for entity in our_buildings + our_units \
+                      + enemy_buildings + enemy_units:
             entity.pixel.x, entity.pixel.y = to_minimap(entity.x, entity.y)
         self.mm_cam_frame_spt.x, self.mm_cam_frame_spt.y = \
             to_minimap(
