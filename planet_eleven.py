@@ -161,6 +161,7 @@ def order(game_instance, building, unit):
         game_instance.min_count_label.text = str(
             int(game_instance.this_player.mineral_count))
         building.building_queue.append(unit)
+        building.anim.visible = True
         if len(building.building_queue) == 1:
             building.building_start_time = game_instance.frame_count
     else:
@@ -244,6 +245,8 @@ def building_spawn_unit(game_instance, building):
                                    owner=building.owner)
                     unit.spawn()
                 building.building_start_time += building.current_building_time
+                if not building.building_queue:
+                    building.anim.visible = False
                 if not building.default_rp:
                     unit.move((building.rp_x, building.rp_y))
             else:
@@ -370,6 +373,7 @@ class BigBase(ProductionBuilding):
         else:
             self.anim = pyglet.sprite.Sprite(img=res.anim_enemy, x=x, y=y,
                                              batch=ground_units_batch)
+        self.anim.visible = False
 
 
 class AttackingBuilding(Building):
@@ -934,7 +938,7 @@ class Vulture(Unit):
 
 class Apocalypse(Unit):
     cost = 250
-    building_time = 10
+    building_time = 300
 
     def __init__(self, game_inst, x, y, owner=None):
         if owner is None:
