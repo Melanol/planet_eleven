@@ -5,16 +5,24 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/constants_and_utilities.py" beforeDir="false" afterPath="$PROJECT_DIR$/constants_and_utilities.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/planet_eleven.py" beforeDir="false" afterPath="$PROJECT_DIR$/planet_eleven.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/projectile.py" beforeDir="false" afterPath="$PROJECT_DIR$/projectile.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/armory.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/armory.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/armory.psd" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/armory.psd" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/big_base.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/big_base.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/big_base.psd" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/big_base.psd" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/big_base_enemy.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/big_base_enemy.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources.py" beforeDir="false" afterPath="$PROJECT_DIR$/resources.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/screenshots/(23-10-2019 04-30-10).wmv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/screenshots/(25-10-2019 01-38-07).wmv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/screenshots/1.gif" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/screenshots/1.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/screenshots/2.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/screenshots/3.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/screenshots/4.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/screenshots/5.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/screenshots/6.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/big_base.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/big_base.psd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/big_base_enemy.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/big_base_icon.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/laser.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/laser.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/sprites/palette.psd" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/palette.psd" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/sprites/turret.psd" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/turret.psd" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/turret_base.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/turret_base.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/todo.txt" beforeDir="false" afterPath="$PROJECT_DIR$/todo.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/turret_b.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/turret_b.png" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -144,13 +152,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1566740526093</updated>
-    </task>
-    <task id="LOCAL-00127" summary="Workers stop gathering when their mineral is no more">
-      <created>1571856368954</created>
-      <option name="number" value="00127" />
-      <option name="presentableId" value="LOCAL-00127" />
-      <option name="project" value="LOCAL" />
-      <updated>1571856368955</updated>
     </task>
     <task id="LOCAL-00128" summary="task_x and task_y">
       <created>1571857966663</created>
@@ -488,7 +489,14 @@
       <option name="project" value="LOCAL" />
       <updated>1573144201623</updated>
     </task>
-    <option name="localTasksCounter" value="176" />
+    <task id="LOCAL-00176" summary="Lists renamed">
+      <created>1573194611226</created>
+      <option name="number" value="00176" />
+      <option name="presentableId" value="LOCAL-00176" />
+      <option name="project" value="LOCAL" />
+      <updated>1573194611229</updated>
+    </task>
+    <option name="localTasksCounter" value="177" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -533,7 +541,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$" />
     </ignored-roots>
-    <MESSAGE value="Added a lot of files to VCS" />
     <MESSAGE value="Path-finding bug fixes" />
     <MESSAGE value="Path-finding for air works" />
     <MESSAGE value="Some cleaning" />
@@ -558,7 +565,8 @@
     <MESSAGE value="Mass renaming" />
     <MESSAGE value="Pioneer init bug fixed" />
     <MESSAGE value="Turrets look like photon cannons now" />
-    <option name="LAST_COMMIT_MESSAGE" value="Turrets look like photon cannons now" />
+    <MESSAGE value="Lists renamed" />
+    <option name="LAST_COMMIT_MESSAGE" value="Lists renamed" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

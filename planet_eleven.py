@@ -123,6 +123,11 @@ class Point:
         self.y = y
 
 
+class Explosion(pyglet.sprite.Sprite):
+    def __init__(self, x, y):
+        super().__init__(res.hit_anim, x, y, batch=explosions_batch)
+
+
 class UI(pyglet.sprite.Sprite):
     def __init__(self, game_inst, img, x, y):
         super().__init__(img, x, y)
@@ -319,6 +324,10 @@ class Building(pyglet.sprite.Sprite):
                 del enemy_buildings[enemy_buildings.index(self)]
         for attacker in self.attackers:
             attacker.has_target_p = False
+        try:
+            self.anim.delete()
+        except AttributeError:
+            pass
         self.delete()
 
 
@@ -350,11 +359,17 @@ class BigBase(ProductionBuilding):
             owner = game_inst.this_player
         super().__init__(game_inst, our_img=res.big_base_img,
                          enemy_img=res.big_base_enemy_img, x=x, y=y,
-                         hp=100, owner=owner, vision_radius=4)
+                         hp=1500, owner=owner, vision_radius=4)
         self.ctrl_buttons = [game_inst.defiler_b, game_inst.centurion_b,
                              game_inst.vulture_b, game_inst.apocalypse_b,
                              game_inst.pioneer_b]
         self.is_big = True
+        if owner.name == 'player1':
+            self.anim = pyglet.sprite.Sprite(img=res.anim, x=x, y=y,
+                                             batch=ground_units_batch)
+        else:
+            self.anim = pyglet.sprite.Sprite(img=res.anim_enemy, x=x, y=y,
+                                             batch=ground_units_batch)
 
 
 class AttackingBuilding(Building):
@@ -1140,6 +1155,7 @@ class PlanetEleven(pyglet.window.Window):
         zap_batch.draw()
         buildings_batch.draw()
         ground_units_batch.draw()
+        explosions_batch.draw()
         air_shadows_batch.draw()
         air_batch.draw()
         if selected:
@@ -1320,8 +1336,9 @@ class PlanetEleven(pyglet.window.Window):
             for i, projectile in enumerate(projectiles):
                 if not projectile.eta() <= 1:
                     projectile.update()
-                else:
+                else:  # Hit!
                     projectile.target_obj.hp -= projectile.damage
+                    Explosion(projectile.x, projectile.y)
                     projectile.delete()
                     del projectiles[i]
             # Destroying minerals
@@ -1401,10 +1418,7 @@ class PlanetEleven(pyglet.window.Window):
             elif symbol == key.J:
                 print(workers)
             elif symbol == key.K:
-                try:
-                    print(selected.building_queue)
-                except AttributeError:
-                    pass
+                print(our_units)
             # elif symbol == key.Z:
             #     i = 0
             #     for _key, value in ground_pos_coords_dict.items():
