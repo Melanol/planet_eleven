@@ -103,8 +103,15 @@ def update_shooting(game_instance, our_entities, enemy_entities):
                         entity.target_p_x = closest_enemy.x
                         entity.target_p_y = closest_enemy.y
                         entity.target_p.attackers.append(entity)
-                else:
+                # Has target_p
+                elif dist(entity, entity.target_p) <= entity.shooting_radius:
                     entity.shoot(game_instance.frame_count)
+                else:
+                    entity.has_target_p = False
+                    entity.target_p.attackers.remove(entity)
+                    entity.target_p = None
+                    entity.target_p_x = None
+                    entity.target_p_y = None
             else:
                 if (game_instance.frame_count - entity.cooldown_started) % \
                         entity.cooldown == 0:
@@ -434,8 +441,6 @@ class Turret(AttackingBuilding):
 
 
 node_count = 0
-
-
 def astar(map, start, end, acc_ends):
     """A* pathfinding. acc_ends are other acceptable end coords that are used
     when we cannot reach the exact end."""
@@ -685,8 +690,8 @@ class Unit(pyglet.sprite.Sprite):
 
         self.dest_reached = True
         self.move_interd = False
-        self.target_x = None
-        self.target_y = None
+        self.target_x = x
+        self.target_y = y
         self.dest_x = None
         self.dest_y = None
         self.velocity_x = 0
@@ -702,10 +707,7 @@ class Unit(pyglet.sprite.Sprite):
     def spawn(self):
         """Creates a unit at it's predefined self.x and self.y. Does not move
         it to the rally point."""
-        if not self.flying:
-            ground_pos_coords_dict[(self.x, self.y)] = self
-        else:
-            air_pos_coords_dict[(self.x, self.y)] = self
+        self.pos_dict[(self.x, self.y)] = self
 
         # Minimap pixel and fow
         pixel_minimap_coords = to_minimap(self.x, self.y)
@@ -749,13 +751,9 @@ class Unit(pyglet.sprite.Sprite):
             self.dest_reached = True
             return
 
-        if not self.flying:
-            selected_dict = ground_pos_coords_dict
-        else:
-            selected_dict = air_pos_coords_dict
         # Not moving: melee distance and dest occupied
         if is_melee_dist(self, dest[0], dest[1]) and \
-                selected_dict[(dest[0], dest[1])]:
+                self.pos_dict[(dest[0], dest[1])]:
             self.dest_reached = True
             return
         # Moving or just rotating
@@ -781,7 +779,7 @@ class Unit(pyglet.sprite.Sprite):
         # Not moving
         else:
             self.dest_reached = True
-            selected_dict[(self.x, self.y)] = self
+            self.pos_dict[(self.x, self.y)] = self
             return
         diff_x = self.target_x - self.x
         diff_y = self.target_y - self.y
@@ -792,8 +790,8 @@ class Unit(pyglet.sprite.Sprite):
         self.shadow.rotation = -math.degrees(angle) + 90
         self.shadow.velocity_x = math.cos(angle) * self.speed
         self.shadow.velocity_y = math.sin(angle) * self.speed
-        selected_dict[(self.x, self.y)] = None
-        selected_dict[(self.target_x, self.target_y)] = self
+        self.pos_dict[(self.x, self.y)] = None
+        self.pos_dict[(self.target_x, self.target_y)] = self
 
     def eta(self):
         """Estimated time of arrival to the target location (not
@@ -805,10 +803,6 @@ class Unit(pyglet.sprite.Sprite):
     def update_move(self):
         """Called by update to move to the next point."""
         self.pfi += 1
-        if not self.flying:
-            selected_dict = ground_pos_coords_dict
-        else:
-            selected_dict = air_pos_coords_dict
         diff_x = self.dest_x - self.x
         diff_y = self.dest_y - self.y
         angle = math.atan2(diff_y, diff_x)  # Rad
@@ -820,17 +814,17 @@ class Unit(pyglet.sprite.Sprite):
         except IndexError:
             self.dest_reached = True
             return
-        if selected_dict[
+        if self.pos_dict[
             (next_target[0], next_target[1])]:  # Obstruction detected
             self.move((self.dest_x, self.dest_y))
             return
         if next_target:  # Moving
-            selected_dict[(self.x, self.y)] = None
+            self.pos_dict[(self.x, self.y)] = None
             self.target_x = next_target[0]
             self.target_y = next_target[1]
             self.pixel.x, self.pixel.y = to_minimap(self.target_x,
                                                     self.target_y)
-            selected_dict[(self.target_x, self.target_y)] = self
+            self.pos_dict[(self.target_x, self.target_y)] = self
             diff_x = self.target_x - self.x
             diff_y = self.target_y - self.y
             angle = math.atan2(diff_y, diff_x)  # Rad
@@ -842,7 +836,7 @@ class Unit(pyglet.sprite.Sprite):
             self.shadow.velocity_x = math.cos(angle) * self.speed
             self.shadow.velocity_y = math.sin(angle) * self.speed
         else:
-            selected_dict[(self.x, self.y)] = self
+            self.pos_dict[(self.x, self.y)] = self
             self.dest_reached = True
 
     def shoot(self, frame_count):
@@ -878,10 +872,7 @@ class Unit(pyglet.sprite.Sprite):
                 del our_units[our_units.index(self)]
             else:
                 del enemy_units[enemy_units.index(self)]
-        if not self.flying:
-            ground_pos_coords_dict[(self.x, self.y)] = None
-        else:
-            air_pos_coords_dict[(self.x, self.y)] = None
+        self.pos_dict[(self.target_x, self.target_y)] = None
         self.delete()
         try:
             del workers[workers.index(self)]
@@ -1008,8 +999,8 @@ class Pioneer(Unit):
         self.zap_sprite.y = self.y
         diff_x = self.task_x - self.x
         diff_y = self.task_y - self.y
-        dist = (diff_x ** 2 + diff_y ** 2) ** 0.5
-        self.zap_sprite.scale_x = dist / POS_SPACE
+        _dist = (diff_x ** 2 + diff_y ** 2) ** 0.5
+        self.zap_sprite.scale_x = _dist / POS_SPACE
         angle = math.atan2(diff_y, diff_x)  # Rad
         self.zap_sprite.rotation = -math.degrees(angle)
         self.zap_sprite.visible = True

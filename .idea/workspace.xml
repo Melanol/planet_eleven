@@ -134,13 +134,6 @@
       <option name="presentableId" value="Default" />
       <updated>1566740526093</updated>
     </task>
-    <task id="LOCAL-00129" summary="Unit.stop() and Builder.clear_task()">
-      <created>1571858859440</created>
-      <option name="number" value="00129" />
-      <option name="presentableId" value="LOCAL-00129" />
-      <option name="project" value="LOCAL" />
-      <updated>1571858859442</updated>
-    </task>
     <task id="LOCAL-00130" summary="Units cost minerals">
       <created>1571937655040</created>
       <option name="number" value="00130" />
@@ -477,7 +470,14 @@
       <option name="project" value="LOCAL" />
       <updated>1573307551221</updated>
     </task>
-    <option name="localTasksCounter" value="178" />
+    <task id="LOCAL-00178" summary="Big base animation activates only while working. Added 44 unrevisioned files">
+      <created>1573308368679</created>
+      <option name="number" value="00178" />
+      <option name="presentableId" value="LOCAL-00178" />
+      <option name="project" value="LOCAL" />
+      <updated>1573308368680</updated>
+    </task>
+    <option name="localTasksCounter" value="179" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -522,7 +522,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$" />
     </ignored-roots>
-    <MESSAGE value="Path-finding for air works" />
     <MESSAGE value="Some cleaning" />
     <MESSAGE value="Fixed one of the PF bugs" />
     <MESSAGE value="Cleaning" />
@@ -547,7 +546,8 @@
     <MESSAGE value="Turrets look like photon cannons now" />
     <MESSAGE value="Lists renamed" />
     <MESSAGE value="Fixed big base animation, added plasma explosion animation" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixed big base animation, added plasma explosion animation" />
+    <MESSAGE value="Big base animation activates only while working. Added 44 unrevisioned files" />
+    <option name="LAST_COMMIT_MESSAGE" value="Big base animation activates only while working. Added 44 unrevisioned files" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
