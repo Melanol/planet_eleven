@@ -120,14 +120,8 @@ def update_shooting(game_instance, our_entities, enemy_entities):
 
 class Player:
     def __init__(self, name):
-        self.mineral_count = 50000
+        self.mineral_count = 500000
         self.name = name
-
-
-class Point:
-    def __init__(self, x, y):
-        self.x = x
-        self.y = y
 
 
 class Explosion(pyglet.sprite.Sprite):
@@ -876,6 +870,7 @@ class Unit(pyglet.sprite.Sprite):
         self.delete()
         try:
             del workers[workers.index(self)]
+            self.zap_sprite.delete()
         except ValueError:
             pass
 
@@ -1372,7 +1367,7 @@ class PlanetEleven(pyglet.window.Window):
                 except AttributeError:
                     pass
             elif symbol == key.F1:
-                if self.show_fps == False:
+                if not self.show_fps:
                     self.show_fps = True
                 else:
                     self.show_fps = False
@@ -1414,14 +1409,14 @@ class PlanetEleven(pyglet.window.Window):
                 print(workers)
             elif symbol == key.K:
                 print(our_units)
-            # elif symbol == key.Z:
-            #     i = 0
-            #     for _key, value in ground_pos_coords_dict.items():
-            #         if i % 1 == 0:
-            #             if value is None:
-            #                 unit = Vulture(self, _key[0], _key[1])
-            #                 unit.spawn()
-            #         i += 1
+            elif symbol == key.Z:
+                i = 0
+                for _key, value in ground_pos_coords_dict.items():
+                    if i % 1 == 0:
+                        if value is None:
+                            unit = Vulture(self, _key[0], _key[1])
+                            unit.spawn()
+                    i += 1
             elif symbol == key.X:
                 coords_to_delete = []
                 yi = bottom_view_border + POS_SPACE // 2
@@ -1430,10 +1425,8 @@ class PlanetEleven(pyglet.window.Window):
                     for x in range(xi, xi + 17 * POS_SPACE, POS_SPACE):
                         coords_to_delete.append((x, y))
                 for coord in coords_to_delete:
-                    unit_id = ground_pos_coords_dict[coord]
-                    ground_pos_coords_dict[coord] = None
                     for unit in our_units:
-                        if unit_id == id(unit):
+                        if ground_pos_coords_dict[coord[0], coord[1]] == unit:
                             unit.kill()
             elif symbol == key.DELETE:
                 if selected in our_units:

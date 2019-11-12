@@ -4,6 +4,8 @@
     <list default="true" id="8699b466-fa9b-4e8c-b41f-e5bbe759696d" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/planet_eleven.py" beforeDir="false" afterPath="$PROJECT_DIR$/planet_eleven.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/big_base/big_base.psd" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/big_base/big_base.psd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test.py" beforeDir="false" afterPath="$PROJECT_DIR$/test.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -133,13 +135,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1566740526093</updated>
-    </task>
-    <task id="LOCAL-00130" summary="Units cost minerals">
-      <created>1571937655040</created>
-      <option name="number" value="00130" />
-      <option name="presentableId" value="LOCAL-00130" />
-      <option name="project" value="LOCAL" />
-      <updated>1571937655042</updated>
     </task>
     <task id="LOCAL-00131" summary="Enemy detection algorithm performance optimised">
       <created>1572032095064</created>
@@ -477,7 +472,14 @@
       <option name="project" value="LOCAL" />
       <updated>1573308368680</updated>
     </task>
-    <option name="localTasksCounter" value="179" />
+    <task id="LOCAL-00179" summary="Fixed unlimited distance shooting bug">
+      <created>1573316968800</created>
+      <option name="number" value="00179" />
+      <option name="presentableId" value="LOCAL-00179" />
+      <option name="project" value="LOCAL" />
+      <updated>1573316968800</updated>
+    </task>
+    <option name="localTasksCounter" value="180" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -522,7 +524,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$" />
     </ignored-roots>
-    <MESSAGE value="Some cleaning" />
     <MESSAGE value="Fixed one of the PF bugs" />
     <MESSAGE value="Cleaning" />
     <MESSAGE value="PF cleaning" />
@@ -547,7 +548,8 @@
     <MESSAGE value="Lists renamed" />
     <MESSAGE value="Fixed big base animation, added plasma explosion animation" />
     <MESSAGE value="Big base animation activates only while working. Added 44 unrevisioned files" />
-    <option name="LAST_COMMIT_MESSAGE" value="Big base animation activates only while working. Added 44 unrevisioned files" />
+    <MESSAGE value="Fixed unlimited distance shooting bug" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fixed unlimited distance shooting bug" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
