@@ -4,5 +4,4 @@ Ready:
 TODO:
 -Cannon charge animation
 -Plasma hit animation
--Worker lag fix
 -Control panel image

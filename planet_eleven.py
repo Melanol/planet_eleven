@@ -120,13 +120,19 @@ def update_shooting(game_instance, our_entities, enemy_entities):
 
 class Player:
     def __init__(self, name):
-        self.mineral_count = 500000
+        self.mineral_count = 50000
         self.name = name
 
 
-class Explosion(pyglet.sprite.Sprite):
+class HitAnim(pyglet.sprite.Sprite):
     def __init__(self, x, y):
         super().__init__(res.hit_anim, x, y, batch=explosions_batch)
+
+
+class Explosion(pyglet.sprite.Sprite):
+    def __init__(self, x, y, scale=1):
+        super().__init__(res.explosion_anim, x, y, batch=explosions_batch)
+        self.scale = scale
 
 
 class UI(pyglet.sprite.Sprite):
@@ -332,6 +338,7 @@ class Building(pyglet.sprite.Sprite):
             self.anim.delete()
         except AttributeError:
             pass
+        Explosion(self.x, self.y, self.width / POS_SPACE / 2)
         self.delete()
 
 
@@ -422,6 +429,7 @@ class AttackingBuilding(Building):
                 del enemy_buildings[enemy_buildings.index(self)]
         del shooting_buildings[shooting_buildings.index(self)]
         self.plasma_spt.delete()
+        Explosion(self.x, self.y, self.width / POS_SPACE / 2)
         self.delete()
 
 
@@ -867,6 +875,7 @@ class Unit(pyglet.sprite.Sprite):
             else:
                 del enemy_units[enemy_units.index(self)]
         self.pos_dict[(self.target_x, self.target_y)] = None
+        Explosion(self.x, self.y, 0.25)
         self.delete()
         try:
             del workers[workers.index(self)]
@@ -1108,9 +1117,20 @@ class PlanetEleven(pyglet.window.Window):
             img=res.turret_b_img, x=-100, y=-100)
         self.turret_building_spt.color = (0, 255, 0)
 
-        # Spawn units
+        # Spawn units. Have to spawn them right here. I don't remember why.
         Vulture(self, POS_SPACE / 2 + POS_SPACE * 3,
                 POS_SPACE / 2 + POS_SPACE * 10, self.computer).spawn()
+        Pioneer(self, POS_SPACE / 2 + POS_SPACE * 8,
+                POS_SPACE / 2 + POS_SPACE * 6).spawn()
+        Vulture(self, POS_SPACE / 2 + POS_SPACE * 9,
+                POS_SPACE / 2 + POS_SPACE * 6).spawn()
+        Centurion(self, POS_SPACE / 2 + POS_SPACE * 10,
+                POS_SPACE / 2 + POS_SPACE * 6).spawn()
+        Defiler(self, POS_SPACE / 2 + POS_SPACE * 11,
+                POS_SPACE / 2 + POS_SPACE * 6).spawn()
+        Apocalypse(self, POS_SPACE / 2 + POS_SPACE * 12,
+                POS_SPACE / 2 + POS_SPACE * 6).spawn()
+
 
     def on_draw(self):
         """
@@ -1208,11 +1228,11 @@ class PlanetEleven(pyglet.window.Window):
                 except AttributeError:
                     pass
             # AI ordering units
-            # if self.frame_count % 60 == 0:
-            #     for building in enemy_buildings:
-            #         if self.computer.workers_count < 8:
-            #             order(self, building, Pioneer)
-            #             self.computer.workers_count += 1
+            if self.frame_count % 60 == 0:
+                for building in enemy_buildings:
+                    if self.computer.workers_count < 8:
+                        order(self, building, Pioneer)
+                        self.computer.workers_count += 1
             # Units
             # Gathering resources
             for worker in workers:
@@ -1237,8 +1257,7 @@ class PlanetEleven(pyglet.window.Window):
             #             if all((not worker.is_gathering,
             #                     worker.dest_reached,
             #                     worker.owner.name == 'computer1')):
-            #                 dist_2_closest_min = dist(closest_min,
-            #                                           worker)
+            #                 dist_2_closest_min = dist(closest_min, worker)
             #                 for mineral in minerals[1:]:
             #                     dist_2_min = dist(mineral, worker)
             #                     if dist_2_min < dist_2_closest_min:
@@ -1254,7 +1273,7 @@ class PlanetEleven(pyglet.window.Window):
             #     except IndexError:
             #         pass
 
-            # Build buildings
+            # Build buildings. TODO: Optimize
             for worker in workers:
                 if worker.to_build:
                     if is_melee_dist(worker, worker.task_x, worker.task_y):
@@ -1328,7 +1347,7 @@ class PlanetEleven(pyglet.window.Window):
                     projectile.update()
                 else:  # Hit!
                     projectile.target_obj.hp -= projectile.damage
-                    Explosion(projectile.x, projectile.y)
+                    HitAnim(projectile.x, projectile.y)
                     projectile.delete()
                     del projectiles[i]
             # Destroying minerals

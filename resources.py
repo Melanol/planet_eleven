@@ -36,7 +36,8 @@ def center_load_anim(_str):
     return anim
 
 
-pyglet.resource.path = ['sprites', 'sprites/big_base', 'sprites/plasma_hit']
+pyglet.resource.path = ['sprites', 'sprites/big_base', 'sprites/plasma_hit',
+                        'sprites/explosion']
 pyglet.resource.reindex()
 
 # Utilities
@@ -130,3 +131,11 @@ plasma2 = center_load('plasma16_2.png')
 plasma3 = center_load('plasma16_3.png')
 plasma_anim = pyglet.image.Animation.from_image_sequence([plasma1, plasma2,
                                                           plasma3], 0.1, True)
+
+explosion1 = center_load('explosion1.png')
+explosion2 = center_load('explosion2.png')
+explosion3 = center_load('explosion3.png')
+explosion4 = center_load('explosion4.png')
+explosion5 = center_load('explosion5.png')
+explosion_anim = pyglet.image.Animation.from_image_sequence([explosion1,
+    explosion2, explosion3, explosion4, explosion5], 0.07, False)
