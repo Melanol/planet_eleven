@@ -3,30 +3,17 @@
   <component name="ChangeListManager">
     <list default="true" id="8699b466-fa9b-4e8c-b41f-e5bbe759696d" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/art/GjmU55UDMsQ.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/art/GjmU55UDMsQ.psd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/art/X3zYy0oexgA.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/art/X3zYy0oexgA.psd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/art/photo_2019-10-15_03-49-48 (2).jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/art/photo_2019-10-15_03-49-48.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/art/Новая-иллюстрация 1.psd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/art/Новая-иллюстрация.psd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/demos/twitter updates/3/updates to include.txt" beforeDir="false" afterPath="$PROJECT_DIR$/demos/twitter updates/3/updates to include.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/art/the eye.psd" beforeDir="false" afterPath="$PROJECT_DIR$/art/the eye.psd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/art/the sunrise.psd" beforeDir="false" afterPath="$PROJECT_DIR$/art/the sunrise.psd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/constants_and_utilities.py" beforeDir="false" afterPath="$PROJECT_DIR$/constants_and_utilities.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/planet_eleven.py" beforeDir="false" afterPath="$PROJECT_DIR$/planet_eleven.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources.py" beforeDir="false" afterPath="$PROJECT_DIR$/resources.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/armory.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/armory.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/armory.psd" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/armory.psd" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/big_base/big_base.psd" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/big_base/big_base.psd" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/building_explosion/building_explosion.psd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/building_explosion/building_explosion1.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/building_explosion/building_explosion2.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/building_explosion/building_explosion3.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/turret.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/turret.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/turret.psd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/turret_base.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/turret_base.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/vulture.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/vulture.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/vulture.psd" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/vulture.psd" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/todo.txt" beforeDir="false" afterPath="$PROJECT_DIR$/todo.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/explosion/explosion32.psd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/explosion/explosion_p.psd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/explosion/pink/explosion1.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/explosion/pink/explosion2.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/explosion/pink/explosion3.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/explosion/pink/explosion4.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/explosion/pink/explosion5.png" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -156,13 +143,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1566740526093</updated>
-    </task>
-    <task id="LOCAL-00132" summary="Enemy detection algorithm for buildings performance optimised">
-      <created>1572036674382</created>
-      <option name="number" value="00132" />
-      <option name="presentableId" value="LOCAL-00132" />
-      <option name="project" value="LOCAL" />
-      <updated>1572036674382</updated>
     </task>
     <task id="LOCAL-00133" summary="A* works on the map. No proper movement yet">
       <created>1572138760128</created>
@@ -500,7 +480,14 @@
       <option name="project" value="LOCAL" />
       <updated>1573552912994</updated>
     </task>
-    <option name="localTasksCounter" value="181" />
+    <task id="LOCAL-00181" summary="Fixed the undead workers bug">
+      <created>1573655464230</created>
+      <option name="number" value="00181" />
+      <option name="presentableId" value="LOCAL-00181" />
+      <option name="project" value="LOCAL" />
+      <updated>1573655464231</updated>
+    </task>
+    <option name="localTasksCounter" value="182" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
