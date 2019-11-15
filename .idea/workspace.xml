@@ -3,17 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="8699b466-fa9b-4e8c-b41f-e5bbe759696d" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/art/the eye.psd" beforeDir="false" afterPath="$PROJECT_DIR$/art/the eye.psd" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/art/the sunrise.psd" beforeDir="false" afterPath="$PROJECT_DIR$/art/the sunrise.psd" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/constants_and_utilities.py" beforeDir="false" afterPath="$PROJECT_DIR$/constants_and_utilities.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/planet_eleven.py" beforeDir="false" afterPath="$PROJECT_DIR$/planet_eleven.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/explosion/explosion32.psd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/explosion/explosion_p.psd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/explosion/pink/explosion1.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/explosion/pink/explosion2.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/explosion/pink/explosion3.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/explosion/pink/explosion4.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/explosion/pink/explosion5.png" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -143,13 +133,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1566740526093</updated>
-    </task>
-    <task id="LOCAL-00133" summary="A* works on the map. No proper movement yet">
-      <created>1572138760128</created>
-      <option name="number" value="00133" />
-      <option name="presentableId" value="LOCAL-00133" />
-      <option name="project" value="LOCAL" />
-      <updated>1572138760131</updated>
     </task>
     <task id="LOCAL-00134" summary="A* bug fix">
       <created>1572215525436</created>
@@ -487,7 +470,14 @@
       <option name="project" value="LOCAL" />
       <updated>1573655464231</updated>
     </task>
-    <option name="localTasksCounter" value="182" />
+    <task id="LOCAL-00182" summary="Just saving">
+      <created>1573829994409</created>
+      <option name="number" value="00182" />
+      <option name="presentableId" value="LOCAL-00182" />
+      <option name="project" value="LOCAL" />
+      <updated>1573829994410</updated>
+    </task>
+    <option name="localTasksCounter" value="183" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -532,7 +522,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$" />
     </ignored-roots>
-    <MESSAGE value="Cleaning" />
     <MESSAGE value="PF cleaning" />
     <MESSAGE value="Renamed 2 units" />
     <MESSAGE value="PF fixes" />
@@ -557,7 +546,8 @@
     <MESSAGE value="Big base animation activates only while working. Added 44 unrevisioned files" />
     <MESSAGE value="Fixed unlimited distance shooting bug" />
     <MESSAGE value="Fixed the undead workers bug" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixed the undead workers bug" />
+    <MESSAGE value="Just saving" />
+    <option name="LAST_COMMIT_MESSAGE" value="Just saving" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

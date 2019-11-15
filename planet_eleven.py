@@ -46,7 +46,7 @@ gen_pos_coords()
 
 def to_minimap(x, y):  # unit.x and unit.y
     """Converts global coords into minimap coords. For positioning minimap
-    pixels."""
+    pixels and camera."""
     x = x / PS
     if not x.is_integer():
         x += 1
@@ -1110,6 +1110,9 @@ class PlanetEleven(pyglet.window.Window):
         self.armory_building_spt.color = (0, 255, 0)
         self.turret_building_spt = Sprite(img=res.turret_b_img, x=-100, y=-100)
         self.turret_building_spt.color = (0, 255, 0)
+        self.big_base_building_spt = Sprite(img=res.big_base_icon_img, x=-100,
+                                            y=-100)
+        self.big_base_building_spt.color = (0, 255, 0)
 
         # Spawn units. Have to spawn them right here. I don't remember why.
         Vulture(self, PS / 2 + PS * 3,
@@ -1647,6 +1650,13 @@ class PlanetEleven(pyglet.window.Window):
                                 self.turret_building_spt.color = (0, 255, 0)
                                 self.build_loc_sel_phase = True
                                 self.to_build = "turret"
+                            elif self.big_base_b.x - 16 <= x <= \
+                                    self.big_base_b.x + 16 and \
+                                    self.big_base_b.y - 16 <= y <= \
+                                    self.big_base_b.y + 16:
+                                self.big_base_building_spt.color = (0, 255, 0)
+                                self.build_loc_sel_phase = True
+                                self.to_build = "big_base"
             # Building location selection
             else:
                 # Game field
@@ -1767,16 +1777,14 @@ class PlanetEleven(pyglet.window.Window):
             minimap_fow_y
 
         # Viewport limits
-        a = POS_COORDS_N_COLUMNS * PS - SCREEN_W // PS \
-            * PS + PS * 4
+        a = POS_COORDS_N_COLUMNS * PS - SCREEN_W // PS * PS + PS * 4
         if left_view_border < 0:
             left_view_border = 0
         elif left_view_border > a:
             left_view_border = a
         if bottom_view_border < 0:
             bottom_view_border = 0
-        elif bottom_view_border > POS_COORDS_N_ROWS * PS \
-                - SCREEN_H:
+        elif bottom_view_border > POS_COORDS_N_ROWS * PS - SCREEN_H:
             bottom_view_border = POS_COORDS_N_ROWS * PS - SCREEN_H
 
         self.mm_textured_bg.x = MM0[0] + left_view_border
@@ -1790,7 +1798,7 @@ class PlanetEleven(pyglet.window.Window):
                       + enemy_buildings + enemy_units:
             entity.pixel.x, entity.pixel.y = to_minimap(entity.x, entity.y)
         self.mm_cam_frame_spt.x, self.mm_cam_frame_spt.y = \
-            to_minimap(left_view_border - 3, bottom_view_border - 3)
+            to_minimap(left_view_border - 2, bottom_view_border - 2)
         minimap_fow_x = MM0[0] - 1 + left_view_border
         minimap_fow_y = MM0[1] - 1 + bottom_view_border
 
