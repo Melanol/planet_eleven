@@ -1106,13 +1106,8 @@ class PlanetEleven(pyglet.window.Window):
 
         self.basic_unit_c_bs = [self.move_b, self.stop_b, self.attack_b]
         self.c_bs_to_render = self.our_1st_base.ctrl_buttons
-        self.armory_building_spt = Sprite(img=res.armory_img, x=-100, y=-100)
-        self.armory_building_spt.color = (0, 255, 0)
-        self.turret_building_spt = Sprite(img=res.turret_b_img, x=-100, y=-100)
-        self.turret_building_spt.color = (0, 255, 0)
-        self.big_base_building_spt = Sprite(img=res.big_base_icon_img, x=-100,
-                                            y=-100)
-        self.big_base_building_spt.color = (0, 255, 0)
+        self.to_build_spt = Sprite(img=res.armory_img, x=-100, y=-100)
+        self.to_build_spt.color = (0, 255, 0)
 
         # Spawn units. Have to spawn them right here. I don't remember why.
         Vulture(self, PS / 2 + PS * 3,
@@ -1179,10 +1174,7 @@ class PlanetEleven(pyglet.window.Window):
         self.fow_texture.blit(-32, -32)
         utilities_batch.draw()
         if self.build_loc_sel_phase:
-            if self.to_build == "armory":
-                self.armory_building_spt.draw()
-            elif self.to_build == "turret":
-                self.turret_building_spt.draw()
+            self.to_build_spt.draw()
         self.cp_spt.draw()
         self.menu_b.draw()
         self.sel_frame_cp.draw()
@@ -1640,21 +1632,24 @@ class PlanetEleven(pyglet.window.Window):
                                     self.armory_b.x + 16 and \
                                     self.armory_b.y - 16 <= y <= \
                                     self.armory_b.y + 16:
-                                self.armory_building_spt.color = (0, 255, 0)
+                                self.to_build_spt.image = res.armory_img
+                                self.to_build_spt.color = (0, 255, 0)
                                 self.build_loc_sel_phase = True
                                 self.to_build = "armory"
                             elif self.turret_b.x - 16 <= x <= \
                                     self.turret_b.x + 16 and \
                                     self.turret_b.y - 16 <= y <= \
                                     self.turret_b.y + 16:
-                                self.turret_building_spt.color = (0, 255, 0)
+                                self.to_build_spt.image = res.turret_b_img
+                                self.to_build_spt.color = (0, 255, 0)
                                 self.build_loc_sel_phase = True
                                 self.to_build = "turret"
                             elif self.big_base_b.x - 16 <= x <= \
                                     self.big_base_b.x + 16 and \
                                     self.big_base_b.y - 16 <= y <= \
                                     self.big_base_b.y + 16:
-                                self.big_base_building_spt.color = (0, 255, 0)
+                                self.to_build_spt.image = res.big_base_img
+                                self.to_build_spt.color = (0, 255, 0)
                                 self.build_loc_sel_phase = True
                                 self.to_build = "big_base"
             # Building location selection
@@ -1683,30 +1678,17 @@ class PlanetEleven(pyglet.window.Window):
                     x /= 2
                     y /= 2
                 x, y = round_coords(x, y)
-                if self.to_build == "armory":
-                    self.armory_building_spt.x = x + left_view_border
-                    self.armory_building_spt.y = y + bottom_view_border
-                    x, y = mc(x=x, y=y)
-                    x = int((x - 16) / 32) + 1
-                    y = int((y - 16) / 32) + 1
-                    if ground_pos_coords_dict[self.armory_building_spt.x,
-                                              self.armory_building_spt.y] or \
-                            self.npa[y, x, 3] != 0:
-                        self.armory_building_spt.color = (255, 0, 0)
-                    else:
-                        self.armory_building_spt.color = (0, 255, 0)
-                elif self.to_build == "turret":
-                    self.turret_building_spt.x = x + left_view_border
-                    self.turret_building_spt.y = y + bottom_view_border
-                    x, y = mc(x=x, y=y)
-                    x = int((x - 16) / 32) + 1
-                    y = int((y - 16) / 32) + 1
-                    if ground_pos_coords_dict[self.turret_building_spt.x,
-                                              self.turret_building_spt.y] \
-                            or self.npa[y, x, 3] != 0:
-                        self.turret_building_spt.color = (255, 0, 0)
-                    else:
-                        self.turret_building_spt.color = (0, 255, 0)
+                self.to_build_spt.x = x + left_view_border
+                self.to_build_spt.y = y + bottom_view_border
+                x, y = mc(x=x, y=y)
+                x = int((x - 16) / 32) + 1
+                y = int((y - 16) / 32) + 1
+                if ground_pos_coords_dict[self.to_build_spt.x,
+                                          self.to_build_spt.y] or \
+                        self.npa[y, x, 3] != 0:
+                    self.to_build_spt.color = (255, 0, 0)
+                else:
+                    self.to_build_spt.color = (0, 255, 0)
 
     def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
         global left_view_border, bottom_view_border

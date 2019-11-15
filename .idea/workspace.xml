@@ -4,6 +4,7 @@
     <list default="true" id="8699b466-fa9b-4e8c-b41f-e5bbe759696d" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/planet_eleven.py" beforeDir="false" afterPath="$PROJECT_DIR$/planet_eleven.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test.py" beforeDir="false" afterPath="$PROJECT_DIR$/test.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -65,7 +66,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.planet_eleven">
+  <component name="RunManager" selected="Python.test">
     <configuration name="planet_eleven" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="planet_eleven" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -114,8 +115,8 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.planet_eleven" />
         <item itemvalue="Python.test" />
+        <item itemvalue="Python.planet_eleven" />
       </list>
     </recent_temporary>
   </component>
@@ -133,13 +134,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1566740526093</updated>
-    </task>
-    <task id="LOCAL-00134" summary="A* bug fix">
-      <created>1572215525436</created>
-      <option name="number" value="00134" />
-      <option name="presentableId" value="LOCAL-00134" />
-      <option name="project" value="LOCAL" />
-      <updated>1572215525437</updated>
     </task>
     <task id="LOCAL-00135" summary="A* bug fix">
       <created>1572215963562</created>
@@ -477,7 +471,14 @@
       <option name="project" value="LOCAL" />
       <updated>1573829994410</updated>
     </task>
-    <option name="localTasksCounter" value="183" />
+    <task id="LOCAL-00183" summary="Just saving">
+      <created>1573833790874</created>
+      <option name="number" value="00183" />
+      <option name="presentableId" value="LOCAL-00183" />
+      <option name="project" value="LOCAL" />
+      <updated>1573833790874</updated>
+    </task>
+    <option name="localTasksCounter" value="184" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
