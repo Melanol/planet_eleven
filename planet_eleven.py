@@ -1700,8 +1700,6 @@ class PlanetEleven(pyglet.window.Window):
                 x, y = mc(x=x, y=y)
                 s_x = int((x - 16) / 32) + 1
                 s_y = int((y - 16) / 32) + 1
-                x = x + left_view_border
-                y = y + bottom_view_border
                 coords_to_check = [(x, y), (x + PS, y),
                     (x + PS, y + PS), (x, y + PS)]
                 no_place = False

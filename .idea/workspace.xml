@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="8699b466-fa9b-4e8c-b41f-e5bbe759696d" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/planet_eleven.py" beforeDir="false" afterPath="$PROJECT_DIR$/planet_eleven.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/todo.txt" beforeDir="false" afterPath="$PROJECT_DIR$/todo.txt" afterDir="false" />
-    </list>
+    <list default="true" id="8699b466-fa9b-4e8c-b41f-e5bbe759696d" name="Default Changelist" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -134,13 +130,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1566740526093</updated>
-    </task>
-    <task id="LOCAL-00138" summary="Minor path-finding modifications">
-      <created>1572226474069</created>
-      <option name="number" value="00138" />
-      <option name="presentableId" value="LOCAL-00138" />
-      <option name="project" value="LOCAL" />
-      <updated>1572226474069</updated>
     </task>
     <task id="LOCAL-00139" summary="Minor path-finding modifications">
       <created>1572227421021</created>
@@ -478,7 +467,14 @@
       <option name="project" value="LOCAL" />
       <updated>1573999323732</updated>
     </task>
-    <option name="localTasksCounter" value="187" />
+    <task id="LOCAL-00187" summary="Just saving">
+      <created>1574012840495</created>
+      <option name="number" value="00187" />
+      <option name="presentableId" value="LOCAL-00187" />
+      <option name="project" value="LOCAL" />
+      <updated>1574012840496</updated>
+    </task>
+    <option name="localTasksCounter" value="188" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -546,9 +542,9 @@
     <MESSAGE value="Big base animation activates only while working. Added 44 unrevisioned files" />
     <MESSAGE value="Fixed unlimited distance shooting bug" />
     <MESSAGE value="Fixed the undead workers bug" />
-    <MESSAGE value="Just saving" />
     <MESSAGE value="Can now build 2-blocks-wide buildings" />
-    <option name="LAST_COMMIT_MESSAGE" value="Can now build 2-blocks-wide buildings" />
+    <MESSAGE value="Just saving" />
+    <option name="LAST_COMMIT_MESSAGE" value="Just saving" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
