@@ -3,8 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="8699b466-fa9b-4e8c-b41f-e5bbe759696d" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/constants_and_utilities.py" beforeDir="false" afterPath="$PROJECT_DIR$/constants_and_utilities.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/planet_eleven.py" beforeDir="false" afterPath="$PROJECT_DIR$/planet_eleven.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/todo.txt" beforeDir="false" afterPath="$PROJECT_DIR$/todo.txt" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -134,20 +134,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1566740526093</updated>
-    </task>
-    <task id="LOCAL-00136" summary="A* bug fix">
-      <created>1572219154387</created>
-      <option name="number" value="00136" />
-      <option name="presentableId" value="LOCAL-00136" />
-      <option name="project" value="LOCAL" />
-      <updated>1572219154388</updated>
-    </task>
-    <task id="LOCAL-00137" summary="Path-finding works">
-      <created>1572223450326</created>
-      <option name="number" value="00137" />
-      <option name="presentableId" value="LOCAL-00137" />
-      <option name="project" value="LOCAL" />
-      <updated>1572223450328</updated>
     </task>
     <task id="LOCAL-00138" summary="Minor path-finding modifications">
       <created>1572226474069</created>
@@ -478,7 +464,21 @@
       <option name="project" value="LOCAL" />
       <updated>1573839851839</updated>
     </task>
-    <option name="localTasksCounter" value="185" />
+    <task id="LOCAL-00185" summary="Can now build 2-blocks-wide buildings">
+      <created>1573999256567</created>
+      <option name="number" value="00185" />
+      <option name="presentableId" value="LOCAL-00185" />
+      <option name="project" value="LOCAL" />
+      <updated>1573999256568</updated>
+    </task>
+    <task id="LOCAL-00186" summary="Can now build 2-blocks-wide buildings">
+      <created>1573999323732</created>
+      <option name="number" value="00186" />
+      <option name="presentableId" value="LOCAL-00186" />
+      <option name="project" value="LOCAL" />
+      <updated>1573999323732</updated>
+    </task>
+    <option name="localTasksCounter" value="187" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -523,7 +523,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$" />
     </ignored-roots>
-    <MESSAGE value="PF cleaning" />
     <MESSAGE value="Renamed 2 units" />
     <MESSAGE value="PF fixes" />
     <MESSAGE value="No-space PF" />
@@ -548,7 +547,8 @@
     <MESSAGE value="Fixed unlimited distance shooting bug" />
     <MESSAGE value="Fixed the undead workers bug" />
     <MESSAGE value="Just saving" />
-    <option name="LAST_COMMIT_MESSAGE" value="Just saving" />
+    <MESSAGE value="Can now build 2-blocks-wide buildings" />
+    <option name="LAST_COMMIT_MESSAGE" value="Can now build 2-blocks-wide buildings" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

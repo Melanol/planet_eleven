@@ -122,7 +122,7 @@ def update_shooting(game_instance, our_entities, enemy_entities):
 
 class Player:
     def __init__(self, name):
-        self.mineral_count = 50000
+        self.mineral_count = 50
         self.name = name
 
 
@@ -1094,6 +1094,14 @@ class PlanetEleven(pyglet.window.Window):
                 PS / 2 + PS * 7)
         Mineral(self, PS / 2 + PS * 4,
                 PS / 2 + PS * 8, amount=1)
+        Mineral(self, PS / 2 + PS * 10,
+                PS / 2 + PS * 4)
+        Mineral(self, PS / 2 + PS * 12,
+                PS / 2 + PS * 4)
+        Mineral(self, PS / 2 + PS * 6,
+                PS / 2 + PS * 4)
+        Mineral(self, PS / 2 + PS * 8,
+                PS / 2 + PS * 4)
         self.our_1st_base = BigBase(self, PS * 7, PS * 8)
         selected = self.our_1st_base
         BigBase(self, PS * 5, PS * 6, owner=self.computer)
