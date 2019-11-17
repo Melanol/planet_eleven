@@ -8,9 +8,9 @@
 -Ordering a building at a loc where a unit will be spawned messes up things
 -Ordering a worker whose movement is blocked to mine minerals crashes the game
 -Big buildings have troubles with black pixels (green when supposed to be red)
--Stop doesn't stop workers from working
 
-# Not important
+# Not very important
+-Stop doesn't stop workers from working
 -Workers that spawned hear minerals cannot mine them
 -Selected info
 -Spawning in the direction of the rally point?

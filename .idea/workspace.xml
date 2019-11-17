@@ -135,13 +135,6 @@
       <option name="presentableId" value="Default" />
       <updated>1566740526093</updated>
     </task>
-    <task id="LOCAL-00141" summary="Path-finding bug fixes">
-      <created>1572306701896</created>
-      <option name="number" value="00141" />
-      <option name="presentableId" value="LOCAL-00141" />
-      <option name="project" value="LOCAL" />
-      <updated>1572306701897</updated>
-    </task>
     <task id="LOCAL-00142" summary="Path-finding for air works">
       <created>1572308044295</created>
       <option name="number" value="00142" />
@@ -478,7 +471,14 @@
       <option name="project" value="LOCAL" />
       <updated>1574014327130</updated>
     </task>
-    <option name="localTasksCounter" value="190" />
+    <task id="LOCAL-00190" summary="Fixed a bug causing BigBase to ignore some black pixels">
+      <created>1574018029113</created>
+      <option name="number" value="00190" />
+      <option name="presentableId" value="LOCAL-00190" />
+      <option name="project" value="LOCAL" />
+      <updated>1574018029113</updated>
+    </task>
+    <option name="localTasksCounter" value="191" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -523,7 +523,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$" />
     </ignored-roots>
-    <MESSAGE value="PF fixes" />
     <MESSAGE value="No-space PF" />
     <MESSAGE value="PF improvements" />
     <MESSAGE value="Revert here" />
@@ -548,7 +547,8 @@
     <MESSAGE value="Can now build 2-blocks-wide buildings" />
     <MESSAGE value="Just saving" />
     <MESSAGE value="Fixed the bug with workers unable to move but having a mineral to mine." />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixed the bug with workers unable to move but having a mineral to mine." />
+    <MESSAGE value="Fixed a bug causing BigBase to ignore some black pixels" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fixed a bug causing BigBase to ignore some black pixels" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

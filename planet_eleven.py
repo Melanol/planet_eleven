@@ -121,7 +121,7 @@ def update_shooting(game_instance, our_entities, enemy_entities):
 
 class Player:
     def __init__(self, name):
-        self.mineral_count = 50
+        self.mineral_count = 50000
         self.name = name
 
 
@@ -462,7 +462,7 @@ class Turret(AttackingBuilding):
             owner = game_inst.this_player
         super().__init__(game_inst, owner=owner, our_img=res.turret_base_img,
                          enemy_img=res.turret_base_img, vision_radius=5,
-                         hp=100, x=x, y=y, damage=10, cooldown=60)
+                         hp=100, x=x, y=y, damage=20, cooldown=60)
 
 
 node_count = 0
@@ -1014,13 +1014,25 @@ class Pioneer(Unit):
         self.is_gathering = False
         self.zap_sprite.visible = False
         self.dest_reached = True
+        g_pos_coord_d[(self.target_x, self.target_y)] = None
         g_pos_coord_d[(self.x, self.y)] = self
         if self.to_build == "armory":
-            Armory(self.outer_instance, self.task_x, self.task_y)
+            if not g_pos_coord_d[(self.task_x, self.task_y)]:
+                Armory(self.outer_instance, self.task_x, self.task_y)
         elif self.to_build == "turret":
-            Turret(self.outer_instance, self.task_x, self.task_y)
+            if not g_pos_coord_d[(self.task_x, self.task_y)]:
+                Turret(self.outer_instance, self.task_x, self.task_y)
         elif self.to_build == "big_base":
-            BigBase(self.outer_instance, self.task_x, self.task_y)
+            x = self.task_x - PS / 2
+            y = self.task_y - PS / 2
+            coords_to_check = [(x, y), (x + PS, y), (x + PS, y + PS), (x, y + PS)]
+            no_place = False
+            for c in coords_to_check:
+                if g_pos_coord_d[(c[0], c[1])]:
+                    no_place = True
+                    break
+            if no_place is False:
+                BigBase(self.outer_instance, self.task_x, self.task_y)
         self.to_build = None
 
     def gather(self):
