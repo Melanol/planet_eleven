@@ -161,7 +161,7 @@ class Mineral(Sprite):
         self.delete()
 
 
-def order(game_instance, building, unit):
+def order_unit(game_instance, building, unit):
     """Orders units in buildings. Checks if you have enough minerals."""
     owner = building.owner
     if owner.mineral_count - unit.cost >= 0:
@@ -172,6 +172,18 @@ def order(game_instance, building, unit):
         building.anim.visible = True
         if len(building.building_queue) == 1:
             building.building_start_time = game_instance.frame_count
+    else:
+        if owner == game_instance.this_player:
+            print("Not enough minerals")
+
+
+def order_building(game_instance, unit, building):
+    """Orders units in buildings. Checks if you have enough minerals."""
+    owner = unit.owner
+    if owner.mineral_count - building.cost >= 0:
+        owner.mineral_count -= building.cost
+        game_instance.min_count_label.text = str(
+            int(game_instance.this_player.mineral_count))
     else:
         if owner == game_instance.this_player:
             print("Not enough minerals")
@@ -345,6 +357,9 @@ class Building(Sprite):
 
 
 class Armory(Building):
+    cost = 100
+    building_time = 100
+
     def __init__(self, game_inst, x, y, owner=None):
         if owner is None:
             owner = game_inst.this_player
@@ -367,6 +382,9 @@ class ProductionBuilding(Building):
 
 
 class BigBase(ProductionBuilding):
+    cost = 100
+    building_time = 100
+
     def __init__(self, game_inst, x, y, owner=None):
         if owner is None:
             owner = game_inst.this_player
@@ -436,6 +454,9 @@ class AttackingBuilding(Building):
 
 
 class Turret(AttackingBuilding):
+    cost = 100
+    building_time = 100
+
     def __init__(self, game_inst, x, y, owner=None):
         if owner is None:
             owner = game_inst.this_player
@@ -1231,7 +1252,7 @@ class PlanetEleven(pyglet.window.Window):
             if self.frame_count % 60 == 0:
                 for building in enemy_buildings:
                     if self.computer.workers_count < 8:
-                        order(self, building, Pioneer)
+                        order_unit(self, building, Pioneer)
                         self.computer.workers_count += 1
             # Units
             # Gathering resources
@@ -1611,31 +1632,31 @@ class PlanetEleven(pyglet.window.Window):
                                 self.defiler_b.x + 16 and \
                                 self.defiler_b.y - 16 <= y <= \
                                 self.defiler_b.y + 16:
-                            order(self, selected, Defiler)
+                            order_unit(self, selected, Defiler)
                         # Create centurion
                         elif self.centurion_b.x - 16 <= x <= \
                                 self.centurion_b.x + 16 and \
                                 self.centurion_b.y - 16 <= y <= \
                                 self.centurion_b.y + 16:
-                            order(self, selected, Centurion)
+                            order_unit(self, selected, Centurion)
                         # Create vulture
                         elif self.vulture_b.x - 16 <= x <= \
                                 self.vulture_b.x + 16 and \
                                 self.vulture_b.y - 16 <= y <= \
                                 self.vulture_b.y + 16:
-                            order(self, selected, Vulture)
+                            order_unit(self, selected, Vulture)
                         # Create apocalypse
                         elif self.apocalypse_b.x - 16 <= x <= \
                                 self.apocalypse_b.x + 16 and \
                                 self.apocalypse_b.y - 16 <= y <= \
                                 self.apocalypse_b.y + 16:
-                            order(self, selected, Apocalypse)
+                            order_unit(self, selected, Apocalypse)
                         # Create pioneer
                         elif self.pioneer_b.x - 16 <= x <= \
                                 self.pioneer_b.x + 16 and \
                                 self.pioneer_b.y - 16 <= y <= \
                                 self.pioneer_b.y + 16:
-                            order(self, selected, Pioneer)
+                            order_unit(self, selected, Pioneer)
                     elif selected in our_units:
                         # Move
                         # Stop
@@ -1704,13 +1725,20 @@ class PlanetEleven(pyglet.window.Window):
                 x, y = mc(x=x, y=y)
                 s_x = int((x - 16) / 32) + 1
                 s_y = int((y - 16) / 32) + 1
-                coords_to_check = [(x, y), (x + PS, y),
-                                   (x + PS, y + PS), (x, y + PS)]
+                s_coords_to_check = [(s_x, s_y), (s_x + 1, s_y),
+                                     (s_x + 1, s_y + 1), (s_x, s_y + 1)]
                 no_place = False
-                for c in coords_to_check:
-                    if g_pos_coord_d[c[0], c[1]] or self.npa[s_y, s_x, 3] != 0:
+                for c in s_coords_to_check:
+                    if self.npa[c[1], c[0], 3] != 0:
                         no_place = True
                         break
+                if no_place is False:
+                    coords_to_check = [(x, y), (x + PS, y),
+                                       (x + PS, y + PS), (x, y + PS)]
+                    for c in coords_to_check:
+                        if g_pos_coord_d[c[0], c[1]]:
+                            no_place = True
+                            break
                 if no_place:
                     self.to_build_spt.color = (255, 0, 0)
                     self.loc_clear = False
