@@ -684,7 +684,7 @@ class Unit(Sprite):
     def __init__(self, game_inst, owner, our_img, enemy_img, flying,
                  vision_radius, hp, x, y, speed, has_weapon, damage, cooldown,
                  attacks_ground, attacks_air, shadow_sprite, ctrl_buttons):
-        self.outer_instance = game_inst
+        self.game_inst = game_inst
         self.owner = owner
         if owner.name == 'player1':
             img = our_img
@@ -741,7 +741,7 @@ class Unit(Sprite):
         pixel_minimap_coords = to_minimap(self.x, self.y)
         if self.owner.name == 'player1':
             pixel = res.mm_our_img
-            self.outer_instance.update_fow(self.x, self.y, self.vision_radius)
+            self.game_inst.update_fow(self.x, self.y, self.vision_radius)
         else:
             pixel = res.mm_enemy_img
         self.pixel = Sprite(img=pixel, x=pixel_minimap_coords[0],
@@ -1019,10 +1019,14 @@ class Pioneer(Unit):
         g_pos_coord_d[(self.x, self.y)] = self
         if self.to_build == "armory":
             if not g_pos_coord_d[(self.task_x, self.task_y)]:
-                Armory(self.outer_instance, self.task_x, self.task_y)
+                Armory(self.game_inst, self.task_x, self.task_y)
+            else:
+                self.owner.mineral_count += Armory.cost
         elif self.to_build == "turret":
             if not g_pos_coord_d[(self.task_x, self.task_y)]:
-                Turret(self.outer_instance, self.task_x, self.task_y)
+                Turret(self.game_inst, self.task_x, self.task_y)
+            else:
+                self.owner.mineral_count += Turret.cost
         elif self.to_build == "big_base":
             x = self.task_x - PS / 2
             y = self.task_y - PS / 2
@@ -1033,7 +1037,9 @@ class Pioneer(Unit):
                     no_place = True
                     break
             if no_place is False:
-                BigBase(self.outer_instance, self.task_x, self.task_y)
+                BigBase(self.game_inst, self.task_x, self.task_y)
+            else:
+                self.owner.mineral_count += BigBase.cost
         self.to_build = None
 
     def gather(self):
@@ -1048,7 +1054,7 @@ class Pioneer(Unit):
         angle = math.atan2(diff_y, diff_x)  # Rad
         self.zap_sprite.rotation = -math.degrees(angle)
         self.zap_sprite.visible = True
-        self.cycle_started = self.outer_instance.frame_count
+        self.cycle_started = self.game_inst.frame_count
 
     def clear_task(self):
         self.to_build = None
