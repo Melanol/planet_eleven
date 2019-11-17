@@ -15,7 +15,6 @@ from projectile import Projectile
 from draw_dot import draw_dot
 from constants_and_utilities import *
 
-
 left_view_border = 0
 bottom_view_border = 0
 
@@ -265,6 +264,7 @@ def building_spawn_unit(game_instance, building):
 
 class Building(Sprite):
     """__init__ == spawn()"""
+
     def __init__(self, game_inst, owner, our_img, enemy_img, vision_radius,
                  hp, x, y):
         self.owner = owner
@@ -320,9 +320,9 @@ class Building(Sprite):
 
         pixel_minimap_coords = to_minimap(self.x, self.y)
         self.pixel = Sprite(img=minimap_pixel,
-                                          x=pixel_minimap_coords[0],
-                                          y=pixel_minimap_coords[1],
-                                          batch=minimap_pixels_batch)
+                            x=pixel_minimap_coords[0],
+                            y=pixel_minimap_coords[1],
+                            batch=minimap_pixels_batch)
 
     def kill(self, delay_del=False):
         global our_buildings, enemy_buildings
@@ -379,10 +379,10 @@ class BigBase(ProductionBuilding):
         self.is_big = True
         if owner.name == 'player1':
             self.anim = Sprite(img=res.anim, x=x, y=y,
-                                             batch=ground_units_batch)
+                               batch=ground_units_batch)
         else:
             self.anim = Sprite(img=res.anim_enemy, x=x, y=y,
-                                             batch=ground_units_batch)
+                               batch=ground_units_batch)
         self.anim.visible = False
 
 
@@ -392,7 +392,7 @@ class AttackingBuilding(Building):
         super().__init__(game_inst, owner, our_img, enemy_img, vision_radius,
                          hp, x, y)
         self.plasma_spt = Sprite(res.plasma_anim, x, y,
-                                               batch=ground_units_batch)
+                                 batch=ground_units_batch)
         self.damage = damage
         self.shooting_radius = vision_radius * 32
         self.target_x = None
@@ -445,6 +445,8 @@ class Turret(AttackingBuilding):
 
 
 node_count = 0
+
+
 def astar(map, start, end, acc_ends):
     """A* pathfinding. acc_ends are other acceptable end coords that are used
     when we cannot reach the exact end."""
@@ -721,8 +723,8 @@ class Unit(Sprite):
         else:
             pixel = res.mm_enemy_img
         self.pixel = Sprite(img=pixel, x=pixel_minimap_coords[0],
-                                          y=pixel_minimap_coords[1],
-                                          batch=minimap_pixels_batch)
+                            y=pixel_minimap_coords[1],
+                            batch=minimap_pixels_batch)
 
         # Shadow
         if self.flying:
@@ -982,7 +984,7 @@ class Pioneer(Unit):
         sprites = [s1, s2, s3]
         anim = pyglet.image.Animation.from_image_sequence(sprites, 0.1, True)
         self.zap_sprite = Sprite(anim, self.x, self.y,
-                                               batch=zap_batch)
+                                 batch=zap_batch)
 
         self.zap_sprite.visible = False
 
@@ -1109,7 +1111,7 @@ class PlanetEleven(pyglet.window.Window):
 
         self.sel_spt = Sprite(img=res.sel_img, x=self.our_1st_base.x,
                               y=self.our_1st_base.y)
-        self.sel_big_spt = Sprite(img=res.sel_big_img,  x=self.our_1st_base.x,
+        self.sel_big_spt = Sprite(img=res.sel_big_img, x=self.our_1st_base.x,
                                   y=self.our_1st_base.y)
         self.rp_spt = Sprite(img=res.rp_img, x=self.our_1st_base.rp_x,
                              y=self.our_1st_base.rp_y)
@@ -1541,17 +1543,19 @@ class PlanetEleven(pyglet.window.Window):
                                     selected.new_dest_x = x
                                     selected.new_dest_y = y
                                 selected.has_target_p = False
-                                if str(type(selected)) == \
-                                        "<class '__main__.Pioneer'>":
-                                    selected.clear_task()
-                                    obj = g_pos_coord_d[(x, y)]
-                                    if str(type(obj)) == \
-                                            "<class '__main__.Mineral'>":
-                                        print('go gather, lazy worker!')
-                                        selected.mineral_to_gather = obj
-                                        selected.task_x = obj.x
-                                        selected.task_y = obj.y
-                                        obj.workers.append(selected)
+                                # Gathering
+                                if selected.path:
+                                    if str(type(selected)) == \
+                                            "<class '__main__.Pioneer'>":
+                                        selected.clear_task()
+                                        obj = g_pos_coord_d[(x, y)]
+                                        if str(type(obj)) == \
+                                                "<class '__main__.Mineral'>":
+                                            print('go gather, lazy worker!')
+                                            selected.mineral_to_gather = obj
+                                            selected.task_x = obj.x
+                                            selected.task_y = obj.y
+                                            obj.workers.append(selected)
                 # Minimap
                 elif MM0[0] <= x <= MM0[
                     0] + 100 and \
@@ -1701,7 +1705,7 @@ class PlanetEleven(pyglet.window.Window):
                 s_x = int((x - 16) / 32) + 1
                 s_y = int((y - 16) / 32) + 1
                 coords_to_check = [(x, y), (x + PS, y),
-                    (x + PS, y + PS), (x, y + PS)]
+                                   (x + PS, y + PS), (x, y + PS)]
                 no_place = False
                 for c in coords_to_check:
                     if g_pos_coord_d[c[0], c[1]] or self.npa[s_y, s_x, 3] != 0:

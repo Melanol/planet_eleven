@@ -4,24 +4,21 @@
 -Unit control buttons
 -AI
 -Building costs and building time
--Building 2-block-wide buldings
 -There is a bug that does not allow you to select units that are in the right top corner of the map (probably a viewport movement bug)
--Make building spawn units only every 60 frames
 -Ordering a building at a loc where a unit will be spawned messes up things
+-Ordering a worker whose movement is blocked to mine minerals crashes the game
 
 # Not important
--Nexus animation
 -Selected info
 -Spawning in the direction of the rally point?
 -World editor? Required for terrain pos_coords
 -Diagonal movement interception: if not fixed, it will be possible for up to 4 units to have the same coordinate (2 ground, 2 air)
--Finalize minimap
+-Fix minimap
 -Screen edge cam scrolling
--Implement in-game id?
--Units should check for close enemies only when an enemy moves or is spawned (useless optimization?)
+-Idle units should check for close enemies only when an enemy moves or is spawned (useless optimization?)
 -Something should indicate that there is a ground unit present below an air unit
 -Shift for selecting ground units below air units?
--HP bars?
+-Make building spawn units only every 60 frames
 
 # Ideas
 -Thinking of making the units not being able to have rotation degrees not divisible by 45. This will make sure that everything is always pixel-perfect and will also make the game look more alien, like they did in Perimeter. I should also do something with movement to keep it pixel-perfect (right now the tank is dancing while moving).
