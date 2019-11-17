@@ -111,5 +111,13 @@ def is_melee_dist(unit, target_x, target_y):
     return False
 
 
+def is_2_melee_dist(unit, target_x, target_y):
+    """Similar to is_melee_dist(), but for buildings 2 blocks wide."""
+    if abs(unit.x - target_x) <= PS * 1.5:
+        if abs(unit.y - target_y) <= PS * 1.5:
+            return True
+    return False
+
+
 def dist(obj1, obj2):
     return ((obj1.x - obj2.x) ** 2 + (obj1.y - obj2.y) ** 2) ** 0.5

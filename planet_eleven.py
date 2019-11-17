@@ -20,25 +20,25 @@ left_view_border = 0
 bottom_view_border = 0
 
 POS_COORDS = []
-ground_pos_coords_dict = {}
-air_pos_coords_dict = {}
+g_pos_coord_d = {}
+a_pos_coord_d = {}
 
 
 def gen_pos_coords():
     """Generates a field of allowed positional coords. Declared as a function
     for resetting these."""
-    global POS_COORDS, ground_pos_coords_dict, air_pos_coords_dict
+    global POS_COORDS, g_pos_coord_d, a_pos_coord_d
     POS_COORDS = []
     for yi in range(1, POS_COORDS_N_ROWS + 1):
         for xi in range(1, POS_COORDS_N_COLUMNS + 1):
             POS_COORDS.append((xi * PS - PS / 2,
                                yi * PS - PS / 2))
-    ground_pos_coords_dict = {}
+    g_pos_coord_d = {}
     for _x, _y in POS_COORDS:
-        ground_pos_coords_dict[(_x, _y)] = None
-    air_pos_coords_dict = {}
+        g_pos_coord_d[(_x, _y)] = None
+    a_pos_coord_d = {}
     for _x, _y in POS_COORDS:
-        air_pos_coords_dict[(_x, _y)] = None
+        a_pos_coord_d[(_x, _y)] = None
 
 
 gen_pos_coords()
@@ -152,13 +152,13 @@ class Mineral(Sprite):
         self.workers = []
         self.amount = amount
         minerals.append(self)
-        ground_pos_coords_dict[(x, y)] = self
+        g_pos_coord_d[(x, y)] = self
 
     def kill(self):
         for worker in self.workers:
             worker.clear_task()
             worker.stop_move()
-        ground_pos_coords_dict[(self.x, self.y)] = None
+        g_pos_coord_d[(self.x, self.y)] = None
         self.delete()
 
 
@@ -194,9 +194,9 @@ def building_spawn_unit(game_instance, building):
         if game_instance.frame_count - building.building_start_time == \
                 building.current_building_time:
             if str(building.building_queue[0]) not in LIST_OF_FLYING:
-                dict_to_check = ground_pos_coords_dict
+                dict_to_check = g_pos_coord_d
             else:
-                dict_to_check = air_pos_coords_dict
+                dict_to_check = a_pos_coord_d
             # Searching for a place to build
             if building.width == PS:
                 x = building.x - PS
@@ -295,20 +295,20 @@ class Building(Sprite):
         for _ in range(n):
             for _ in range(width):
                 self.blocks.append((x, y))
-                ground_pos_coords_dict[(x, y)] = self
+                g_pos_coord_d[(x, y)] = self
                 x += PS
             x -= PS
             for _ in range(width - 1):
                 y += PS
                 self.blocks.append((x, y))
-                ground_pos_coords_dict[(x, y)] = self
+                g_pos_coord_d[(x, y)] = self
             for _ in range(width - 1):
                 x -= PS
                 self.blocks.append((x, y))
-                ground_pos_coords_dict[(x, y)] = self
+                g_pos_coord_d[(x, y)] = self
             for _ in range(width - 2):
                 self.blocks.append((x, y))
-                ground_pos_coords_dict[(x, y)] = self
+                g_pos_coord_d[(x, y)] = self
                 y -= PS
             width += 2
         if self.owner == game_inst.this_player:
@@ -327,7 +327,7 @@ class Building(Sprite):
     def kill(self, delay_del=False):
         global our_buildings, enemy_buildings
         for block in self.blocks:
-            ground_pos_coords_dict[(block[0], block[1])] = None
+            g_pos_coord_d[(block[0], block[1])] = None
         self.pixel.delete()
         if not delay_del:
             if self.owner.name == 'player1':
@@ -421,8 +421,8 @@ class AttackingBuilding(Building):
         projectiles.append(projectile)
 
     def kill(self, delay_del=False):
-        global ground_pos_coords_dict, our_buildings, enemy_buildings
-        ground_pos_coords_dict[(self.x, self.y)] = None
+        global g_pos_coord_d, our_buildings, enemy_buildings
+        g_pos_coord_d[(self.x, self.y)] = None
         self.pixel.delete()
         if not delay_del:
             if self.owner.name == 'player1':
@@ -585,9 +585,9 @@ def find_path(start, end, is_flying):
     print('start =', start, 'end =', end)
     # Check end neighbors
     if not is_flying:
-        selected_dict = ground_pos_coords_dict
+        selected_dict = g_pos_coord_d
     else:
-        selected_dict = air_pos_coords_dict
+        selected_dict = a_pos_coord_d
     if selected_dict[(end[0], end[1])] is None:
         acc_ends = [(convert_c_to_simple(end[0]), convert_c_to_simple(end[1]))]
     else:
@@ -670,10 +670,10 @@ class Unit(Sprite):
             enemy_units.append(self)
         self.flying = flying
         if not self.flying:
-            self.pos_dict = ground_pos_coords_dict
+            self.pos_dict = g_pos_coord_d
             batch = ground_units_batch
         else:
-            self.pos_dict = air_pos_coords_dict
+            self.pos_dict = a_pos_coord_d
             batch = air_batch
         super().__init__(img=img, x=x, y=y, batch=batch)
         self.vision_radius = vision_radius
@@ -991,11 +991,13 @@ class Pioneer(Unit):
         self.is_gathering = False
         self.zap_sprite.visible = False
         self.dest_reached = True
-        ground_pos_coords_dict[(self.x, self.y)] = self
+        g_pos_coord_d[(self.x, self.y)] = self
         if self.to_build == "armory":
             Armory(self.outer_instance, self.task_x, self.task_y)
         elif self.to_build == "turret":
             Turret(self.outer_instance, self.task_x, self.task_y)
+        elif self.to_build == "big_base":
+            BigBase(self.outer_instance, self.task_x, self.task_y)
         self.to_build = None
 
     def gather(self):
@@ -1264,8 +1266,13 @@ class PlanetEleven(pyglet.window.Window):
             # Build buildings. TODO: Optimize
             for worker in workers:
                 if worker.to_build:
-                    if is_melee_dist(worker, worker.task_x, worker.task_y):
-                        worker.build()
+                    if worker.to_build == 'big_base':
+                        if is_2_melee_dist(worker, worker.task_x,
+                                           worker.task_y):
+                            worker.build()
+                    else:
+                        if is_melee_dist(worker, worker.task_x, worker.task_y):
+                            worker.build()
             # Movement
             for unit in our_units + enemy_units:
                 # Do not jump
@@ -1287,12 +1294,12 @@ class PlanetEleven(pyglet.window.Window):
                             if not unit.flying:
                                 unit.shadow.x = unit.target_x + 3
                                 unit.shadow.y = unit.target_y - 3
-                                ground_pos_coords_dict[
+                                g_pos_coord_d[
                                     (unit.target_x, unit.target_y)] = unit
                             else:
                                 unit.shadow.x = unit.target_x + 10
                                 unit.shadow.y = unit.target_y - 10
-                                air_pos_coords_dict[
+                                a_pos_coord_d[
                                     (unit.target_x, unit.target_y)] = unit
                             if unit.x == unit.dest_x and unit.y == \
                                     unit.dest_y:
@@ -1306,12 +1313,12 @@ class PlanetEleven(pyglet.window.Window):
                             if not unit.flying:
                                 unit.shadow.x = unit.target_x + 3
                                 unit.shadow.y = unit.target_y - 3
-                                ground_pos_coords_dict[
+                                g_pos_coord_d[
                                     (unit.target_x, unit.target_y)] = unit
                             else:
                                 unit.shadow.x = unit.target_x + 10
                                 unit.shadow.y = unit.target_y - 10
-                                air_pos_coords_dict[
+                                a_pos_coord_d[
                                     (unit.target_x, unit.target_y)] = unit
                             unit.dest_reached = True
                             unit.move((unit.new_dest_x, unit.new_dest_y))
@@ -1409,7 +1416,7 @@ class PlanetEleven(pyglet.window.Window):
             elif symbol == key.G:
                 print(selected)
             elif symbol == key.H:
-                for _key, _value in ground_pos_coords_dict.items():
+                for _key, _value in g_pos_coord_d.items():
                     if _value:
                         print('key =', _key, 'value =', _value)
             elif symbol == key.J:
@@ -1418,7 +1425,7 @@ class PlanetEleven(pyglet.window.Window):
                 print(our_units)
             elif symbol == key.Z:
                 i = 0
-                for _key, value in ground_pos_coords_dict.items():
+                for _key, value in g_pos_coord_d.items():
                     if i % 1 == 0:
                         if value is None:
                             unit = Vulture(self, _key[0], _key[1])
@@ -1433,17 +1440,17 @@ class PlanetEleven(pyglet.window.Window):
                         coords_to_delete.append((x, y))
                 for coord in coords_to_delete:
                     for unit in our_units:
-                        if ground_pos_coords_dict[coord[0], coord[1]] == unit:
+                        if g_pos_coord_d[coord[0], coord[1]] == unit:
                             unit.kill()
             elif symbol == key.DELETE:
                 if selected in our_units:
                     selected.kill()
                     if selected.flying:
-                        air_pos_coords_dict[(self.sel_spt.x,
-                                             self.sel_spt.y)] = None
+                        a_pos_coord_d[(self.sel_spt.x,
+                                       self.sel_spt.y)] = None
                     else:
-                        ground_pos_coords_dict[(self.sel_spt.x,
-                            self.sel_spt.y)] = None
+                        g_pos_coord_d[(self.sel_spt.x,
+                                       self.sel_spt.y)] = None
                     selected = None
                 elif selected in our_buildings:
                     selected.kill()
@@ -1471,13 +1478,13 @@ class PlanetEleven(pyglet.window.Window):
                     print('\nglobal click coords:', x, y)
                     if button == mouse.LEFT:
                         # Selection
-                        to_be_selected = air_pos_coords_dict[(x, y)]
+                        to_be_selected = a_pos_coord_d[(x, y)]
                         if to_be_selected:
                             selected = to_be_selected
                             self.sel_spt.x = x
                             self.sel_spt.y = y
                         else:
-                            to_be_selected = ground_pos_coords_dict[(x, y)]
+                            to_be_selected = g_pos_coord_d[(x, y)]
                             if to_be_selected:
                                 try:
                                     to_be_selected.is_big
@@ -1504,7 +1511,7 @@ class PlanetEleven(pyglet.window.Window):
                     elif button == mouse.RIGHT:
                         # Rally point
                         if selected in our_buildings:
-                            if ground_pos_coords_dict[x, y] != selected:
+                            if g_pos_coord_d[x, y] != selected:
                                 selected.rp_x = x
                                 selected.rp_y = y
                                 selected.default_rp = False
@@ -1529,7 +1536,7 @@ class PlanetEleven(pyglet.window.Window):
                                 if str(type(selected)) == \
                                         "<class '__main__.Pioneer'>":
                                     selected.clear_task()
-                                    obj = ground_pos_coords_dict[(x, y)]
+                                    obj = g_pos_coord_d[(x, y)]
                                     if str(type(obj)) == \
                                             "<class '__main__.Mineral'>":
                                         print('go gather, lazy worker!')
@@ -1659,36 +1666,62 @@ class PlanetEleven(pyglet.window.Window):
                     x, y = round_coords(x, y)
                     x, y = mc(x=x, y=y)
                     if button == mouse.LEFT:
-                        mx = int((x - 16) / 32) + 1
-                        my = int((y - 16) / 32) + 1
-                        if not ground_pos_coords_dict[x, y] \
-                                and self.npa[my, mx, 3] == 0:
+                        if self.loc_clear:
                             selected.to_build = self.to_build
-                            selected.task_x = x
-                            selected.task_y = y
-                            selected.move((x, y))
+                            if self.to_build == 'big_base':
+                                selected.task_x = self.to_build_spt.x
+                                selected.task_y = self.to_build_spt.y
+                                selected.move((x, y))
+                            else:
+                                selected.task_x = x
+                                selected.task_y = y
+                                selected.move((x, y))
                             self.build_loc_sel_phase = False
                     elif button == mouse.RIGHT:
                         self.build_loc_sel_phase = False
 
     def on_mouse_motion(self, x, y, dx, dy):
-        if not self.paused:
-            if self.build_loc_sel_phase:
-                if self.fullscreen:
-                    x /= 2
-                    y /= 2
+        if not self.paused and self.build_loc_sel_phase:
+            if self.fullscreen:
+                x /= 2
+                y /= 2
+            if self.to_build == "big_base":
+                x, y = round_coords(x, y)
+                self.to_build_spt.x = x + left_view_border + PS / 2
+                self.to_build_spt.y = y + bottom_view_border + PS / 2
+                x, y = mc(x=x, y=y)
+                s_x = int((x - 16) / 32) + 1
+                s_y = int((y - 16) / 32) + 1
+                x = x + left_view_border
+                y = y + bottom_view_border
+                coords_to_check = [(x, y), (x + PS, y),
+                    (x + PS, y + PS), (x, y + PS)]
+                no_place = False
+                for c in coords_to_check:
+                    if g_pos_coord_d[c[0], c[1]] or self.npa[s_y, s_x, 3] != 0:
+                        no_place = True
+                        break
+                if no_place:
+                    self.to_build_spt.color = (255, 0, 0)
+                    self.loc_clear = False
+                else:
+                    self.loc_clear = True
+                    self.to_build_spt.color = (0, 255, 0)
+            else:
                 x, y = round_coords(x, y)
                 self.to_build_spt.x = x + left_view_border
                 self.to_build_spt.y = y + bottom_view_border
                 x, y = mc(x=x, y=y)
                 x = int((x - 16) / 32) + 1
                 y = int((y - 16) / 32) + 1
-                if ground_pos_coords_dict[self.to_build_spt.x,
-                                          self.to_build_spt.y] or \
+                if g_pos_coord_d[self.to_build_spt.x,
+                                 self.to_build_spt.y] or \
                         self.npa[y, x, 3] != 0:
                     self.to_build_spt.color = (255, 0, 0)
+                    self.loc_clear = False
                 else:
                     self.to_build_spt.color = (0, 255, 0)
+                    self.loc_clear = True
 
     def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
         global left_view_border, bottom_view_border
