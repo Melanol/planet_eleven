@@ -2,16 +2,13 @@
 
 # Important
 -Unit control buttons
--AI
+-Simple AI
 -Building costs and building time
 -There is a bug that does not allow you to select units that are in the right top corner of the map (probably a viewport movement bug)
--Ordering a building at a loc where a unit will be spawned messes up things
--Ordering a worker whose movement is blocked to mine minerals crashes the game
--Big buildings have troubles with black pixels (green when supposed to be red)
 
 # Not very important
 -Stop doesn't stop workers from working
--Workers that spawned hear minerals cannot mine them
+-Workers that spawned near minerals cannot mine them
 -Selected info
 -Spawning in the direction of the rally point?
 -World editor? Required for terrain pos_coords

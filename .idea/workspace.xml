@@ -135,13 +135,6 @@
       <option name="presentableId" value="Default" />
       <updated>1566740526093</updated>
     </task>
-    <task id="LOCAL-00142" summary="Path-finding for air works">
-      <created>1572308044295</created>
-      <option name="number" value="00142" />
-      <option name="presentableId" value="LOCAL-00142" />
-      <option name="project" value="LOCAL" />
-      <updated>1572308044296</updated>
-    </task>
     <task id="LOCAL-00143" summary="Some cleaning">
       <created>1572387475932</created>
       <option name="number" value="00143" />
@@ -478,7 +471,14 @@
       <option name="project" value="LOCAL" />
       <updated>1574018029113</updated>
     </task>
-    <option name="localTasksCounter" value="191" />
+    <task id="LOCAL-00191" summary="Fixed a bug that would allow building on top of units if they were not there when the building was ordered">
+      <created>1574020079421</created>
+      <option name="number" value="00191" />
+      <option name="presentableId" value="LOCAL-00191" />
+      <option name="project" value="LOCAL" />
+      <updated>1574020079422</updated>
+    </task>
+    <option name="localTasksCounter" value="192" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -523,7 +523,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$" />
     </ignored-roots>
-    <MESSAGE value="No-space PF" />
     <MESSAGE value="PF improvements" />
     <MESSAGE value="Revert here" />
     <MESSAGE value="Removed small base, control buttons moved to attributes" />
@@ -548,7 +547,8 @@
     <MESSAGE value="Just saving" />
     <MESSAGE value="Fixed the bug with workers unable to move but having a mineral to mine." />
     <MESSAGE value="Fixed a bug causing BigBase to ignore some black pixels" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixed a bug causing BigBase to ignore some black pixels" />
+    <MESSAGE value="Fixed a bug that would allow building on top of units if they were not there when the building was ordered" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fixed a bug that would allow building on top of units if they were not there when the building was ordered" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

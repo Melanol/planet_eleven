@@ -166,8 +166,7 @@ def order_unit(game_instance, building, unit):
     owner = building.owner
     if owner.mineral_count - unit.cost >= 0:
         owner.mineral_count -= unit.cost
-        game_instance.min_count_label.text = str(
-            int(game_instance.this_player.mineral_count))
+        game_instance.update_min_c_label()
         building.building_queue.append(unit)
         building.anim.visible = True
         if len(building.building_queue) == 1:
@@ -177,13 +176,15 @@ def order_unit(game_instance, building, unit):
             print("Not enough minerals")
 
 
-def order_building(game_instance, unit, building):
-    """Orders units in buildings. Checks if you have enough minerals."""
+def order_building(game_instance, unit, building, x, y):
     owner = unit.owner
     if owner.mineral_count - building.cost >= 0:
         owner.mineral_count -= building.cost
-        game_instance.min_count_label.text = str(
-            int(game_instance.this_player.mineral_count))
+        game_instance.update_min_c_label()
+        unit.to_build = game_instance.to_build
+        unit.task_x = game_instance.to_build_spt.x
+        unit.task_y = game_instance.to_build_spt.y
+        unit.move((x, y))
     else:
         if owner == game_instance.this_player:
             print("Not enough minerals")
@@ -1280,8 +1281,7 @@ class PlanetEleven(pyglet.window.Window):
                         owner = worker.owner
                         owner.mineral_count += 0.03
                         if owner.name == 'player1':
-                            self.min_count_label.text = str(
-                                int(owner.mineral_count))
+                            self.update_min_c_label()
             # AI gathering resources
             # if self.frame_count % 120 == 0:
             #     try:
@@ -1712,15 +1712,13 @@ class PlanetEleven(pyglet.window.Window):
                     x, y = mc(x=x, y=y)
                     if button == mouse.LEFT:
                         if self.loc_clear:
-                            selected.to_build = self.to_build
-                            if self.to_build == 'big_base':
-                                selected.task_x = self.to_build_spt.x
-                                selected.task_y = self.to_build_spt.y
-                                selected.move((x, y))
+                            if self.to_build == 'armory':
+                                building = Armory
+                            elif self.to_build == 'turret':
+                                building = Turret
                             else:
-                                selected.task_x = x
-                                selected.task_y = y
-                                selected.move((x, y))
+                                building = BigBase
+                            order_building(self, selected, building, x, y)
                             self.build_loc_sel_phase = False
                     elif button == mouse.RIGHT:
                         self.build_loc_sel_phase = False
@@ -1879,6 +1877,9 @@ class PlanetEleven(pyglet.window.Window):
         self.mm_fow_ImageData.set_data('RGBA',
                                        self.mm_fow_ImageData.width
                                        * 4, data=self.npa.tobytes())
+
+    def update_min_c_label(self):
+        self.min_count_label.text = str(int(self.this_player.mineral_count))
 
 
 def main():
