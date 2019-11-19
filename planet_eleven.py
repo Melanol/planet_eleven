@@ -1273,6 +1273,8 @@ class PlanetEleven(pyglet.window.Window):
                     if self.computer.workers_count < 8:
                         order_unit(self, building, Pioneer)
                         self.computer.workers_count += 1
+                    order_unit(self, building, random.choice((Vulture,
+                        Centurion, Defiler, Apocalypse)))
             # Units
             # Gathering resources
             for worker in workers:
