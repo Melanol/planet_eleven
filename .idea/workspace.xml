@@ -2,7 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="8699b466-fa9b-4e8c-b41f-e5bbe759696d" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/planet_eleven.py" beforeDir="false" afterPath="$PROJECT_DIR$/planet_eleven.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/todo.txt" beforeDir="false" afterPath="$PROJECT_DIR$/todo.txt" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -132,13 +134,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1566740526093</updated>
-    </task>
-    <task id="LOCAL-00144" summary="Some cleaning">
-      <created>1572388098966</created>
-      <option name="number" value="00144" />
-      <option name="presentableId" value="LOCAL-00144" />
-      <option name="project" value="LOCAL" />
-      <updated>1572388098967</updated>
     </task>
     <task id="LOCAL-00145" summary="Fixed one of the PF bugs">
       <created>1572396553325</created>
@@ -476,7 +471,14 @@
       <option name="project" value="LOCAL" />
       <updated>1574021890763</updated>
     </task>
-    <option name="localTasksCounter" value="193" />
+    <task id="LOCAL-00193" summary="Building cost refund if place occupied">
+      <created>1574022168607</created>
+      <option name="number" value="00193" />
+      <option name="presentableId" value="LOCAL-00193" />
+      <option name="project" value="LOCAL" />
+      <updated>1574022168608</updated>
+    </task>
+    <option name="localTasksCounter" value="194" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -521,7 +523,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$" />
     </ignored-roots>
-    <MESSAGE value="Revert here" />
     <MESSAGE value="Removed small base, control buttons moved to attributes" />
     <MESSAGE value="Big buildings spawn with x and y at their sprites' center" />
     <MESSAGE value="Fixed a selection bug" />
@@ -546,7 +547,8 @@
     <MESSAGE value="Fixed a bug causing BigBase to ignore some black pixels" />
     <MESSAGE value="Fixed a bug that would allow building on top of units if they were not there when the building was ordered" />
     <MESSAGE value="Buildings cost minerals" />
-    <option name="LAST_COMMIT_MESSAGE" value="Buildings cost minerals" />
+    <MESSAGE value="Building cost refund if place occupied" />
+    <option name="LAST_COMMIT_MESSAGE" value="Building cost refund if place occupied" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

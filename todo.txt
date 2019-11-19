@@ -1,12 +1,13 @@
 # Priority #1: finalize the 1st version of the game
 
 # Important
--Unit control buttons
 -Simple AI
--Building costs and building time
--There is a bug that does not allow you to select units that are in the right top corner of the map (probably a viewport movement bug)
+
+-Unit control buttons
+-Building construction time
 
 # Not very important
+-Selection of closest unit
 -Stop doesn't stop workers from working
 -Workers that spawned near minerals cannot mine them
 -Selected info

@@ -145,7 +145,7 @@ class UI(Sprite):
 
 
 class Mineral(Sprite):
-    def __init__(self, outer_instance, x, y, amount=5000):
+    def __init__(self, outer_instance, x, y, amount=500000):
         super().__init__(img=res.mineral, x=x, y=y, batch=buildings_batch)
         self.outer_instance = outer_instance
         self.workers = []
@@ -1135,7 +1135,7 @@ class PlanetEleven(pyglet.window.Window):
         Mineral(self, PS / 2 + PS * 4,
                 PS / 2 + PS * 7)
         Mineral(self, PS / 2 + PS * 4,
-                PS / 2 + PS * 8, amount=1)
+                PS / 2 + PS * 8)
         Mineral(self, PS / 2 + PS * 10,
                 PS / 2 + PS * 4)
         Mineral(self, PS / 2 + PS * 12,
@@ -1278,10 +1278,13 @@ class PlanetEleven(pyglet.window.Window):
             for worker in workers:
                 if worker.mineral_to_gather and worker.dest_reached:
                     if not worker.is_gathering:
-                        if is_melee_dist(worker, worker.task_x,
-                                         worker.task_y):
-                            print("melee dist")
-                            worker.gather()
+                        try:
+                            if is_melee_dist(worker, worker.task_x,
+                                             worker.task_y):
+                                print("melee dist")
+                                worker.gather()
+                        except TypeError:
+                            worker.clear_task()
                     else:
                         worker.mineral_to_gather.amount -= 0.03
                         owner = worker.owner
@@ -1289,28 +1292,28 @@ class PlanetEleven(pyglet.window.Window):
                         if owner.name == 'player1':
                             self.update_min_c_label()
             # AI gathering resources
-            # if self.frame_count % 120 == 0:
-            #     try:
-            #         closest_min = minerals[0]
-            #         for worker in workers:
-            #             if all((not worker.is_gathering,
-            #                     worker.dest_reached,
-            #                     worker.owner.name == 'computer1')):
-            #                 dist_2_closest_min = dist(closest_min, worker)
-            #                 for mineral in minerals[1:]:
-            #                     dist_2_min = dist(mineral, worker)
-            #                     if dist_2_min < dist_2_closest_min:
-            #                         closest_min = mineral
-            #                         dist_2_closest_min = dist_2_min
-            #                 worker.move((closest_min.x, closest_min.y))
-            #                 worker.clear_task()
-            #                 print('go gather, lazy worker!')
-            #                 worker.mineral_to_gather = closest_min
-            #                 worker.task_x = closest_min.x
-            #                 worker.task_y = closest_min.y
-            #                 closest_min.workers.append(worker)
-            #     except IndexError:
-            #         pass
+            if self.frame_count % 120 == 0:
+                try:
+                    closest_min = minerals[0]
+                    for worker in workers:
+                        if all((not worker.is_gathering,
+                                worker.dest_reached,
+                                worker.owner.name == 'computer1')):
+                            dist_2_closest_min = dist(closest_min, worker)
+                            for mineral in minerals[1:]:
+                                dist_2_min = dist(mineral, worker)
+                                if dist_2_min < dist_2_closest_min:
+                                    closest_min = mineral
+                                    dist_2_closest_min = dist_2_min
+                            worker.move((closest_min.x, closest_min.y))
+                            worker.clear_task()
+                            print('go gather, lazy worker!')
+                            worker.mineral_to_gather = closest_min
+                            worker.task_x = closest_min.x
+                            worker.task_y = closest_min.y
+                            closest_min.workers.append(worker)
+                except IndexError:
+                    pass
 
             # Build buildings. TODO: Optimize
             for worker in workers:
