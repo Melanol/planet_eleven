@@ -4,12 +4,22 @@
     <list default="true" id="8699b466-fa9b-4e8c-b41f-e5bbe759696d" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/planet_eleven.py" beforeDir="false" afterPath="$PROJECT_DIR$/planet_eleven.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources.py" beforeDir="false" afterPath="$PROJECT_DIR$/resources.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/attack_cursor.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/cursor.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/cursor.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/cursor.psd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/cursor_fullscreen.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/move_cursor.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/todo.txt" beforeDir="false" afterPath="$PROJECT_DIR$/todo.txt" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FavoritesManager">
+    <favorites_list name="planet_eleven" />
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -133,13 +143,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1566740526093</updated>
-    </task>
-    <task id="LOCAL-00146" summary="Cleaning">
-      <created>1572412225136</created>
-      <option name="number" value="00146" />
-      <option name="presentableId" value="LOCAL-00146" />
-      <option name="project" value="LOCAL" />
-      <updated>1572412225137</updated>
     </task>
     <task id="LOCAL-00147" summary="PF cleaning">
       <created>1572414988473</created>
@@ -477,7 +480,14 @@
       <option name="project" value="LOCAL" />
       <updated>1574198488408</updated>
     </task>
-    <option name="localTasksCounter" value="195" />
+    <task id="LOCAL-00195" summary="AI building random fighting units">
+      <created>1574199560089</created>
+      <option name="number" value="00195" />
+      <option name="presentableId" value="LOCAL-00195" />
+      <option name="project" value="LOCAL" />
+      <updated>1574199560090</updated>
+    </task>
+    <option name="localTasksCounter" value="196" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -522,7 +532,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$" />
     </ignored-roots>
-    <MESSAGE value="Big buildings spawn with x and y at their sprites' center" />
     <MESSAGE value="Fixed a selection bug" />
     <MESSAGE value="Entities attack enemy units" />
     <MESSAGE value="buttons list" />
@@ -547,7 +556,8 @@
     <MESSAGE value="Buildings cost minerals" />
     <MESSAGE value="Building cost refund if place occupied" />
     <MESSAGE value="AI can gather minerals" />
-    <option name="LAST_COMMIT_MESSAGE" value="AI can gather minerals" />
+    <MESSAGE value="AI building random fighting units" />
+    <option name="LAST_COMMIT_MESSAGE" value="AI building random fighting units" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

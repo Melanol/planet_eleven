@@ -68,6 +68,29 @@ def mc(**kwargs):
         return kwargs['x'] + left_view_border, kwargs['y'] + bottom_view_border
 
 
+def find_closest_enemy(entity, enemy_entities):
+    closest_enemy = None
+    closest_enemy_dist = None
+    for enemy in enemy_entities:
+        try:
+            if not entity.attacks_air and enemy.flying:
+                continue
+            if not entity.attacks_ground and not enemy.flying:
+                continue
+        except AttributeError:
+            pass
+        dist_to_enemy = dist(enemy, entity)
+        if dist_to_enemy <= entity.shooting_radius:
+            if not closest_enemy:
+                closest_enemy = enemy
+                closest_enemy_dist = dist_to_enemy
+            else:
+                if dist_to_enemy < closest_enemy_dist:
+                    closest_enemy = enemy
+                    closest_enemy_dist = dist_to_enemy
+    return closest_enemy
+
+
 def update_shooting(game_instance, our_entities, enemy_entities):
     for entity in our_entities:
         try:  # For shooting buildings
@@ -79,25 +102,7 @@ def update_shooting(game_instance, our_entities, enemy_entities):
         if entity.has_weapon and entity.dest_reached:
             if not entity.on_cooldown:
                 if not entity.has_target_p:
-                    closest_enemy = None
-                    closest_enemy_dist = None
-                    for enemy in enemy_entities:
-                        try:
-                            if not entity.attacks_air and enemy.flying:
-                                continue
-                            if not entity.attacks_ground and not enemy.flying:
-                                continue
-                        except AttributeError:
-                            pass
-                        dist_to_enemy = dist(enemy, entity)
-                        if dist_to_enemy <= entity.shooting_radius:
-                            if not closest_enemy:
-                                closest_enemy = enemy
-                                closest_enemy_dist = dist_to_enemy
-                            else:
-                                if dist_to_enemy < closest_enemy_dist:
-                                    closest_enemy = enemy
-                                    closest_enemy_dist = dist_to_enemy
+                    closest_enemy = find_closest_enemy(entity, enemy_entities)
                     if closest_enemy:
                         entity.has_target_p = True
                         entity.target_p = closest_enemy
@@ -443,6 +448,8 @@ class AttackingBuilding(Building):
         global g_pos_coord_d, our_buildings, enemy_buildings
         g_pos_coord_d[(self.x, self.y)] = None
         self.pixel.delete()
+        for attacker in self.attackers:
+            attacker.has_target_p = False
         if not delay_del:
             if self.owner.name == 'player1':
                 del our_buildings[our_buildings.index(self)]
@@ -959,7 +966,7 @@ class Vulture(Unit):
 
 class Apocalypse(Unit):
     cost = 250
-    building_time = 300
+    building_time = 30
 
     def __init__(self, game_inst, x, y, owner=None):
         if owner is None:
@@ -1419,17 +1426,18 @@ class PlanetEleven(pyglet.window.Window):
                         selected = None
 
     def on_key_press(self, symbol, modifiers):
-        """Called whenever a key is pressed. """
+        """Called whenever a key is pressed."""
         global selected, left_view_border, bottom_view_border
         if symbol == key.F:
             if self.fullscreen:
-                self.set_mouse_cursor(res.cursor)
                 self.set_fullscreen(False)
             else:
-                self.set_mouse_cursor(res.cursor_fullscreen)
                 self.set_fullscreen(True)
         if not self.paused:
-            if symbol == key.S:
+            if symbol == key.A:
+                self.set_mouse_cursor(res.cursor_target)
+
+            elif symbol == key.S:
                 try:
                     selected.stop_move()
                 except AttributeError:
@@ -1512,7 +1520,8 @@ class PlanetEleven(pyglet.window.Window):
             elif symbol == key.SPACE:
                 self.paused = True
             elif symbol == key.ESCAPE:
-                sys.exit()
+                self.build_loc_sel_phase = False
+                self.set_mouse_cursor(res.cursor)
         # Paused
         else:
             if symbol == key.SPACE:

@@ -42,11 +42,9 @@ pyglet.resource.reindex()
 
 # Utilities
 cursor = pyglet.window.ImageMouseCursor(pyglet.image.load(
-    'sprites/cursor.png'), 0, 16)
-cursor_fullscreen = pyglet.window.ImageMouseCursor(pyglet.image.load(
-    'sprites/cursor_fullscreen.png'), 0, 32)
-move_cursor = pyglet.window.ImageMouseCursor(pyglet.image.load(
-    'sprites/move_cursor.png'), 0, 16)
+    'sprites/cursor.png'), 0, 32)
+cursor_target = pyglet.window.ImageMouseCursor(pyglet.image.load(
+    'sprites/cursor_target.png'), 0, 16)
 
 terrain_img = pyglet.resource.image("terrain.png")
 

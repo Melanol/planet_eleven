@@ -2,6 +2,7 @@
 
 # Important
 -Simple AI
+-Computer workers share vision with the player
 
 -Unit control buttons
 -Building construction time
