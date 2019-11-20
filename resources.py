@@ -44,7 +44,7 @@ pyglet.resource.reindex()
 cursor = pyglet.window.ImageMouseCursor(pyglet.image.load(
     'sprites/cursor.png'), 0, 32)
 cursor_target = pyglet.window.ImageMouseCursor(pyglet.image.load(
-    'sprites/cursor_target.png'), 0, 16)
+    'sprites/cursor_target.png'), 32, 32)
 
 terrain_img = pyglet.resource.image("terrain.png")
 

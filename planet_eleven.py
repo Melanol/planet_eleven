@@ -1155,6 +1155,7 @@ class PlanetEleven(pyglet.window.Window):
         selected = self.our_1st_base
         BigBase(self, PS * 5, PS * 6, owner=self.computer)
         BigBase(self, PS * 13, PS * 13, owner=self.computer)
+        BigBase(self, PS * 50, PS * 50, owner=self.computer)
 
         self.sel_spt = Sprite(img=res.sel_img, x=self.our_1st_base.x,
                               y=self.our_1st_base.y)
@@ -1384,7 +1385,8 @@ class PlanetEleven(pyglet.window.Window):
                             unit.dest_reached = True
                             unit.move((unit.new_dest_x, unit.new_dest_y))
                             unit.move_interd = False
-                        self.update_fow(unit.x, unit.y, unit.vision_radius)
+                        if unit in our_units:
+                            self.update_fow(unit.x, unit.y, unit.vision_radius)
                 else:
                     try:
                         unit.to_build = None
