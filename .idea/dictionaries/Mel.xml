@@ -2,6 +2,8 @@
   <dictionary name="Mel">
     <words>
       <w>anim</w>
+      <w>dest</w>
+      <w>fullscreen</w>
     </words>
   </dictionary>
 </component>
