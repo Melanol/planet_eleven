@@ -2,13 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="8699b466-fa9b-4e8c-b41f-e5bbe759696d" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/dictionaries/Mel.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dictionaries/Mel.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/planet_eleven.py" beforeDir="false" afterPath="$PROJECT_DIR$/planet_eleven.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test.py" beforeDir="false" afterPath="$PROJECT_DIR$/test.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test1.py" beforeDir="false" afterPath="$PROJECT_DIR$/test1.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/todo.txt" beforeDir="false" afterPath="$PROJECT_DIR$/todo.txt" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -164,13 +159,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1566740526093</updated>
-    </task>
-    <task id="LOCAL-00149" summary="Renamed 2 units">
-      <created>1572416978132</created>
-      <option name="number" value="00149" />
-      <option name="presentableId" value="LOCAL-00149" />
-      <option name="project" value="LOCAL" />
-      <updated>1572416978132</updated>
     </task>
     <task id="LOCAL-00150" summary="Renamed 2 units">
       <created>1572417351107</created>
@@ -508,7 +496,14 @@
       <option name="project" value="LOCAL" />
       <updated>1574262876926</updated>
     </task>
-    <option name="localTasksCounter" value="198" />
+    <task id="LOCAL-00198" summary="Scuffed attack_move()">
+      <created>1574448320805</created>
+      <option name="number" value="00198" />
+      <option name="presentableId" value="LOCAL-00198" />
+      <option name="project" value="LOCAL" />
+      <updated>1574448320806</updated>
+    </task>
+    <option name="localTasksCounter" value="199" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -553,7 +548,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$" />
     </ignored-roots>
-    <MESSAGE value="buttons list" />
     <MESSAGE value="Players added" />
     <MESSAGE value="79 symbols per line" />
     <MESSAGE value="Various" />
@@ -578,7 +572,8 @@
     <MESSAGE value="AI building random fighting units" />
     <MESSAGE value="AI no longer shoots ghosts of buildings" />
     <MESSAGE value="Moving enemy units no longer share vision with the player" />
-    <option name="LAST_COMMIT_MESSAGE" value="Moving enemy units no longer share vision with the player" />
+    <MESSAGE value="Scuffed attack_move()" />
+    <option name="LAST_COMMIT_MESSAGE" value="Scuffed attack_move()" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

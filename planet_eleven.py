@@ -68,7 +68,7 @@ def mc(**kwargs):
         return kwargs['x'] + left_view_border, kwargs['y'] + bottom_view_border
 
 
-def find_closest_enemy(entity, enemy_entities):
+def find_closest_enemy_to_attack(entity, enemy_entities):
     closest_enemy = None
     closest_enemy_dist = None
     for enemy in enemy_entities:
@@ -102,7 +102,7 @@ def update_shooting(game_instance, our_entities, enemy_entities):
         if entity.has_weapon and entity.dest_reached:
             if not entity.on_cooldown:
                 if not entity.has_target_p:
-                    closest_enemy = find_closest_enemy(entity, enemy_entities)
+                    closest_enemy = find_closest_enemy_to_attack(entity, enemy_entities)
                     if closest_enemy:
                         entity.has_target_p = True
                         entity.target_p = closest_enemy
@@ -1328,7 +1328,33 @@ class PlanetEleven(pyglet.window.Window):
                             closest_min.workers.append(worker)
                 except IndexError:
                     pass
-
+            # AI sending units to attack:
+            if self.frame_count % 30 == 0:
+                for unit in enemy_units:
+                    if unit.has_weapon and not unit.has_target_p:
+                        closest_enemy = None
+                        closest_enemy_dist = None
+                        for entity in our_units + our_buildings:
+                            try:
+                                if not unit.attacks_air and entity.flying:
+                                    continue
+                                if not unit.attacks_ground and not entity.flying:
+                                    continue
+                            except AttributeError:
+                                pass
+                            dist_to_enemy = dist(unit, entity)
+                            if not closest_enemy:
+                                closest_enemy = entity
+                                closest_enemy_dist = dist_to_enemy
+                            else:
+                                if dist_to_enemy < closest_enemy_dist:
+                                    closest_enemy = entity
+                                    closest_enemy_dist = dist_to_enemy
+                        try:
+                            unit.move(round_coords(closest_enemy.x, closest_enemy.y))
+                            unit.attack_moving = True
+                        except AttributeError:
+                            pass
             # Build buildings. TODO: Optimize
             for worker in workers:
                 if worker.to_build:
@@ -1374,7 +1400,7 @@ class PlanetEleven(pyglet.window.Window):
                                 if not unit.attack_moving:
                                     unit.update_move()
                                 else:
-                                    if find_closest_enemy(unit, enemy_units):
+                                    if find_closest_enemy_to_attack(unit, enemy_units):
                                         unit.dest_reached = True
                                     else:
                                         unit.update_move()
