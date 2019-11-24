@@ -2,6 +2,7 @@
 
 # Important
 -Simple AI
+-Clicking minimap breaks selection
 
 -Unit control buttons
 -Building construction time
@@ -25,4 +26,4 @@
 -Make building spawn units only every 60 frames
 
 # Ideas
--Thinking of making the units not being able to have rotation degrees not divisible by 45. This will make sure that everything is always pixel-perfect and will also make the game look more alien, like they did in Perimeter. I should also do something with movement to keep it pixel-perfect (right now the tank is dancing while moving).
+-None
