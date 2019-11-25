@@ -3,6 +3,7 @@
 # Important
 -Simple AI
 -Clicking minimap breaks selection
+-Game crashes sometimes. Probably related to attack_move(). Appears when you have a lot of enemy units chasing one our unit and a lot of right-clicking with this unit selected. Very luckly that is related to the minimap bug.
 
 -Unit control buttons
 -Building construction time

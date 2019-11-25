@@ -68,7 +68,7 @@ def mc(**kwargs):
         return kwargs['x'] + left_view_border, kwargs['y'] + bottom_view_border
 
 
-def find_closest_enemy_to_attack(entity, enemy_entities):
+def closest_enemy_2_att(entity, enemy_entities):
     closest_enemy = None
     closest_enemy_dist = None
     for enemy in enemy_entities:
@@ -102,8 +102,8 @@ def update_shooting(game_instance, our_entities, enemy_entities):
         if entity.has_weapon and entity.dest_reached:
             if not entity.on_cooldown:
                 if not entity.has_target_p:
-                    closest_enemy = find_closest_enemy_to_attack(entity,
-                                                                 enemy_entities)
+                    closest_enemy = closest_enemy_2_att(entity,
+                                                        enemy_entities)
                     if closest_enemy:
                         entity.has_target_p = True
                         entity.target_p = closest_enemy
@@ -768,8 +768,9 @@ class Unit(Sprite):
             self.shadow.batch = ground_shadows_batch
 
     def update(self):
-        """Updates position."""
+        """Updates position and shadow."""
         self.x, self.y = self.x + self.velocity_x, self.y + self.velocity_y
+        self.shadow.update()
 
     def rotate(self, x, y):
         """Rotates a unit in the direction of his task(mining, building,
@@ -783,6 +784,17 @@ class Unit(Sprite):
     def move(self, dest):
         """Called once by RMB or when a unit is created by a building with
         a non-default rally point."""
+        if self.attack_moving:  # Will not work for computer
+            if self.owner.name == 'player1':
+                if closest_enemy_2_att(self, enemy_units + enemy_buildings):
+                    self.attack_moving = False
+                    self.dest_reached = True
+                    return
+            else:
+                if closest_enemy_2_att(self, our_units + our_buildings):
+                    self.attack_moving = False
+                    self.dest_reached = True
+                    return
         # Not moving: same coords
         if self.x == dest[0] and self.y == dest[1]:
             self.dest_reached = True
@@ -1039,7 +1051,8 @@ class Pioneer(Unit):
         elif self.to_build == "big_base":
             x = self.task_x - PS / 2
             y = self.task_y - PS / 2
-            coords_to_check = [(x, y), (x + PS, y), (x + PS, y + PS), (x, y + PS)]
+            coords_to_check = [(x, y), (x + PS, y), (x + PS, y + PS),
+                               (x, y + PS)]
             no_place = False
             for c in coords_to_check:
                 if g_pos_coord_d[(c[0], c[1])]:
@@ -1281,13 +1294,13 @@ class PlanetEleven(pyglet.window.Window):
                 except AttributeError:
                     pass
             # AI ordering units
-            # if self.frame_count % 60 == 0:
-            #     for building in enemy_buildings:
-            #         if self.computer.workers_count < 8:
-            #             order_unit(self, building, Pioneer)
-            #             self.computer.workers_count += 1
-            #         order_unit(self, building, random.choice((Vulture,
-            #             Centurion, Defiler, Apocalypse)))
+            if self.frame_count % 60 == 0:
+                for building in enemy_buildings:
+                    if self.computer.workers_count < 8:
+                        order_unit(self, building, Pioneer)
+                        self.computer.workers_count += 1
+                    order_unit(self, building, random.choice((Vulture,
+                        Centurion, Defiler, Apocalypse)))
             # Units
             # Gathering resources
             for worker in workers:
@@ -1307,56 +1320,57 @@ class PlanetEleven(pyglet.window.Window):
                         if owner.name == 'player1':
                             self.update_min_c_label()
             # AI gathering resources
-            # if self.frame_count % 120 == 0:
-            #     try:
-            #         closest_min = minerals[0]
-            #         for worker in workers:
-            #             if all((not worker.is_gathering,
-            #                     worker.dest_reached,
-            #                     worker.owner.name == 'computer1')):
-            #                 dist_2_closest_min = dist(closest_min, worker)
-            #                 for mineral in minerals[1:]:
-            #                     dist_2_min = dist(mineral, worker)
-            #                     if dist_2_min < dist_2_closest_min:
-            #                         closest_min = mineral
-            #                         dist_2_closest_min = dist_2_min
-            #                 worker.move((closest_min.x, closest_min.y))
-            #                 worker.clear_task()
-            #                 print('go gather, lazy worker!')
-            #                 worker.mineral_to_gather = closest_min
-            #                 worker.task_x = closest_min.x
-            #                 worker.task_y = closest_min.y
-            #                 closest_min.workers.append(worker)
-            #     except IndexError:
-            #         pass
+            if self.frame_count % 120 == 0:
+                try:
+                    closest_min = minerals[0]
+                    for worker in workers:
+                        if all((not worker.is_gathering,
+                                worker.dest_reached,
+                                worker.owner.name == 'computer1')):
+                            dist_2_closest_min = dist(closest_min, worker)
+                            for mineral in minerals[1:]:
+                                dist_2_min = dist(mineral, worker)
+                                if dist_2_min < dist_2_closest_min:
+                                    closest_min = mineral
+                                    dist_2_closest_min = dist_2_min
+                            worker.move((closest_min.x, closest_min.y))
+                            worker.clear_task()
+                            print('go gather, lazy worker!')
+                            worker.mineral_to_gather = closest_min
+                            worker.task_x = closest_min.x
+                            worker.task_y = closest_min.y
+                            closest_min.workers.append(worker)
+                except IndexError:
+                    pass
             # AI sending units to attack:
-            # if self.frame_count % 300 == 0:
-            #     for unit in enemy_units:
-            #         if unit.has_weapon and not unit.has_target_p:
-            #             closest_enemy = None
-            #             closest_enemy_dist = None
-            #             for entity in our_units + our_buildings:
-            #                 try:
-            #                     if not unit.attacks_air and entity.flying:
-            #                         continue
-            #                     if not unit.attacks_ground and not entity.flying:
-            #                         continue
-            #                 except AttributeError:
-            #                     pass
-            #                 dist_to_enemy = dist(unit, entity)
-            #                 if not closest_enemy:
-            #                     closest_enemy = entity
-            #                     closest_enemy_dist = dist_to_enemy
-            #                 else:
-            #                     if dist_to_enemy < closest_enemy_dist:
-            #                         closest_enemy = entity
-            #                         closest_enemy_dist = dist_to_enemy
-            #             try:
-            #                 unit.move(round_coords(closest_enemy.x,
-            #                                        closest_enemy.y))
-            #                 unit.attack_moving = True
-            #             except AttributeError:
-            #                 pass
+            if self.frame_count % 300 == 0:
+                for unit in enemy_units:
+                    if unit.has_weapon and not unit.has_target_p:
+                        closest_enemy = None
+                        closest_enemy_dist = None
+                        for entity in our_units + our_buildings:
+                            try:
+                                if not unit.attacks_air and entity.flying:
+                                    continue
+                                if not unit.attacks_ground \
+                                        and not entity.flying:
+                                    continue
+                            except AttributeError:
+                                pass
+                            dist_to_enemy = dist(unit, entity)
+                            if not closest_enemy:
+                                closest_enemy = entity
+                                closest_enemy_dist = dist_to_enemy
+                            else:
+                                if dist_to_enemy < closest_enemy_dist:
+                                    closest_enemy = entity
+                                    closest_enemy_dist = dist_to_enemy
+                        try:
+                            unit.move(round_coords(closest_enemy.x,
+                                                   closest_enemy.y))
+                            unit.attack_moving = True
+                        except AttributeError:
+                            pass
             # Build buildings. TODO: Optimize
             for worker in workers:
                 if worker.to_build:
@@ -1369,11 +1383,10 @@ class PlanetEleven(pyglet.window.Window):
                             worker.build()
             # Movement
             for unit in our_units + enemy_units:
-                # Do not jump
                 if not unit.dest_reached:
+                    # Do not jump
                     if not unit.eta() <= 1:
                         unit.update()
-                        unit.shadow.update()
                         if selected == unit:
                             self.sel_spt.x = unit.x
                             self.sel_spt.y = unit.y
@@ -1388,25 +1401,32 @@ class PlanetEleven(pyglet.window.Window):
                             if not unit.flying:
                                 unit.shadow.x = unit.target_x + 3
                                 unit.shadow.y = unit.target_y - 3
-                                g_pos_coord_d[
-                                    (unit.target_x, unit.target_y)] = unit
                             else:
                                 unit.shadow.x = unit.target_x + 10
                                 unit.shadow.y = unit.target_y - 10
-                                a_pos_coord_d[
+                            unit.pos_dict[
                                     (unit.target_x, unit.target_y)] = unit
                             if unit.x == unit.dest_x and unit.y == \
                                     unit.dest_y:
                                 unit.dest_reached = True
                             else:
-                                if not unit.attack_moving:
-                                    unit.update_move()
-                                else:
-                                    if find_closest_enemy_to_attack(unit,
-                                                                    enemy_units):
-                                        unit.dest_reached = True
+                                if unit.attack_moving:
+                                    if unit.owner.name == 'player1':
+                                        if closest_enemy_2_att(unit,
+                                                enemy_units + enemy_buildings):
+                                            unit.dest_reached = True
+                                            unit.attack_moving = False
+                                        else:
+                                            unit.update_move()
                                     else:
-                                        unit.update_move()
+                                        if closest_enemy_2_att(unit,
+                                                our_units + our_buildings):
+                                            unit.dest_reached = True
+                                            unit.attack_moving = False
+                                        else:
+                                            unit.update_move()
+                                else:
+                                    unit.update_move()
                         # Movement interrupted
                         else:
                             unit.x = unit.target_x
@@ -1425,7 +1445,8 @@ class PlanetEleven(pyglet.window.Window):
                             unit.move((unit.new_dest_x, unit.new_dest_y))
                             unit.move_interd = False
                         if unit in our_units:
-                            self.update_fow(unit.x, unit.y, unit.vision_radius)
+                            self.update_fow(unit.x, unit.y,
+                                            unit.vision_radius)
                 else:
                     try:
                         unit.to_build = None
@@ -1501,6 +1522,11 @@ class PlanetEleven(pyglet.window.Window):
                 self.save()
             elif symbol == key.F3:
                 self.load()
+            elif symbol == key.F4:
+                self.npa[:, :, 3] = 0
+                self.mm_fow_ImageData.set_data('RGBA',
+                                               self.mm_fow_ImageData.width
+                                               * 4, data=self.npa.tobytes())
             elif symbol == key.LEFT:
                 left_view_border -= PS
                 self.update_viewport()
