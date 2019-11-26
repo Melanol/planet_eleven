@@ -15,8 +15,8 @@ from projectile import Projectile
 from draw_dot import draw_dot
 from constants_and_utilities import *
 
-left_view_border = 0
-bottom_view_border = 0
+lvb = 0
+bvb = 0
 
 POS_COORDS = []
 g_pos_coord_d = {}
@@ -49,11 +49,11 @@ def to_minimap(x, y):  # unit.x and unit.y
     x = x / PS
     if not x.is_integer():
         x += 1
-    x = MM0[0] + x + left_view_border
+    x = MM0[0] + x + lvb
     y = y / PS
     if not y.is_integer():
         y += 1
-    y = MM0[1] + y + bottom_view_border
+    y = MM0[1] + y + bvb
     return x, y
 
 
@@ -61,11 +61,11 @@ def mc(**kwargs):
     """Modifies coords for different viewports."""
     if len(kwargs) == 1:
         try:
-            return kwargs['x'] + left_view_border
+            return kwargs['x'] + lvb
         except KeyError:
-            return kwargs['y'] + bottom_view_border
+            return kwargs['y'] + bvb
     else:
-        return kwargs['x'] + left_view_border, kwargs['y'] + bottom_view_border
+        return kwargs['x'] + lvb, kwargs['y'] + bvb
 
 
 def closest_enemy_2_att(entity, enemy_entities):
@@ -278,7 +278,7 @@ def building_spawn_unit(game_instance, building):
                     unit.move((building.rp_x, building.rp_y))
             else:
                 building.building_start_time += 1
-                print('No space')
+                # print('No space')
 
 
 class Building(Sprite):
@@ -1222,12 +1222,7 @@ class PlanetEleven(pyglet.window.Window):
         # glViewport(0, 0, SCREEN_WIDTH - 179, SCREEN_HEIGHT)
 
         # Set orthographic projection matrix
-        glOrtho(left_view_border, left_view_border + SCREEN_W,
-                bottom_view_border,
-                bottom_view_border + SCREEN_H, 1, -1)
-
-        '''for x, y in POS_COORDS:
-            draw_dot(x, y, 2)'''
+        glOrtho(lvb, lvb + SCREEN_W, bvb, bvb + SCREEN_H, 1, -1)
 
         self.terrain.draw()
         ground_shadows_batch.draw()
@@ -1294,13 +1289,13 @@ class PlanetEleven(pyglet.window.Window):
                 except AttributeError:
                     pass
             # AI ordering units
-            if self.frame_count % 60 == 0:
-                for building in enemy_buildings:
-                    if self.computer.workers_count < 8:
-                        order_unit(self, building, Pioneer)
-                        self.computer.workers_count += 1
-                    order_unit(self, building, random.choice((Vulture,
-                        Centurion, Defiler, Apocalypse)))
+            # if self.frame_count % 60 == 0:
+            #     for building in enemy_buildings:
+            #         if self.computer.workers_count < 8:
+            #             order_unit(self, building, Pioneer)
+            #             self.computer.workers_count += 1
+            #         order_unit(self, building, random.choice((Vulture,
+            #             Centurion, Defiler, Apocalypse)))
             # Units
             # Gathering resources
             for worker in workers:
@@ -1320,57 +1315,57 @@ class PlanetEleven(pyglet.window.Window):
                         if owner.name == 'player1':
                             self.update_min_c_label()
             # AI gathering resources
-            if self.frame_count % 120 == 0:
-                try:
-                    closest_min = minerals[0]
-                    for worker in workers:
-                        if all((not worker.is_gathering,
-                                worker.dest_reached,
-                                worker.owner.name == 'computer1')):
-                            dist_2_closest_min = dist(closest_min, worker)
-                            for mineral in minerals[1:]:
-                                dist_2_min = dist(mineral, worker)
-                                if dist_2_min < dist_2_closest_min:
-                                    closest_min = mineral
-                                    dist_2_closest_min = dist_2_min
-                            worker.move((closest_min.x, closest_min.y))
-                            worker.clear_task()
-                            print('go gather, lazy worker!')
-                            worker.mineral_to_gather = closest_min
-                            worker.task_x = closest_min.x
-                            worker.task_y = closest_min.y
-                            closest_min.workers.append(worker)
-                except IndexError:
-                    pass
+            # if self.frame_count % 120 == 0:
+            #     try:
+            #         closest_min = minerals[0]
+            #         for worker in workers:
+            #             if all((not worker.is_gathering,
+            #                     worker.dest_reached,
+            #                     worker.owner.name == 'computer1')):
+            #                 dist_2_closest_min = dist(closest_min, worker)
+            #                 for mineral in minerals[1:]:
+            #                     dist_2_min = dist(mineral, worker)
+            #                     if dist_2_min < dist_2_closest_min:
+            #                         closest_min = mineral
+            #                         dist_2_closest_min = dist_2_min
+            #                 worker.move((closest_min.x, closest_min.y))
+            #                 worker.clear_task()
+            #                 print('go gather, lazy worker!')
+            #                 worker.mineral_to_gather = closest_min
+            #                 worker.task_x = closest_min.x
+            #                 worker.task_y = closest_min.y
+            #                 closest_min.workers.append(worker)
+            #     except IndexError:
+            #         pass
             # AI sending units to attack:
-            if self.frame_count % 300 == 0:
-                for unit in enemy_units:
-                    if unit.has_weapon and not unit.has_target_p:
-                        closest_enemy = None
-                        closest_enemy_dist = None
-                        for entity in our_units + our_buildings:
-                            try:
-                                if not unit.attacks_air and entity.flying:
-                                    continue
-                                if not unit.attacks_ground \
-                                        and not entity.flying:
-                                    continue
-                            except AttributeError:
-                                pass
-                            dist_to_enemy = dist(unit, entity)
-                            if not closest_enemy:
-                                closest_enemy = entity
-                                closest_enemy_dist = dist_to_enemy
-                            else:
-                                if dist_to_enemy < closest_enemy_dist:
-                                    closest_enemy = entity
-                                    closest_enemy_dist = dist_to_enemy
-                        try:
-                            unit.move(round_coords(closest_enemy.x,
-                                                   closest_enemy.y))
-                            unit.attack_moving = True
-                        except AttributeError:
-                            pass
+            # if self.frame_count % 300 == 0:
+            #     for unit in enemy_units:
+            #         if unit.has_weapon and not unit.has_target_p:
+            #             closest_enemy = None
+            #             closest_enemy_dist = None
+            #             for entity in our_units + our_buildings:
+            #                 try:
+            #                     if not unit.attacks_air and entity.flying:
+            #                         continue
+            #                     if not unit.attacks_ground \
+            #                             and not entity.flying:
+            #                         continue
+            #                 except AttributeError:
+            #                     pass
+            #                 dist_to_enemy = dist(unit, entity)
+            #                 if not closest_enemy:
+            #                     closest_enemy = entity
+            #                     closest_enemy_dist = dist_to_enemy
+            #                 else:
+            #                     if dist_to_enemy < closest_enemy_dist:
+            #                         closest_enemy = entity
+            #                         closest_enemy_dist = dist_to_enemy
+            #             try:
+            #                 unit.move(round_coords(closest_enemy.x,
+            #                                        closest_enemy.y))
+            #                 unit.attack_moving = True
+            #             except AttributeError:
+            #                 pass
             # Build buildings. TODO: Optimize
             for worker in workers:
                 if worker.to_build:
@@ -1405,7 +1400,7 @@ class PlanetEleven(pyglet.window.Window):
                                 unit.shadow.x = unit.target_x + 10
                                 unit.shadow.y = unit.target_y - 10
                             unit.pos_dict[
-                                    (unit.target_x, unit.target_y)] = unit
+                                (unit.target_x, unit.target_y)] = unit
                             if unit.x == unit.dest_x and unit.y == \
                                     unit.dest_y:
                                 unit.dest_reached = True
@@ -1413,14 +1408,14 @@ class PlanetEleven(pyglet.window.Window):
                                 if unit.attack_moving:
                                     if unit.owner.name == 'player1':
                                         if closest_enemy_2_att(unit,
-                                                enemy_units + enemy_buildings):
+                                                               enemy_units + enemy_buildings):
                                             unit.dest_reached = True
                                             unit.attack_moving = False
                                         else:
                                             unit.update_move()
                                     else:
                                         if closest_enemy_2_att(unit,
-                                                our_units + our_buildings):
+                                                               our_units + our_buildings):
                                             unit.dest_reached = True
                                             unit.attack_moving = False
                                         else:
@@ -1489,7 +1484,7 @@ class PlanetEleven(pyglet.window.Window):
 
     def on_key_press(self, symbol, modifiers):
         """Called whenever a key is pressed."""
-        global selected, left_view_border, bottom_view_border
+        global selected, lvb, bvb
         if symbol == key.F:
             if self.my_fullscreen:
                 self.width = SCREEN_W
@@ -1528,16 +1523,16 @@ class PlanetEleven(pyglet.window.Window):
                                                self.mm_fow_ImageData.width
                                                * 4, data=self.npa.tobytes())
             elif symbol == key.LEFT:
-                left_view_border -= PS
+                lvb -= PS
                 self.update_viewport()
             elif symbol == key.RIGHT:
-                left_view_border += PS
+                lvb += PS
                 self.update_viewport()
             elif symbol == key.DOWN:
-                bottom_view_border -= PS
+                bvb -= PS
                 self.update_viewport()
             elif symbol == key.UP:
-                bottom_view_border += PS
+                bvb += PS
                 self.update_viewport()
             elif symbol == key.Q:
                 print('POS_COORDS =', POS_COORDS)
@@ -1571,9 +1566,9 @@ class PlanetEleven(pyglet.window.Window):
                     i += 1
             elif symbol == key.X:
                 coords_to_delete = []
-                yi = bottom_view_border + PS // 2
+                yi = bvb + PS // 2
                 for y in range(yi, yi + 12 * PS, PS):
-                    xi = left_view_border + PS // 2
+                    xi = lvb + PS // 2
                     for x in range(xi, xi + 17 * PS, PS):
                         coords_to_delete.append((x, y))
                 for coord in coords_to_delete:
@@ -1604,11 +1599,13 @@ class PlanetEleven(pyglet.window.Window):
                 self.paused = False
 
     def on_mouse_press(self, x, y, button, modifiers):
-        global selected, our_units, left_view_border, bottom_view_border
+        global selected, our_units, lvb, bvb
         if not self.paused:
             if self.my_fullscreen:
-                x /= 2
-                y /= 2
+                x //= 2
+                y //= 2
+                print()
+                print('x =', x, 'y =', y)
             if not self.build_loc_sel_phase and not self.targeting_phase:
                 # Game field
                 if x < SCREEN_W - 139:
@@ -1686,17 +1683,16 @@ class PlanetEleven(pyglet.window.Window):
                                             selected.task_y = obj.y
                                             obj.workers.append(selected)
                 # Minimap
-                elif MM0[0] <= x <= MM0[
-                    0] + 100 and \
-                        MM0[1] <= y <= MM0[
-                    1] + 100:
+                elif MM0[0] <= x <= MM0[0] + 100 \
+                        and MM0[1] <= y <= MM0[1] + 100:
                     if button == mouse.LEFT:
-                        x -= 19 / 2
-                        y -= 14 / 2
-                        left_view_border = (x - MM0[
-                            0]) * PS
-                        bottom_view_border = (y - MM0[
-                            1]) * PS
+                        # The viewport is 17x12 blocks. This +2 is
+                        # about 2 border pixels of the frame
+                        x -= 19 // 2
+                        y -= 14 // 2
+                        print('x =', x, 'y =', y)
+                        lvb = (x - MM0[0]) * PS
+                        bvb = (y - MM0[1]) * PS
                         self.update_viewport()
                     elif button == mouse.RIGHT:
                         x = (x - MM0[0]) * PS
@@ -1774,6 +1770,18 @@ class PlanetEleven(pyglet.window.Window):
                                 self.stop_b.y + 16:
                             selected.stop_move()
                         # Attack
+                        if self.attack_b.x - 16 <= x <= \
+                                self.attack_b.x + 16 and \
+                                self.attack_b.y - 16 <= y <= \
+                                self.attack_b.y + 16:
+                            try:
+                                if selected.has_weapon:
+                                    if selected.owner.name == 'player1':
+                                        self.set_mouse_cursor(
+                                            res.cursor_target)
+                                    self.targeting_phase = True
+                            except AttributeError:
+                                pass
                         # Build
                         if str(type(selected)) == "<class '__main__.Pioneer'>":
                             if self.armory_b.x - 16 <= x <= \
@@ -1837,8 +1845,8 @@ class PlanetEleven(pyglet.window.Window):
                 y /= 2
             if self.to_build == "big_base":
                 x, y = round_coords(x, y)
-                self.to_build_spt.x = x + left_view_border + PS / 2
-                self.to_build_spt.y = y + bottom_view_border + PS / 2
+                self.to_build_spt.x = x + lvb + PS / 2
+                self.to_build_spt.y = y + bvb + PS / 2
                 x, y = mc(x=x, y=y)
                 s_x = int((x - 16) / 32) + 1
                 s_y = int((y - 16) / 32) + 1
@@ -1864,8 +1872,8 @@ class PlanetEleven(pyglet.window.Window):
                     self.to_build_spt.color = (0, 255, 0)
             else:
                 x, y = round_coords(x, y)
-                self.to_build_spt.x = x + left_view_border
-                self.to_build_spt.y = y + bottom_view_border
+                self.to_build_spt.x = x + lvb
+                self.to_build_spt.y = y + bvb
                 x, y = mc(x=x, y=y)
                 x = int((x - 16) / 32) + 1
                 y = int((y - 16) / 32) + 1
@@ -1879,7 +1887,7 @@ class PlanetEleven(pyglet.window.Window):
                     self.loc_clear = True
 
     def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
-        global left_view_border, bottom_view_border
+        global lvb, bvb
         if not self.paused:
             if self.my_fullscreen:
                 x /= 2
@@ -1893,20 +1901,20 @@ class PlanetEleven(pyglet.window.Window):
                     self.dy += dy * MMB_PAN_SPEED
                     if abs(self.dx) >= PS:
                         if self.dx < 0:
-                            left_view_border += PS
+                            lvb += PS
                             self.update_viewport()
                             self.dx -= self.dx
                         else:
-                            left_view_border -= PS
+                            lvb -= PS
                             self.update_viewport()
                             self.dx -= self.dx
                     if abs(self.dy) >= PS:
                         if self.dy < 0:
-                            bottom_view_border += PS
+                            bvb += PS
                             self.update_viewport()
                             self.dy -= self.dy
                         else:
-                            bottom_view_border -= PS
+                            bvb -= PS
                             self.update_viewport()
                             self.dy -= self.dy
                 # Minimap
@@ -1915,8 +1923,8 @@ class PlanetEleven(pyglet.window.Window):
                         MM0[1] <= y <= MM0[
                     1] + 100 and buttons in [1, 2]:
                     self.minimap_drugging = True
-                    left_view_border += dx * PS
-                    bottom_view_border += dy * PS
+                    lvb += dx * PS
+                    bvb += dy * PS
                     self.update_viewport()
             # Minimap dragging
             else:
@@ -1928,8 +1936,8 @@ class PlanetEleven(pyglet.window.Window):
                 #     y = MINIMAP_ZERO_COORDS[1]
                 # elif y > MINIMAP_ZERO_COORDS[1] + 100:
                 #     y = MINIMAP_ZERO_COORDS[1] + 100
-                left_view_border += dx * PS
-                bottom_view_border += dy * PS
+                lvb += dx * PS
+                bvb += dy * PS
                 self.update_viewport()
 
     def on_mouse_release(self, x, y, button, modifiers):
@@ -1943,34 +1951,36 @@ class PlanetEleven(pyglet.window.Window):
     #         self.update_viewport()
 
     def update_viewport(self):
-        global left_view_border, bottom_view_border, minimap_fow_x, \
-            minimap_fow_y
-
+        global lvb, bvb, minimap_fow_x, minimap_fow_y
         # Viewport limits
-        a = POS_COORDS_N_COLUMNS * PS - SCREEN_W // PS * PS + PS * 4
-        if left_view_border < 0:
-            left_view_border = 0
-        elif left_view_border > a:
-            left_view_border = a
-        if bottom_view_border < 0:
-            bottom_view_border = 0
-        elif bottom_view_border > POS_COORDS_N_ROWS * PS - SCREEN_H:
-            bottom_view_border = POS_COORDS_N_ROWS * PS - SCREEN_H
+        cp_limit = POS_COORDS_N_COLUMNS * PS - SCREEN_W // PS * PS + PS * 4
+        if lvb % PS != 0:
+            lvb += PS // 2
+        if bvb % PS != 0:
+            bvb += PS // 2
+        if lvb < 0:
+            lvb = 0
+        elif lvb > cp_limit:
+            lvb = cp_limit
+        if bvb < 0:
+            bvb = 0
+        elif bvb > POS_COORDS_N_ROWS * PS - SCREEN_H:
+            bvb = POS_COORDS_N_ROWS * PS - SCREEN_H
 
-        self.mm_textured_bg.x = MM0[0] + left_view_border
-        self.mm_textured_bg.y = MM0[1] + bottom_view_border
+        self.mm_textured_bg.x = MM0[0] + lvb
+        self.mm_textured_bg.y = MM0[1] + bvb
         for el in self.ui:
-            el.x = el.org_x + left_view_border
-            el.y = el.org_y + bottom_view_border
-        self.min_count_label.x = SCREEN_W - 200 + left_view_border
-        self.min_count_label.y = SCREEN_H - 30 + bottom_view_border
+            el.x = el.org_x + lvb
+            el.y = el.org_y + bvb
+        self.min_count_label.x = SCREEN_W - 200 + lvb
+        self.min_count_label.y = SCREEN_H - 30 + bvb
         for entity in our_buildings + our_units \
                       + enemy_buildings + enemy_units:
             entity.pixel.x, entity.pixel.y = to_minimap(entity.x, entity.y)
         self.mm_cam_frame_spt.x, self.mm_cam_frame_spt.y = \
-            to_minimap(left_view_border - 2, bottom_view_border - 2)
-        minimap_fow_x = MM0[0] - 1 + left_view_border
-        minimap_fow_y = MM0[1] - 1 + bottom_view_border
+            to_minimap(lvb - 2, bvb - 2)
+        minimap_fow_x = MM0[0] - 1 + lvb
+        minimap_fow_y = MM0[1] - 1 + bvb
 
     def update_fow(self, x, y, radius):
         x = int((x - 16) / 32) + 1

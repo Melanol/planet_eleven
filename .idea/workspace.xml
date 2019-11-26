@@ -12,9 +12,6 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="FavoritesManager">
-    <favorites_list name="planet_eleven" />
-  </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
@@ -160,13 +157,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1566740526093</updated>
-    </task>
-    <task id="LOCAL-00152" summary="PF fixes">
-      <created>1572420334308</created>
-      <option name="number" value="00152" />
-      <option name="presentableId" value="LOCAL-00152" />
-      <option name="project" value="LOCAL" />
-      <updated>1572420334309</updated>
     </task>
     <task id="LOCAL-00153" summary="No-space PF">
       <created>1572467784439</created>
@@ -504,7 +494,14 @@
       <option name="project" value="LOCAL" />
       <updated>1574632370441</updated>
     </task>
-    <option name="localTasksCounter" value="201" />
+    <task id="LOCAL-00201" summary="attack_move() works, but only until the 1st enemy met">
+      <created>1574658156677</created>
+      <option name="number" value="00201" />
+      <option name="presentableId" value="LOCAL-00201" />
+      <option name="project" value="LOCAL" />
+      <updated>1574658156678</updated>
+    </task>
+    <option name="localTasksCounter" value="202" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -549,7 +546,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$" />
     </ignored-roots>
-    <MESSAGE value="Various" />
     <MESSAGE value="Control buttons hide for selected enemy units" />
     <MESSAGE value="Selection sprite is not dragging behind" />
     <MESSAGE value="Mass renaming" />
@@ -574,7 +570,8 @@
     <MESSAGE value="Scuffed attack_move()" />
     <MESSAGE value="Scuffed AI attack_move()" />
     <MESSAGE value="Revert here if attack_move kills the game" />
-    <option name="LAST_COMMIT_MESSAGE" value="Revert here if attack_move kills the game" />
+    <MESSAGE value="attack_move() works, but only until the 1st enemy met" />
+    <option name="LAST_COMMIT_MESSAGE" value="attack_move() works, but only until the 1st enemy met" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
