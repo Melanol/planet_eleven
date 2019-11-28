@@ -4,6 +4,7 @@
     <list default="true" id="8699b466-fa9b-4e8c-b41f-e5bbe759696d" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/planet_eleven.py" beforeDir="false" afterPath="$PROJECT_DIR$/planet_eleven.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test1.py" beforeDir="false" afterPath="$PROJECT_DIR$/test1.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/todo.txt" beforeDir="false" afterPath="$PROJECT_DIR$/todo.txt" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -44,7 +45,7 @@
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../stalagon_language" />
     <property name="restartRequiresConfirmation" value="false" />
     <property name="run.code.analysis.last.selected.profile" value="aDefault" />
-    <property name="settings.editor.selected.configurable" value="preferences.sourceCode" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -157,13 +158,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1566740526093</updated>
-    </task>
-    <task id="LOCAL-00153" summary="No-space PF">
-      <created>1572467784439</created>
-      <option name="number" value="00153" />
-      <option name="presentableId" value="LOCAL-00153" />
-      <option name="project" value="LOCAL" />
-      <updated>1572467784440</updated>
     </task>
     <task id="LOCAL-00154" summary="PF improvements">
       <created>1572471094578</created>
@@ -501,7 +495,14 @@
       <option name="project" value="LOCAL" />
       <updated>1574658156678</updated>
     </task>
-    <option name="localTasksCounter" value="202" />
+    <task id="LOCAL-00202" summary="Major minimap bug fixed">
+      <created>1574741418877</created>
+      <option name="number" value="00202" />
+      <option name="presentableId" value="LOCAL-00202" />
+      <option name="project" value="LOCAL" />
+      <updated>1574741418878</updated>
+    </task>
+    <option name="localTasksCounter" value="203" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -546,8 +547,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$" />
     </ignored-roots>
-    <MESSAGE value="Control buttons hide for selected enemy units" />
-    <MESSAGE value="Selection sprite is not dragging behind" />
     <MESSAGE value="Mass renaming" />
     <MESSAGE value="Pioneer init bug fixed" />
     <MESSAGE value="Turrets look like photon cannons now" />
@@ -571,7 +570,9 @@
     <MESSAGE value="Scuffed AI attack_move()" />
     <MESSAGE value="Revert here if attack_move kills the game" />
     <MESSAGE value="attack_move() works, but only until the 1st enemy met" />
-    <option name="LAST_COMMIT_MESSAGE" value="attack_move() works, but only until the 1st enemy met" />
+    <MESSAGE value="Major minimap bug fixed" />
+    <MESSAGE value="Fixed an bug that would allow building buildings atop of each other" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fixed an bug that would allow building buildings atop of each other" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

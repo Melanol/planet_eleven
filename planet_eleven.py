@@ -3,6 +3,7 @@ import random
 import sys
 import numpy as np
 import pickle
+import win32api
 
 from pyglet.sprite import Sprite
 from pyglet.gl import *
@@ -125,22 +126,20 @@ def update_shooting(game_instance, our_entities, enemy_entities):
                     entity.on_cooldown = False
 
 
+
 class Player:
     def __init__(self, name):
         self.mineral_count = 50000
         self.name = name
 
-
 class HitAnim(Sprite):
     def __init__(self, x, y):
         super().__init__(res.hit_anim, x, y, batch=explosions_batch)
-
 
 class Explosion(Sprite):
     def __init__(self, x, y, scale=1):
         super().__init__(res.explosion_anim, x, y, batch=explosions_batch)
         self.scale = scale
-
 
 class UI(Sprite):
     def __init__(self, game_inst, img, x, y):
@@ -148,7 +147,6 @@ class UI(Sprite):
         self.org_x = x
         self.org_y = y
         game_inst.ui.append(self)
-
 
 class Mineral(Sprite):
     def __init__(self, outer_instance, x, y, amount=500000):
@@ -1100,6 +1098,8 @@ class PlanetEleven(pyglet.window.Window):
         self.show_fps = True
         self.fps_display = pyglet.window.FPSDisplay(window=self)
         self.ui = []
+        self.mouse_x = 0
+        self.mouse_y = 0
 
     def setup(self):
         global selected
@@ -1408,14 +1408,14 @@ class PlanetEleven(pyglet.window.Window):
                                 if unit.attack_moving:
                                     if unit.owner.name == 'player1':
                                         if closest_enemy_2_att(unit,
-                                                               enemy_units + enemy_buildings):
+                                                enemy_units + enemy_buildings):
                                             unit.dest_reached = True
                                             unit.attack_moving = False
                                         else:
                                             unit.update_move()
                                     else:
                                         if closest_enemy_2_att(unit,
-                                                               our_units + our_buildings):
+                                                our_units + our_buildings):
                                             unit.dest_reached = True
                                             unit.attack_moving = False
                                         else:
@@ -1503,11 +1503,62 @@ class PlanetEleven(pyglet.window.Window):
                         self.targeting_phase = True
                 except AttributeError:
                     pass
+            elif symbol == key.B:
+                if str(type(selected)) == "<class '__main__.Pioneer'>":
+                    self.to_build_spt.image = res.big_base_img
+                    self.build_loc_sel_phase = True
+                    self.to_build = "big_base"
+                    x, y = win32api.GetCursorPos()
+                    y = SCREEN_H - y
+                    x, y = round_coords(x, y)
+                    coords_to_check = ((x, y), (x + PS, y), (x + PS, y + PS),
+                                       (x, y + PS))
+                    for _x, _y in coords_to_check:
+                        if g_pos_coord_d[(_x, _y)]:
+                            self.to_build_spt.color = (255, 0, 0)
+                            self.loc_clear = False
+                            break
+                    else:
+                        self.to_build_spt.color = (0, 255, 0)
+                        self.loc_clear = True
+                    x += PS / 2
+                    y += PS / 2
+                    self.to_build_spt.x, self.to_build_spt.y = x, y
+            elif symbol == key.R:
+                if str(type(selected)) == "<class '__main__.Pioneer'>":
+                    self.to_build_spt.image = res.armory_img
+                    self.build_loc_sel_phase = True
+                    self.to_build = "armory"
+                    x, y = win32api.GetCursorPos()
+                    y = SCREEN_H - y
+                    x, y = round_coords(x, y)
+                    if g_pos_coord_d[(x, y)]:
+                        self.to_build_spt.color = (255, 0, 0)
+                        self.loc_clear = False
+                    else:
+                        self.to_build_spt.color = (0, 255, 0)
+                        self.loc_clear = True
+                    self.to_build_spt.x, self.to_build_spt.y = x, y
             elif symbol == key.S:
                 try:
                     selected.stop_move()
                 except AttributeError:
                     pass
+            elif symbol == key.T:
+                if str(type(selected)) == "<class '__main__.Pioneer'>":
+                    self.to_build_spt.image = res.turret_b_img
+                    self.build_loc_sel_phase = True
+                    self.to_build = "turret"
+                    x, y = win32api.GetCursorPos()
+                    y = SCREEN_H - y
+                    x, y = round_coords(x, y)
+                    if g_pos_coord_d[(x, y)]:
+                        self.to_build_spt.color = (255, 0, 0)
+                        self.loc_clear = False
+                    else:
+                        self.to_build_spt.color = (0, 255, 0)
+                        self.loc_clear = True
+                    self.to_build_spt.x, self.to_build_spt.y = x, y
             elif symbol == key.F1:
                 if not self.show_fps:
                     self.show_fps = True
@@ -1541,11 +1592,6 @@ class PlanetEleven(pyglet.window.Window):
             elif symbol == key.E:
                 print('find_path()')
                 find_path()
-            elif symbol == key.R:
-                for y in convert_map():
-                    for x in y:
-                        if x == 1:
-                            print(1)
             elif symbol == key.G:
                 print(selected)
             elif symbol == key.H:
@@ -1782,7 +1828,7 @@ class PlanetEleven(pyglet.window.Window):
                                     self.targeting_phase = True
                             except AttributeError:
                                 pass
-                        # Build
+                        # Build buildings
                         if str(type(selected)) == "<class '__main__.Pioneer'>":
                             if self.armory_b.x - 16 <= x <= \
                                     self.armory_b.x + 16 and \
@@ -1843,6 +1889,8 @@ class PlanetEleven(pyglet.window.Window):
             if self.my_fullscreen:
                 x /= 2
                 y /= 2
+            self.mouse_x = x
+            self.mouse_y = y
             if self.to_build == "big_base":
                 x, y = round_coords(x, y)
                 self.to_build_spt.x = x + lvb + PS / 2

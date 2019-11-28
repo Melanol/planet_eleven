@@ -1,7 +1,5 @@
-a = 0
-b = 2
+import win32api
 
-if a == 1:
-    print(1)
-elif b == 2:
-    print(2)
+while True:
+    x, y = win32api.GetCursorPos()
+    print(x, y)

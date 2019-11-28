@@ -2,7 +2,7 @@
 
 # Important
 -Simple AI
--The minimap bug appears only in fullscreen
+-One can stack buildings if one does not move the mouse and keeps ordering at one spot
 
 -Unit control buttons
 -Building construction time
