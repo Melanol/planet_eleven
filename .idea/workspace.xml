@@ -4,14 +4,6 @@
     <list default="true" id="8699b466-fa9b-4e8c-b41f-e5bbe759696d" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/planet_eleven.py" beforeDir="false" afterPath="$PROJECT_DIR$/planet_eleven.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/big_base/big_base_icon.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/big_base/big_base_icon.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/turret_b.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/turret_b.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/turret_base.psd" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/turret_base.psd" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/vulture.psd" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/vulture.psd" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/vulture_enemy.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/vulture_enemy.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/vulture_shadow.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/vulture_shadow.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/vulture_shadow.psd" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/vulture_shadow.psd" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/todo.txt" beforeDir="false" afterPath="$PROJECT_DIR$/todo.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -168,13 +160,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1566740526093</updated>
-    </task>
-    <task id="LOCAL-00155" summary="PF improvements">
-      <created>1572491053428</created>
-      <option name="number" value="00155" />
-      <option name="presentableId" value="LOCAL-00155" />
-      <option name="project" value="LOCAL" />
-      <updated>1572491053429</updated>
     </task>
     <task id="LOCAL-00156" summary="Revert here">
       <created>1572670855212</created>
@@ -512,7 +497,14 @@
       <option name="project" value="LOCAL" />
       <updated>1574927958576</updated>
     </task>
-    <option name="localTasksCounter" value="204" />
+    <task id="LOCAL-00204" summary="Control panel move command works">
+      <created>1576138567174</created>
+      <option name="number" value="00204" />
+      <option name="presentableId" value="LOCAL-00204" />
+      <option name="project" value="LOCAL" />
+      <updated>1576138567175</updated>
+    </task>
+    <option name="localTasksCounter" value="205" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -557,7 +549,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$" />
     </ignored-roots>
-    <MESSAGE value="Mass renaming" />
     <MESSAGE value="Pioneer init bug fixed" />
     <MESSAGE value="Turrets look like photon cannons now" />
     <MESSAGE value="Lists renamed" />
@@ -582,25 +573,34 @@
     <MESSAGE value="attack_move() works, but only until the 1st enemy met" />
     <MESSAGE value="Major minimap bug fixed" />
     <MESSAGE value="Fixed an bug that would allow building buildings atop of each other" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixed an bug that would allow building buildings atop of each other" />
+    <MESSAGE value="Control panel move command works" />
+    <option name="LAST_COMMIT_MESSAGE" value="Control panel move command works" />
   </component>
   <component name="WindowStateProjectService">
-    <state width="1344" height="110" key="GridCell.Tab.0.bottom" timestamp="1576138478297">
+    <state x="290" y="0" key="CommitChangelistDialog2" timestamp="1576138550973">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="110" key="GridCell.Tab.0.bottom/0.0.1366.738@0.0.1366.738" timestamp="1576138478297" />
-    <state width="1344" height="110" key="GridCell.Tab.0.center" timestamp="1576138478296">
+    <state x="290" y="0" key="CommitChangelistDialog2/0.0.1366.738@0.0.1366.738" timestamp="1576138550973" />
+    <state width="1344" height="110" key="GridCell.Tab.0.bottom" timestamp="1576139052209">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="110" key="GridCell.Tab.0.center/0.0.1366.738@0.0.1366.738" timestamp="1576138478296" />
-    <state width="1344" height="110" key="GridCell.Tab.0.left" timestamp="1576138478296">
+    <state width="1344" height="110" key="GridCell.Tab.0.bottom/0.0.1366.738@0.0.1366.738" timestamp="1576139052209" />
+    <state width="1344" height="110" key="GridCell.Tab.0.center" timestamp="1576139052209">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="110" key="GridCell.Tab.0.left/0.0.1366.738@0.0.1366.738" timestamp="1576138478296" />
-    <state width="1344" height="110" key="GridCell.Tab.0.right" timestamp="1576138478297">
+    <state width="1344" height="110" key="GridCell.Tab.0.center/0.0.1366.738@0.0.1366.738" timestamp="1576139052209" />
+    <state width="1344" height="110" key="GridCell.Tab.0.left" timestamp="1576139052208">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="110" key="GridCell.Tab.0.right/0.0.1366.738@0.0.1366.738" timestamp="1576138478297" />
+    <state width="1344" height="110" key="GridCell.Tab.0.left/0.0.1366.738@0.0.1366.738" timestamp="1576139052208" />
+    <state width="1344" height="110" key="GridCell.Tab.0.right" timestamp="1576139052209">
+      <screen x="0" y="0" width="1366" height="738" />
+    </state>
+    <state width="1344" height="110" key="GridCell.Tab.0.right/0.0.1366.738@0.0.1366.738" timestamp="1576139052209" />
+    <state x="275" y="101" key="Vcs.Push.Dialog.v2" timestamp="1576138578247">
+      <screen x="0" y="0" width="1366" height="738" />
+    </state>
+    <state x="275" y="101" key="Vcs.Push.Dialog.v2/0.0.1366.738@0.0.1366.738" timestamp="1576138578247" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

@@ -1526,6 +1526,11 @@ class PlanetEleven(pyglet.window.Window):
                     x += PS / 2
                     y += PS / 2
                     self.to_build_spt.x, self.to_build_spt.y = x, y
+            elif symbol == key.M:
+                if selected.owner.name == "player1":
+                    self.set_mouse_cursor(res.cursor_target)
+                    self.m_targeting_phase = True
+                    return
             elif symbol == key.R:
                 if str(type(selected)) == "<class '__main__.Pioneer'>":
                     self.to_build_spt.image = res.armory_img
