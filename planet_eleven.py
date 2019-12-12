@@ -1659,8 +1659,49 @@ class PlanetEleven(pyglet.window.Window):
                 y //= 2
                 print()
                 print('x =', x, 'y =', y)
-            if not self.build_loc_sel_phase and not self.targeting_phase \
-                    and not self.m_targeting_phase:
+                # Building location selection
+            if self.build_loc_sel_phase:
+                # Game field
+                if x < SCREEN_W - 139:
+                    x, y = round_coords(x, y)
+                    x, y = mc(x=x, y=y)
+                    if button == mouse.LEFT:
+                        if self.loc_clear:
+                            if self.to_build == 'armory':
+                                building = Armory
+                            elif self.to_build == 'turret':
+                                building = Turret
+                            else:
+                                building = BigBase
+                            order_building(self, selected, building, x, y)
+                            self.build_loc_sel_phase = False
+                    elif button == mouse.RIGHT:
+                        self.build_loc_sel_phase = False
+            # Movement target selection phase
+            elif self.m_targeting_phase:
+                x, y = round_coords(x, y)
+                if selected.dest_reached:
+                    selected.move((x, y))
+                # Movement interruption
+                else:
+                    selected.move_interd = True
+                    selected.new_dest_x = x
+                    selected.new_dest_y = y
+                selected.has_target_p = False
+                self.m_targeting_phase = False
+                self.set_mouse_cursor(res.cursor)
+            # Targeting phase
+            elif self.targeting_phase:
+                if button == mouse.LEFT:
+                    if x < SCREEN_W - 139:
+                        x, y = round_coords(x, y)
+                        x, y = mc(x=x, y=y)
+                        print('\nglobal click coords:', x, y)
+                        selected.attack_moving = True
+                        selected.move((x, y))
+                self.targeting_phase = False
+                self.set_mouse_cursor(res.cursor)
+            else:
                 # Game field
                 if x < SCREEN_W - 139:
                     x, y = round_coords(x, y)
@@ -1866,47 +1907,6 @@ class PlanetEleven(pyglet.window.Window):
                                 self.to_build_spt.color = (0, 255, 0)
                                 self.build_loc_sel_phase = True
                                 self.to_build = "big_base"
-            # Building location selection
-            elif self.build_loc_sel_phase:
-                # Game field
-                if x < SCREEN_W - 139:
-                    x, y = round_coords(x, y)
-                    x, y = mc(x=x, y=y)
-                    if button == mouse.LEFT:
-                        if self.loc_clear:
-                            if self.to_build == 'armory':
-                                building = Armory
-                            elif self.to_build == 'turret':
-                                building = Turret
-                            else:
-                                building = BigBase
-                            order_building(self, selected, building, x, y)
-                            self.build_loc_sel_phase = False
-                    elif button == mouse.RIGHT:
-                        self.build_loc_sel_phase = False
-            elif self.m_targeting_phase:
-                x, y = round_coords(x, y)
-                if selected.dest_reached:
-                    selected.move((x, y))
-                # Movement interruption
-                else:
-                    selected.move_interd = True
-                    selected.new_dest_x = x
-                    selected.new_dest_y = y
-                selected.has_target_p = False
-                self.m_targeting_phase = False
-                self.set_mouse_cursor(res.cursor)
-            # Targeting phase
-            else:
-                if button == mouse.LEFT:
-                    if x < SCREEN_W - 139:
-                        x, y = round_coords(x, y)
-                        x, y = mc(x=x, y=y)
-                        print('\nglobal click coords:', x, y)
-                        selected.attack_moving = True
-                        selected.move((x, y))
-                self.targeting_phase = False
-                self.set_mouse_cursor(res.cursor)
 
     def on_mouse_motion(self, x, y, dx, dy):
         if not self.paused and self.build_loc_sel_phase:
