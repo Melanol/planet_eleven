@@ -2,10 +2,10 @@
 
 # Important
 -Simple AI
--One can stack buildings if one does not move the mouse and keeps ordering at one spot
 
 -Unit control buttons
 -Building construction time
+-OBS won't react to changing to fullscreen
 
 # Bugs
 -New buildings have rally points of previously built buildings
@@ -17,7 +17,7 @@
 -Selected info
 -Spawning in the direction of the rally point?
 -World editor? Required for terrain pos_coords
--Diagonal movement interception: if not fixed, it will be possible for up to 4 units to have the same coordinate (2 ground, 2 air)
+-Diagonal movement interception: if not fixed, it will be possible for up to 4 units to have the same coordinate (2 ground, 2 air). Only required for save/load.
 -Fix minimap
 -Screen edge cam scrolling
 -Idle units should check for close enemies only when an enemy moves or is spawned (useless optimization?)

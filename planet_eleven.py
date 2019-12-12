@@ -1112,6 +1112,7 @@ class PlanetEleven(pyglet.window.Window):
         self.dy = 0
         self.minimap_drugging = False
         self.build_loc_sel_phase = False
+        self.m_targeting_phase = False
         self.targeting_phase = False
 
         self.terrain = Sprite(img=res.terrain_img, x=0, y=0)
@@ -1291,11 +1292,12 @@ class PlanetEleven(pyglet.window.Window):
             # AI ordering units
             # if self.frame_count % 60 == 0:
             #     for building in enemy_buildings:
-            #         if self.computer.workers_count < 8:
-            #             order_unit(self, building, Pioneer)
-            #             self.computer.workers_count += 1
-            #         order_unit(self, building, random.choice((Vulture,
-            #             Centurion, Defiler, Apocalypse)))
+            #         if isinstance(building, BigBase):
+            #             if self.computer.workers_count < 8:
+            #                 order_unit(self, building, Pioneer)
+            #                 self.computer.workers_count += 1
+            #             order_unit(self, building, random.choice((Vulture,
+            #                 Centurion, Defiler, Apocalypse)))
             # Units
             # Gathering resources
             for worker in workers:
@@ -1586,7 +1588,7 @@ class PlanetEleven(pyglet.window.Window):
                 bvb += PS
                 self.update_viewport()
             elif symbol == key.Q:
-                print('POS_COORDS =', POS_COORDS)
+                print(self.m_targeting_phase)
             elif symbol == key.W:
                 print('convert_map() =', convert_map())
             elif symbol == key.E:
@@ -1652,7 +1654,8 @@ class PlanetEleven(pyglet.window.Window):
                 y //= 2
                 print()
                 print('x =', x, 'y =', y)
-            if not self.build_loc_sel_phase and not self.targeting_phase:
+            if not self.build_loc_sel_phase and not self.targeting_phase \
+                    and not self.m_targeting_phase:
                 # Game field
                 if x < SCREEN_W - 139:
                     x, y = round_coords(x, y)
@@ -1809,16 +1812,19 @@ class PlanetEleven(pyglet.window.Window):
                             order_unit(self, selected, Pioneer)
                     elif selected in our_units:
                         # Move
+                        if self.move_b.x - 16 <= x <= self.move_b.x + 16 and \
+                                self.move_b.y - 16 <= y <= self.move_b.y + 16:
+                            self.set_mouse_cursor(res.cursor_target)
+                            self.m_targeting_phase = True
+                            return
                         # Stop
-                        if self.stop_b.x - 16 <= x <= \
-                                self.stop_b.x + 16 and \
-                                self.stop_b.y - 16 <= y <= \
-                                self.stop_b.y + 16:
+                        if self.stop_b.x - 16 <= x <= self.stop_b.x + 16 and \
+                                self.stop_b.y - 16 <= y <= self.stop_b.y + 16:
                             selected.stop_move()
+                            return
                         # Attack
-                        if self.attack_b.x - 16 <= x <= \
-                                self.attack_b.x + 16 and \
-                                self.attack_b.y - 16 <= y <= \
+                        if self.attack_b.x - 16 <= x <= self.attack_b.x + 16 \
+                                and self.attack_b.y - 16 <= y <= \
                                 self.attack_b.y + 16:
                             try:
                                 if selected.has_weapon:
@@ -1828,6 +1834,7 @@ class PlanetEleven(pyglet.window.Window):
                                     self.targeting_phase = True
                             except AttributeError:
                                 pass
+                            return
                         # Build buildings
                         if str(type(selected)) == "<class '__main__.Pioneer'>":
                             if self.armory_b.x - 16 <= x <= \
@@ -1872,6 +1879,18 @@ class PlanetEleven(pyglet.window.Window):
                             self.build_loc_sel_phase = False
                     elif button == mouse.RIGHT:
                         self.build_loc_sel_phase = False
+            elif self.m_targeting_phase:
+                x, y = round_coords(x, y)
+                if selected.dest_reached:
+                    selected.move((x, y))
+                # Movement interruption
+                else:
+                    selected.move_interd = True
+                    selected.new_dest_x = x
+                    selected.new_dest_y = y
+                selected.has_target_p = False
+                self.m_targeting_phase = False
+                self.set_mouse_cursor(res.cursor)
             # Targeting phase
             else:
                 if button == mouse.LEFT:
