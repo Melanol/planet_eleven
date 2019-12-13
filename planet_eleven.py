@@ -1184,7 +1184,7 @@ class PlanetEleven(pyglet.window.Window):
                              y=self.our_1st_base.rp_y)
 
         self.basic_unit_c_bs = [self.move_b, self.stop_b, self.attack_b]
-        self.c_bs_to_render = self.our_1st_base.ctrl_buttons
+        self.cbs_to_render = self.our_1st_base.ctrl_buttons
         self.to_build_spt = Sprite(img=res.armory_img, x=-100, y=-100)
         self.to_build_spt.color = (0, 255, 0)
 
@@ -1256,8 +1256,8 @@ class PlanetEleven(pyglet.window.Window):
         self.mm_textured_bg.draw()
         minimap_pixels_batch.draw()
 
-        if self.c_bs_to_render:
-            for button in self.c_bs_to_render:
+        if self.cbs_to_render:
+            for button in self.cbs_to_render:
                 button.draw()
             if selected in our_buildings and selected \
                     not in shooting_buildings:
@@ -1593,7 +1593,8 @@ class PlanetEleven(pyglet.window.Window):
                 bvb += PS
                 self.update_viewport()
             elif symbol == key.Q:
-                print(self.m_targeting_phase)
+                print(self.rp_spt.x, self.rp_spt.y)
+                print(selected.rp_x, selected.rp_y)
             elif symbol == key.W:
                 print('convert_map() =', convert_map())
             elif symbol == key.E:
@@ -1659,7 +1660,7 @@ class PlanetEleven(pyglet.window.Window):
                 y //= 2
                 print()
                 print('x =', x, 'y =', y)
-                # Building location selection
+            # Building location selection
             if self.build_loc_sel_phase:
                 # Game field
                 if x < SCREEN_W - 139:
@@ -1701,6 +1702,7 @@ class PlanetEleven(pyglet.window.Window):
                         selected.move((x, y))
                 self.targeting_phase = False
                 self.set_mouse_cursor(res.cursor)
+            # Normal phase
             else:
                 # Game field
                 if x < SCREEN_W - 139:
@@ -1719,26 +1721,29 @@ class PlanetEleven(pyglet.window.Window):
                             if to_be_selected:
                                 try:
                                     to_be_selected.is_big
-                                    self.sel_big_spt.x = \
-                                        to_be_selected.x
-                                    self.sel_big_spt.y = \
-                                        to_be_selected.y
+                                    self.sel_big_spt.x = to_be_selected.x
+                                    self.sel_big_spt.y = to_be_selected.y
                                 except AttributeError:
                                     self.sel_spt.x = x
                                     self.sel_spt.y = y
                                 selected = to_be_selected
                         if isinstance(selected, Mineral):
-                            self.c_bs_to_render = None
+                            self.cbs_to_render = None
                         else:
                             if selected.owner.name == 'player1':
                                 try:
-                                    self.c_bs_to_render = \
+                                    self.cbs_to_render = \
                                         selected.ctrl_buttons
                                 except AttributeError:
-                                    self.c_bs_to_render = None
+                                    self.cbs_to_render = None
                             else:
-                                self.c_bs_to_render = None
+                                self.cbs_to_render = None
                             print('SELECTED CLASS =', type(selected))
+                            try:
+                                self.rp_spt.x = selected.rp_x
+                                self.rp_spt.y = selected.rp_y
+                            except AttributeError:
+                                pass
                     elif button == mouse.RIGHT:
                         # Rally point
                         if selected in our_buildings:

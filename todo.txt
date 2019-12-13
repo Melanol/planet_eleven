@@ -2,8 +2,6 @@
 
 # Important
 -Simple AI
-
--Unit control buttons
 -Building construction time
 -OBS won't react to changing to fullscreen
 

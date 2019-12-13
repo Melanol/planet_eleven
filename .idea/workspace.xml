@@ -4,11 +4,15 @@
     <list default="true" id="8699b466-fa9b-4e8c-b41f-e5bbe759696d" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/planet_eleven.py" beforeDir="false" afterPath="$PROJECT_DIR$/planet_eleven.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/todo.txt" beforeDir="false" afterPath="$PROJECT_DIR$/todo.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FavoritesManager">
+    <favorites_list name="planet_eleven" />
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -123,8 +127,8 @@
     </configuration>
     <list>
       <item itemvalue="Python.planet_eleven" />
-      <item itemvalue="Python.test" />
       <item itemvalue="Python.test1" />
+      <item itemvalue="Python.test" />
     </list>
     <recent_temporary>
       <list>
@@ -160,13 +164,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1566740526093</updated>
-    </task>
-    <task id="LOCAL-00157" summary="Removed small base, control buttons moved to attributes">
-      <created>1572680490163</created>
-      <option name="number" value="00157" />
-      <option name="presentableId" value="LOCAL-00157" />
-      <option name="project" value="LOCAL" />
-      <updated>1572680490163</updated>
     </task>
     <task id="LOCAL-00158" summary="Big buildings spawn with x and y at their sprites' center">
       <created>1572687077567</created>
@@ -504,7 +501,14 @@
       <option name="project" value="LOCAL" />
       <updated>1576139340092</updated>
     </task>
-    <option name="localTasksCounter" value="206" />
+    <task id="LOCAL-00206" summary="Phases optimized">
+      <created>1576140155789</created>
+      <option name="number" value="00206" />
+      <option name="presentableId" value="LOCAL-00206" />
+      <option name="project" value="LOCAL" />
+      <updated>1576140155789</updated>
+    </task>
+    <option name="localTasksCounter" value="207" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -549,7 +553,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$" />
     </ignored-roots>
-    <MESSAGE value="Turrets look like photon cannons now" />
     <MESSAGE value="Lists renamed" />
     <MESSAGE value="Fixed big base animation, added plasma explosion animation" />
     <MESSAGE value="Big base animation activates only while working. Added 44 unrevisioned files" />
@@ -574,29 +577,30 @@
     <MESSAGE value="Fixed an bug that would allow building buildings atop of each other" />
     <MESSAGE value="Control panel move command works" />
     <MESSAGE value="Key M works" />
-    <option name="LAST_COMMIT_MESSAGE" value="Key M works" />
+    <MESSAGE value="Phases optimized" />
+    <option name="LAST_COMMIT_MESSAGE" value="Phases optimized" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="290" y="0" key="CommitChangelistDialog2" timestamp="1576139334253">
+    <state x="290" y="0" key="CommitChangelistDialog2" timestamp="1576210819943">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state x="290" y="0" key="CommitChangelistDialog2/0.0.1366.738@0.0.1366.738" timestamp="1576139334253" />
-    <state width="1344" height="110" key="GridCell.Tab.0.bottom" timestamp="1576140115167">
+    <state x="290" y="0" key="CommitChangelistDialog2/0.0.1366.738@0.0.1366.738" timestamp="1576210819943" />
+    <state width="1344" height="254" key="GridCell.Tab.0.bottom" timestamp="1576210781514">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="110" key="GridCell.Tab.0.bottom/0.0.1366.738@0.0.1366.738" timestamp="1576140115167" />
-    <state width="1344" height="110" key="GridCell.Tab.0.center" timestamp="1576140115167">
+    <state width="1344" height="254" key="GridCell.Tab.0.bottom/0.0.1366.738@0.0.1366.738" timestamp="1576210781514" />
+    <state width="1344" height="254" key="GridCell.Tab.0.center" timestamp="1576210781513">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="110" key="GridCell.Tab.0.center/0.0.1366.738@0.0.1366.738" timestamp="1576140115167" />
-    <state width="1344" height="110" key="GridCell.Tab.0.left" timestamp="1576140115167">
+    <state width="1344" height="254" key="GridCell.Tab.0.center/0.0.1366.738@0.0.1366.738" timestamp="1576210781513" />
+    <state width="1344" height="254" key="GridCell.Tab.0.left" timestamp="1576210781510">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="110" key="GridCell.Tab.0.left/0.0.1366.738@0.0.1366.738" timestamp="1576140115167" />
-    <state width="1344" height="110" key="GridCell.Tab.0.right" timestamp="1576140115167">
+    <state width="1344" height="254" key="GridCell.Tab.0.left/0.0.1366.738@0.0.1366.738" timestamp="1576210781510" />
+    <state width="1344" height="254" key="GridCell.Tab.0.right" timestamp="1576210781513">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="110" key="GridCell.Tab.0.right/0.0.1366.738@0.0.1366.738" timestamp="1576140115167" />
+    <state width="1344" height="254" key="GridCell.Tab.0.right/0.0.1366.738@0.0.1366.738" timestamp="1576210781513" />
     <state x="275" y="101" key="Vcs.Push.Dialog.v2" timestamp="1576138578247">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
