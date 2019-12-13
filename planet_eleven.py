@@ -2091,8 +2091,8 @@ class PlanetEleven(pyglet.window.Window):
         for el in self.ui:
             el.x = el.org_x + lvb
             el.y = el.org_y + bvb
-        self.min_count_label.x = SCREEN_W - 200 + lvb
-        self.min_count_label.y = SCREEN_H - 30 + bvb
+        self.min_count_label.x = SCREEN_W - 180 + lvb
+        self.min_count_label.y = SCREEN_H - 20 + bvb
         for entity in our_buildings + our_units \
                       + enemy_buildings + enemy_units:
             entity.pixel.x, entity.pixel.y = to_minimap(entity.x, entity.y)
