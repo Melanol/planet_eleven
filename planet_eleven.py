@@ -1557,16 +1557,28 @@ class PlanetEleven(pyglet.window.Window):
                     y = SCREEN_H - y
                     x, y = mc(x=x, y=y)
                     x, y = round_coords(x, y)
-                    coords_to_check = ((x, y), (x + PS, y), (x + PS, y + PS),
-                                       (x, y + PS))
-                    for _x, _y in coords_to_check:
-                        if g_pos_coord_d[(_x, _y)]:
-                            self.to_build_spt.color = (255, 0, 0)
-                            self.loc_clear = False
+                    s_x = int((x - 16) / 32) + 1
+                    s_y = int((y - 16) / 32) + 1
+                    s_coords_to_check = [(s_x, s_y), (s_x + 1, s_y),
+                                         (s_x + 1, s_y + 1), (s_x, s_y + 1)]
+                    no_place = False
+                    for c in s_coords_to_check:
+                        if self.npa[c[1], c[0], 3] != 0:
+                            no_place = True
                             break
+                    if no_place is False:
+                        coords_to_check = [(x, y), (x + PS, y),
+                                           (x + PS, y + PS), (x, y + PS)]
+                        for c in coords_to_check:
+                            if g_pos_coord_d[c[0], c[1]]:
+                                no_place = True
+                                break
+                    if no_place:
+                        self.to_build_spt.color = (255, 0, 0)
+                        self.loc_clear = False
                     else:
-                        self.to_build_spt.color = (0, 255, 0)
                         self.loc_clear = True
+                        self.to_build_spt.color = (0, 255, 0)
                     x += PS / 2
                     y += PS / 2
                     self.to_build_spt.x, self.to_build_spt.y = x, y
@@ -1598,16 +1610,19 @@ class PlanetEleven(pyglet.window.Window):
                     self.to_build = "armory"
                     x, y = win32api.GetCursorPos()
                     y = SCREEN_H - y
-                    x += lvb
-                    y += bvb
+                    x, y = mc(x=x, y=y)
                     x, y = round_coords(x, y)
-                    if g_pos_coord_d[(x, y)]:
+                    self.to_build_spt.x, self.to_build_spt.y = x, y
+                    s_x = int((x - 16) / 32) + 1
+                    s_y = int((y - 16) / 32) + 1
+                    if g_pos_coord_d[self.to_build_spt.x,
+                                     self.to_build_spt.y] or \
+                            self.npa[s_y, s_x, 3] != 0:
                         self.to_build_spt.color = (255, 0, 0)
                         self.loc_clear = False
                     else:
                         self.to_build_spt.color = (0, 255, 0)
                         self.loc_clear = True
-                    self.to_build_spt.x, self.to_build_spt.y = x, y
             elif symbol == key.S:
                 try:
                     selected.stop_move()
@@ -1620,16 +1635,19 @@ class PlanetEleven(pyglet.window.Window):
                     self.to_build = "turret"
                     x, y = win32api.GetCursorPos()
                     y = SCREEN_H - y
-                    x += lvb
-                    y += bvb
+                    x, y = mc(x=x, y=y)
                     x, y = round_coords(x, y)
-                    if g_pos_coord_d[(x, y)]:
+                    self.to_build_spt.x, self.to_build_spt.y = x, y
+                    s_x = int((x - 16) / 32) + 1
+                    s_y = int((y - 16) / 32) + 1
+                    if g_pos_coord_d[self.to_build_spt.x,
+                                     self.to_build_spt.y] or \
+                            self.npa[s_y, s_x, 3] != 0:
                         self.to_build_spt.color = (255, 0, 0)
                         self.loc_clear = False
                     else:
                         self.to_build_spt.color = (0, 255, 0)
                         self.loc_clear = True
-                    self.to_build_spt.x, self.to_build_spt.y = x, y
             elif symbol == key.W:
                 print('convert_map() =', convert_map())
             elif symbol == key.X:
@@ -1951,6 +1969,7 @@ class PlanetEleven(pyglet.window.Window):
                 else:
                     self.loc_clear = True
                     self.to_build_spt.color = (0, 255, 0)
+            # Other buildings
             else:
                 x, y = round_coords(x, y)
                 self.to_build_spt.x = x + lvb
