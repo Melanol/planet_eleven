@@ -37,7 +37,7 @@ def center_load_anim(_str):
 
 
 pyglet.resource.path = ['sprites', 'sprites/big_base', 'sprites/plasma_hit',
-                        'sprites/explosion']
+                        'sprites/explosion', 'sprites/hints']
 pyglet.resource.reindex()
 
 # Utilities
@@ -61,6 +61,10 @@ utility_dot_img = center_load("utility_dot.png")
 mm_cam_frame_img = pyglet.resource.image("mm_cam_frame.png")
 mm_our_img = center_load("mm_our.png")
 mm_enemy_img = center_load("mm_enemy.png")
+mineral_small = center_load("mineral_small.png")
+
+# Hints
+hint_defiler = right_bottom_load("hint_defiler.png")
 
 # Controls
 move_img = center_load("move.png")

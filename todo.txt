@@ -1,5 +1,3 @@
-# Priority #1: finalize the 1st version of the game
-
 # Important
 -Simple AI
 
@@ -7,10 +5,13 @@
 -OBS won't react to changing to fullscreen
 
 # Bugs
--Worker>building shortcut>no fow check
+-Fullscreen building location selection is broken sometimes 
+-Fullscreen minimap panning is not working properly
+-Encountered a bug while trying to build a turret in fullscreen with low money
 
 # Not very important
--Construction sprites should move after the key was pressed
+-Change back to proper fullscreen
+-A label for outputting error messages
 -Selection of closest unit. Makes it easier to catch moving units
 -Stop doesn't stop workers from working
 -Workers that spawned near minerals cannot mine them

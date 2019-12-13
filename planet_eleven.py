@@ -1100,6 +1100,7 @@ class PlanetEleven(pyglet.window.Window):
         self.ui = []
         self.mouse_x = 0
         self.mouse_y = 0
+        self.show_hint = False
 
     def setup(self):
         global selected
@@ -1130,8 +1131,13 @@ class PlanetEleven(pyglet.window.Window):
             'RGBA', self.mm_fow_ImageData.width * 4), dtype=np.uint8)
         self.npa = self.npa.reshape((102, 102, 4))
         self.min_count_label = pyglet.text.Label(
-            str(self.this_player.mineral_count), x=SCREEN_W - 200,
-            y=SCREEN_H - 30)
+            str(self.this_player.mineral_count), x=SCREEN_W - 180,
+            y=SCREEN_H - 20, anchor_x='center', anchor_y='center')
+        self.mineral_small = UI(self, res.mineral_small, x=SCREEN_W - 210,
+            y=SCREEN_H - 20)
+
+        # Hints
+        self.hint_defiler = UI(self, res.hint_defiler, 100, 100)
 
         # Buttons
         self.armory_b = UI(self, res.armory_img, CTRL_B_COORDS[3][0],
@@ -1273,8 +1279,12 @@ class PlanetEleven(pyglet.window.Window):
             projectile.draw()
 
         self.min_count_label.draw()
+        self.mineral_small.draw()
         if self.show_fps:
             self.fps_display.draw()
+
+        if self.show_hint:
+            self.hint_defiler.draw()
 
         # Remove default modelview matrix
         glPopMatrix()
@@ -1985,6 +1995,15 @@ class PlanetEleven(pyglet.window.Window):
                 else:
                     self.to_build_spt.color = (0, 255, 0)
                     self.loc_clear = True
+        elif not self.paused:
+            # Hits
+            if self.defiler_b.x - 16 <= x <= self.defiler_b.x + 16 and \
+                    self.defiler_b.y - 16 <= y <= self.defiler_b.y + 16:
+                self.hint_defiler.x = x
+                self.hint_defiler.y = y
+                self.show_hint = True
+            else:
+                self.show_hint = False
 
     def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
         global lvb, bvb
