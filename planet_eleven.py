@@ -1497,7 +1497,50 @@ class PlanetEleven(pyglet.window.Window):
                 self.height = 768
                 self.my_fullscreen = True
         if not self.paused:
-            if symbol == key.A:
+            if symbol == key.F1:
+                if not self.show_fps:
+                    self.show_fps = True
+                else:
+                    self.show_fps = False
+            elif symbol == key.F2:
+                self.save()
+            elif symbol == key.F3:
+                self.load()
+            elif symbol == key.F4:
+                self.npa[:, :, 3] = 0
+                self.mm_fow_ImageData.set_data('RGBA',
+                    self.mm_fow_ImageData.width * 4, data=self.npa.tobytes())
+            elif symbol == key.DELETE:
+                if selected in our_units:
+                    selected.kill()
+                    if selected.flying:
+                        a_pos_coord_d[(self.sel_spt.x,
+                                       self.sel_spt.y)] = None
+                    else:
+                        g_pos_coord_d[(self.sel_spt.x,
+                                       self.sel_spt.y)] = None
+                    selected = None
+                elif selected in our_buildings:
+                    selected.kill()
+                    selected = None
+            elif symbol == key.SPACE:
+                self.paused = True
+            elif symbol == key.ESCAPE:
+                self.build_loc_sel_phase = False
+                self.set_mouse_cursor(res.cursor)
+            elif symbol == key.LEFT:
+                lvb -= PS
+                self.update_viewport()
+            elif symbol == key.RIGHT:
+                lvb += PS
+                self.update_viewport()
+            elif symbol == key.DOWN:
+                bvb -= PS
+                self.update_viewport()
+            elif symbol == key.UP:
+                bvb += PS
+                self.update_viewport()
+            elif symbol == key.A:
                 try:
                     if selected.has_weapon:
                         if selected.owner.name == 'player1':
@@ -1512,6 +1555,7 @@ class PlanetEleven(pyglet.window.Window):
                     self.to_build = "big_base"
                     x, y = win32api.GetCursorPos()
                     y = SCREEN_H - y
+                    x, y = mc(x=x, y=y)
                     x, y = round_coords(x, y)
                     coords_to_check = ((x, y), (x + PS, y), (x + PS, y + PS),
                                        (x, y + PS))
@@ -1526,11 +1570,27 @@ class PlanetEleven(pyglet.window.Window):
                     x += PS / 2
                     y += PS / 2
                     self.to_build_spt.x, self.to_build_spt.y = x, y
+            elif symbol == key.E:
+                print('find_path()')
+                find_path()
+            elif symbol == key.G:
+                print(selected)
+            elif symbol == key.H:
+                for _key, _value in g_pos_coord_d.items():
+                    if _value:
+                        print('key =', _key, 'value =', _value)
+            elif symbol == key.J:
+                print(workers)
+            elif symbol == key.K:
+                print(our_units)
             elif symbol == key.M:
                 if selected.owner.name == "player1":
                     self.set_mouse_cursor(res.cursor_target)
                     self.m_targeting_phase = True
                     return
+            elif symbol == key.Q:
+                print(self.rp_spt.x, self.rp_spt.y)
+                print(selected.rp_x, selected.rp_y)
             elif symbol == key.R:
                 if str(type(selected)) == "<class '__main__.Pioneer'>":
                     self.to_build_spt.image = res.armory_img
@@ -1538,6 +1598,8 @@ class PlanetEleven(pyglet.window.Window):
                     self.to_build = "armory"
                     x, y = win32api.GetCursorPos()
                     y = SCREEN_H - y
+                    x += lvb
+                    y += bvb
                     x, y = round_coords(x, y)
                     if g_pos_coord_d[(x, y)]:
                         self.to_build_spt.color = (255, 0, 0)
@@ -1558,6 +1620,8 @@ class PlanetEleven(pyglet.window.Window):
                     self.to_build = "turret"
                     x, y = win32api.GetCursorPos()
                     y = SCREEN_H - y
+                    x += lvb
+                    y += bvb
                     x, y = round_coords(x, y)
                     if g_pos_coord_d[(x, y)]:
                         self.to_build_spt.color = (255, 0, 0)
@@ -1566,58 +1630,8 @@ class PlanetEleven(pyglet.window.Window):
                         self.to_build_spt.color = (0, 255, 0)
                         self.loc_clear = True
                     self.to_build_spt.x, self.to_build_spt.y = x, y
-            elif symbol == key.F1:
-                if not self.show_fps:
-                    self.show_fps = True
-                else:
-                    self.show_fps = False
-            elif symbol == key.F2:
-                self.save()
-            elif symbol == key.F3:
-                self.load()
-            elif symbol == key.F4:
-                self.npa[:, :, 3] = 0
-                self.mm_fow_ImageData.set_data('RGBA',
-                                               self.mm_fow_ImageData.width
-                                               * 4, data=self.npa.tobytes())
-            elif symbol == key.LEFT:
-                lvb -= PS
-                self.update_viewport()
-            elif symbol == key.RIGHT:
-                lvb += PS
-                self.update_viewport()
-            elif symbol == key.DOWN:
-                bvb -= PS
-                self.update_viewport()
-            elif symbol == key.UP:
-                bvb += PS
-                self.update_viewport()
-            elif symbol == key.Q:
-                print(self.rp_spt.x, self.rp_spt.y)
-                print(selected.rp_x, selected.rp_y)
             elif symbol == key.W:
                 print('convert_map() =', convert_map())
-            elif symbol == key.E:
-                print('find_path()')
-                find_path()
-            elif symbol == key.G:
-                print(selected)
-            elif symbol == key.H:
-                for _key, _value in g_pos_coord_d.items():
-                    if _value:
-                        print('key =', _key, 'value =', _value)
-            elif symbol == key.J:
-                print(workers)
-            elif symbol == key.K:
-                print(our_units)
-            elif symbol == key.Z:
-                i = 0
-                for _key, value in g_pos_coord_d.items():
-                    if i % 1 == 0:
-                        if value is None:
-                            unit = Vulture(self, _key[0], _key[1])
-                            unit.spawn()
-                    i += 1
             elif symbol == key.X:
                 coords_to_delete = []
                 yi = bvb + PS // 2
@@ -1629,24 +1643,14 @@ class PlanetEleven(pyglet.window.Window):
                     for unit in our_units:
                         if g_pos_coord_d[coord[0], coord[1]] == unit:
                             unit.kill()
-            elif symbol == key.DELETE:
-                if selected in our_units:
-                    selected.kill()
-                    if selected.flying:
-                        a_pos_coord_d[(self.sel_spt.x,
-                                       self.sel_spt.y)] = None
-                    else:
-                        g_pos_coord_d[(self.sel_spt.x,
-                                       self.sel_spt.y)] = None
-                    selected = None
-                elif selected in our_buildings:
-                    selected.kill()
-                    selected = None
-            elif symbol == key.SPACE:
-                self.paused = True
-            elif symbol == key.ESCAPE:
-                self.build_loc_sel_phase = False
-                self.set_mouse_cursor(res.cursor)
+            elif symbol == key.Z:
+                i = 0
+                for _key, value in g_pos_coord_d.items():
+                    if i % 1 == 0:
+                        if value is None:
+                            unit = Vulture(self, _key[0], _key[1])
+                            unit.spawn()
+                    i += 1
         # Paused
         else:
             if symbol == key.SPACE:

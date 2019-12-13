@@ -2,14 +2,16 @@
 
 # Important
 -Simple AI
+
 -Building construction time
 -OBS won't react to changing to fullscreen
 
 # Bugs
--New buildings have rally points of previously built buildings
+-Worker>building shortcut>no fow check
 
 # Not very important
--Selection of closest unit
+-Construction sprites should move after the key was pressed
+-Selection of closest unit. Makes it easier to catch moving units
 -Stop doesn't stop workers from working
 -Workers that spawned near minerals cannot mine them
 -Selected info
