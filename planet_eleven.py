@@ -1928,6 +1928,7 @@ class PlanetEleven(pyglet.window.Window):
                                 self.to_build_spt.color = (0, 255, 0)
                                 self.build_loc_sel_phase = True
                                 self.to_build = "armory"
+                                self.to_build_spt.x, self.to_build_spt.y = x, y
                             elif self.turret_b.x - 16 <= x <= \
                                     self.turret_b.x + 16 and \
                                     self.turret_b.y - 16 <= y <= \
@@ -1936,6 +1937,7 @@ class PlanetEleven(pyglet.window.Window):
                                 self.to_build_spt.color = (0, 255, 0)
                                 self.build_loc_sel_phase = True
                                 self.to_build = "turret"
+                                self.to_build_spt.x, self.to_build_spt.y = x, y
                             elif self.big_base_b.x - 16 <= x <= \
                                     self.big_base_b.x + 16 and \
                                     self.big_base_b.y - 16 <= y <= \
@@ -1944,6 +1946,7 @@ class PlanetEleven(pyglet.window.Window):
                                 self.to_build_spt.color = (0, 255, 0)
                                 self.build_loc_sel_phase = True
                                 self.to_build = "big_base"
+                                self.to_build_spt.x, self.to_build_spt.y = x, y
 
     def on_mouse_motion(self, x, y, dx, dy):
         if not self.paused and self.build_loc_sel_phase:
