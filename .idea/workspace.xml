@@ -4,6 +4,7 @@
     <list default="true" id="8699b466-fa9b-4e8c-b41f-e5bbe759696d" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/planet_eleven.py" beforeDir="false" afterPath="$PROJECT_DIR$/planet_eleven.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources.py" beforeDir="false" afterPath="$PROJECT_DIR$/resources.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/todo.txt" beforeDir="false" afterPath="$PROJECT_DIR$/todo.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -164,13 +165,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1566740526093</updated>
-    </task>
-    <task id="LOCAL-00163" summary="buttons list">
-      <created>1572858996710</created>
-      <option name="number" value="00163" />
-      <option name="presentableId" value="LOCAL-00163" />
-      <option name="project" value="LOCAL" />
-      <updated>1572858996711</updated>
     </task>
     <task id="LOCAL-00164" summary="buttons list">
       <created>1572859061538</created>
@@ -508,7 +502,14 @@
       <option name="project" value="LOCAL" />
       <updated>1576410606065</updated>
     </task>
-    <option name="localTasksCounter" value="212" />
+    <task id="LOCAL-00212" summary="Fixed a bug with construction sprites">
+      <created>1576411955814</created>
+      <option name="number" value="00212" />
+      <option name="presentableId" value="LOCAL-00212" />
+      <option name="project" value="LOCAL" />
+      <updated>1576411955814</updated>
+    </task>
+    <option name="localTasksCounter" value="213" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -553,7 +554,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$" />
     </ignored-roots>
-    <MESSAGE value="Can now build 2-blocks-wide buildings" />
     <MESSAGE value="Just saving" />
     <MESSAGE value="Fixed the bug with workers unable to move but having a mineral to mine." />
     <MESSAGE value="Fixed a bug causing BigBase to ignore some black pixels" />
@@ -578,29 +578,30 @@
     <MESSAGE value="fov construction check" />
     <MESSAGE value="mineral_small" />
     <MESSAGE value="Hints work for all units" />
-    <option name="LAST_COMMIT_MESSAGE" value="Hints work for all units" />
+    <MESSAGE value="Fixed a bug with construction sprites" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fixed a bug with construction sprites" />
   </component>
   <component name="WindowStateProjectService">
     <state x="290" y="0" key="CommitChangelistDialog2" timestamp="1576411943030">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
     <state x="290" y="0" key="CommitChangelistDialog2/0.0.1366.738@0.0.1366.738" timestamp="1576411943030" />
-    <state width="1344" height="150" key="GridCell.Tab.0.bottom" timestamp="1576411897863">
+    <state width="1344" height="150" key="GridCell.Tab.0.bottom" timestamp="1576413230659">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="150" key="GridCell.Tab.0.bottom/0.0.1366.738@0.0.1366.738" timestamp="1576411897863" />
-    <state width="1344" height="150" key="GridCell.Tab.0.center" timestamp="1576411897862">
+    <state width="1344" height="150" key="GridCell.Tab.0.bottom/0.0.1366.738@0.0.1366.738" timestamp="1576413230659" />
+    <state width="1344" height="150" key="GridCell.Tab.0.center" timestamp="1576413230659">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="150" key="GridCell.Tab.0.center/0.0.1366.738@0.0.1366.738" timestamp="1576411897862" />
-    <state width="1344" height="150" key="GridCell.Tab.0.left" timestamp="1576411897862">
+    <state width="1344" height="150" key="GridCell.Tab.0.center/0.0.1366.738@0.0.1366.738" timestamp="1576413230659" />
+    <state width="1344" height="150" key="GridCell.Tab.0.left" timestamp="1576413230659">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="150" key="GridCell.Tab.0.left/0.0.1366.738@0.0.1366.738" timestamp="1576411897862" />
-    <state width="1344" height="150" key="GridCell.Tab.0.right" timestamp="1576411897863">
+    <state width="1344" height="150" key="GridCell.Tab.0.left/0.0.1366.738@0.0.1366.738" timestamp="1576413230659" />
+    <state width="1344" height="150" key="GridCell.Tab.0.right" timestamp="1576413230659">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="150" key="GridCell.Tab.0.right/0.0.1366.738@0.0.1366.738" timestamp="1576411897863" />
+    <state width="1344" height="150" key="GridCell.Tab.0.right/0.0.1366.738@0.0.1366.738" timestamp="1576413230659" />
     <state x="184" y="0" key="SettingsEditor" timestamp="1576409818490">
       <screen x="0" y="0" width="1366" height="738" />
     </state>

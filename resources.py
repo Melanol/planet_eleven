@@ -64,6 +64,10 @@ mm_enemy_img = center_load("mm_enemy.png")
 mineral_small = center_load("mineral_small.png")
 
 # Hints
+hint_armory = right_bottom_load("hint_armory.png")
+hint_turret = right_bottom_load("hint_turret.png")
+hint_big_base = right_bottom_load("hint_big_base.png")
+
 hint_defiler = right_bottom_load("hint_defiler.png")
 hint_centurion = right_bottom_load("hint_centurion.png")
 hint_vulture = right_bottom_load("hint_vulture.png")

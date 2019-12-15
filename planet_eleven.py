@@ -1736,6 +1736,7 @@ class PlanetEleven(pyglet.window.Window):
                 self.set_mouse_cursor(res.cursor)
             # Normal phase
             else:
+                self.show_hint = False  # Fixes a bug with hints
                 # Game field
                 if x < SCREEN_W - 139:
                     x, y = round_coords(x, y)
@@ -2038,6 +2039,32 @@ class PlanetEleven(pyglet.window.Window):
                         16 and CTRL_B_COORDS[4][1] - 16 <= y <= \
                         CTRL_B_COORDS[4][1] + 16:
                     self.hint.image = res.hint_pioneer
+                    self.hint.x = x + lvb
+                    self.hint.y = y + bvb
+                    self.show_hint = True
+                else:
+                    self.show_hint = False
+            elif isinstance(selected, Pioneer):
+                # Armory
+                if CTRL_B_COORDS[3][0] - 16 <= x <= CTRL_B_COORDS[3][0] + \
+                        16 and CTRL_B_COORDS[3][1] - 16 <= y <= \
+                        CTRL_B_COORDS[3][1] + 16:
+                    self.hint.image = res.hint_armory
+                    self.hint.x = x + lvb
+                    self.hint.y = y + bvb
+                    self.show_hint = True
+                    # Armory
+                elif CTRL_B_COORDS[4][0] - 16 <= x <= CTRL_B_COORDS[4][0] + \
+                        16 and CTRL_B_COORDS[4][1] - 16 <= y <= \
+                        CTRL_B_COORDS[4][1] + 16:
+                    self.hint.image = res.hint_turret
+                    self.hint.x = x + lvb
+                    self.hint.y = y + bvb
+                    self.show_hint = True
+                elif CTRL_B_COORDS[5][0] - 16 <= x <= CTRL_B_COORDS[5][0] + \
+                        16 and CTRL_B_COORDS[5][1] - 16 <= y <= \
+                        CTRL_B_COORDS[5][1] + 16:
+                    self.hint.image = res.hint_big_base
                     self.hint.x = x + lvb
                     self.hint.y = y + bvb
                     self.show_hint = True
