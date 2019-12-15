@@ -362,7 +362,7 @@ class Building(Sprite):
 
 
 class Armory(Building):
-    cost = 100
+    cost = 200
     building_time = 100
 
     def __init__(self, game_inst, x, y, owner=None):
@@ -387,7 +387,7 @@ class ProductionBuilding(Building):
 
 
 class BigBase(ProductionBuilding):
-    cost = 100
+    cost = 500
     building_time = 100
 
     def __init__(self, game_inst, x, y, owner=None):
@@ -461,7 +461,7 @@ class AttackingBuilding(Building):
 
 
 class Turret(AttackingBuilding):
-    cost = 100
+    cost = 150
     building_time = 100
 
     def __init__(self, game_inst, x, y, owner=None):
@@ -930,7 +930,7 @@ class Unit(Sprite):
 
 
 class Defiler(Unit):
-    cost = 250
+    cost = 300
     building_time = 10
 
     def __init__(self, game_inst, x, y, owner=None):
@@ -977,7 +977,7 @@ class Vulture(Unit):
 
 
 class Apocalypse(Unit):
-    cost = 250
+    cost = 600
     building_time = 30
 
     def __init__(self, game_inst, x, y, owner=None):
@@ -1137,7 +1137,7 @@ class PlanetEleven(pyglet.window.Window):
             y=SCREEN_H - 20)
 
         # Hints
-        self.hint_defiler = UI(self, res.hint_defiler, 100, 100)
+        self.hint = UI(self, res.hint_defiler, 100, 100)
 
         # Buttons
         self.armory_b = UI(self, res.armory_img, CTRL_B_COORDS[3][0],
@@ -1284,7 +1284,7 @@ class PlanetEleven(pyglet.window.Window):
             self.fps_display.draw()
 
         if self.show_hint:
-            self.hint_defiler.draw()
+            self.hint.draw()
 
         # Remove default modelview matrix
         glPopMatrix()
@@ -1997,13 +1997,49 @@ class PlanetEleven(pyglet.window.Window):
                     self.loc_clear = True
         elif not self.paused:
             # Hits
-            if self.defiler_b.x - 16 <= x <= self.defiler_b.x + 16 and \
-                    self.defiler_b.y - 16 <= y <= self.defiler_b.y + 16:
-                self.hint_defiler.x = x
-                self.hint_defiler.y = y
-                self.show_hint = True
-            else:
-                self.show_hint = False
+            if isinstance(selected, BigBase):
+                # Defiler
+                if CTRL_B_COORDS[0][0] - 16 <= x <= CTRL_B_COORDS[0][0] + \
+                        16 and CTRL_B_COORDS[0][1] - 16 <= y <= \
+                        CTRL_B_COORDS[0][1] + 16:
+                    self.hint.image = res.hint_defiler
+                    self.hint.x = x + lvb
+                    self.hint.y = y + bvb
+                    self.show_hint = True
+                # Centurion
+                elif CTRL_B_COORDS[1][0] - 16 <= x <= CTRL_B_COORDS[1][0] + \
+                        16 and CTRL_B_COORDS[1][1] - 16 <= y <= \
+                        CTRL_B_COORDS[1][1] + 16:
+                    self.hint.image = res.hint_centurion
+                    self.hint.x = x + lvb
+                    self.hint.y = y + bvb
+                    self.show_hint = True
+                # Vulture
+                elif CTRL_B_COORDS[2][0] - 16 <= x <= CTRL_B_COORDS[2][0] + \
+                        16 and CTRL_B_COORDS[2][1] - 16 <= y <= \
+                        CTRL_B_COORDS[2][1] + 16:
+                    self.hint.image = res.hint_vulture
+                    self.hint.x = x + lvb
+                    self.hint.y = y + bvb
+                    self.show_hint = True
+                # Apocalypse
+                elif CTRL_B_COORDS[3][0] - 16 <= x <= CTRL_B_COORDS[3][0] + \
+                        16 and CTRL_B_COORDS[3][1] - 16 <= y <= \
+                        CTRL_B_COORDS[3][1] + 16:
+                    self.hint.image = res.hint_apocalypse
+                    self.hint.x = x + lvb
+                    self.hint.y = y + bvb
+                    self.show_hint = True
+                # Pioneer
+                elif CTRL_B_COORDS[4][0] - 16 <= x <= CTRL_B_COORDS[4][0] + \
+                        16 and CTRL_B_COORDS[4][1] - 16 <= y <= \
+                        CTRL_B_COORDS[4][1] + 16:
+                    self.hint.image = res.hint_pioneer
+                    self.hint.x = x + lvb
+                    self.hint.y = y + bvb
+                    self.show_hint = True
+                else:
+                    self.show_hint = False
 
     def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
         global lvb, bvb

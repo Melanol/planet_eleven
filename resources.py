@@ -65,6 +65,10 @@ mineral_small = center_load("mineral_small.png")
 
 # Hints
 hint_defiler = right_bottom_load("hint_defiler.png")
+hint_centurion = right_bottom_load("hint_centurion.png")
+hint_vulture = right_bottom_load("hint_vulture.png")
+hint_apocalypse = right_bottom_load("hint_apocalypse.png")
+hint_pioneer = right_bottom_load("hint_pioneer.png")
 
 # Controls
 move_img = center_load("move.png")

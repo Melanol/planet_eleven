@@ -1,15 +1,21 @@
 # Important
 -Simple AI
+-Make sure players play at least 2 hours kek
 
 -Building construction time
+-Requirement for units
 -OBS won't react to changing to fullscreen
+-Fix the minimap already!
+-Attack range using building blocks, not centers
 
 # Bugs
 -Fullscreen building location selection is broken sometimes 
 -Fullscreen minimap panning is not working properly
 -Encountered a bug while trying to build a turret in fullscreen with low money
+-Clicking building button in the control panel should instantly move the building location sprite
 
 # Not very important
+-Proper hints for every unit and building
 -Change back to proper fullscreen
 -A label for outputting error messages
 -Selection of closest unit. Makes it easier to catch moving units

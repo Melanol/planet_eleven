@@ -5,6 +5,8 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/planet_eleven.py" beforeDir="false" afterPath="$PROJECT_DIR$/planet_eleven.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources.py" beforeDir="false" afterPath="$PROJECT_DIR$/resources.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/hints/hint_defiler.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/hints/hint_defiler.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/hints/hint_defiler.psd" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/hints/hint_defiler.psd" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/todo.txt" beforeDir="false" afterPath="$PROJECT_DIR$/todo.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -52,7 +54,7 @@
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../stalagon_language" />
     <property name="restartRequiresConfirmation" value="false" />
     <property name="run.code.analysis.last.selected.profile" value="aDefault" />
-    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+    <property name="settings.editor.selected.configurable" value="preferences.sourceCode" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -165,20 +167,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1566740526093</updated>
-    </task>
-    <task id="LOCAL-00160" summary="Various">
-      <created>1572839756803</created>
-      <option name="number" value="00160" />
-      <option name="presentableId" value="LOCAL-00160" />
-      <option name="project" value="LOCAL" />
-      <updated>1572839756804</updated>
-    </task>
-    <task id="LOCAL-00161" summary="Fixed a selection bug">
-      <created>1572841910302</created>
-      <option name="number" value="00161" />
-      <option name="presentableId" value="LOCAL-00161" />
-      <option name="project" value="LOCAL" />
-      <updated>1572841910302</updated>
     </task>
     <task id="LOCAL-00162" summary="Entities attack enemy units">
       <created>1572856081370</created>
@@ -509,7 +497,21 @@
       <option name="project" value="LOCAL" />
       <updated>1576239528778</updated>
     </task>
-    <option name="localTasksCounter" value="209" />
+    <task id="LOCAL-00209" summary="mineral_small">
+      <created>1576265072982</created>
+      <option name="number" value="00209" />
+      <option name="presentableId" value="LOCAL-00209" />
+      <option name="project" value="LOCAL" />
+      <updated>1576265072982</updated>
+    </task>
+    <task id="LOCAL-00210" summary="mineral_small">
+      <created>1576265218946</created>
+      <option name="number" value="00210" />
+      <option name="presentableId" value="LOCAL-00210" />
+      <option name="project" value="LOCAL" />
+      <updated>1576265218946</updated>
+    </task>
+    <option name="localTasksCounter" value="211" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -554,7 +556,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$" />
     </ignored-roots>
-    <MESSAGE value="Fixed unlimited distance shooting bug" />
     <MESSAGE value="Fixed the undead workers bug" />
     <MESSAGE value="Can now build 2-blocks-wide buildings" />
     <MESSAGE value="Just saving" />
@@ -579,29 +580,34 @@
     <MESSAGE value="Fixed a rally point bug" />
     <MESSAGE value="Revert here" />
     <MESSAGE value="fov construction check" />
-    <option name="LAST_COMMIT_MESSAGE" value="fov construction check" />
+    <MESSAGE value="mineral_small" />
+    <option name="LAST_COMMIT_MESSAGE" value="mineral_small" />
   </component>
   <component name="WindowStateProjectService">
     <state x="290" y="0" key="CommitChangelistDialog2" timestamp="1576265214070">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
     <state x="290" y="0" key="CommitChangelistDialog2/0.0.1366.738@0.0.1366.738" timestamp="1576265214070" />
-    <state width="1344" height="222" key="GridCell.Tab.0.bottom" timestamp="1576265182358">
+    <state width="1344" height="150" key="GridCell.Tab.0.bottom" timestamp="1576410415705">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="222" key="GridCell.Tab.0.bottom/0.0.1366.738@0.0.1366.738" timestamp="1576265182358" />
-    <state width="1344" height="222" key="GridCell.Tab.0.center" timestamp="1576265182358">
+    <state width="1344" height="150" key="GridCell.Tab.0.bottom/0.0.1366.738@0.0.1366.738" timestamp="1576410415705" />
+    <state width="1344" height="150" key="GridCell.Tab.0.center" timestamp="1576410415705">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="222" key="GridCell.Tab.0.center/0.0.1366.738@0.0.1366.738" timestamp="1576265182358" />
-    <state width="1344" height="222" key="GridCell.Tab.0.left" timestamp="1576265182357">
+    <state width="1344" height="150" key="GridCell.Tab.0.center/0.0.1366.738@0.0.1366.738" timestamp="1576410415705" />
+    <state width="1344" height="150" key="GridCell.Tab.0.left" timestamp="1576410415704">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="222" key="GridCell.Tab.0.left/0.0.1366.738@0.0.1366.738" timestamp="1576265182357" />
-    <state width="1344" height="222" key="GridCell.Tab.0.right" timestamp="1576265182358">
+    <state width="1344" height="150" key="GridCell.Tab.0.left/0.0.1366.738@0.0.1366.738" timestamp="1576410415704" />
+    <state width="1344" height="150" key="GridCell.Tab.0.right" timestamp="1576410415705">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="222" key="GridCell.Tab.0.right/0.0.1366.738@0.0.1366.738" timestamp="1576265182358" />
+    <state width="1344" height="150" key="GridCell.Tab.0.right/0.0.1366.738@0.0.1366.738" timestamp="1576410415705" />
+    <state x="184" y="0" key="SettingsEditor" timestamp="1576409818490">
+      <screen x="0" y="0" width="1366" height="738" />
+    </state>
+    <state x="184" y="0" key="SettingsEditor/0.0.1366.738@0.0.1366.738" timestamp="1576409818490" />
     <state x="275" y="101" key="Vcs.Push.Dialog.v2" timestamp="1576138578247">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
