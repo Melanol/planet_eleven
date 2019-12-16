@@ -17,7 +17,8 @@ MMB_PAN_SPEED = 4
 # TOP_SCREEN_SCROLL_ZONE = (11 * POS_SPACE, 12 * POS_SPACE)
 
 CONTROL_PANEL_CENTER_X = SCREEN_W - 139 + 139 / 2
-MM0 = CONTROL_PANEL_CENTER_X - 50, SCREEN_H / 2 - 50
+MM0X = CONTROL_PANEL_CENTER_X - 50
+MM0Y = SCREEN_H / 2 - 50
 # Generate control button coords
 cp_c_x = CONTROL_PANEL_CENTER_X
 cp_c_y = (SCREEN_H / 2 - 50) / 2
@@ -74,8 +75,8 @@ enemy_buildings = []
 enemy_units = []
 projectiles = []
 
-minimap_fow_x = MM0[0] - 1
-minimap_fow_y = MM0[1] - 1
+minimap_fow_x = MM0X - 1
+minimap_fow_y = MM0Y - 1
 
 
 def round_coords(x, y):

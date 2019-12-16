@@ -50,11 +50,11 @@ def to_minimap(x, y):  # unit.x and unit.y
     x = x / PS
     if not x.is_integer():
         x += 1
-    x = MM0[0] + x + lvb
+    x = MM0X + x + lvb
     y = y / PS
     if not y.is_integer():
         y += 1
-    y = MM0[1] + y + bvb
+    y = MM0Y + y + bvb
     return x, y
 
 
@@ -1123,9 +1123,9 @@ class PlanetEleven(pyglet.window.Window):
         self.sel_frame_cp = UI(self, res.sel_frame_img, cp_c_x,
                                SCREEN_H - 90)
         self.cp_b_bg = UI(self, res.cp_buttons_bg_img, cp_c_x, cp_c_y)
-        self.mm_textured_bg = UI(self, res.mm_textured_bg_img, MM0[0], MM0[1])
-        self.mm_cam_frame_spt = Sprite(res.mm_cam_frame_img, MM0[0] - 1,
-                                       MM0[1] - 1)
+        self.mm_textured_bg = UI(self, res.mm_textured_bg_img, MM0X, MM0Y)
+        self.mm_cam_frame_spt = Sprite(res.mm_cam_frame_img, MM0X - 1,
+                                       MM0Y - 1)
         self.mm_fow_img = pyglet.image.load('sprites/mm_fow.png')
         self.mm_fow_ImageData = self.mm_fow_img.get_image_data()
         self.npa = np.fromstring(self.mm_fow_ImageData.get_data(
@@ -1819,20 +1819,19 @@ class PlanetEleven(pyglet.window.Window):
                                             selected.task_y = obj.y
                                             obj.workers.append(selected)
                 # Minimap
-                elif MM0[0] <= x <= MM0[0] + 100 \
-                        and MM0[1] <= y <= MM0[1] + 100:
+                elif MM0X <= x <= MM0X + 100 and MM0Y <= y <= MM0Y + 100:
                     if button == mouse.LEFT:
                         # The viewport is 17x12 blocks. This +2 is
                         # about 2 border pixels of the frame
                         x -= 19 // 2
                         y -= 14 // 2
                         print('x =', x, 'y =', y)
-                        lvb = (x - MM0[0]) * PS
-                        bvb = (y - MM0[1]) * PS
+                        lvb = (x - MM0X) * PS
+                        bvb = (y - MM0Y) * PS
                         self.update_viewport()
                     elif button == mouse.RIGHT:
-                        x = (x - MM0[0]) * PS
-                        y = (y - MM0[1]) * PS
+                        x = (x - MM0X) * PS
+                        y = (y - MM0Y) * PS
                         x, y = round_coords(x, y)
                         # A unit is selected
                         unit_found = False
@@ -2106,37 +2105,20 @@ class PlanetEleven(pyglet.window.Window):
                             self.update_viewport()
                             self.dy -= self.dy
                 # Minimap
-                elif MM0[0] <= x <= MM0[
-                    0] + 100 and \
-                        MM0[1] <= y <= MM0[
-                    1] + 100 and buttons in [1, 2]:
+                elif MM0X <= x <= MM0X + 100 and MM0Y <= y <= MM0Y + 100 \
+                        and buttons in [1, 2]:
                     self.minimap_drugging = True
                     lvb += dx * PS
                     bvb += dy * PS
                     self.update_viewport()
             # Minimap dragging
             else:
-                # if x < MINIMAP_ZERO_COORDS[0]:
-                #     x = MINIMAP_ZERO_COORDS[0]
-                # elif x > MINIMAP_ZERO_COORDS[0] + 100:
-                #     x = MINIMAP_ZERO_COORDS[0] + 100
-                # if y < MINIMAP_ZERO_COORDS[1]:
-                #     y = MINIMAP_ZERO_COORDS[1]
-                # elif y > MINIMAP_ZERO_COORDS[1] + 100:
-                #     y = MINIMAP_ZERO_COORDS[1] + 100
                 lvb += dx * PS
                 bvb += dy * PS
                 self.update_viewport()
 
     def on_mouse_release(self, x, y, button, modifiers):
         self.minimap_drugging = False
-
-    # def on_mouse_motion(self, x, y, dx, dy):
-    #     global left_view_border, bottom_view_border
-    #     if TOP_SCREEN_SCROLL_ZONE[0] <= y <= TOP_SCREEN_SCROLL_ZONE[1]:
-    #         # print('sdfsdfs')
-    #         bottom_view_border += POS_SPACE
-    #         self.update_viewport()
 
     def update_viewport(self):
         global lvb, bvb, minimap_fow_x, minimap_fow_y
@@ -2155,8 +2137,8 @@ class PlanetEleven(pyglet.window.Window):
         elif bvb > POS_COORDS_N_ROWS * PS - SCREEN_H:
             bvb = POS_COORDS_N_ROWS * PS - SCREEN_H
 
-        self.mm_textured_bg.x = MM0[0] + lvb
-        self.mm_textured_bg.y = MM0[1] + bvb
+        self.mm_textured_bg.x = MM0X + lvb
+        self.mm_textured_bg.y = MM0Y + bvb
         for el in self.ui:
             el.x = el.org_x + lvb
             el.y = el.org_y + bvb
@@ -2166,9 +2148,11 @@ class PlanetEleven(pyglet.window.Window):
                       + enemy_buildings + enemy_units:
             entity.pixel.x, entity.pixel.y = to_minimap(entity.x, entity.y)
         self.mm_cam_frame_spt.x, self.mm_cam_frame_spt.y = \
-            to_minimap(lvb - 2, bvb - 2)
-        minimap_fow_x = MM0[0] - 1 + lvb
-        minimap_fow_y = MM0[1] - 1 + bvb
+            to_minimap(lvb, bvb)
+        self.mm_cam_frame_spt.x -= 1
+        self.mm_cam_frame_spt.y -= 1
+        minimap_fow_x = MM0X - 1 + lvb
+        minimap_fow_y = MM0Y - 1 + bvb
 
     def update_fow(self, x, y, radius):
         x = int((x - 16) / 32) + 1
