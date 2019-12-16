@@ -47,6 +47,7 @@ cursor_target = pyglet.window.ImageMouseCursor(pyglet.image.load(
     'sprites/cursor_target.png'), 32, 32)
 
 terrain_img = pyglet.resource.image("terrain.png")
+menu_bg = pyglet.resource.image("menu_bg.png")
 
 sel_img = center_load("sel.png")
 sel_big_img = center_load("sel_big.png")

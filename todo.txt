@@ -6,7 +6,6 @@
 -Requirement for units
 -OBS won't react to changing to fullscreen
 -Fix the minimap already!
--Attack range using building blocks, not centers
 
 # Bugs
 -Building location selection is broken sometimes. Caused by movement interruption. Creates a selectable block of the worker
@@ -14,6 +13,8 @@
 -Clicking building button in the control panel should instantly move the building location sprite
 
 # Not very important
+-Make menu work
+-Attack range using blocks, not centers
 -Rename BigBase to something proper already
 -Optimize mineral gathering and popping out units
 -Proper hints for every unit and building

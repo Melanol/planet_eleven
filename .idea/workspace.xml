@@ -166,13 +166,6 @@
       <option name="presentableId" value="Default" />
       <updated>1566740526093</updated>
     </task>
-    <task id="LOCAL-00164" summary="buttons list">
-      <created>1572859061538</created>
-      <option name="number" value="00164" />
-      <option name="presentableId" value="LOCAL-00164" />
-      <option name="project" value="LOCAL" />
-      <updated>1572859061538</updated>
-    </task>
     <task id="LOCAL-00165" summary="Players added">
       <created>1572923812540</created>
       <option name="number" value="00165" />
@@ -509,7 +502,14 @@
       <option name="project" value="LOCAL" />
       <updated>1576411955814</updated>
     </task>
-    <option name="localTasksCounter" value="213" />
+    <task id="LOCAL-00213" summary="Buildings have hints">
+      <created>1576413329146</created>
+      <option name="number" value="00213" />
+      <option name="presentableId" value="LOCAL-00213" />
+      <option name="project" value="LOCAL" />
+      <updated>1576413329147</updated>
+    </task>
+    <option name="localTasksCounter" value="214" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -554,7 +554,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$" />
     </ignored-roots>
-    <MESSAGE value="Just saving" />
     <MESSAGE value="Fixed the bug with workers unable to move but having a mineral to mine." />
     <MESSAGE value="Fixed a bug causing BigBase to ignore some black pixels" />
     <MESSAGE value="Fixed a bug that would allow building on top of units if they were not there when the building was ordered" />
@@ -579,37 +578,38 @@
     <MESSAGE value="mineral_small" />
     <MESSAGE value="Hints work for all units" />
     <MESSAGE value="Fixed a bug with construction sprites" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixed a bug with construction sprites" />
+    <MESSAGE value="Buildings have hints" />
+    <option name="LAST_COMMIT_MESSAGE" value="Buildings have hints" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="290" y="0" key="CommitChangelistDialog2" timestamp="1576411943030">
+    <state x="290" y="0" key="CommitChangelistDialog2" timestamp="1576413322324">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state x="290" y="0" key="CommitChangelistDialog2/0.0.1366.738@0.0.1366.738" timestamp="1576411943030" />
-    <state width="1344" height="150" key="GridCell.Tab.0.bottom" timestamp="1576413230659">
+    <state x="290" y="0" key="CommitChangelistDialog2/0.0.1366.738@0.0.1366.738" timestamp="1576413322324" />
+    <state width="1344" height="150" key="GridCell.Tab.0.bottom" timestamp="1576417317248">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="150" key="GridCell.Tab.0.bottom/0.0.1366.738@0.0.1366.738" timestamp="1576413230659" />
-    <state width="1344" height="150" key="GridCell.Tab.0.center" timestamp="1576413230659">
+    <state width="1344" height="150" key="GridCell.Tab.0.bottom/0.0.1366.738@0.0.1366.738" timestamp="1576417317248" />
+    <state width="1344" height="150" key="GridCell.Tab.0.center" timestamp="1576417317248">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="150" key="GridCell.Tab.0.center/0.0.1366.738@0.0.1366.738" timestamp="1576413230659" />
-    <state width="1344" height="150" key="GridCell.Tab.0.left" timestamp="1576413230659">
+    <state width="1344" height="150" key="GridCell.Tab.0.center/0.0.1366.738@0.0.1366.738" timestamp="1576417317248" />
+    <state width="1344" height="150" key="GridCell.Tab.0.left" timestamp="1576417317248">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="150" key="GridCell.Tab.0.left/0.0.1366.738@0.0.1366.738" timestamp="1576413230659" />
-    <state width="1344" height="150" key="GridCell.Tab.0.right" timestamp="1576413230659">
+    <state width="1344" height="150" key="GridCell.Tab.0.left/0.0.1366.738@0.0.1366.738" timestamp="1576417317248" />
+    <state width="1344" height="150" key="GridCell.Tab.0.right" timestamp="1576417317248">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="150" key="GridCell.Tab.0.right/0.0.1366.738@0.0.1366.738" timestamp="1576413230659" />
+    <state width="1344" height="150" key="GridCell.Tab.0.right/0.0.1366.738@0.0.1366.738" timestamp="1576417317248" />
     <state x="184" y="0" key="SettingsEditor" timestamp="1576409818490">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
     <state x="184" y="0" key="SettingsEditor/0.0.1366.738@0.0.1366.738" timestamp="1576409818490" />
-    <state x="275" y="101" key="Vcs.Push.Dialog.v2" timestamp="1576138578247">
+    <state x="275" y="101" key="Vcs.Push.Dialog.v2" timestamp="1576413355355">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state x="275" y="101" key="Vcs.Push.Dialog.v2/0.0.1366.738@0.0.1366.738" timestamp="1576138578247" />
+    <state x="275" y="101" key="Vcs.Push.Dialog.v2/0.0.1366.738@0.0.1366.738" timestamp="1576413355355" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

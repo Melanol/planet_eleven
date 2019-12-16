@@ -1101,6 +1101,7 @@ class PlanetEleven(pyglet.window.Window):
         self.mouse_x = 0
         self.mouse_y = 0
         self.show_hint = False
+        self.menu_bg = UI(self, res.menu_bg, 0, 0)
 
     def setup(self):
         global selected
@@ -1231,61 +1232,63 @@ class PlanetEleven(pyglet.window.Window):
         # Set orthographic projection matrix
         glOrtho(lvb, lvb + SCREEN_W, bvb, bvb + SCREEN_H, 1, -1)
 
-        self.terrain.draw()
-        ground_shadows_batch.draw()
-        zap_batch.draw()
-        buildings_batch.draw()
-        ground_units_batch.draw()
-        explosions_batch.draw()
-        air_shadows_batch.draw()
-        air_batch.draw()
-        if selected:
-            try:
-                selected.is_big
-                self.sel_big_spt.draw()
-            except AttributeError:
-                self.sel_spt.draw()
+        if not self.paused:
+            self.terrain.draw()
+            ground_shadows_batch.draw()
+            zap_batch.draw()
+            buildings_batch.draw()
+            ground_units_batch.draw()
+            explosions_batch.draw()
+            air_shadows_batch.draw()
+            air_batch.draw()
+            if selected:
+                try:
+                    selected.is_big
+                    self.sel_big_spt.draw()
+                except AttributeError:
+                    self.sel_spt.draw()
 
-        glEnable(GL_BLEND)
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
-        self.fow_texture = self.mm_fow_img.get_texture()
-        self.fow_texture.width = 3264
-        self.fow_texture.height = 3264
-        self.fow_texture.blit(-32, -32)
-        utilities_batch.draw()
-        if self.build_loc_sel_phase:
-            self.to_build_spt.draw()
-        self.cp_spt.draw()
-        self.menu_b.draw()
-        self.sel_frame_cp.draw()
-        self.cp_b_bg.draw()
-        self.mm_textured_bg.draw()
-        minimap_pixels_batch.draw()
+            glEnable(GL_BLEND)
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
+            self.fow_texture = self.mm_fow_img.get_texture()
+            self.fow_texture.width = 3264
+            self.fow_texture.height = 3264
+            self.fow_texture.blit(-32, -32)
+            utilities_batch.draw()
+            if self.build_loc_sel_phase:
+                self.to_build_spt.draw()
+            self.cp_spt.draw()
+            self.menu_b.draw()
+            self.sel_frame_cp.draw()
+            self.cp_b_bg.draw()
+            self.mm_textured_bg.draw()
+            minimap_pixels_batch.draw()
 
-        if self.cbs_to_render:
-            for button in self.cbs_to_render:
-                button.draw()
-            if selected in our_buildings and selected \
-                    not in shooting_buildings:
-                self.rp_spt.draw()
+            if self.cbs_to_render:
+                for button in self.cbs_to_render:
+                    button.draw()
+                if selected in our_buildings and selected \
+                        not in shooting_buildings:
+                    self.rp_spt.draw()
 
-        self.fow_texture.width = 102
-        self.fow_texture.height = 102
-        self.fow_texture.blit(minimap_fow_x, minimap_fow_y)
+            self.fow_texture.width = 102
+            self.fow_texture.height = 102
+            self.fow_texture.blit(minimap_fow_x, minimap_fow_y)
 
-        self.mm_cam_frame_spt.draw()
+            self.mm_cam_frame_spt.draw()
 
-        for projectile in projectiles:
-            projectile.draw()
+            for projectile in projectiles:
+                projectile.draw()
 
-        self.min_count_label.draw()
-        self.mineral_small.draw()
-        if self.show_fps:
-            self.fps_display.draw()
+            self.min_count_label.draw()
+            self.mineral_small.draw()
+            if self.show_fps:
+                self.fps_display.draw()
 
-        if self.show_hint:
-            self.hint.draw()
-
+            if self.show_hint:
+                self.hint.draw()
+        else:
+            self.menu_bg.draw()
         # Remove default modelview matrix
         glPopMatrix()
 
