@@ -36,8 +36,8 @@ def center_load_anim(_str):
     return anim
 
 
-pyglet.resource.path = ['sprites', 'sprites/big_base', 'sprites/plasma_hit',
-                        'sprites/explosion', 'sprites/hints', 'sprites/menu']
+pyglet.resource.path = ['sprites', 'sprites/mech_center',
+    'sprites/plasma_hit', 'sprites/explosion', 'sprites/hints', 'sprites/menu']
 pyglet.resource.reindex()
 
 # Utilities
@@ -53,7 +53,7 @@ menu_img = center_load("menu.png")
 menu_bg = pyglet.resource.image("menu_bg.png")
 resume_img = center_load("resume.png")
 save_img = center_load("save.png")
-load_img = center_load("menu.png")
+load_img = center_load("load.png")
 restart_img = center_load("restart.png")
 options_img = center_load("options.png")
 exit_img = center_load("exit.png")
@@ -75,7 +75,7 @@ mineral_small = center_load("mineral_small.png")
 # Hints
 hint_armory = right_bottom_load("hint_armory.png")
 hint_turret = right_bottom_load("hint_turret.png")
-hint_big_base = right_bottom_load("hint_big_base.png")
+hint_mech_center = right_bottom_load("hint_mech_center.png")
 
 hint_defiler = right_bottom_load("hint_defiler.png")
 hint_centurion = right_bottom_load("hint_centurion.png")
@@ -87,7 +87,7 @@ hint_pioneer = right_bottom_load("hint_pioneer.png")
 move_img = center_load("move.png")
 stop_img = center_load("stop.png")
 attack_img = center_load("attack.png")
-big_base_icon_img = center_load("big_base_icon.png")
+mech_center_icon_img = center_load("mech_center_icon.png")
 
 # Resources
 mineral = center_load("mineral.png")
@@ -105,16 +105,16 @@ hit3 = center_load("plasma16_hit3.png")
 hit_anim = pyglet.image.Animation.from_image_sequence([hit1, hit2, hit3], 0.1,
                                                       False)
 
-big_base_img = center_load("big_base.png")
-big_base_enemy_img = center_load("big_base_enemy.png")
-anim_img1 = center_load('big_base_anim1.png')
-anim_img2 = center_load('big_base_anim2.png')
-anim_img3 = center_load('big_base_anim3.png')
+mech_center_img = center_load("hint_mech_center.png")
+mech_center_enemy_img = center_load("mech_center_enemy.png")
+anim_img1 = center_load('mech_center_anim1.png')
+anim_img2 = center_load('mech_center_anim2.png')
+anim_img3 = center_load('mech_center_anim3.png')
 anim = pyglet.image.Animation.from_image_sequence([anim_img1, anim_img2,
                                                    anim_img3], 0.7, True)
-anim_enemy_img1 = center_load('big_base_anim_enemy1.png')
-anim_enemy_img2 = center_load('big_base_anim_enemy2.png')
-anim_enemy_img3 = center_load('big_base_anim_enemy3.png')
+anim_enemy_img1 = center_load('mech_center_anim_enemy1.png')
+anim_enemy_img2 = center_load('mech_center_anim_enemy2.png')
+anim_enemy_img3 = center_load('mech_center_anim_enemy3.png')
 anim_enemy = pyglet.image.Animation.from_image_sequence([anim_enemy_img1,
                                                          anim_enemy_img2,
                                                          anim_enemy_img3], 0.7,

@@ -2,13 +2,36 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="8699b466-fa9b-4e8c-b41f-e5bbe759696d" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/sprites/hints/hint_mech_center.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/constants_and_utilities.py" beforeDir="false" afterPath="$PROJECT_DIR$/constants_and_utilities.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/planet_eleven.py" beforeDir="false" afterPath="$PROJECT_DIR$/planet_eleven.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources.py" beforeDir="false" afterPath="$PROJECT_DIR$/resources.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/menu.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/menu/menu.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/menu.psd" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/menu/menu.psd" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/menu_bg.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/menu/menu_bg.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/big_base/big_base.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/mech_center/mech_center.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/big_base/big_base.psd" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/mech_center/mech_center.psd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/big_base/big_base_anim1.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/mech_center/mech_center_anim1.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/big_base/big_base_anim2.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/mech_center/mech_center_anim2.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/big_base/big_base_anim3.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/mech_center/mech_center_anim3.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/big_base/big_base_anim_enemy1.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/mech_center/mech_center_anim_enemy1.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/big_base/big_base_anim_enemy2.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/mech_center/mech_center_anim_enemy2.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/big_base/big_base_anim_enemy3.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/mech_center/mech_center_anim_enemy3.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/big_base/big_base_enemy.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/mech_center/mech_center_enemy.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/big_base/big_base_icon.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/mech_center/mech_center_icon.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/cp.psd" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/cp.psd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/hints/hint_apocalypse.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/hints/hint_apocalypse.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/hints/hint_apocalypse.psd" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/hints/hint_apocalypse.psd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/hints/hint_armory.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/hints/hint_armory.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/hints/hint_armory.psd" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/hints/hint_armory.psd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/hints/hint_big_base.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/hints/hint_big_base.psd" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/hints/hint_mech_center.psd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/hints/hint_centurion.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/hints/hint_centurion.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/hints/hint_centurion.psd" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/hints/hint_centurion.psd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/hints/hint_defiler.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/hints/hint_defiler.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/hints/hint_defiler.psd" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/hints/hint_defiler.psd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/hints/hint_pioneer.psd" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/hints/hint_pioneer.psd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/hints/hint_turret.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/hints/hint_turret.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/hints/hint_turret.psd" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/hints/hint_turret.psd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/hints/hint_vulture.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/hints/hint_vulture.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/hints/hint_vulture.psd" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/hints/hint_vulture.psd" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/todo.txt" beforeDir="false" afterPath="$PROJECT_DIR$/todo.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -170,13 +193,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1566740526093</updated>
-    </task>
-    <task id="LOCAL-00167" summary="Various">
-      <created>1572934966054</created>
-      <option name="number" value="00167" />
-      <option name="presentableId" value="LOCAL-00167" />
-      <option name="project" value="LOCAL" />
-      <updated>1572934966054</updated>
     </task>
     <task id="LOCAL-00168" summary="79 symbols per line">
       <created>1572940998388</created>
@@ -514,7 +530,14 @@
       <option name="project" value="LOCAL" />
       <updated>1576513805870</updated>
     </task>
-    <option name="localTasksCounter" value="216" />
+    <task id="LOCAL-00216" summary="Menu buttons added">
+      <created>1576594829630</created>
+      <option name="number" value="00216" />
+      <option name="presentableId" value="LOCAL-00216" />
+      <option name="project" value="LOCAL" />
+      <updated>1576594829631</updated>
+    </task>
+    <option name="localTasksCounter" value="217" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -559,7 +582,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$" />
     </ignored-roots>
-    <MESSAGE value="Fixed a bug that would allow building on top of units if they were not there when the building was ordered" />
     <MESSAGE value="Buildings cost minerals" />
     <MESSAGE value="Building cost refund if place occupied" />
     <MESSAGE value="AI can gather minerals" />
@@ -584,41 +606,42 @@
     <MESSAGE value="Buildings have hints" />
     <MESSAGE value="Revert here if minimap fix fails" />
     <MESSAGE value="Minimap fixed" />
-    <option name="LAST_COMMIT_MESSAGE" value="Minimap fixed" />
+    <MESSAGE value="Menu buttons added" />
+    <option name="LAST_COMMIT_MESSAGE" value="Menu buttons added" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="290" y="0" key="CommitChangelistDialog2" timestamp="1576513803200">
+    <state x="290" y="0" key="CommitChangelistDialog2" timestamp="1576594814308">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state x="290" y="0" key="CommitChangelistDialog2/0.0.1366.738@0.0.1366.738" timestamp="1576513803200" />
+    <state x="290" y="0" key="CommitChangelistDialog2/0.0.1366.738@0.0.1366.738" timestamp="1576594814308" />
     <state x="462" y="110" key="FileChooserDialogImpl" timestamp="1576590311642">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
     <state x="462" y="110" key="FileChooserDialogImpl/0.0.1366.738@0.0.1366.738" timestamp="1576590311642" />
-    <state width="1344" height="132" key="GridCell.Tab.0.bottom" timestamp="1576594749980">
+    <state width="1344" height="132" key="GridCell.Tab.0.bottom" timestamp="1576597543564">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="132" key="GridCell.Tab.0.bottom/0.0.1366.738@0.0.1366.738" timestamp="1576594749980" />
-    <state width="1344" height="132" key="GridCell.Tab.0.center" timestamp="1576594749980">
+    <state width="1344" height="132" key="GridCell.Tab.0.bottom/0.0.1366.738@0.0.1366.738" timestamp="1576597543564" />
+    <state width="1344" height="132" key="GridCell.Tab.0.center" timestamp="1576597543564">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="132" key="GridCell.Tab.0.center/0.0.1366.738@0.0.1366.738" timestamp="1576594749980" />
-    <state width="1344" height="132" key="GridCell.Tab.0.left" timestamp="1576594749980">
+    <state width="1344" height="132" key="GridCell.Tab.0.center/0.0.1366.738@0.0.1366.738" timestamp="1576597543564" />
+    <state width="1344" height="132" key="GridCell.Tab.0.left" timestamp="1576597543563">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="132" key="GridCell.Tab.0.left/0.0.1366.738@0.0.1366.738" timestamp="1576594749980" />
-    <state width="1344" height="132" key="GridCell.Tab.0.right" timestamp="1576594749980">
+    <state width="1344" height="132" key="GridCell.Tab.0.left/0.0.1366.738@0.0.1366.738" timestamp="1576597543563" />
+    <state width="1344" height="132" key="GridCell.Tab.0.right" timestamp="1576597543564">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="132" key="GridCell.Tab.0.right/0.0.1366.738@0.0.1366.738" timestamp="1576594749980" />
-    <state x="184" y="0" key="SettingsEditor" timestamp="1576409818490">
+    <state width="1344" height="132" key="GridCell.Tab.0.right/0.0.1366.738@0.0.1366.738" timestamp="1576597543564" />
+    <state x="184" y="0" key="SettingsEditor" timestamp="1576597829748">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state x="184" y="0" key="SettingsEditor/0.0.1366.738@0.0.1366.738" timestamp="1576409818490" />
-    <state x="275" y="101" key="Vcs.Push.Dialog.v2" timestamp="1576413355355">
+    <state x="184" y="0" key="SettingsEditor/0.0.1366.738@0.0.1366.738" timestamp="1576597829748" />
+    <state x="275" y="101" key="Vcs.Push.Dialog.v2" timestamp="1576594957946">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state x="275" y="101" key="Vcs.Push.Dialog.v2/0.0.1366.738@0.0.1366.738" timestamp="1576413355355" />
+    <state x="275" y="101" key="Vcs.Push.Dialog.v2/0.0.1366.738@0.0.1366.738" timestamp="1576594957946" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

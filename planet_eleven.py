@@ -388,15 +388,15 @@ class ProductionBuilding(Building):
         self.building_start_time = 0
 
 
-class BigBase(ProductionBuilding):
+class MechCenter(ProductionBuilding):
     cost = 500
     building_time = 100
 
     def __init__(self, game_inst, x, y, owner=None):
         if owner is None:
             owner = game_inst.this_player
-        super().__init__(game_inst, our_img=res.big_base_img,
-                         enemy_img=res.big_base_enemy_img, x=x, y=y,
+        super().__init__(game_inst, our_img=res.mech_center_img,
+                         enemy_img=res.mech_center_enemy_img, x=x, y=y,
                          hp=1500, owner=owner, vision_radius=4)
         self.ctrl_buttons = [game_inst.defiler_b, game_inst.centurion_b,
                              game_inst.vulture_b, game_inst.apocalypse_b,
@@ -1010,7 +1010,7 @@ class Pioneer(Unit):
                          ctrl_buttons=game_inst.basic_unit_c_bs +
                                       [game_inst.armory_b] +
                                       [game_inst.turret_b] +
-                                      [game_inst.big_base_b])
+                                      [game_inst.mech_center_b])
         workers.append(self)
         self.to_build = None
         self.mineral_to_gather = None
@@ -1048,7 +1048,7 @@ class Pioneer(Unit):
                 Turret(self.game_inst, self.task_x, self.task_y)
             else:
                 self.owner.mineral_count += Turret.cost
-        elif self.to_build == "big_base":
+        elif self.to_build == "mech_center":
             x = self.task_x - PS / 2
             y = self.task_y - PS / 2
             coords_to_check = [(x, y), (x + PS, y), (x + PS, y + PS),
@@ -1059,9 +1059,9 @@ class Pioneer(Unit):
                     no_place = True
                     break
             if no_place is False:
-                BigBase(self.game_inst, self.task_x, self.task_y)
+                MechCenter(self.game_inst, self.task_x, self.task_y)
             else:
-                self.owner.mineral_count += BigBase.cost
+                self.owner.mineral_count += MechCenter.cost
         self.to_build = None
 
     def gather(self):
@@ -1161,8 +1161,8 @@ class PlanetEleven(pyglet.window.Window):
                            CTRL_B_COORDS[3][1])
         self.turret_b = UI(self, res.turret_b_img, CTRL_B_COORDS[4][0],
                            CTRL_B_COORDS[4][1])
-        self.big_base_b = UI(self, res.big_base_icon_img,
-                             CTRL_B_COORDS[5][0], CTRL_B_COORDS[5][1])
+        self.mech_center_b = UI(self, res.mech_center_icon_img,
+                                CTRL_B_COORDS[5][0], CTRL_B_COORDS[5][1])
         self.move_b = UI(self, res.move_img, CTRL_B_COORDS[0][0],
                          CTRL_B_COORDS[0][1])
         self.stop_b = UI(self, res.stop_img, CTRL_B_COORDS[1][0],
@@ -1193,11 +1193,11 @@ class PlanetEleven(pyglet.window.Window):
                 PS / 2 + PS * 4)
         Mineral(self, PS / 2 + PS * 8,
                 PS / 2 + PS * 4)
-        self.our_1st_base = BigBase(self, PS * 7, PS * 8)
+        self.our_1st_base = MechCenter(self, PS * 7, PS * 8)
         selected = self.our_1st_base
-        BigBase(self, PS * 5, PS * 6, owner=self.computer)
-        BigBase(self, PS * 13, PS * 13, owner=self.computer)
-        BigBase(self, PS * 50, PS * 50, owner=self.computer)
+        MechCenter(self, PS * 5, PS * 6, owner=self.computer)
+        MechCenter(self, PS * 13, PS * 13, owner=self.computer)
+        MechCenter(self, PS * 50, PS * 50, owner=self.computer)
 
         self.sel_spt = Sprite(img=res.sel_img, x=self.our_1st_base.x,
                               y=self.our_1st_base.y)
@@ -1218,7 +1218,7 @@ class PlanetEleven(pyglet.window.Window):
                 PS / 2 + PS * 6).spawn()
         Vulture(self, PS / 2 + PS * 9,
                 PS / 2 + PS * 6).spawn()
-        Centurion(self, PS / 2 + PS * 10,
+        Centurion(self, PS / 2 + PS * 13,
                   PS / 2 + PS * 6).spawn()
         Defiler(self, PS / 2 + PS * 11,
                 PS / 2 + PS * 6).spawn()
@@ -1323,7 +1323,7 @@ class PlanetEleven(pyglet.window.Window):
             # AI ordering units
             # if self.frame_count % 60 == 0:
             #     for building in enemy_buildings:
-            #         if isinstance(building, BigBase):
+            #         if isinstance(building, MechCenter):
             #             if self.computer.workers_count < 8:
             #                 order_unit(self, building, Pioneer)
             #                 self.computer.workers_count += 1
@@ -1402,7 +1402,7 @@ class PlanetEleven(pyglet.window.Window):
             # Build buildings. TODO: Optimize
             for worker in workers:
                 if worker.to_build:
-                    if worker.to_build == 'big_base':
+                    if worker.to_build == 'mech_center':
                         if is_2_melee_dist(worker, worker.task_x,
                                            worker.task_y):
                             worker.build()
@@ -1554,10 +1554,10 @@ class PlanetEleven(pyglet.window.Window):
                 elif selected in our_buildings:
                     selected.kill()
                     selected = None
-            elif symbol == key.SPACE:
-                self.paused = True
             elif symbol == key.ESCAPE:
                 self.build_loc_sel_phase = False
+                self.targeting_phase = False
+                self.m_targeting_phase = False
                 self.set_mouse_cursor(res.cursor)
             elif symbol == key.LEFT:
                 lvb -= PS
@@ -1581,9 +1581,9 @@ class PlanetEleven(pyglet.window.Window):
                     pass
             elif symbol == key.B:
                 if str(type(selected)) == "<class '__main__.Pioneer'>":
-                    self.to_build_spt.image = res.big_base_img
+                    self.to_build_spt.image = res.mech_center_img
                     self.build_loc_sel_phase = True
-                    self.to_build = "big_base"
+                    self.to_build = "mech_center"
                     x, y = win32api.GetCursorPos()
                     y = SCREEN_H - y
                     x, y = mc(x=x, y=y)
@@ -1700,10 +1700,6 @@ class PlanetEleven(pyglet.window.Window):
                             unit = Vulture(self, _key[0], _key[1])
                             unit.spawn()
                     i += 1
-        # Paused
-        else:
-            if symbol == key.SPACE:
-                self.paused = False
 
     def on_mouse_press(self, x, y, button, modifiers):
         global selected, our_units, lvb, bvb
@@ -1726,7 +1722,7 @@ class PlanetEleven(pyglet.window.Window):
                             elif self.to_build == 'turret':
                                 building = Turret
                             else:
-                                building = BigBase
+                                building = MechCenter
                             order_building(self, selected, building, x, y)
                             self.build_loc_sel_phase = False
                     elif button == mouse.RIGHT:
@@ -1881,7 +1877,8 @@ class PlanetEleven(pyglet.window.Window):
                             self.menu_b.x + w // 2 and \
                             self.menu_b.y - h // 2 <= y <= \
                             self.menu_b.y + h // 2:
-                        pass
+                        self.paused = True
+                        return
                     # Build units
                     if selected in our_buildings:
                         # Create defiler
@@ -1959,15 +1956,23 @@ class PlanetEleven(pyglet.window.Window):
                                 self.build_loc_sel_phase = True
                                 self.to_build = "turret"
                                 self.to_build_spt.x, self.to_build_spt.y = x, y
-                            elif self.big_base_b.x - 16 <= x <= \
-                                    self.big_base_b.x + 16 and \
-                                    self.big_base_b.y - 16 <= y <= \
-                                    self.big_base_b.y + 16:
-                                self.to_build_spt.image = res.big_base_img
+                            elif self.mech_center_b.x - 16 <= x <= \
+                                    self.mech_center_b.x + 16 and \
+                                    self.mech_center_b.y - 16 <= y <= \
+                                    self.mech_center_b.y + 16:
+                                self.to_build_spt.image = res.mech_center_img
                                 self.to_build_spt.color = (0, 255, 0)
                                 self.build_loc_sel_phase = True
-                                self.to_build = "big_base"
+                                self.to_build = "mech_center"
                                 self.to_build_spt.x, self.to_build_spt.y = x, y
+        # Paused
+        else:
+            if self.resume_b.x - 16 <= x <= self.resume_b.x + 16 and \
+               self.resume_b.y - 16 <= y <= self.resume_b.y + 16:
+                self.paused = False
+            elif self.exit_b.x - 16 <= x <= self.exit_b.x + 16 and \
+                 self.exit_b.y - 16 <= y <= self.exit_b.y + 16:
+                sys.exit()
 
     def on_mouse_motion(self, x, y, dx, dy):
         if not self.paused and self.build_loc_sel_phase:
@@ -1976,7 +1981,7 @@ class PlanetEleven(pyglet.window.Window):
                 y /= 2
             self.mouse_x = x
             self.mouse_y = y
-            if self.to_build == "big_base":
+            if self.to_build == "mech_center":
                 x, y = round_coords(x, y)
                 self.to_build_spt.x = x + lvb + PS / 2
                 self.to_build_spt.y = y + bvb + PS / 2
@@ -2021,7 +2026,7 @@ class PlanetEleven(pyglet.window.Window):
                     self.loc_clear = True
         elif not self.paused:
             # Hits
-            if isinstance(selected, BigBase):
+            if isinstance(selected, MechCenter):
                 # Defiler
                 if CTRL_B_COORDS[0][0] - 16 <= x <= CTRL_B_COORDS[0][0] + \
                         16 and CTRL_B_COORDS[0][1] - 16 <= y <= \
@@ -2084,7 +2089,7 @@ class PlanetEleven(pyglet.window.Window):
                 elif CTRL_B_COORDS[5][0] - 16 <= x <= CTRL_B_COORDS[5][0] + \
                         16 and CTRL_B_COORDS[5][1] - 16 <= y <= \
                         CTRL_B_COORDS[5][1] + 16:
-                    self.hint.image = res.hint_big_base
+                    self.hint.image = res.hint_mech_center
                     self.hint.x = x + lvb
                     self.hint.y = y + bvb
                     self.show_hint = True
