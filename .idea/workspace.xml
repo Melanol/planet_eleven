@@ -5,6 +5,11 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/constants_and_utilities.py" beforeDir="false" afterPath="$PROJECT_DIR$/constants_and_utilities.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/planet_eleven.py" beforeDir="false" afterPath="$PROJECT_DIR$/planet_eleven.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources.py" beforeDir="false" afterPath="$PROJECT_DIR$/resources.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/menu.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/menu/menu.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/menu.psd" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/menu/menu.psd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/menu_bg.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/menu/menu_bg.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/todo.txt" beforeDir="false" afterPath="$PROJECT_DIR$/todo.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -48,16 +53,17 @@
   <component name="PropertiesComponent">
     <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../stalagon_language" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/sprites/menu" />
     <property name="restartRequiresConfirmation" value="false" />
     <property name="run.code.analysis.last.selected.profile" value="aDefault" />
     <property name="settings.editor.selected.configurable" value="preferences.sourceCode" />
   </component>
   <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\PycharmProjects\planet_eleven\sprites\menu" />
       <recent name="D:\PycharmProjects\planet_eleven" />
     </key>
-    <key name="MoveFile.RECENT_KEYS">
+    <key name="CopyFile.RECENT_KEYS">
       <recent name="D:\PycharmProjects\planet_eleven" />
     </key>
   </component>
@@ -164,13 +170,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1566740526093</updated>
-    </task>
-    <task id="LOCAL-00166" summary="Various">
-      <created>1572934947491</created>
-      <option name="number" value="00166" />
-      <option name="presentableId" value="LOCAL-00166" />
-      <option name="project" value="LOCAL" />
-      <updated>1572934947491</updated>
     </task>
     <task id="LOCAL-00167" summary="Various">
       <created>1572934966054</created>
@@ -508,7 +507,14 @@
       <option name="project" value="LOCAL" />
       <updated>1576489327920</updated>
     </task>
-    <option name="localTasksCounter" value="215" />
+    <task id="LOCAL-00215" summary="Minimap fixed">
+      <created>1576513805870</created>
+      <option name="number" value="00215" />
+      <option name="presentableId" value="LOCAL-00215" />
+      <option name="project" value="LOCAL" />
+      <updated>1576513805870</updated>
+    </task>
+    <option name="localTasksCounter" value="216" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -553,7 +559,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$" />
     </ignored-roots>
-    <MESSAGE value="Fixed a bug causing BigBase to ignore some black pixels" />
     <MESSAGE value="Fixed a bug that would allow building on top of units if they were not there when the building was ordered" />
     <MESSAGE value="Buildings cost minerals" />
     <MESSAGE value="Building cost refund if place occupied" />
@@ -578,29 +583,34 @@
     <MESSAGE value="Fixed a bug with construction sprites" />
     <MESSAGE value="Buildings have hints" />
     <MESSAGE value="Revert here if minimap fix fails" />
-    <option name="LAST_COMMIT_MESSAGE" value="Revert here if minimap fix fails" />
+    <MESSAGE value="Minimap fixed" />
+    <option name="LAST_COMMIT_MESSAGE" value="Minimap fixed" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="290" y="0" key="CommitChangelistDialog2" timestamp="1576489314858">
+    <state x="290" y="0" key="CommitChangelistDialog2" timestamp="1576513803200">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state x="290" y="0" key="CommitChangelistDialog2/0.0.1366.738@0.0.1366.738" timestamp="1576489314858" />
-    <state width="1344" height="150" key="GridCell.Tab.0.bottom" timestamp="1576513541090">
+    <state x="290" y="0" key="CommitChangelistDialog2/0.0.1366.738@0.0.1366.738" timestamp="1576513803200" />
+    <state x="462" y="110" key="FileChooserDialogImpl" timestamp="1576590311642">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="150" key="GridCell.Tab.0.bottom/0.0.1366.738@0.0.1366.738" timestamp="1576513541090" />
-    <state width="1344" height="150" key="GridCell.Tab.0.center" timestamp="1576513541090">
+    <state x="462" y="110" key="FileChooserDialogImpl/0.0.1366.738@0.0.1366.738" timestamp="1576590311642" />
+    <state width="1344" height="132" key="GridCell.Tab.0.bottom" timestamp="1576594749980">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="150" key="GridCell.Tab.0.center/0.0.1366.738@0.0.1366.738" timestamp="1576513541090" />
-    <state width="1344" height="150" key="GridCell.Tab.0.left" timestamp="1576513541090">
+    <state width="1344" height="132" key="GridCell.Tab.0.bottom/0.0.1366.738@0.0.1366.738" timestamp="1576594749980" />
+    <state width="1344" height="132" key="GridCell.Tab.0.center" timestamp="1576594749980">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="150" key="GridCell.Tab.0.left/0.0.1366.738@0.0.1366.738" timestamp="1576513541090" />
-    <state width="1344" height="150" key="GridCell.Tab.0.right" timestamp="1576513541090">
+    <state width="1344" height="132" key="GridCell.Tab.0.center/0.0.1366.738@0.0.1366.738" timestamp="1576594749980" />
+    <state width="1344" height="132" key="GridCell.Tab.0.left" timestamp="1576594749980">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="150" key="GridCell.Tab.0.right/0.0.1366.738@0.0.1366.738" timestamp="1576513541090" />
+    <state width="1344" height="132" key="GridCell.Tab.0.left/0.0.1366.738@0.0.1366.738" timestamp="1576594749980" />
+    <state width="1344" height="132" key="GridCell.Tab.0.right" timestamp="1576594749980">
+      <screen x="0" y="0" width="1366" height="738" />
+    </state>
+    <state width="1344" height="132" key="GridCell.Tab.0.right/0.0.1366.738@0.0.1366.738" timestamp="1576594749980" />
     <state x="184" y="0" key="SettingsEditor" timestamp="1576409818490">
       <screen x="0" y="0" width="1366" height="738" />
     </state>

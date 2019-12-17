@@ -37,7 +37,7 @@ def center_load_anim(_str):
 
 
 pyglet.resource.path = ['sprites', 'sprites/big_base', 'sprites/plasma_hit',
-                        'sprites/explosion', 'sprites/hints']
+                        'sprites/explosion', 'sprites/hints', 'sprites/menu']
 pyglet.resource.reindex()
 
 # Utilities
@@ -47,14 +47,22 @@ cursor_target = pyglet.window.ImageMouseCursor(pyglet.image.load(
     'sprites/cursor_target.png'), 32, 32)
 
 terrain_img = pyglet.resource.image("terrain.png")
+
+# Menu
+menu_img = center_load("menu.png")
 menu_bg = pyglet.resource.image("menu_bg.png")
+resume_img = center_load("resume.png")
+save_img = center_load("save.png")
+load_img = center_load("menu.png")
+restart_img = center_load("restart.png")
+options_img = center_load("options.png")
+exit_img = center_load("exit.png")
 
 sel_img = center_load("sel.png")
 sel_big_img = center_load("sel_big.png")
 rp_img = center_load("rp.png")
 cp_img = right_bottom_load("cp.png")
 cp_buttons_bg_img = center_load("cp_b_bg.png")
-menu_img = center_load("menu.png")
 sel_frame_img = center_load("sel_frame.png")
 mm_black_bg_img = pyglet.resource.image("mm_black_bg.png")
 mm_textured_bg_img = pyglet.resource.image("mm_textured_bg.png")

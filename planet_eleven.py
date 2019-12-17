@@ -142,8 +142,10 @@ class Explosion(Sprite):
         self.scale = scale
 
 class UI(Sprite):
-    def __init__(self, game_inst, img, x, y):
-        super().__init__(img, x, y)
+    """This class is used for UI elements that need to be relocated when
+    a player moves the viewport."""
+    def __init__(self, game_inst, img, x, y, batch=None):
+        super().__init__(img, x, y, batch=batch)
         self.org_x = x
         self.org_y = y
         game_inst.ui.append(self)
@@ -1140,7 +1142,21 @@ class PlanetEleven(pyglet.window.Window):
         # Hints
         self.hint = UI(self, res.hint_defiler, 100, 100)
 
-        # Buttons
+        # Menu
+        self.resume_b = UI(self, res.resume_img, SCREEN_W / 2, 300,
+                           batch=menu_b_batch)
+        self.save_b = UI(self, res.save_img, SCREEN_W / 2, 280,
+                         batch=menu_b_batch)
+        self.load_b = UI(self, res.load_img, SCREEN_W / 2, 260,
+                         batch=menu_b_batch)
+        self.restart_b = UI(self, res.restart_img, SCREEN_W / 2, 240,
+                            batch=menu_b_batch)
+        self.options_b = UI(self, res.options_img, SCREEN_W / 2, 220,
+                            batch=menu_b_batch)
+        self.exit_b = UI(self, res.exit_img, SCREEN_W / 2, 200,
+                         batch=menu_b_batch)
+
+        # Control panel buttons
         self.armory_b = UI(self, res.armory_img, CTRL_B_COORDS[3][0],
                            CTRL_B_COORDS[3][1])
         self.turret_b = UI(self, res.turret_b_img, CTRL_B_COORDS[4][0],
@@ -1289,6 +1305,8 @@ class PlanetEleven(pyglet.window.Window):
                 self.hint.draw()
         else:
             self.menu_bg.draw()
+            menu_b_batch.draw()
+
         # Remove default modelview matrix
         glPopMatrix()
 

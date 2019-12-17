@@ -54,6 +54,7 @@ image.save('sprites/mm_cam_frame.png')
 
 DISTANCE_PER_JUMP = (2 * PS ** 2) ** 0.5
 
+menu_b_batch = pyglet.graphics.Batch()
 buildings_batch = pyglet.graphics.Batch()
 ground_units_batch = pyglet.graphics.Batch()
 air_batch = pyglet.graphics.Batch()
