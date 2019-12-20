@@ -105,7 +105,7 @@ hit3 = center_load("plasma16_hit3.png")
 hit_anim = pyglet.image.Animation.from_image_sequence([hit1, hit2, hit3], 0.1,
                                                       False)
 
-mech_center_img = center_load("hint_mech_center.png")
+mech_center_img = center_load("mech_center.png")
 mech_center_enemy_img = center_load("mech_center_enemy.png")
 anim_img1 = center_load('mech_center_anim1.png')
 anim_img2 = center_load('mech_center_anim2.png')

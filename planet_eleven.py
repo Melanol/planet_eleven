@@ -1003,7 +1003,7 @@ class Pioneer(Unit):
             owner = game_inst.this_player
         super().__init__(game_inst, owner, res.pioneer_img,
                          res.pioneer_enemy_img, flying=False,
-                         vision_radius=2, hp=10, x=x, y=y, speed=4,
+                         vision_radius=4, hp=10, x=x, y=y, speed=4,
                          has_weapon=False, damage=0, cooldown=0,
                          attacks_ground=False, attacks_air=False,
                          shadow_sprite=res.pioneer_shadow_img,
@@ -1093,9 +1093,7 @@ class PlanetEleven(pyglet.window.Window):
                       samples=4,
                       depth_size=16,
                       double_buffer=True)
-        super().__init__(width, height, title, config=conf,
-                         style=pyglet.window.Window.WINDOW_STYLE_BORDERLESS)
-        self.my_fullscreen = False
+        super().__init__(width, height, title, config=conf)
         self.set_mouse_cursor(res.cursor)
         self.show_fps = True
         self.fps_display = pyglet.window.FPSDisplay(window=self)
@@ -1519,14 +1517,10 @@ class PlanetEleven(pyglet.window.Window):
         """Called whenever a key is pressed."""
         global selected, lvb, bvb
         if symbol == key.F:
-            if self.my_fullscreen:
-                self.width = SCREEN_W
-                self.height = SCREEN_H
-                self.my_fullscreen = False
+            if self.fullscreen:
+                self.set_fullscreen(False)
             else:
-                self.width = 1366
-                self.height = 768
-                self.my_fullscreen = True
+                self.set_fullscreen(True)
         if not self.paused:
             if symbol == key.F1:
                 if not self.show_fps:
@@ -1704,7 +1698,7 @@ class PlanetEleven(pyglet.window.Window):
     def on_mouse_press(self, x, y, button, modifiers):
         global selected, our_units, lvb, bvb
         if not self.paused:
-            if self.my_fullscreen:
+            if self.fullscreen:
                 x //= 2
                 y //= 2
                 print()
@@ -1976,7 +1970,7 @@ class PlanetEleven(pyglet.window.Window):
 
     def on_mouse_motion(self, x, y, dx, dy):
         if not self.paused and self.build_loc_sel_phase:
-            if self.my_fullscreen:
+            if self.fullscreen:
                 x /= 2
                 y /= 2
             self.mouse_x = x
@@ -2099,7 +2093,7 @@ class PlanetEleven(pyglet.window.Window):
     def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
         global lvb, bvb
         if not self.paused:
-            if self.my_fullscreen:
+            if self.fullscreen:
                 x /= 2
                 y /= 2
                 dx /= 2
