@@ -1,11 +1,8 @@
 # Important
 -A bit smarter AI
--Make sure players play at least 2 hours kek (bad Melanol)
 
 -Building construction time
 -Requirement for units
--OBS won't react to changing to fullscreen
--Fix the minimap already!
 -Make it work for almost any resolution
 
 # Bugs
@@ -14,7 +11,7 @@
 -Workers that spawned near minerals cannot mine them
 
 # Not very important
--Red control panel
+-Red-styled control panel
 -Fullscreen on/off should be moved to options
 -Attack range using blocks, not centers: optimize enemy detection
 -Optimize mineral gathering and popping out units
@@ -31,5 +28,8 @@
 -Something should indicate that there is a ground unit present below an air unit
 -Shift for selecting ground units under air units?
 
+# Absolutely not important
+-Update menu buttons with new letters
+
 # Ideas
--Feed the imaginary cat
+-None

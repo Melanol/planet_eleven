@@ -125,7 +125,25 @@ def update_shooting(game_instance, our_entities, enemy_entities):
                         entity.cooldown == 0:
                     entity.on_cooldown = False
 
+class UI(Sprite):
+    """This class is used for UI elements that need to be relocated when
+    a player moves the viewport."""
+    def __init__(self, game_inst, img, x, y, batch=None):
+        super().__init__(img, x, y, batch=batch)
+        self.org_x = x
+        self.org_y = y
+        game_inst.ui.append(self)
 
+class CheckB(Sprite):
+    """Check buttons."""
+    def __init__(self, game_inst, x, y, checked=True):
+        super().__init__(res.check_b, x, y, batch=options_batch)
+        self.org_x = x
+        self.org_y = y
+        game_inst.ui.append(self)
+        self.check = UI(game_inst, res.check, x, y, batch=check_batch)
+        if checked == False:
+            self.check.visible = False
 
 class Player:
     def __init__(self, name):
@@ -140,15 +158,6 @@ class Explosion(Sprite):
     def __init__(self, x, y, scale=1):
         super().__init__(res.explosion_anim, x, y, batch=explosions_batch)
         self.scale = scale
-
-class UI(Sprite):
-    """This class is used for UI elements that need to be relocated when
-    a player moves the viewport."""
-    def __init__(self, game_inst, img, x, y, batch=None):
-        super().__init__(img, x, y, batch=batch)
-        self.org_x = x
-        self.org_y = y
-        game_inst.ui.append(self)
 
 class Mineral(Sprite):
     def __init__(self, outer_instance, x, y, amount=500000):
@@ -1106,6 +1115,7 @@ class PlanetEleven(pyglet.window.Window):
     def setup(self):
         global selected
         self.paused = False
+        self.options = False
         self.frame_count = 0
         self.this_player = Player("player1")
         self.computer = Player("computer1")
@@ -1153,6 +1163,9 @@ class PlanetEleven(pyglet.window.Window):
                             batch=menu_b_batch)
         self.exit_b = UI(self, res.exit_img, SCREEN_W / 2, 200,
                          batch=menu_b_batch)
+        self.fullscreen_img = UI(self, res.fullscreen_img, SCREEN_W / 2, 200,
+                         batch=options_batch)
+        self.fullscreen_c = CheckB(self, SCREEN_W / 2 + 70, 200, False)
 
         # Control panel buttons
         self.armory_b = UI(self, res.armory_img, CTRL_B_COORDS[3][0],
@@ -1303,7 +1316,11 @@ class PlanetEleven(pyglet.window.Window):
                 self.hint.draw()
         else:
             self.menu_bg.draw()
-            menu_b_batch.draw()
+            if self.options:
+                options_batch.draw()
+                check_batch.draw()
+            else:
+                menu_b_batch.draw()
 
         # Remove default modelview matrix
         glPopMatrix()
@@ -1697,12 +1714,10 @@ class PlanetEleven(pyglet.window.Window):
 
     def on_mouse_press(self, x, y, button, modifiers):
         global selected, our_units, lvb, bvb
+        if self.fullscreen:
+            x //= 2
+            y //= 2
         if not self.paused:
-            if self.fullscreen:
-                x //= 2
-                y //= 2
-                print()
-                print('x =', x, 'y =', y)
             # Building location selection
             if self.build_loc_sel_phase:
                 # Game field
@@ -1961,12 +1976,25 @@ class PlanetEleven(pyglet.window.Window):
                                 self.to_build_spt.x, self.to_build_spt.y = x, y
         # Paused
         else:
-            if self.resume_b.x - 16 <= x <= self.resume_b.x + 16 and \
-               self.resume_b.y - 16 <= y <= self.resume_b.y + 16:
-                self.paused = False
-            elif self.exit_b.x - 16 <= x <= self.exit_b.x + 16 and \
-                 self.exit_b.y - 16 <= y <= self.exit_b.y + 16:
-                sys.exit()
+            if self.options:
+                if self.fullscreen_c.x - 8 <= x <= self.fullscreen_c.x + 8 and \
+                   self.fullscreen_c.y - 8 <= y <= self.fullscreen_c.y + 8:
+                    if self.fullscreen:
+                        self.set_fullscreen(False)
+                        self.fullscreen_c.check.visible = False
+                    else:
+                        self.set_fullscreen(True)
+                        self.fullscreen_c.check.visible = True
+            else:
+                if self.resume_b.x - 48 <= x <= self.resume_b.x + 48 and \
+                   self.resume_b.y - 8 <= y <= self.resume_b.y + 8:
+                    self.paused = False
+                elif self.options_b.x - 48 <= x <= self.options_b.x + 48 and \
+                     self.options_b.y - 8 <= y <= self.options_b.y + 8:
+                    self.options = True
+                elif self.exit_b.x - 48 <= x <= self.exit_b.x + 48 and \
+                     self.exit_b.y - 8 <= y <= self.exit_b.y + 8:
+                    sys.exit()
 
     def on_mouse_motion(self, x, y, dx, dy):
         if not self.paused and self.build_loc_sel_phase:
@@ -2191,7 +2219,7 @@ class PlanetEleven(pyglet.window.Window):
 def main():
     game_window = PlanetEleven(SCREEN_W, SCREEN_H, SCREEN_TITLE)
     game_window.setup()
-    pyglet.clock.schedule_interval(game_window.update, 1 / 60)
+    pyglet.clock.schedule_interval(game_window.update, 1 / 30)
     pyglet.app.run()
 
 

@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="8699b466-fa9b-4e8c-b41f-e5bbe759696d" name="Default Changelist" comment="BigBase renamed to MechCenter">
+    <list default="true" id="8699b466-fa9b-4e8c-b41f-e5bbe759696d" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/constants_and_utilities.py" beforeDir="false" afterPath="$PROJECT_DIR$/constants_and_utilities.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/planet_eleven.py" beforeDir="false" afterPath="$PROJECT_DIR$/planet_eleven.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources.py" beforeDir="false" afterPath="$PROJECT_DIR$/resources.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/cp.psd" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/cp.psd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/todo.txt" beforeDir="false" afterPath="$PROJECT_DIR$/todo.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -165,13 +168,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1566740526093</updated>
-    </task>
-    <task id="LOCAL-00169" summary="Various">
-      <created>1573045223104</created>
-      <option name="number" value="00169" />
-      <option name="presentableId" value="LOCAL-00169" />
-      <option name="project" value="LOCAL" />
-      <updated>1573045223105</updated>
     </task>
     <task id="LOCAL-00170" summary="Various">
       <created>1573045356348</created>
@@ -509,7 +505,14 @@
       <option name="project" value="LOCAL" />
       <updated>1576598318389</updated>
     </task>
-    <option name="localTasksCounter" value="218" />
+    <task id="LOCAL-00218" summary="Proper fullscreen restored">
+      <created>1576880888492</created>
+      <option name="number" value="00218" />
+      <option name="presentableId" value="LOCAL-00218" />
+      <option name="project" value="LOCAL" />
+      <updated>1576880888493</updated>
+    </task>
+    <option name="localTasksCounter" value="219" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -554,7 +557,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$" />
     </ignored-roots>
-    <MESSAGE value="Building cost refund if place occupied" />
     <MESSAGE value="AI can gather minerals" />
     <MESSAGE value="AI building random fighting units" />
     <MESSAGE value="AI no longer shoots ghosts of buildings" />
@@ -579,33 +581,34 @@
     <MESSAGE value="Minimap fixed" />
     <MESSAGE value="Menu buttons added" />
     <MESSAGE value="BigBase renamed to MechCenter" />
-    <option name="LAST_COMMIT_MESSAGE" value="BigBase renamed to MechCenter" />
+    <MESSAGE value="Proper fullscreen restored" />
+    <option name="LAST_COMMIT_MESSAGE" value="Proper fullscreen restored" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="290" y="0" key="CommitChangelistDialog2" timestamp="1576880879288">
+    <state x="290" y="0" key="CommitChangelistDialog2" timestamp="1577032175037">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state x="290" y="0" key="CommitChangelistDialog2/0.0.1366.738@0.0.1366.738" timestamp="1576880879288" />
+    <state x="290" y="0" key="CommitChangelistDialog2/0.0.1366.738@0.0.1366.738" timestamp="1577032175037" />
     <state x="462" y="110" key="FileChooserDialogImpl" timestamp="1576590311642">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
     <state x="462" y="110" key="FileChooserDialogImpl/0.0.1366.738@0.0.1366.738" timestamp="1576590311642" />
-    <state width="1344" height="132" key="GridCell.Tab.0.bottom" timestamp="1576880839481">
+    <state width="1344" height="566" key="GridCell.Tab.0.bottom" timestamp="1577032134164">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="132" key="GridCell.Tab.0.bottom/0.0.1366.738@0.0.1366.738" timestamp="1576880839481" />
-    <state width="1344" height="132" key="GridCell.Tab.0.center" timestamp="1576880839481">
+    <state width="1344" height="566" key="GridCell.Tab.0.bottom/0.0.1366.738@0.0.1366.738" timestamp="1577032134164" />
+    <state width="1344" height="566" key="GridCell.Tab.0.center" timestamp="1577032134164">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="132" key="GridCell.Tab.0.center/0.0.1366.738@0.0.1366.738" timestamp="1576880839481" />
-    <state width="1344" height="132" key="GridCell.Tab.0.left" timestamp="1576880839481">
+    <state width="1344" height="566" key="GridCell.Tab.0.center/0.0.1366.738@0.0.1366.738" timestamp="1577032134164" />
+    <state width="1344" height="566" key="GridCell.Tab.0.left" timestamp="1577032134164">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="132" key="GridCell.Tab.0.left/0.0.1366.738@0.0.1366.738" timestamp="1576880839481" />
-    <state width="1344" height="132" key="GridCell.Tab.0.right" timestamp="1576880839481">
+    <state width="1344" height="566" key="GridCell.Tab.0.left/0.0.1366.738@0.0.1366.738" timestamp="1577032134164" />
+    <state width="1344" height="566" key="GridCell.Tab.0.right" timestamp="1577032134164">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="132" key="GridCell.Tab.0.right/0.0.1366.738@0.0.1366.738" timestamp="1576880839481" />
+    <state width="1344" height="566" key="GridCell.Tab.0.right/0.0.1366.738@0.0.1366.738" timestamp="1577032134164" />
     <state x="184" y="0" key="SettingsEditor" timestamp="1576597829748">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
