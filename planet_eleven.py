@@ -1313,7 +1313,7 @@ class PlanetEleven(pyglet.window.Window):
             if self.frame_count % 60 == 0:
                 for building in enemy_buildings:
                     if isinstance(building, MechCenter):
-                        if self.computer.workers_count < 8:
+                        if self.computer.workers_count < 32:
                             order_unit(self, building, Pioneer)
                             self.computer.workers_count += 1
                         order_unit(self, building, random.choice((Vulture,
