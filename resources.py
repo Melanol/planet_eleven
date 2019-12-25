@@ -120,10 +120,7 @@ anim_enemy_img1 = center_load('mech_center_anim_enemy1.png')
 anim_enemy_img2 = center_load('mech_center_anim_enemy2.png')
 anim_enemy_img3 = center_load('mech_center_anim_enemy3.png')
 anim_enemy = pyglet.image.Animation.from_image_sequence([anim_enemy_img1,
-                                                         anim_enemy_img2,
-                                                         anim_enemy_img3], 0.7,
-                                                        True)
-
+    anim_enemy_img2, anim_enemy_img3], 0.7, True)
 
 # Units
 defiler_img = center_load("defiler.png")

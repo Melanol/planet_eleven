@@ -5,7 +5,6 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/planet_eleven.py" beforeDir="false" afterPath="$PROJECT_DIR$/planet_eleven.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources.py" beforeDir="false" afterPath="$PROJECT_DIR$/resources.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/todo.txt" beforeDir="false" afterPath="$PROJECT_DIR$/todo.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -166,13 +165,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1566740526093</updated>
-    </task>
-    <task id="LOCAL-00171" summary="Control buttons hide for selected enemy units">
-      <created>1573052656729</created>
-      <option name="number" value="00171" />
-      <option name="presentableId" value="LOCAL-00171" />
-      <option name="project" value="LOCAL" />
-      <updated>1573052656729</updated>
     </task>
     <task id="LOCAL-00172" summary="Selection sprite is not dragging behind">
       <created>1573052864853</created>
@@ -510,7 +502,14 @@
       <option name="project" value="LOCAL" />
       <updated>1577032191635</updated>
     </task>
-    <option name="localTasksCounter" value="220" />
+    <task id="LOCAL-00220" summary="Added back buttons">
+      <created>1577302334265</created>
+      <option name="number" value="00220" />
+      <option name="presentableId" value="LOCAL-00220" />
+      <option name="project" value="LOCAL" />
+      <updated>1577302334266</updated>
+    </task>
+    <option name="localTasksCounter" value="221" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -555,7 +554,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$" />
     </ignored-roots>
-    <MESSAGE value="AI building random fighting units" />
     <MESSAGE value="AI no longer shoots ghosts of buildings" />
     <MESSAGE value="Moving enemy units no longer share vision with the player" />
     <MESSAGE value="Scuffed attack_move()" />
@@ -580,40 +578,41 @@
     <MESSAGE value="BigBase renamed to MechCenter" />
     <MESSAGE value="Proper fullscreen restored" />
     <MESSAGE value="Fullscreen moved to options" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fullscreen moved to options" />
+    <MESSAGE value="Added back buttons" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added back buttons" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="290" y="0" key="CommitChangelistDialog2" timestamp="1577032175037">
+    <state x="290" y="0" key="CommitChangelistDialog2" timestamp="1577302319917">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state x="290" y="0" key="CommitChangelistDialog2/0.0.1366.738@0.0.1366.738" timestamp="1577032175037" />
+    <state x="290" y="0" key="CommitChangelistDialog2/0.0.1366.738@0.0.1366.738" timestamp="1577302319917" />
     <state x="462" y="110" key="FileChooserDialogImpl" timestamp="1576590311642">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
     <state x="462" y="110" key="FileChooserDialogImpl/0.0.1366.738@0.0.1366.738" timestamp="1576590311642" />
-    <state width="1344" height="2" key="GridCell.Tab.0.bottom" timestamp="1577302270686">
+    <state width="1344" height="2" key="GridCell.Tab.0.bottom" timestamp="1577303315346">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
     <state width="1002" height="2" key="GridCell.Tab.0.bottom/0.0.1024.738@0.0.1024.738" timestamp="1577036178625" />
-    <state width="1344" height="2" key="GridCell.Tab.0.bottom/0.0.1366.738@0.0.1366.738" timestamp="1577302270686" />
+    <state width="1344" height="2" key="GridCell.Tab.0.bottom/0.0.1366.738@0.0.1366.738" timestamp="1577303315346" />
     <state width="778" height="2" key="GridCell.Tab.0.bottom/0.0.800.570@0.0.800.570" timestamp="1577035542879" />
-    <state width="1344" height="2" key="GridCell.Tab.0.center" timestamp="1577302270685">
+    <state width="1344" height="2" key="GridCell.Tab.0.center" timestamp="1577303315346">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
     <state width="1002" height="2" key="GridCell.Tab.0.center/0.0.1024.738@0.0.1024.738" timestamp="1577036178625" />
-    <state width="1344" height="2" key="GridCell.Tab.0.center/0.0.1366.738@0.0.1366.738" timestamp="1577302270685" />
+    <state width="1344" height="2" key="GridCell.Tab.0.center/0.0.1366.738@0.0.1366.738" timestamp="1577303315346" />
     <state width="778" height="2" key="GridCell.Tab.0.center/0.0.800.570@0.0.800.570" timestamp="1577035542879" />
-    <state width="1344" height="2" key="GridCell.Tab.0.left" timestamp="1577302270685">
+    <state width="1344" height="2" key="GridCell.Tab.0.left" timestamp="1577303315345">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
     <state width="1002" height="2" key="GridCell.Tab.0.left/0.0.1024.738@0.0.1024.738" timestamp="1577036178625" />
-    <state width="1344" height="2" key="GridCell.Tab.0.left/0.0.1366.738@0.0.1366.738" timestamp="1577302270685" />
+    <state width="1344" height="2" key="GridCell.Tab.0.left/0.0.1366.738@0.0.1366.738" timestamp="1577303315345" />
     <state width="778" height="2" key="GridCell.Tab.0.left/0.0.800.570@0.0.800.570" timestamp="1577035542879" />
-    <state width="1344" height="2" key="GridCell.Tab.0.right" timestamp="1577302270685">
+    <state width="1344" height="2" key="GridCell.Tab.0.right" timestamp="1577303315346">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
     <state width="1002" height="2" key="GridCell.Tab.0.right/0.0.1024.738@0.0.1024.738" timestamp="1577036178625" />
-    <state width="1344" height="2" key="GridCell.Tab.0.right/0.0.1366.738@0.0.1366.738" timestamp="1577302270685" />
+    <state width="1344" height="2" key="GridCell.Tab.0.right/0.0.1366.738@0.0.1366.738" timestamp="1577303315346" />
     <state width="778" height="2" key="GridCell.Tab.0.right/0.0.800.570@0.0.800.570" timestamp="1577035542879" />
     <state x="184" y="0" key="SettingsEditor" timestamp="1576597829748">
       <screen x="0" y="0" width="1366" height="738" />

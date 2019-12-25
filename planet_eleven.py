@@ -412,8 +412,7 @@ class MechCenter(ProductionBuilding):
                              game_inst.pioneer_b]
         self.is_big = True
         if owner.name == 'player1':
-            self.anim = Sprite(img=res.anim, x=x, y=y,
-                               batch=ground_units_batch)
+            self.anim = Sprite(img=res.anim, x=x, y=y, batch=ground_units_batch)
         else:
             self.anim = Sprite(img=res.anim_enemy, x=x, y=y,
                                batch=ground_units_batch)
@@ -523,7 +522,6 @@ def astar(map, start, end, acc_ends):
 
     # Loop until you find the end
     while len(open_list) > 0:
-
         # Get the current node. Which is the node with lowest f of the entire
         # open_list
         current_node = open_list[0]
@@ -820,8 +818,7 @@ class Unit(Sprite):
 
         self.pfi = 1  # 0 creates a bug of rotating to math degree of 0
         # because the 0 element in path is the starting location
-        self.path = find_path((self.x, self.y),
-                              (self.dest_x, self.dest_y),
+        self.path = find_path((self.x, self.y), (self.dest_x, self.dest_y),
                               self.flying)
         try:
             target = self.path[self.pfi]
@@ -832,8 +829,7 @@ class Unit(Sprite):
             print('target =', target)
             self.target_x = target[0]
             self.target_y = target[1]
-            self.pixel.x, self.pixel.y = to_minimap(self.target_x,
-                                                    self.target_y)
+            self.pixel.x, self.pixel.y = to_minimap(self.target_x, self.target_y)
         # Not moving
         else:
             self.dest_reached = True
@@ -852,8 +848,7 @@ class Unit(Sprite):
         self.pos_dict[(self.target_x, self.target_y)] = self
 
     def eta(self):
-        """Estimated time of arrival to the target location (not
-        dest)."""
+        """Estimated time of arrival to the target location (not dest)."""
         dist_to_target = ((self.target_x - self.x) ** 2 + (
                 self.target_y - self.y) ** 2) ** 0.5
         return dist_to_target / self.speed
@@ -880,8 +875,7 @@ class Unit(Sprite):
             self.pos_dict[(self.x, self.y)] = None
             self.target_x = next_target[0]
             self.target_y = next_target[1]
-            self.pixel.x, self.pixel.y = to_minimap(self.target_x,
-                                                    self.target_y)
+            self.pixel.x, self.pixel.y = to_minimap(self.target_x, self.target_y)
             self.pos_dict[(self.target_x, self.target_y)] = self
             diff_x = self.target_x - self.x
             diff_y = self.target_y - self.y
@@ -899,12 +893,9 @@ class Unit(Sprite):
 
     def shoot(self, frame_count):
         global projectiles
-        projectile = Projectile(x=self.x, y=self.y,
-                                target_x=self.target_p.x,
-                                target_y=self.target_p.y,
-                                damage=self.damage,
-                                speed=5,
-                                target_obj=self.target_p)
+        projectile = Projectile(x=self.x, y=self.y, target_x=self.target_p.x,
+                                target_y=self.target_p.y, damage=self.damage,
+                                speed=5, target_obj=self.target_p)
         x_diff = self.target_p.x - self.x
         y_diff = self.target_p.y - self.y
         angle = -math.degrees(math.atan2(y_diff, x_diff)) + 90
@@ -1035,9 +1026,7 @@ class Pioneer(Unit):
         s3.anchor_y = 8
         sprites = [s1, s2, s3]
         anim = pyglet.image.Animation.from_image_sequence(sprites, 0.1, True)
-        self.zap_sprite = Sprite(anim, self.x, self.y,
-                                 batch=zap_batch)
-
+        self.zap_sprite = Sprite(anim, self.x, self.y, batch=zap_batch)
         self.zap_sprite.visible = False
 
     def build(self):
@@ -1060,8 +1049,7 @@ class Pioneer(Unit):
         elif self.to_build == "mech_center":
             x = self.task_x - PS / 2
             y = self.task_y - PS / 2
-            coords_to_check = [(x, y), (x + PS, y), (x + PS, y + PS),
-                               (x, y + PS)]
+            coords_to_check = [(x, y), (x + PS, y), (x + PS, y + PS), (x, y + PS)]
             no_place = False
             for c in coords_to_check:
                 if g_pos_coord_d[(c[0], c[1])]:
@@ -1098,9 +1086,7 @@ class Pioneer(Unit):
 
 class PlanetEleven(pyglet.window.Window):
     def __init__(self, width, height, title):
-        conf = Config(sample_buffers=1,
-                      samples=4,
-                      depth_size=16,
+        conf = Config(sample_buffers=1, samples=4, depth_size=16,
                       double_buffer=True)
         super().__init__(width, height, title, config=conf)
         self.set_mouse_cursor(res.cursor)
@@ -1130,12 +1116,10 @@ class PlanetEleven(pyglet.window.Window):
         self.terrain = Sprite(img=res.terrain_img, x=0, y=0)
         self.cp_spt = UI(self, res.cp_img, SCREEN_W, 0)
         self.menu_b = UI(self, res.menu_img, cp_c_x, SCREEN_H - 30)
-        self.sel_frame_cp = UI(self, res.sel_frame_img, cp_c_x,
-                               SCREEN_H - 90)
+        self.sel_frame_cp = UI(self, res.sel_frame_img, cp_c_x, SCREEN_H - 90)
         self.cp_b_bg = UI(self, res.cp_buttons_bg_img, cp_c_x, cp_c_y)
         self.mm_textured_bg = UI(self, res.mm_textured_bg_img, MM0X, MM0Y)
-        self.mm_cam_frame_spt = Sprite(res.mm_cam_frame_img, MM0X - 1,
-                                       MM0Y - 1)
+        self.mm_cam_frame_spt = Sprite(res.mm_cam_frame_img, MM0X - 1, MM0Y - 1)
         self.mm_fow_img = pyglet.image.load('sprites/mm_fow.png')
         self.mm_fow_ImageData = self.mm_fow_img.get_image_data()
         self.npa = np.fromstring(self.mm_fow_ImageData.get_data(
@@ -1194,18 +1178,12 @@ class PlanetEleven(pyglet.window.Window):
                             CTRL_B_COORDS[4][1])
 
         # Spawn buildings and minerals
-        Mineral(self, PS / 2 + PS * 4,
-                PS / 2 + PS * 7)
-        Mineral(self, PS / 2 + PS * 4,
-                PS / 2 + PS * 8)
-        Mineral(self, PS / 2 + PS * 10,
-                PS / 2 + PS * 4)
-        Mineral(self, PS / 2 + PS * 12,
-                PS / 2 + PS * 4)
-        Mineral(self, PS / 2 + PS * 6,
-                PS / 2 + PS * 4)
-        Mineral(self, PS / 2 + PS * 8,
-                PS / 2 + PS * 4)
+        Mineral(self, PS / 2 + PS * 4, PS / 2 + PS * 7)
+        Mineral(self, PS / 2 + PS * 4,  PS / 2 + PS * 8)
+        Mineral(self, PS / 2 + PS * 10, PS / 2 + PS * 4)
+        Mineral(self, PS / 2 + PS * 12, PS / 2 + PS * 4)
+        Mineral(self, PS / 2 + PS * 6, PS / 2 + PS * 4)
+        Mineral(self, PS / 2 + PS * 8, PS / 2 + PS * 4)
         self.our_1st_base = MechCenter(self, PS * 7, PS * 8)
         selected = self.our_1st_base
         MechCenter(self, PS * 5, PS * 6, owner=self.computer)
@@ -1225,18 +1203,12 @@ class PlanetEleven(pyglet.window.Window):
         self.to_build_spt.color = (0, 255, 0)
 
         # Spawn units. Have to spawn them right here. I don't remember why.
-        Vulture(self, PS / 2 + PS * 3,
-                PS / 2 + PS * 10, self.computer).spawn()
-        Pioneer(self, PS / 2 + PS * 8,
-                PS / 2 + PS * 6).spawn()
-        Vulture(self, PS / 2 + PS * 9,
-                PS / 2 + PS * 6).spawn()
-        Centurion(self, PS / 2 + PS * 13,
-                  PS / 2 + PS * 6).spawn()
-        Defiler(self, PS / 2 + PS * 11,
-                PS / 2 + PS * 6).spawn()
-        Apocalypse(self, PS / 2 + PS * 12,
-                   PS / 2 + PS * 6).spawn()
+        Vulture(self, PS / 2 + PS * 3, PS / 2 + PS * 10, self.computer).spawn()
+        Pioneer(self, PS / 2 + PS * 8, PS / 2 + PS * 6).spawn()
+        Vulture(self, PS / 2 + PS * 9, PS / 2 + PS * 6).spawn()
+        Centurion(self, PS / 2 + PS * 13, PS / 2 + PS * 6).spawn()
+        Defiler(self, PS / 2 + PS * 11, PS / 2 + PS * 6).spawn()
+        Apocalypse(self, PS / 2 + PS * 12, PS / 2 + PS * 6).spawn()
 
     def on_draw(self):
         """
@@ -1338,22 +1310,21 @@ class PlanetEleven(pyglet.window.Window):
                 except AttributeError:
                     pass
             # AI ordering units
-            # if self.frame_count % 60 == 0:
-            #     for building in enemy_buildings:
-            #         if isinstance(building, MechCenter):
-            #             if self.computer.workers_count < 8:
-            #                 order_unit(self, building, Pioneer)
-            #                 self.computer.workers_count += 1
-            #             order_unit(self, building, random.choice((Vulture,
-            #                 Centurion, Defiler, Apocalypse)))
+            if self.frame_count % 60 == 0:
+                for building in enemy_buildings:
+                    if isinstance(building, MechCenter):
+                        if self.computer.workers_count < 8:
+                            order_unit(self, building, Pioneer)
+                            self.computer.workers_count += 1
+                        order_unit(self, building, random.choice((Vulture,
+                            Centurion, Defiler, Apocalypse)))
             # Units
             # Gathering resources
             for worker in workers:
                 if worker.mineral_to_gather and worker.dest_reached:
                     if not worker.is_gathering:
                         try:
-                            if is_melee_dist(worker, worker.task_x,
-                                             worker.task_y):
+                            if is_melee_dist(worker, worker.task_x, worker.task_y):
                                 print("melee dist")
                                 worker.gather()
                         except TypeError:
@@ -1365,63 +1336,62 @@ class PlanetEleven(pyglet.window.Window):
                         if owner.name == 'player1':
                             self.update_min_c_label()
             # AI gathering resources
-            # if self.frame_count % 120 == 0:
-            #     try:
-            #         closest_min = minerals[0]
-            #         for worker in workers:
-            #             if all((not worker.is_gathering,
-            #                     worker.dest_reached,
-            #                     worker.owner.name == 'computer1')):
-            #                 dist_2_closest_min = dist(closest_min, worker)
-            #                 for mineral in minerals[1:]:
-            #                     dist_2_min = dist(mineral, worker)
-            #                     if dist_2_min < dist_2_closest_min:
-            #                         closest_min = mineral
-            #                         dist_2_closest_min = dist_2_min
-            #                 worker.move((closest_min.x, closest_min.y))
-            #                 worker.clear_task()
-            #                 print('go gather, lazy worker!')
-            #                 worker.mineral_to_gather = closest_min
-            #                 worker.task_x = closest_min.x
-            #                 worker.task_y = closest_min.y
-            #                 closest_min.workers.append(worker)
-            #     except IndexError:
-            #         pass
+            if self.frame_count % 120 == 0:
+                try:
+                    closest_min = minerals[0]
+                    for worker in workers:
+                        if all((not worker.is_gathering,
+                                worker.dest_reached,
+                                worker.owner.name == 'computer1')):
+                            dist_2_closest_min = dist(closest_min, worker)
+                            for mineral in minerals[1:]:
+                                dist_2_min = dist(mineral, worker)
+                                if dist_2_min < dist_2_closest_min:
+                                    closest_min = mineral
+                                    dist_2_closest_min = dist_2_min
+                            worker.move((closest_min.x, closest_min.y))
+                            worker.clear_task()
+                            print('go gather, lazy worker!')
+                            worker.mineral_to_gather = closest_min
+                            worker.task_x = closest_min.x
+                            worker.task_y = closest_min.y
+                            closest_min.workers.append(worker)
+                except IndexError:
+                    pass
             # AI sending units to attack:
-            # if self.frame_count % 300 == 0:
-            #     for unit in enemy_units:
-            #         if unit.has_weapon and not unit.has_target_p:
-            #             closest_enemy = None
-            #             closest_enemy_dist = None
-            #             for entity in our_units + our_buildings:
-            #                 try:
-            #                     if not unit.attacks_air and entity.flying:
-            #                         continue
-            #                     if not unit.attacks_ground \
-            #                             and not entity.flying:
-            #                         continue
-            #                 except AttributeError:
-            #                     pass
-            #                 dist_to_enemy = dist(unit, entity)
-            #                 if not closest_enemy:
-            #                     closest_enemy = entity
-            #                     closest_enemy_dist = dist_to_enemy
-            #                 else:
-            #                     if dist_to_enemy < closest_enemy_dist:
-            #                         closest_enemy = entity
-            #                         closest_enemy_dist = dist_to_enemy
-            #             try:
-            #                 unit.move(round_coords(closest_enemy.x,
-            #                                        closest_enemy.y))
-            #                 unit.attack_moving = True
-            #             except AttributeError:
-            #                 pass
+            if self.frame_count % 300 == 0:
+                for unit in enemy_units:
+                    if unit.has_weapon and not unit.has_target_p:
+                        closest_enemy = None
+                        closest_enemy_dist = None
+                        for entity in our_units + our_buildings:
+                            try:
+                                if not unit.attacks_air and entity.flying:
+                                    continue
+                                if not unit.attacks_ground \
+                                        and not entity.flying:
+                                    continue
+                            except AttributeError:
+                                pass
+                            dist_to_enemy = dist(unit, entity)
+                            if not closest_enemy:
+                                closest_enemy = entity
+                                closest_enemy_dist = dist_to_enemy
+                            else:
+                                if dist_to_enemy < closest_enemy_dist:
+                                    closest_enemy = entity
+                                    closest_enemy_dist = dist_to_enemy
+                        try:
+                            unit.move(round_coords(closest_enemy.x,
+                                                   closest_enemy.y))
+                            unit.attack_moving = True
+                        except AttributeError:
+                            pass
             # Build buildings. TODO: Optimize
             for worker in workers:
                 if worker.to_build:
                     if worker.to_build == 'mech_center':
-                        if is_2_melee_dist(worker, worker.task_x,
-                                           worker.task_y):
+                        if is_2_melee_dist(worker, worker.task_x, worker.task_y):
                             worker.build()
                     else:
                         if is_melee_dist(worker, worker.task_x, worker.task_y):
@@ -1479,19 +1449,18 @@ class PlanetEleven(pyglet.window.Window):
                             if not unit.flying:
                                 unit.shadow.x = unit.target_x + 3
                                 unit.shadow.y = unit.target_y - 3
-                                g_pos_coord_d[
-                                    (unit.target_x, unit.target_y)] = unit
+                                g_pos_coord_d[(unit.target_x, unit.target_y)] \
+                                    = unit
                             else:
                                 unit.shadow.x = unit.target_x + 10
                                 unit.shadow.y = unit.target_y - 10
-                                a_pos_coord_d[
-                                    (unit.target_x, unit.target_y)] = unit
+                                a_pos_coord_d[(unit.target_x, unit.target_y)] \
+                                    = unit
                             unit.dest_reached = True
                             unit.move((unit.new_dest_x, unit.new_dest_y))
                             unit.move_interd = False
                         if unit in our_units:
-                            self.update_fow(unit.x, unit.y,
-                                            unit.vision_radius)
+                            self.update_fow(unit.x, unit.y, unit.vision_radius)
                 else:
                     try:
                         unit.to_build = None
@@ -1502,8 +1471,7 @@ class PlanetEleven(pyglet.window.Window):
             # Shooting
             update_shooting(self, shooting_buildings + our_units,
                             enemy_buildings + enemy_units)
-            update_shooting(self, enemy_units,
-                            our_buildings + our_units)
+            update_shooting(self, enemy_units, our_buildings + our_units)
             # Projectiles
             for i, projectile in enumerate(projectiles):
                 if not projectile.eta() <= 1:
@@ -1558,11 +1526,9 @@ class PlanetEleven(pyglet.window.Window):
                 if selected in our_units:
                     selected.kill()
                     if selected.flying:
-                        a_pos_coord_d[(self.sel_spt.x,
-                                       self.sel_spt.y)] = None
+                        a_pos_coord_d[(self.sel_spt.x, self.sel_spt.y)] = None
                     else:
-                        g_pos_coord_d[(self.sel_spt.x,
-                                       self.sel_spt.y)] = None
+                        g_pos_coord_d[(self.sel_spt.x, self.sel_spt.y)] = None
                     selected = None
                 elif selected in our_buildings:
                     selected.kill()
@@ -1659,9 +1625,8 @@ class PlanetEleven(pyglet.window.Window):
                     self.to_build_spt.x, self.to_build_spt.y = x, y
                     s_x = int((x - 16) / 32) + 1
                     s_y = int((y - 16) / 32) + 1
-                    if g_pos_coord_d[self.to_build_spt.x,
-                                     self.to_build_spt.y] or \
-                            self.npa[s_y, s_x, 3] != 0:
+                    if g_pos_coord_d[self.to_build_spt.x, self.to_build_spt.y] \
+                            or self.npa[s_y, s_x, 3] != 0:
                         self.to_build_spt.color = (255, 0, 0)
                         self.loc_clear = False
                     else:
@@ -1684,9 +1649,8 @@ class PlanetEleven(pyglet.window.Window):
                     self.to_build_spt.x, self.to_build_spt.y = x, y
                     s_x = int((x - 16) / 32) + 1
                     s_y = int((y - 16) / 32) + 1
-                    if g_pos_coord_d[self.to_build_spt.x,
-                                     self.to_build_spt.y] or \
-                            self.npa[s_y, s_x, 3] != 0:
+                    if g_pos_coord_d[self.to_build_spt.x, self.to_build_spt.y] \
+                            or self.npa[s_y, s_x, 3] != 0:
                         self.to_build_spt.color = (255, 0, 0)
                         self.loc_clear = False
                     else:
@@ -1877,7 +1841,7 @@ class PlanetEleven(pyglet.window.Window):
                                 selected.rp_y = y
                                 self.rp_spt.x = x
                                 self.rp_spt.y = y
-                                # print('Rally set to ({}, {})'.format(x, y))
+                                print('Rally set to ({}, {})'.format(x, y))
                 # Control panel other
                 else:
                     x, y = mc(x=x, y=y)
@@ -2043,8 +2007,7 @@ class PlanetEleven(pyglet.window.Window):
                 x, y = mc(x=x, y=y)
                 x = int((x - 16) / 32) + 1
                 y = int((y - 16) / 32) + 1
-                if g_pos_coord_d[self.to_build_spt.x,
-                                 self.to_build_spt.y] or \
+                if g_pos_coord_d[self.to_build_spt.x, self.to_build_spt.y] or \
                         self.npa[y, x, 3] != 0:
                     self.to_build_spt.color = (255, 0, 0)
                     self.loc_clear = False
@@ -2197,8 +2160,7 @@ class PlanetEleven(pyglet.window.Window):
         for entity in our_buildings + our_units \
                       + enemy_buildings + enemy_units:
             entity.pixel.x, entity.pixel.y = to_minimap(entity.x, entity.y)
-        self.mm_cam_frame_spt.x, self.mm_cam_frame_spt.y = \
-            to_minimap(lvb, bvb)
+        self.mm_cam_frame_spt.x, self.mm_cam_frame_spt.y = to_minimap(lvb, bvb)
         self.mm_cam_frame_spt.x -= 1
         self.mm_cam_frame_spt.y -= 1
         minimap_fow_x = MM0X - 1 + lvb
@@ -2213,8 +2175,7 @@ class PlanetEleven(pyglet.window.Window):
                     if 0 <= xi <= 101:
                         if ((xi - x) ** 2 + (yi - y) ** 2) ** 0.5 <= radius:
                             self.npa[yi, xi, 3] = 0
-        self.mm_fow_ImageData.set_data('RGBA',
-                                       self.mm_fow_ImageData.width
+        self.mm_fow_ImageData.set_data('RGBA', self.mm_fow_ImageData.width
                                        * 4, data=self.npa.tobytes())
 
     def update_min_c_label(self):
@@ -2224,7 +2185,7 @@ class PlanetEleven(pyglet.window.Window):
 def main():
     game_window = PlanetEleven(SCREEN_W, SCREEN_H, SCREEN_TITLE)
     game_window.setup()
-    pyglet.clock.schedule_interval(game_window.update, 1 / 30)
+    pyglet.clock.schedule_interval(game_window.update, 1 / 60)
     pyglet.app.run()
 
 
