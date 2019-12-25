@@ -60,6 +60,7 @@ exit_img = center_load("exit.png")
 fullscreen_img = center_load("fullscreen_img.png")
 check_b = center_load("check_b.png")
 check = center_load("check.png")
+back_img = center_load("back.png")
 
 sel_img = center_load("sel.png")
 sel_big_img = center_load("sel_big.png")

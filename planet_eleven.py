@@ -1166,6 +1166,8 @@ class PlanetEleven(pyglet.window.Window):
         self.fullscreen_img = UI(self, res.fullscreen_img, SCREEN_W / 2, 200,
                          batch=options_batch)
         self.fullscreen_c = CheckB(self, SCREEN_W / 2 + 70, 200, False)
+        self.back_b = UI(self, res.back_img, SCREEN_W / 2, 180,
+                         batch=options_batch)
 
         # Control panel buttons
         self.armory_b = UI(self, res.armory_img, CTRL_B_COORDS[3][0],
@@ -1985,6 +1987,9 @@ class PlanetEleven(pyglet.window.Window):
                     else:
                         self.set_fullscreen(True)
                         self.fullscreen_c.check.visible = True
+                elif self.back_b.x - 25.5 <= x <= self.back_b.x + 25.5 and \
+                        self.back_b.y - 8 <= y <= self.back_b.y + 8:
+                    self.options = False
             else:
                 if self.resume_b.x - 48 <= x <= self.resume_b.x + 48 and \
                    self.resume_b.y - 8 <= y <= self.resume_b.y + 8:
