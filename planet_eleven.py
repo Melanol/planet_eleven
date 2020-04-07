@@ -147,7 +147,7 @@ class CheckB(Sprite):
 
 class Player:
     def __init__(self, name):
-        self.mineral_count = 50000
+        self.mineral_count = 150
         self.name = name
 
 class HitAnim(Sprite):
@@ -1184,10 +1184,15 @@ class PlanetEleven(pyglet.window.Window):
         Mineral(self, PS / 2 + PS * 12, PS / 2 + PS * 4)
         Mineral(self, PS / 2 + PS * 6, PS / 2 + PS * 4)
         Mineral(self, PS / 2 + PS * 8, PS / 2 + PS * 4)
+
+        Mineral(self, PS / 2 + PS * 55, PS / 2 + PS * 55)
+        Mineral(self, PS / 2 + PS * 56, PS / 2 + PS * 55)
+        Mineral(self, PS / 2 + PS * 59, PS / 2 + PS * 50)
+        Mineral(self, PS / 2 + PS * 61, PS / 2 + PS * 50)
+        Mineral(self, PS / 2 + PS * 63, PS / 2 + PS * 51)
+        Mineral(self, PS / 2 + PS * 55, PS / 2 + PS * 58)
         self.our_1st_base = MechCenter(self, PS * 7, PS * 8)
         selected = self.our_1st_base
-        MechCenter(self, PS * 5, PS * 6, owner=self.computer)
-        MechCenter(self, PS * 13, PS * 13, owner=self.computer)
         MechCenter(self, PS * 50, PS * 50, owner=self.computer)
 
         self.sel_spt = Sprite(img=res.sel_img, x=self.our_1st_base.x,
@@ -1203,12 +1208,7 @@ class PlanetEleven(pyglet.window.Window):
         self.to_build_spt.color = (0, 255, 0)
 
         # Spawn units. Have to spawn them right here. I don't remember why.
-        Vulture(self, PS / 2 + PS * 3, PS / 2 + PS * 10, self.computer).spawn()
         Pioneer(self, PS / 2 + PS * 8, PS / 2 + PS * 6).spawn()
-        Vulture(self, PS / 2 + PS * 9, PS / 2 + PS * 6).spawn()
-        Centurion(self, PS / 2 + PS * 13, PS / 2 + PS * 6).spawn()
-        Defiler(self, PS / 2 + PS * 11, PS / 2 + PS * 6).spawn()
-        Apocalypse(self, PS / 2 + PS * 12, PS / 2 + PS * 6).spawn()
 
     def on_draw(self):
         """
@@ -1313,11 +1313,12 @@ class PlanetEleven(pyglet.window.Window):
             if self.frame_count % 60 == 0:
                 for building in enemy_buildings:
                     if isinstance(building, MechCenter):
-                        if self.computer.workers_count < 32:
+                        if self.computer.workers_count < 6:
                             order_unit(self, building, Pioneer)
                             self.computer.workers_count += 1
-                        order_unit(self, building, random.choice((Vulture,
-                            Centurion, Defiler, Apocalypse)))
+                        else:
+                            order_unit(self, building, random.choice((Vulture,
+                                Centurion, Defiler, Apocalypse)))
             # Units
             # Gathering resources
             for worker in workers:
@@ -1519,10 +1520,18 @@ class PlanetEleven(pyglet.window.Window):
             elif symbol == key.F3:
                 self.load()
             elif symbol == key.F4:
+                # Removes FOW
                 self.npa[:, :, 3] = 0
                 self.mm_fow_ImageData.set_data('RGBA',
                     self.mm_fow_ImageData.width * 4, data=self.npa.tobytes())
+            elif symbol == key.F5:
+                self.this_player.mineral_count = 99999
+                self.update_min_c_label()
+            elif symbol == key.F6:
+                self.this_player.mineral_count = 0
+                self.update_min_c_label()
             elif symbol == key.DELETE:
+                # Kill entity
                 if selected in our_units:
                     selected.kill()
                     if selected.flying:
@@ -1534,6 +1543,7 @@ class PlanetEleven(pyglet.window.Window):
                     selected.kill()
                     selected = None
             elif symbol == key.ESCAPE:
+                # Cancel command
                 self.build_loc_sel_phase = False
                 self.targeting_phase = False
                 self.m_targeting_phase = False
@@ -1551,6 +1561,7 @@ class PlanetEleven(pyglet.window.Window):
                 bvb += PS
                 self.update_viewport()
             elif symbol == key.A:
+                # Attack move
                 try:
                     if selected.has_weapon:
                         if selected.owner.name == 'player1':
@@ -1558,7 +1569,8 @@ class PlanetEleven(pyglet.window.Window):
                         self.targeting_phase = True
                 except AttributeError:
                     pass
-            elif symbol == key.B:
+            elif symbol == key.C:
+                # Build mech center
                 if str(type(selected)) == "<class '__main__.Pioneer'>":
                     self.to_build_spt.image = res.mech_center_img
                     self.build_loc_sel_phase = True
@@ -1592,28 +1604,14 @@ class PlanetEleven(pyglet.window.Window):
                     x += PS / 2
                     y += PS / 2
                     self.to_build_spt.x, self.to_build_spt.y = x, y
-            elif symbol == key.E:
-                print('find_path()')
-                find_path()
-            elif symbol == key.G:
-                print(selected)
-            elif symbol == key.H:
-                for _key, _value in g_pos_coord_d.items():
-                    if _value:
-                        print('key =', _key, 'value =', _value)
-            elif symbol == key.J:
-                print(workers)
-            elif symbol == key.K:
-                print(our_units)
             elif symbol == key.M:
+                # Move
                 if selected.owner.name == "player1":
                     self.set_mouse_cursor(res.cursor_target)
                     self.m_targeting_phase = True
                     return
-            elif symbol == key.Q:
-                print(self.rp_spt.x, self.rp_spt.y)
-                print(selected.rp_x, selected.rp_y)
             elif symbol == key.R:
+                # Build armory
                 if str(type(selected)) == "<class '__main__.Pioneer'>":
                     self.to_build_spt.image = res.armory_img
                     self.build_loc_sel_phase = True
@@ -1633,11 +1631,13 @@ class PlanetEleven(pyglet.window.Window):
                         self.to_build_spt.color = (0, 255, 0)
                         self.loc_clear = True
             elif symbol == key.S:
+                # Stop
                 try:
                     selected.stop_move()
                 except AttributeError:
                     pass
             elif symbol == key.T:
+                # Build turret
                 if str(type(selected)) == "<class '__main__.Pioneer'>":
                     self.to_build_spt.image = res.turret_b_img
                     self.build_loc_sel_phase = True
@@ -1656,9 +1656,8 @@ class PlanetEleven(pyglet.window.Window):
                     else:
                         self.to_build_spt.color = (0, 255, 0)
                         self.loc_clear = True
-            elif symbol == key.W:
-                print('convert_map() =', convert_map())
             elif symbol == key.X:
+                # Deletes all our units on the screen
                 coords_to_delete = []
                 yi = bvb + PS // 2
                 for y in range(yi, yi + 12 * PS, PS):
@@ -1670,6 +1669,7 @@ class PlanetEleven(pyglet.window.Window):
                         if g_pos_coord_d[coord[0], coord[1]] == unit:
                             unit.kill()
             elif symbol == key.Z:
+                # Fills the entire map with vultures
                 i = 0
                 for _key, value in g_pos_coord_d.items():
                     if i % 1 == 0:
@@ -1966,10 +1966,10 @@ class PlanetEleven(pyglet.window.Window):
                     sys.exit()
 
     def on_mouse_motion(self, x, y, dx, dy):
+        if self.fullscreen:
+            x /= 2
+            y /= 2
         if not self.paused and self.build_loc_sel_phase:
-            if self.fullscreen:
-                x /= 2
-                y /= 2
             self.mouse_x = x
             self.mouse_y = y
             if self.to_build == "mech_center":

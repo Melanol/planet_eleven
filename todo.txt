@@ -1,12 +1,11 @@
 # Important
--A bit smarter AI
-
 -Building construction time
 -Requirement for units
 -Make it work for almost any resolution
 -Add win and defeat conditions and screens
 
 # Bugs
+-Move command is crazy (check viewports)
 -Building location selection is broken sometimes. Caused by movement interruption. Creates a selectable block of the worker
 -Fullscreen minimap panning is not working properly
 -Workers that spawned near minerals cannot mine them
@@ -14,8 +13,13 @@
 -Menu buttons are sometimes broken after changing the screen mode
 -Cannot move units to the bottom left corner in 800x600
 -The viewport is broken sometimes in 1024x768: cannot move the viewport to the top right corner, viewport step brakes to 16 instead of 32 if you try
+-Exit button is broken sometimes
+-Right-click cancel does not refund minerals
 
 # Not very important
+-Hotkeys for building units
+-Make minimap pixels at least 3 pixels wide
+-Rename vultures
 -Red-styled control panel
 -Attack range using blocks, not centers: optimize enemy detection
 -Optimize mineral gathering and popping out units
@@ -30,6 +34,8 @@
 -Something should indicate that there is a ground unit present below an air unit
 -Shift for selecting ground units under air units?
 -Cython? The game is too slow on old PCs
+-Get rid of small windowed mode
+-Construction sprite does not move to the cursor after using a bulding hotkey
 
 # Absolutely not important
 -Update menu buttons with new letters

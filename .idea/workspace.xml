@@ -3,7 +3,15 @@
   <component name="ChangeListManager">
     <list default="true" id="8699b466-fa9b-4e8c-b41f-e5bbe759696d" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/art/the eye.psd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/art/the lake.psd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/art/the sunrise.psd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/art/the trench.psd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/art/the-eye.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/art/the-lake.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notes.txt" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/planet_eleven.py" beforeDir="false" afterPath="$PROJECT_DIR$/planet_eleven.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/todo.txt" beforeDir="false" afterPath="$PROJECT_DIR$/todo.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -21,12 +29,12 @@
     </option>
   </component>
   <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="proper-movement" />
+        <entry key="$PROJECT_DIR$" value="master" />
       </map>
     </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="IgnoredFileRootStore">
     <option name="generatedRoots">
@@ -164,13 +172,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1566740526093</updated>
-    </task>
-    <task id="LOCAL-00173" summary="Mass renaming">
-      <created>1573102427468</created>
-      <option name="number" value="00173" />
-      <option name="presentableId" value="LOCAL-00173" />
-      <option name="project" value="LOCAL" />
-      <updated>1573102427469</updated>
     </task>
     <task id="LOCAL-00174" summary="Pioneer init bug fixed">
       <created>1573109084131</created>
@@ -508,7 +509,14 @@
       <option name="project" value="LOCAL" />
       <updated>1577303584092</updated>
     </task>
-    <option name="localTasksCounter" value="222" />
+    <task id="LOCAL-00222" summary="Last commit before 0.3">
+      <created>1577305789799</created>
+      <option name="number" value="00222" />
+      <option name="presentableId" value="LOCAL-00222" />
+      <option name="project" value="LOCAL" />
+      <updated>1577305789799</updated>
+    </task>
+    <option name="localTasksCounter" value="223" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -553,7 +561,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$" />
     </ignored-roots>
-    <MESSAGE value="Moving enemy units no longer share vision with the player" />
     <MESSAGE value="Scuffed attack_move()" />
     <MESSAGE value="Scuffed AI attack_move()" />
     <MESSAGE value="Revert here if attack_move kills the game" />
@@ -578,49 +585,26 @@
     <MESSAGE value="Fullscreen moved to options" />
     <MESSAGE value="Added back buttons" />
     <MESSAGE value="Code prettiness" />
-    <option name="LAST_COMMIT_MESSAGE" value="Code prettiness" />
+    <MESSAGE value="Last commit before 0.3" />
+    <option name="LAST_COMMIT_MESSAGE" value="Last commit before 0.3" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="290" y="0" key="CommitChangelistDialog2" timestamp="1577303582430">
+    <state width="1344" height="86" key="GridCell.Tab.0.bottom" timestamp="1586242533414">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state x="290" y="0" key="CommitChangelistDialog2/0.0.1366.738@0.0.1366.738" timestamp="1577303582430" />
-    <state x="462" y="110" key="FileChooserDialogImpl" timestamp="1576590311642">
+    <state width="1344" height="86" key="GridCell.Tab.0.bottom/0.0.1366.738@0.0.1366.738" timestamp="1586242533414" />
+    <state width="1344" height="86" key="GridCell.Tab.0.center" timestamp="1586242533414">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state x="462" y="110" key="FileChooserDialogImpl/0.0.1366.738@0.0.1366.738" timestamp="1576590311642" />
-    <state width="1344" height="2" key="GridCell.Tab.0.bottom" timestamp="1577303315346">
+    <state width="1344" height="86" key="GridCell.Tab.0.center/0.0.1366.738@0.0.1366.738" timestamp="1586242533414" />
+    <state width="1344" height="86" key="GridCell.Tab.0.left" timestamp="1586242533414">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1002" height="2" key="GridCell.Tab.0.bottom/0.0.1024.738@0.0.1024.738" timestamp="1577036178625" />
-    <state width="1344" height="2" key="GridCell.Tab.0.bottom/0.0.1366.738@0.0.1366.738" timestamp="1577303315346" />
-    <state width="778" height="2" key="GridCell.Tab.0.bottom/0.0.800.570@0.0.800.570" timestamp="1577035542879" />
-    <state width="1344" height="2" key="GridCell.Tab.0.center" timestamp="1577303315346">
+    <state width="1344" height="86" key="GridCell.Tab.0.left/0.0.1366.738@0.0.1366.738" timestamp="1586242533414" />
+    <state width="1344" height="86" key="GridCell.Tab.0.right" timestamp="1586242533414">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1002" height="2" key="GridCell.Tab.0.center/0.0.1024.738@0.0.1024.738" timestamp="1577036178625" />
-    <state width="1344" height="2" key="GridCell.Tab.0.center/0.0.1366.738@0.0.1366.738" timestamp="1577303315346" />
-    <state width="778" height="2" key="GridCell.Tab.0.center/0.0.800.570@0.0.800.570" timestamp="1577035542879" />
-    <state width="1344" height="2" key="GridCell.Tab.0.left" timestamp="1577303315345">
-      <screen x="0" y="0" width="1366" height="738" />
-    </state>
-    <state width="1002" height="2" key="GridCell.Tab.0.left/0.0.1024.738@0.0.1024.738" timestamp="1577036178625" />
-    <state width="1344" height="2" key="GridCell.Tab.0.left/0.0.1366.738@0.0.1366.738" timestamp="1577303315345" />
-    <state width="778" height="2" key="GridCell.Tab.0.left/0.0.800.570@0.0.800.570" timestamp="1577035542879" />
-    <state width="1344" height="2" key="GridCell.Tab.0.right" timestamp="1577303315346">
-      <screen x="0" y="0" width="1366" height="738" />
-    </state>
-    <state width="1002" height="2" key="GridCell.Tab.0.right/0.0.1024.738@0.0.1024.738" timestamp="1577036178625" />
-    <state width="1344" height="2" key="GridCell.Tab.0.right/0.0.1366.738@0.0.1366.738" timestamp="1577303315346" />
-    <state width="778" height="2" key="GridCell.Tab.0.right/0.0.800.570@0.0.800.570" timestamp="1577035542879" />
-    <state x="184" y="0" key="SettingsEditor" timestamp="1576597829748">
-      <screen x="0" y="0" width="1366" height="738" />
-    </state>
-    <state x="184" y="0" key="SettingsEditor/0.0.1366.738@0.0.1366.738" timestamp="1576597829748" />
-    <state x="275" y="101" key="Vcs.Push.Dialog.v2" timestamp="1577032210566">
-      <screen x="0" y="0" width="1366" height="738" />
-    </state>
-    <state x="275" y="101" key="Vcs.Push.Dialog.v2/0.0.1366.738@0.0.1366.738" timestamp="1577032210566" />
+    <state width="1344" height="86" key="GridCell.Tab.0.right/0.0.1366.738@0.0.1366.738" timestamp="1586242533414" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
