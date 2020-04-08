@@ -1615,23 +1615,8 @@ class PlanetEleven(pyglet.window.Window):
                 # Build armory
                 if str(type(selected)) == "<class '__main__.Pioneer'>":
                     self.to_build_spt.image = res.armory_img
-                    self.build_loc_sel_phase = True
                     self.to_build = "armory"
-                    x, y = win32api.GetCursorPos()
-                    x, y = x / 2, y / 2
-                    y = SCREEN_H - y
-                    x, y = mc(x=x, y=y)
-                    x, y = round_coords(x, y)
-                    self.to_build_spt.x, self.to_build_spt.y = x, y
-                    s_x = int((x - 16) / 32) + 1
-                    s_y = int((y - 16) / 32) + 1
-                    if g_pos_coord_d[self.to_build_spt.x, self.to_build_spt.y] \
-                            or self.npa[s_y, s_x, 3] != 0:
-                        self.to_build_spt.color = (255, 0, 0)
-                        self.loc_clear = False
-                    else:
-                        self.to_build_spt.color = (0, 255, 0)
-                        self.loc_clear = True
+                    self.hotkey_constr_cur_1b()
             elif symbol == key.S:
                 # Stop
                 try:
@@ -1643,22 +1628,7 @@ class PlanetEleven(pyglet.window.Window):
                 if str(type(selected)) == "<class '__main__.Pioneer'>":
                     self.to_build_spt.image = res.turret_b_img
                     self.to_build = "turret"
-                    self.build_loc_sel_phase = True
-                    x, y = win32api.GetCursorPos()
-                    x, y = x / 2, y / 2
-                    y = SCREEN_H - y
-                    x, y = mc(x=x, y=y)
-                    x, y = round_coords(x, y)
-                    self.to_build_spt.x, self.to_build_spt.y = x, y
-                    s_x = int((x - 16) / 32) + 1
-                    s_y = int((y - 16) / 32) + 1
-                    if g_pos_coord_d[self.to_build_spt.x, self.to_build_spt.y] \
-                            or self.npa[s_y, s_x, 3] != 0:
-                        self.to_build_spt.color = (255, 0, 0)
-                        self.loc_clear = False
-                    else:
-                        self.to_build_spt.color = (0, 255, 0)
-                        self.loc_clear = True
+                    self.hotkey_constr_cur_1b()
             elif symbol == key.X:
                 # Deletes all our units on the screen
                 coords_to_delete = []
@@ -2196,8 +2166,23 @@ class PlanetEleven(pyglet.window.Window):
     def update_min_c_label(self):
         self.min_count_label.text = str(int(self.this_player.mineral_count))
 
-    def hotkey_constr_cursor():
-        pass
+    def hotkey_constr_cur_1b(self):
+        self.build_loc_sel_phase = True
+        x, y = win32api.GetCursorPos()
+        x, y = x / 2, y / 2
+        y = SCREEN_H - y
+        x, y = mc(x=x, y=y)
+        x, y = round_coords(x, y)
+        self.to_build_spt.x, self.to_build_spt.y = x, y
+        s_x = int((x - 16) / 32) + 1
+        s_y = int((y - 16) / 32) + 1
+        if g_pos_coord_d[self.to_build_spt.x, self.to_build_spt.y] \
+                or self.npa[s_y, s_x, 3] != 0:
+            self.to_build_spt.color = (255, 0, 0)
+            self.loc_clear = False
+        else:
+            self.to_build_spt.color = (0, 255, 0)
+            self.loc_clear = True
 
 def main():
     game_window = PlanetEleven(SCREEN_W, SCREEN_H, SCREEN_TITLE)
