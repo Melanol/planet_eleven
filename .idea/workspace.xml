@@ -4,6 +4,12 @@
     <list default="true" id="8699b466-fa9b-4e8c-b41f-e5bbe759696d" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/planet_eleven.py" beforeDir="false" afterPath="$PROJECT_DIR$/planet_eleven.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/pioneer.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/pioneer.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/pioneer.psd" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/pioneer.psd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/pioneer_enemy.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/pioneer_enemy.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/pioneer_shadow.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/pioneer_shadow.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/pioneer_shadow.psd" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/pioneer_shadow.psd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/todo.txt" beforeDir="false" afterPath="$PROJECT_DIR$/todo.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -164,13 +170,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1566740526093</updated>
-    </task>
-    <task id="LOCAL-00177" summary="Fixed big base animation, added plasma explosion animation">
-      <created>1573307551220</created>
-      <option name="number" value="00177" />
-      <option name="presentableId" value="LOCAL-00177" />
-      <option name="project" value="LOCAL" />
-      <updated>1573307551221</updated>
     </task>
     <task id="LOCAL-00178" summary="Big base animation activates only while working. Added 44 unrevisioned files">
       <created>1573308368679</created>
@@ -508,7 +507,14 @@
       <option name="project" value="LOCAL" />
       <updated>1586318622794</updated>
     </task>
-    <option name="localTasksCounter" value="226" />
+    <task id="LOCAL-00226" summary="hotkey_constr_cur_1b()">
+      <created>1586318866409</created>
+      <option name="number" value="00226" />
+      <option name="presentableId" value="LOCAL-00226" />
+      <option name="project" value="LOCAL" />
+      <updated>1586318866409</updated>
+    </task>
+    <option name="localTasksCounter" value="227" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -553,7 +559,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$" />
     </ignored-roots>
-    <MESSAGE value="attack_move() works, but only until the 1st enemy met" />
     <MESSAGE value="Major minimap bug fixed" />
     <MESSAGE value="Fixed an bug that would allow building buildings atop of each other" />
     <MESSAGE value="Control panel move command works" />
@@ -578,29 +583,30 @@
     <MESSAGE value="Small changes" />
     <MESSAGE value="Holding SHIFT selects ground entities only" />
     <MESSAGE value="Fixed hotkey construction curcor bug for fullscreen" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixed hotkey construction curcor bug for fullscreen" />
+    <MESSAGE value="hotkey_constr_cur_1b()" />
+    <option name="LAST_COMMIT_MESSAGE" value="hotkey_constr_cur_1b()" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="337" y="0" key="CommitChangelistDialog2" timestamp="1586318854436">
+    <state x="337" y="0" key="CommitChangelistDialog2" timestamp="1586318863640">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state x="337" y="0" key="CommitChangelistDialog2/0.0.1366.738@0.0.1366.738" timestamp="1586318854436" />
-    <state width="1344" height="46" key="GridCell.Tab.0.bottom" timestamp="1586318810088">
+    <state x="337" y="0" key="CommitChangelistDialog2/0.0.1366.738@0.0.1366.738" timestamp="1586318863640" />
+    <state width="1344" height="151" key="GridCell.Tab.0.bottom" timestamp="1586323466453">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="46" key="GridCell.Tab.0.bottom/0.0.1366.738@0.0.1366.738" timestamp="1586318810088" />
-    <state width="1344" height="46" key="GridCell.Tab.0.center" timestamp="1586318810088">
+    <state width="1344" height="151" key="GridCell.Tab.0.bottom/0.0.1366.738@0.0.1366.738" timestamp="1586323466453" />
+    <state width="1344" height="151" key="GridCell.Tab.0.center" timestamp="1586323466452">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="46" key="GridCell.Tab.0.center/0.0.1366.738@0.0.1366.738" timestamp="1586318810088" />
-    <state width="1344" height="46" key="GridCell.Tab.0.left" timestamp="1586318810088">
+    <state width="1344" height="151" key="GridCell.Tab.0.center/0.0.1366.738@0.0.1366.738" timestamp="1586323466452" />
+    <state width="1344" height="151" key="GridCell.Tab.0.left" timestamp="1586323466452">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="46" key="GridCell.Tab.0.left/0.0.1366.738@0.0.1366.738" timestamp="1586318810088" />
-    <state width="1344" height="46" key="GridCell.Tab.0.right" timestamp="1586318810088">
+    <state width="1344" height="151" key="GridCell.Tab.0.left/0.0.1366.738@0.0.1366.738" timestamp="1586323466452" />
+    <state width="1344" height="151" key="GridCell.Tab.0.right" timestamp="1586323466452">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="46" key="GridCell.Tab.0.right/0.0.1366.738@0.0.1366.738" timestamp="1586318810088" />
+    <state width="1344" height="151" key="GridCell.Tab.0.right/0.0.1366.738@0.0.1366.738" timestamp="1586323466452" />
     <state x="275" y="101" key="Vcs.Push.Dialog.v2" timestamp="1586243259005">
       <screen x="0" y="0" width="1366" height="738" />
     </state>

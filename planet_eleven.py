@@ -4,6 +4,7 @@ import sys
 import numpy as np
 import pickle
 import win32api
+import copy
 
 from pyglet.sprite import Sprite
 from pyglet.gl import *
@@ -980,7 +981,7 @@ class Vulture(Unit):
 
 class Apocalypse(Unit):
     cost = 600
-    building_time = 30
+    building_time = 300
 
     def __init__(self, game_inst, x, y, owner=None):
         if owner is None:
@@ -1130,6 +1131,8 @@ class PlanetEleven(pyglet.window.Window):
             y=SCREEN_H - 20, anchor_x='center', anchor_y='center')
         self.mineral_small = UI(self, res.mineral_small, x=SCREEN_W - 210,
             y=SCREEN_H - 20)
+        self.selected_icon = UI(self, res.pioneer_img, CTRL_B_COORDS[0][0],
+                                SCREEN_H - 72)
 
         # Hints
         self.hint = UI(self, res.hint_defiler, 100, 100)
@@ -1193,6 +1196,7 @@ class PlanetEleven(pyglet.window.Window):
         Mineral(self, PS / 2 + PS * 55, PS / 2 + PS * 58)
         self.our_1st_base = MechCenter(self, PS * 7, PS * 8)
         selected = self.our_1st_base
+        MechCenter(self, PS * 10, PS * 10, owner=self.computer)
         MechCenter(self, PS * 50, PS * 50, owner=self.computer)
 
         self.sel_spt = Sprite(img=res.sel_img, x=self.our_1st_base.x,
@@ -1261,6 +1265,7 @@ class PlanetEleven(pyglet.window.Window):
             self.cp_spt.draw()
             self.menu_b.draw()
             self.sel_frame_cp.draw()
+            self.selected_icon.draw()
             self.cp_b_bg.draw()
             self.mm_textured_bg.draw()
             minimap_pixels_batch.draw()
@@ -1711,7 +1716,7 @@ class PlanetEleven(pyglet.window.Window):
                         # Selection
                         if not modifiers == 17:  # 17 is for SHIFT
                             to_be_selected = a_pos_coord_d[(x, y)]
-                            if to_be_selected:
+                            if to_be_selected:  # Air unit found
                                 selected = to_be_selected
                                 self.sel_spt.x = x
                                 self.sel_spt.y = y
@@ -1737,6 +1742,12 @@ class PlanetEleven(pyglet.window.Window):
                                     self.sel_spt.x = x
                                     self.sel_spt.y = y
                                 selected = to_be_selected
+                        self.selected_icon.image = selected.image
+                        if self.selected_icon.image.width != 32:
+                            self.selected_icon.scale = 0.5
+                        else:
+                            self.selected_icon.scale = 1
+                        # Control buttons
                         if isinstance(selected, Mineral):
                             self.cbs_to_render = None
                         else:
