@@ -48,6 +48,8 @@ cursor_target = pyglet.window.ImageMouseCursor(pyglet.image.load(
 
 terrain_img = pyglet.resource.image("terrain.png")
 
+none_img = center_load("none.png")
+
 # Menu
 menu_img = center_load("menu.png")
 menu_bg = pyglet.resource.image("menu_bg.png")

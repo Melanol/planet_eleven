@@ -44,3 +44,4 @@
 
 # Ideas
 -Cython? The game is too slow on old PCs
+-Units should start attacking simultaneously

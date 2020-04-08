@@ -1133,11 +1133,10 @@ class PlanetEleven(pyglet.window.Window):
             y=SCREEN_H - 20, anchor_x='center', anchor_y='center')
         self.mineral_small = UI(self, res.mineral_small, x=SCREEN_W - 210,
             y=SCREEN_H - 20)
-        self.selected_icon = UI(self, res.pioneer_img, CTRL_B_COORDS[0][0],
+        self.selected_icon = UI(self, res.none_img, CTRL_B_COORDS[0][0],
                                 SCREEN_H - 72)
-        self.selected_hp = pyglet.text.Label(
-            '0', x=self.selected_icon.x + 16,
-            y=SCREEN_H - 72, anchor_y='center')
+        self.selected_hp = pyglet.text.Label('', x=self.selected_icon.x + 16,
+            y=SCREEN_H - 72, anchor_y='center', font_size=8, color=(0, 0, 0, 255))
 
         # Hints
         self.hint = UI(self, res.hint_defiler, 100, 100)
@@ -1200,7 +1199,6 @@ class PlanetEleven(pyglet.window.Window):
         Mineral(self, PS / 2 + PS * 63, PS / 2 + PS * 51)
         Mineral(self, PS / 2 + PS * 55, PS / 2 + PS * 58)
         self.our_1st_base = MechCenter(self, PS * 7, PS * 8)
-        selected = self.our_1st_base
         MechCenter(self, PS * 10, PS * 10, owner=self.computer)
         MechCenter(self, PS * 50, PS * 50, owner=self.computer)
 
@@ -1511,6 +1509,18 @@ class PlanetEleven(pyglet.window.Window):
                     entity.kill()
                     if entity == selected:
                         selected = None
+            # Update hp label
+            if self.frame_count % 10 == 0:
+                try:
+                    selected.max_hp
+                    self.selected_hp.text = str(int(selected.hp)) + '/' + \
+                                            str(selected.max_hp)
+                except AttributeError:
+                    try:
+                        self.selected_hp.text = str(int(selected.hp))
+                    except AttributeError:  # The entity is no more
+                        self.selected_icon.image = res.none_img
+                        self.selected_hp.text = ''
 
     def on_key_press(self, symbol, modifiers):
         """Called whenever a key is pressed."""
