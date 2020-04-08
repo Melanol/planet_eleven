@@ -2,8 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="8699b466-fa9b-4e8c-b41f-e5bbe759696d" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/enemy detection2.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/constants_and_utilities.py" beforeDir="false" afterPath="$PROJECT_DIR$/constants_and_utilities.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/planet_eleven.py" beforeDir="false" afterPath="$PROJECT_DIR$/planet_eleven.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/todo.txt" beforeDir="false" afterPath="$PROJECT_DIR$/todo.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -96,7 +99,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/test.py" />
+      <option name="SCRIPT_NAME" value="D:\PycharmProjects\planet_eleven\enemy detection2.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -134,8 +137,8 @@
     <recent_temporary>
       <list>
         <item itemvalue="Python.planet_eleven" />
-        <item itemvalue="Python.test1" />
         <item itemvalue="Python.test" />
+        <item itemvalue="Python.test1" />
       </list>
     </recent_temporary>
   </component>
@@ -165,13 +168,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1566740526093</updated>
-    </task>
-    <task id="LOCAL-00175" summary="Turrets look like photon cannons now">
-      <created>1573144201621</created>
-      <option name="number" value="00175" />
-      <option name="presentableId" value="LOCAL-00175" />
-      <option name="project" value="LOCAL" />
-      <updated>1573144201623</updated>
     </task>
     <task id="LOCAL-00176" summary="Lists renamed">
       <created>1573194611226</created>
@@ -509,7 +505,14 @@
       <option name="project" value="LOCAL" />
       <updated>1586243259245</updated>
     </task>
-    <option name="localTasksCounter" value="224" />
+    <task id="LOCAL-00224" summary="Holding SHIFT selects ground entities only">
+      <created>1586244235498</created>
+      <option name="number" value="00224" />
+      <option name="presentableId" value="LOCAL-00224" />
+      <option name="project" value="LOCAL" />
+      <updated>1586244235498</updated>
+    </task>
+    <option name="localTasksCounter" value="225" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -554,7 +557,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$" />
     </ignored-roots>
-    <MESSAGE value="Scuffed AI attack_move()" />
     <MESSAGE value="Revert here if attack_move kills the game" />
     <MESSAGE value="attack_move() works, but only until the 1st enemy met" />
     <MESSAGE value="Major minimap bug fixed" />
@@ -579,33 +581,38 @@
     <MESSAGE value="Code prettiness" />
     <MESSAGE value="Last commit before 0.3" />
     <MESSAGE value="Small changes" />
-    <option name="LAST_COMMIT_MESSAGE" value="Small changes" />
+    <MESSAGE value="Holding SHIFT selects ground entities only" />
+    <option name="LAST_COMMIT_MESSAGE" value="Holding SHIFT selects ground entities only" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="337" y="0" key="CommitChangelistDialog2" timestamp="1586243244410">
+    <state x="337" y="0" key="CommitChangelistDialog2" timestamp="1586244225533">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state x="337" y="0" key="CommitChangelistDialog2/0.0.1366.738@0.0.1366.738" timestamp="1586243244410" />
-    <state width="1344" height="371" key="GridCell.Tab.0.bottom" timestamp="1586244150284">
+    <state x="337" y="0" key="CommitChangelistDialog2/0.0.1366.738@0.0.1366.738" timestamp="1586244225533" />
+    <state width="1344" height="46" key="GridCell.Tab.0.bottom" timestamp="1586318239746">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="371" key="GridCell.Tab.0.bottom/0.0.1366.738@0.0.1366.738" timestamp="1586244150284" />
-    <state width="1344" height="371" key="GridCell.Tab.0.center" timestamp="1586244150283">
+    <state width="1344" height="46" key="GridCell.Tab.0.bottom/0.0.1366.738@0.0.1366.738" timestamp="1586318239746" />
+    <state width="1344" height="46" key="GridCell.Tab.0.center" timestamp="1586318239745">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="371" key="GridCell.Tab.0.center/0.0.1366.738@0.0.1366.738" timestamp="1586244150283" />
-    <state width="1344" height="371" key="GridCell.Tab.0.left" timestamp="1586244150283">
+    <state width="1344" height="46" key="GridCell.Tab.0.center/0.0.1366.738@0.0.1366.738" timestamp="1586318239745" />
+    <state width="1344" height="46" key="GridCell.Tab.0.left" timestamp="1586318239745">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="371" key="GridCell.Tab.0.left/0.0.1366.738@0.0.1366.738" timestamp="1586244150283" />
-    <state width="1344" height="371" key="GridCell.Tab.0.right" timestamp="1586244150284">
+    <state width="1344" height="46" key="GridCell.Tab.0.left/0.0.1366.738@0.0.1366.738" timestamp="1586318239745" />
+    <state width="1344" height="46" key="GridCell.Tab.0.right" timestamp="1586318239746">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="371" key="GridCell.Tab.0.right/0.0.1366.738@0.0.1366.738" timestamp="1586244150284" />
+    <state width="1344" height="46" key="GridCell.Tab.0.right/0.0.1366.738@0.0.1366.738" timestamp="1586318239746" />
     <state x="275" y="101" key="Vcs.Push.Dialog.v2" timestamp="1586243259005">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
     <state x="275" y="101" key="Vcs.Push.Dialog.v2/0.0.1366.738@0.0.1366.738" timestamp="1586243259005" />
+    <state x="92" y="92" width="1182" height="554" key="com.intellij.history.integration.ui.views.FileHistoryDialog" timestamp="1586262344329">
+      <screen x="0" y="0" width="1366" height="738" />
+    </state>
+    <state x="92" y="92" width="1182" height="554" key="com.intellij.history.integration.ui.views.FileHistoryDialog/0.0.1366.738@0.0.1366.738" timestamp="1586262344329" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

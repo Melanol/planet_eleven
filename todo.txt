@@ -3,6 +3,11 @@
 -Requirement for units
 -Make it work for almost any resolution
 -Add win and defeat conditions and screens
+-Make in-game text output
+-Get rid of windowed mode
+
+# Notes
+-Hotkey construction works only for fullscreen
 
 # Bugs
 -Minimap clicks create float viewport coords
@@ -34,7 +39,6 @@
 -Idle units should check for close enemies only when an enemy moves or is spawned (useless optimization?)
 -Something should indicate that there is a ground unit present below an air unit
 -Shift for selecting ground units under air units?
--Cython? The game is too slow on old PCs
 -Get rid of small windowed mode
 -Construction sprite does not move to the cursor after using a bulding hotkey
 
@@ -42,4 +46,4 @@
 -Update menu buttons with new letters
 
 # Ideas
--None
+-Cython? The game is too slow on old PCs

@@ -147,7 +147,7 @@ class CheckB(Sprite):
 
 class Player:
     def __init__(self, name):
-        self.mineral_count = 150
+        self.mineral_count = 50000
         self.name = name
 
 class HitAnim(Sprite):
@@ -1179,11 +1179,11 @@ class PlanetEleven(pyglet.window.Window):
 
         # Spawn buildings and minerals
         Mineral(self, PS / 2 + PS * 4, PS / 2 + PS * 7)
-        Mineral(self, PS / 2 + PS * 4,  PS / 2 + PS * 8)
-        Mineral(self, PS / 2 + PS * 10, PS / 2 + PS * 4)
-        Mineral(self, PS / 2 + PS * 12, PS / 2 + PS * 4)
+        Mineral(self, PS / 2 + PS * 5,  PS / 2 + PS * 8)
         Mineral(self, PS / 2 + PS * 6, PS / 2 + PS * 4)
-        Mineral(self, PS / 2 + PS * 8, PS / 2 + PS * 4)
+        Mineral(self, PS / 2 + PS * 7, PS / 2 + PS * 3)
+        Mineral(self, PS / 2 + PS * 10, PS / 2 + PS * 4)
+        Mineral(self, PS / 2 + PS * 11, PS / 2 + PS * 4)
 
         Mineral(self, PS / 2 + PS * 55, PS / 2 + PS * 55)
         Mineral(self, PS / 2 + PS * 56, PS / 2 + PS * 55)
@@ -1576,6 +1576,7 @@ class PlanetEleven(pyglet.window.Window):
                     self.build_loc_sel_phase = True
                     self.to_build = "mech_center"
                     x, y = win32api.GetCursorPos()
+                    x, y = x / 2, y / 2
                     y = SCREEN_H - y
                     x, y = mc(x=x, y=y)
                     x, y = round_coords(x, y)
@@ -1617,6 +1618,7 @@ class PlanetEleven(pyglet.window.Window):
                     self.build_loc_sel_phase = True
                     self.to_build = "armory"
                     x, y = win32api.GetCursorPos()
+                    x, y = x / 2, y / 2
                     y = SCREEN_H - y
                     x, y = mc(x=x, y=y)
                     x, y = round_coords(x, y)
@@ -1640,9 +1642,10 @@ class PlanetEleven(pyglet.window.Window):
                 # Build turret
                 if str(type(selected)) == "<class '__main__.Pioneer'>":
                     self.to_build_spt.image = res.turret_b_img
-                    self.build_loc_sel_phase = True
                     self.to_build = "turret"
+                    self.build_loc_sel_phase = True
                     x, y = win32api.GetCursorPos()
+                    x, y = x / 2, y / 2
                     y = SCREEN_H - y
                     x, y = mc(x=x, y=y)
                     x, y = round_coords(x, y)
@@ -1736,8 +1739,7 @@ class PlanetEleven(pyglet.window.Window):
                     print('\nglobal click coords:', x, y)
                     if button == mouse.LEFT:
                         # Selection
-                        print('modifiers: ', modifiers)
-                        if not modifiers == 17:
+                        if not modifiers == 17:  # 17 is for SHIFT
                             to_be_selected = a_pos_coord_d[(x, y)]
                             if to_be_selected:
                                 selected = to_be_selected
@@ -2194,6 +2196,8 @@ class PlanetEleven(pyglet.window.Window):
     def update_min_c_label(self):
         self.min_count_label.text = str(int(self.this_player.mineral_count))
 
+    def hotkey_constr_cursor():
+        pass
 
 def main():
     game_window = PlanetEleven(SCREEN_W, SCREEN_H, SCREEN_TITLE)
