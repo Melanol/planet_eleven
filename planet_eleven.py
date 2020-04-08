@@ -161,11 +161,11 @@ class Explosion(Sprite):
         self.scale = scale
 
 class Mineral(Sprite):
-    def __init__(self, outer_instance, x, y, amount=500000):
+    def __init__(self, outer_instance, x, y, hp=5000):
         super().__init__(img=res.mineral, x=x, y=y, batch=buildings_batch)
         self.outer_instance = outer_instance
         self.workers = []
-        self.amount = amount
+        self.hp = hp
         minerals.append(self)
         g_pos_coord_d[(x, y)] = self
 
@@ -308,6 +308,7 @@ class Building(Sprite):
             minimap_pixel = res.mm_enemy_img
         super().__init__(img=img, x=x, y=y, batch=buildings_batch)
         self.game_inst = game_inst
+        self.max_hp = hp
         self.hp = hp
         if self.width / 32 % 2 == 1:
             d = self.width / PS // 2 * PS
@@ -719,6 +720,7 @@ class Unit(Sprite):
         self.vision_radius = vision_radius
         self.attacks_ground = attacks_ground
         self.attacks_air = attacks_air
+        self.max_hp = hp
         self.hp = hp
         self.x = x
         self.y = y
@@ -1133,6 +1135,9 @@ class PlanetEleven(pyglet.window.Window):
             y=SCREEN_H - 20)
         self.selected_icon = UI(self, res.pioneer_img, CTRL_B_COORDS[0][0],
                                 SCREEN_H - 72)
+        self.selected_hp = pyglet.text.Label(
+            '0', x=self.selected_icon.x + 16,
+            y=SCREEN_H - 72, anchor_y='center')
 
         # Hints
         self.hint = UI(self, res.hint_defiler, 100, 100)
@@ -1266,6 +1271,7 @@ class PlanetEleven(pyglet.window.Window):
             self.menu_b.draw()
             self.sel_frame_cp.draw()
             self.selected_icon.draw()
+            self.selected_hp.draw()
             self.cp_b_bg.draw()
             self.mm_textured_bg.draw()
             minimap_pixels_batch.draw()
@@ -1336,7 +1342,7 @@ class PlanetEleven(pyglet.window.Window):
                         except TypeError:
                             worker.clear_task()
                     else:
-                        worker.mineral_to_gather.amount -= 0.03
+                        worker.mineral_to_gather.hp -= 0.03
                         owner = worker.owner
                         owner.mineral_count += 0.03
                         if owner.name == 'player1':
@@ -1490,7 +1496,7 @@ class PlanetEleven(pyglet.window.Window):
             # Destroying minerals
             minerals_to_del = []
             for mineral in minerals:
-                if mineral.amount <= 0:
+                if mineral.hp <= 0:
                     mineral.kill()
                     minerals_to_del.append(mineral)
             for mineral in minerals_to_del:
@@ -1747,6 +1753,12 @@ class PlanetEleven(pyglet.window.Window):
                             self.selected_icon.scale = 0.5
                         else:
                             self.selected_icon.scale = 1
+                        try:
+                            selected.max_hp
+                            self.selected_hp.text = str(int(selected.hp)) + '/' + \
+                                str(selected.max_hp)
+                        except AttributeError:
+                            self.selected_hp.text = str(int(selected.hp))
                         # Control buttons
                         if isinstance(selected, Mineral):
                             self.cbs_to_render = None
@@ -2153,6 +2165,8 @@ class PlanetEleven(pyglet.window.Window):
             el.y = el.org_y + bvb
         self.min_count_label.x = SCREEN_W - 180 + lvb
         self.min_count_label.y = SCREEN_H - 20 + bvb
+        self.selected_hp.x = CTRL_B_COORDS[1][0] + lvb
+        self.selected_hp.y = SCREEN_H - 72 + bvb
         for entity in our_buildings + our_units \
                       + enemy_buildings + enemy_units:
             entity.pixel.x, entity.pixel.y = to_minimap(entity.x, entity.y)
