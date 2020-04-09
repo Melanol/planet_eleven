@@ -93,7 +93,7 @@ def closest_enemy_2_att(entity, enemy_entities):
     return closest_enemy
 
 
-def update_shooting(game_instance, our_entities, enemy_entities):
+def update_shooting(game_inst, our_entities, enemy_entities):
     for entity in our_entities:
         try:  # For shooting buildings
             entity.has_weapon
@@ -114,7 +114,7 @@ def update_shooting(game_instance, our_entities, enemy_entities):
                         entity.target_p.attackers.append(entity)
                 # Has target_p
                 elif dist(entity, entity.target_p) <= entity.shooting_radius:
-                    entity.shoot(game_instance.frame_count)
+                    entity.shoot(game_inst.frame_count)
                 else:
                     entity.has_target_p = False
                     entity.target_p.attackers.remove(entity)
@@ -122,7 +122,7 @@ def update_shooting(game_instance, our_entities, enemy_entities):
                     entity.target_p_x = None
                     entity.target_p_y = None
             else:
-                if (game_instance.frame_count - entity.cooldown_started) % \
+                if (game_inst.frame_count - entity.cooldown_started) % \
                         entity.cooldown == 0:
                     entity.on_cooldown = False
 
@@ -177,36 +177,38 @@ class Mineral(Sprite):
         self.delete()
 
 
-def order_unit(game_instance, building, unit):
+def order_unit(game_inst, building, unit):
     """Orders units in buildings. Checks if you have enough minerals."""
     owner = building.owner
     if owner.mineral_count - unit.cost >= 0:
         owner.mineral_count -= unit.cost
-        game_instance.update_min_c_label()
+        game_inst.update_min_c_label()
         building.building_queue.append(unit)
         building.anim.visible = True
         if len(building.building_queue) == 1:
-            building.building_start_time = game_instance.frame_count
+            building.building_start_time = game_inst.frame_count
     else:
-        if owner == game_instance.this_player:
-            print("Not enough minerals")
+        if owner == game_inst.this_player:
+            game_inst.txt_out.text = "Not enough minerals"
+            game_inst.txt_out_upd_f = game_inst.frame_count
 
 
-def order_building(game_instance, unit, building, x, y):
+def order_building(game_inst, unit, building, x, y):
     owner = unit.owner
     if owner.mineral_count - building.cost >= 0:
         owner.mineral_count -= building.cost
-        game_instance.update_min_c_label()
-        unit.to_build = game_instance.to_build
-        unit.task_x = game_instance.to_build_spt.x
-        unit.task_y = game_instance.to_build_spt.y
+        game_inst.update_min_c_label()
+        unit.to_build = game_inst.to_build
+        unit.task_x = game_inst.to_build_spt.x
+        unit.task_y = game_inst.to_build_spt.y
         unit.move((x, y))
     else:
-        if owner == game_instance.this_player:
-            print("Not enough minerals")
+        if owner == game_inst.this_player:
+            game_inst.txt_out.text = "Not enough minerals"
+            game_inst.txt_out_upd_f = game_inst.frame_count
 
 
-def building_spawn_unit(game_instance, building):
+def building_spawn_unit(game_inst, building):
     if building.building_queue:
         unit = building.building_queue[0]
         if str(unit) == "<class '__main__.Defiler'>":
@@ -219,7 +221,7 @@ def building_spawn_unit(game_instance, building):
             building.current_building_time = Apocalypse.building_time
         elif str(unit) == "<class '__main__.Pioneer'>":
             building.current_building_time = Pioneer.building_time
-        if game_instance.frame_count - building.building_start_time == \
+        if game_inst.frame_count - building.building_start_time == \
                 building.current_building_time:
             if str(building.building_queue[0]) not in LIST_OF_FLYING:
                 dict_to_check = g_pos_coord_d
@@ -261,24 +263,24 @@ def building_spawn_unit(game_instance, building):
             if place_found:
                 unit = building.building_queue.pop(0)
                 if str(unit) == "<class '__main__.Defiler'>":
-                    unit = Defiler(game_instance, x=x, y=y,
+                    unit = Defiler(game_inst, x=x, y=y,
                                    owner=building.owner)
                     unit.spawn()
                 elif str(unit) == "<class '__main__.Centurion'>":
-                    unit = Centurion(game_instance, x=x, y=y,
+                    unit = Centurion(game_inst, x=x, y=y,
                                      owner=building.owner)
                     unit.spawn()
                 elif str(unit) == "<class '__main__.Vulture'>":
-                    unit = Vulture(game_instance, x=x, y=y,
+                    unit = Vulture(game_inst, x=x, y=y,
                                    owner=building.owner)
                     unit.spawn()
                 elif str(unit) == "<class '__main__.Apocalypse'>":
-                    unit = Apocalypse(game_instance, x=x, y=y,
+                    unit = Apocalypse(game_inst, x=x, y=y,
                                       owner=building.owner)
                     unit.spawn()
                 elif str(unit) == "<class '__main__.Pioneer'>":
                     print(building.building_queue)
-                    unit = Pioneer(game_instance, x=x, y=y,
+                    unit = Pioneer(game_inst, x=x, y=y,
                                    owner=building.owner)
                     unit.spawn()
                 building.building_start_time += building.current_building_time
@@ -1137,6 +1139,9 @@ class PlanetEleven(pyglet.window.Window):
                                 SCREEN_H - 72)
         self.selected_hp = pyglet.text.Label('', x=self.selected_icon.x + 16,
             y=SCREEN_H - 72, anchor_y='center', font_size=8, color=(0, 0, 0, 255))
+        self.txt_out = pyglet.text.Label('', x=SCREEN_W / 2 - 50, y=100,
+                anchor_x='center', anchor_y='center', font_size=8)
+        self.txt_out_upd_f = None
 
         # Hints
         self.hint = UI(self, res.hint_defiler, 100, 100)
@@ -1297,6 +1302,7 @@ class PlanetEleven(pyglet.window.Window):
 
             if self.show_hint:
                 self.hint.draw()
+            self.txt_out.draw()
         else:
             self.menu_bg.draw()
             if self.options:
@@ -1509,8 +1515,8 @@ class PlanetEleven(pyglet.window.Window):
                     entity.kill()
                     if entity == selected:
                         selected = None
-            # Update hp label
             if self.frame_count % 10 == 0:
+                # Update hp label
                 try:
                     selected.max_hp
                     self.selected_hp.text = str(int(selected.hp)) + '/' + \
@@ -1521,6 +1527,11 @@ class PlanetEleven(pyglet.window.Window):
                     except AttributeError:  # The entity is no more
                         self.selected_icon.image = res.none_img
                         self.selected_hp.text = ''
+                # Reset txt_out
+                if self.txt_out_upd_f:
+                    if self.frame_count >= self.txt_out_upd_f + TXT_OUT_DECAY:
+                        self.txt_out.text = ''
+                        self.txt_out_upd_f = None
 
     def on_key_press(self, symbol, modifiers):
         """Called whenever a key is pressed."""
@@ -2177,6 +2188,8 @@ class PlanetEleven(pyglet.window.Window):
         self.min_count_label.y = SCREEN_H - 20 + bvb
         self.selected_hp.x = CTRL_B_COORDS[1][0] + lvb
         self.selected_hp.y = SCREEN_H - 72 + bvb
+        self.txt_out.x = SCREEN_W / 2 - 50 + lvb
+        self.txt_out.y = 100 + bvb
         for entity in our_buildings + our_units \
                       + enemy_buildings + enemy_units:
             entity.pixel.x, entity.pixel.y = to_minimap(entity.x, entity.y)
