@@ -3,29 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="8699b466-fa9b-4e8c-b41f-e5bbe759696d" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/constants_and_utilities.py" beforeDir="false" afterPath="$PROJECT_DIR$/constants_and_utilities.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/disdoc.rtf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/lore.rtf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/minimap_cam_frame.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/most popular pc screen resolutions.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/organic_race.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/organic_race.txt" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/planet_eleven.py" beforeDir="false" afterPath="$PROJECT_DIR$/planet_eleven.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources.py" beforeDir="false" afterPath="$PROJECT_DIR$/resources.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/apocalypse.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/apocalypse.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/apocalypse.psd" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/apocalypse.psd" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/hints/hint_vulture.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/hints/hint_vulture.psd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/mech_center/mech_center.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/mech_center/mech_center.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/mech_center/mech_center.psd" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/mech_center/mech_center.psd" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/vulture.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/vulture.psd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/vulture_enemy.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/vulture_shadow.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/vulture_shadow.psd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tech_race1.rtf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test1.py" beforeDir="false" afterPath="$PROJECT_DIR$/test1.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/todo.txt" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -163,13 +141,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1566740526093</updated>
-    </task>
-    <task id="LOCAL-00182" summary="Just saving">
-      <created>1573829994409</created>
-      <option name="number" value="00182" />
-      <option name="presentableId" value="LOCAL-00182" />
-      <option name="project" value="LOCAL" />
-      <updated>1573829994410</updated>
     </task>
     <task id="LOCAL-00183" summary="Just saving">
       <created>1573833790874</created>
@@ -507,7 +478,14 @@
       <option name="project" value="LOCAL" />
       <updated>1586390947819</updated>
     </task>
-    <option name="localTasksCounter" value="231" />
+    <task id="LOCAL-00231" summary="Multiple inheritance for structures">
+      <created>1586515479106</created>
+      <option name="number" value="00231" />
+      <option name="presentableId" value="LOCAL-00231" />
+      <option name="project" value="LOCAL" />
+      <updated>1586515479107</updated>
+    </task>
+    <option name="localTasksCounter" value="232" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -551,7 +529,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$" />
     </ignored-roots>
-    <MESSAGE value="Phases optimized" />
     <MESSAGE value="Fixed a rally point bug" />
     <MESSAGE value="Revert here" />
     <MESSAGE value="fov construction check" />
@@ -576,33 +553,34 @@
     <MESSAGE value="Selected hp" />
     <MESSAGE value="Selected hp autoupdates + selected_icon disappears after the entity is no more" />
     <MESSAGE value="txt_out" />
-    <option name="LAST_COMMIT_MESSAGE" value="txt_out" />
+    <MESSAGE value="Multiple inheritance for structures" />
+    <option name="LAST_COMMIT_MESSAGE" value="Multiple inheritance for structures" />
   </component>
   <component name="WindowStateProjectService">
     <state x="357" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog" timestamp="1586499471947">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
     <state x="357" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.0.1366.738@0.0.1366.738" timestamp="1586499471947" />
-    <state x="337" y="0" key="CommitChangelistDialog2" timestamp="1586390941567">
+    <state x="337" y="0" key="CommitChangelistDialog2" timestamp="1586515465984">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state x="337" y="0" key="CommitChangelistDialog2/0.0.1366.738@0.0.1366.738" timestamp="1586390941567" />
-    <state width="1344" height="148" key="GridCell.Tab.0.bottom" timestamp="1586515381012">
+    <state x="337" y="0" key="CommitChangelistDialog2/0.0.1366.738@0.0.1366.738" timestamp="1586515465984" />
+    <state width="1344" height="148" key="GridCell.Tab.0.bottom" timestamp="1586516687211">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="148" key="GridCell.Tab.0.bottom/0.0.1366.738@0.0.1366.738" timestamp="1586515381012" />
-    <state width="1344" height="148" key="GridCell.Tab.0.center" timestamp="1586515381012">
+    <state width="1344" height="148" key="GridCell.Tab.0.bottom/0.0.1366.738@0.0.1366.738" timestamp="1586516687211" />
+    <state width="1344" height="148" key="GridCell.Tab.0.center" timestamp="1586516687210">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="148" key="GridCell.Tab.0.center/0.0.1366.738@0.0.1366.738" timestamp="1586515381012" />
-    <state width="1344" height="148" key="GridCell.Tab.0.left" timestamp="1586515381012">
+    <state width="1344" height="148" key="GridCell.Tab.0.center/0.0.1366.738@0.0.1366.738" timestamp="1586516687210" />
+    <state width="1344" height="148" key="GridCell.Tab.0.left" timestamp="1586516687210">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="148" key="GridCell.Tab.0.left/0.0.1366.738@0.0.1366.738" timestamp="1586515381012" />
-    <state width="1344" height="148" key="GridCell.Tab.0.right" timestamp="1586515381012">
+    <state width="1344" height="148" key="GridCell.Tab.0.left/0.0.1366.738@0.0.1366.738" timestamp="1586516687210" />
+    <state width="1344" height="148" key="GridCell.Tab.0.right" timestamp="1586516687210">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="148" key="GridCell.Tab.0.right/0.0.1366.738@0.0.1366.738" timestamp="1586515381012" />
+    <state width="1344" height="148" key="GridCell.Tab.0.right/0.0.1366.738@0.0.1366.738" timestamp="1586516687210" />
     <state width="1344" height="208" key="GridCell.Tab.1.bottom" timestamp="1586351808917">
       <screen x="0" y="0" width="1366" height="738" />
     </state>

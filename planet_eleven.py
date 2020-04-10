@@ -176,6 +176,10 @@ class Mineral(Sprite):
 def order_unit(game_inst, structure, unit):
     """Orders units in structures. Checks if you have enough minerals."""
     owner = structure.owner
+    if len(structure.production_queue) == 3:
+        game_inst.txt_out.text = "Queue is full"
+        game_inst.txt_out_upd_f = game_inst.frame_count
+        return
     if owner.mineral_count - unit.cost >= 0:
         owner.mineral_count -= unit.cost
         game_inst.update_min_c_label()
