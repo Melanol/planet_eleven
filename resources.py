@@ -85,7 +85,7 @@ hint_mech_center = right_bottom_load("hint_mech_center.png")
 
 hint_defiler = right_bottom_load("hint_defiler.png")
 hint_centurion = right_bottom_load("hint_centurion.png")
-hint_vulture = right_bottom_load("hint_vulture.png")
+hint_wyrm = right_bottom_load("hint_wyrm.png")
 hint_apocalypse = right_bottom_load("hint_apocalypse.png")
 hint_pioneer = right_bottom_load("hint_pioneer.png")
 
@@ -99,6 +99,12 @@ mech_center_icon_img = center_load("mech_center_icon.png")
 mineral = center_load("mineral.png")
 
 # Buildings
+constr_dummy1 = center_load('constr_dummy32_1.png')
+constr_dummy2 = center_load('constr_dummy32_2.png')
+constr_dummy3 = center_load('constr_dummy32_3.png')
+constr_dummy_anim = pyglet.image.Animation.from_image_sequence([constr_dummy1,
+        constr_dummy2, constr_dummy3], 0.1, True)
+
 armory_img = center_load("armory.png")
 armory_enemy_img = center_load("armory_enemy.png")
 
@@ -133,9 +139,9 @@ centurion_img = center_load("centurion.png")
 centurion_enemy_img = center_load("centurion_enemy.png")
 centurion_shadow_img = center_load("centurion_shadow.png")
 
-vulture_img = center_load("vulture.png")
-vulture_enemy_img = center_load("vulture_enemy.png")
-vulture_shadow_img = center_load("vulture_shadow.png")
+wyrm_img = center_load("wyrm.png")
+wyrm_enemy_img = center_load("wyrm_enemy.png")
+wyrm_shadow_img = center_load("wyrm_shadow.png")
 
 pioneer_img = center_load("pioneer.png")
 pioneer_enemy_img = center_load("pioneer_enemy.png")

@@ -1,10 +1,7 @@
 import math
-import random
 import sys
 import numpy as np
-import pickle
 import win32api
-import copy
 
 from pyglet.sprite import Sprite
 from pyglet.gl import *
@@ -14,7 +11,6 @@ from pyglet.window import mouse
 from shadow import Shadow
 import resources as res
 from projectile import Projectile
-from draw_dot import draw_dot
 from constants_and_utilities import *
 
 lvb = 0
@@ -95,7 +91,7 @@ def closest_enemy_2_att(entity, enemy_entities):
 
 def update_shooting(game_inst, our_entities, enemy_entities):
     for entity in our_entities:
-        try:  # For shooting buildings
+        try:  # For shooting structures
             entity.has_weapon
             entity.dest_reached
         except AttributeError:
@@ -162,7 +158,7 @@ class Explosion(Sprite):
 
 class Mineral(Sprite):
     def __init__(self, outer_instance, x, y, hp=5000):
-        super().__init__(img=res.mineral, x=x, y=y, batch=buildings_batch)
+        super().__init__(img=res.mineral, x=x, y=y, batch=structures_batch)
         self.outer_instance = outer_instance
         self.workers = []
         self.hp = hp
@@ -177,26 +173,26 @@ class Mineral(Sprite):
         self.delete()
 
 
-def order_unit(game_inst, building, unit):
-    """Orders units in buildings. Checks if you have enough minerals."""
-    owner = building.owner
+def order_unit(game_inst, structure, unit):
+    """Orders units in structures. Checks if you have enough minerals."""
+    owner = structure.owner
     if owner.mineral_count - unit.cost >= 0:
         owner.mineral_count -= unit.cost
         game_inst.update_min_c_label()
-        building.building_queue.append(unit)
-        building.anim.visible = True
-        if len(building.building_queue) == 1:
-            building.building_start_time = game_inst.frame_count
+        structure.production_queue.append(unit)
+        structure.anim.visible = True
+        if len(structure.production_queue) == 1:
+            structure.production_start_time = game_inst.frame_count
     else:
         if owner == game_inst.this_player:
             game_inst.txt_out.text = "Not enough minerals"
             game_inst.txt_out_upd_f = game_inst.frame_count
 
 
-def order_building(game_inst, unit, building, x, y):
+def order_structure(game_inst, unit, structure, x, y):
     owner = unit.owner
-    if owner.mineral_count - building.cost >= 0:
-        owner.mineral_count -= building.cost
+    if owner.mineral_count - structure.cost >= 0:
+        owner.mineral_count -= structure.cost
         game_inst.update_min_c_label()
         unit.to_build = game_inst.to_build
         unit.task_x = game_inst.to_build_spt.x
@@ -208,36 +204,36 @@ def order_building(game_inst, unit, building, x, y):
             game_inst.txt_out_upd_f = game_inst.frame_count
 
 
-def building_spawn_unit(game_inst, building):
-    if building.building_queue:
-        unit = building.building_queue[0]
+def building_spawn_unit(game_inst, structure):
+    if structure.production_queue:
+        unit = structure.production_queue[0]
         if str(unit) == "<class '__main__.Defiler'>":
-            building.current_building_time = Defiler.building_time
+            structure.current_production_time = Defiler.build_time
         elif str(unit) == "<class '__main__.Centurion'>":
-            building.current_building_time = Centurion.building_time
-        elif str(unit) == "<class '__main__.Vulture'>":
-            building.current_building_time = Vulture.building_time
+            structure.current_production_time = Centurion.build_time
+        elif str(unit) == "<class '__main__.Wyrm'>":
+            structure.current_production_time = Wyrm.build_time
         elif str(unit) == "<class '__main__.Apocalypse'>":
-            building.current_building_time = Apocalypse.building_time
+            structure.current_production_time = Apocalypse.build_time
         elif str(unit) == "<class '__main__.Pioneer'>":
-            building.current_building_time = Pioneer.building_time
-        if game_inst.frame_count - building.building_start_time == \
-                building.current_building_time:
-            if str(building.building_queue[0]) not in LIST_OF_FLYING:
+            structure.current_production_time = Pioneer.build_time
+        if game_inst.frame_count - structure.production_start_time == \
+                structure.current_production_time:
+            if str(structure.production_queue[0]) not in LIST_OF_FLYING:
                 dict_to_check = g_pos_coord_d
             else:
                 dict_to_check = a_pos_coord_d
             # Searching for a place to build
-            if building.width == PS:
-                x = building.x - PS
-                y = building.y - PS
+            if structure.width == PS:
+                x = structure.x - PS
+                y = structure.y - PS
             else:
-                x = building.x - PS * 1.5
-                y = building.y - PS * 1.5
+                x = structure.x - PS * 1.5
+                y = structure.y - PS * 1.5
             org_x = x
             org_y = y
             place_found = False
-            n = building.width // PS + 2
+            n = structure.width // PS + 2
             for i in range(n):
                 x = org_x + PS * i
                 if dict_to_check[(x, y)] is None:
@@ -261,39 +257,40 @@ def building_spawn_unit(game_inst, building):
                     place_found = True
                     break
             if place_found:
-                unit = building.building_queue.pop(0)
+                unit = structure.production_queue.pop(0)
                 if str(unit) == "<class '__main__.Defiler'>":
                     unit = Defiler(game_inst, x=x, y=y,
-                                   owner=building.owner)
+                                   owner=structure.owner)
                     unit.spawn()
                 elif str(unit) == "<class '__main__.Centurion'>":
                     unit = Centurion(game_inst, x=x, y=y,
-                                     owner=building.owner)
+                                     owner=structure.owner)
                     unit.spawn()
-                elif str(unit) == "<class '__main__.Vulture'>":
-                    unit = Vulture(game_inst, x=x, y=y,
-                                   owner=building.owner)
+                elif str(unit) == "<class '__main__.Wyrm'>":
+                    unit = Wyrm(game_inst, x=x, y=y,
+                                owner=structure.owner)
                     unit.spawn()
                 elif str(unit) == "<class '__main__.Apocalypse'>":
                     unit = Apocalypse(game_inst, x=x, y=y,
-                                      owner=building.owner)
+                                      owner=structure.owner)
                     unit.spawn()
                 elif str(unit) == "<class '__main__.Pioneer'>":
-                    print(building.building_queue)
+                    print(structure.production_queue)
                     unit = Pioneer(game_inst, x=x, y=y,
-                                   owner=building.owner)
+                                   owner=structure.owner)
                     unit.spawn()
-                building.building_start_time += building.current_building_time
-                if not building.building_queue:
-                    building.anim.visible = False
-                if not building.default_rp:
-                    unit.move((building.rp_x, building.rp_y))
+                structure.production_start_time += \
+                structure.current_production_time
+                if not structure.production_queue:
+                    structure.anim.visible = False
+                if not structure.default_rp:
+                    unit.move((structure.rp_x, structure.rp_y))
             else:
-                building.building_start_time += 1
+                structure.production_start_time += 1
                 # print('No space')
 
 
-class Building(Sprite):
+class Structure(Sprite):
     """__init__ == spawn()"""
 
     def __init__(self, game_inst, owner, our_img, enemy_img, vision_radius,
@@ -308,7 +305,7 @@ class Building(Sprite):
             enemy_buildings.append(self)
             img = enemy_img
             minimap_pixel = res.mm_enemy_img
-        super().__init__(img=img, x=x, y=y, batch=buildings_batch)
+        super().__init__(img=img, x=x, y=y, batch=structures_batch)
         self.game_inst = game_inst
         self.max_hp = hp
         self.hp = hp
@@ -376,34 +373,42 @@ class Building(Sprite):
         self.delete()
 
 
-class Armory(Building):
+class Armory(Structure):
     cost = 200
-    building_time = 100
+    build_time = 100
 
-    def __init__(self, game_inst, x, y, owner=None):
+    def __init__(self, game_inst, x, y, owner=None, skip_constr=False):
         if owner is None:
             owner = game_inst.this_player
-        super().__init__(game_inst, owner, res.armory_img,
-                         res.armory_enemy_img, vision_radius=2, hp=100, x=x,
-                         y=y)
+        if not skip_constr:
+            super().__init__(game_inst, owner, res.constr_dummy_anim,
+                             res.armory_enemy_img, vision_radius=2, hp=100,
+                             x=x, y=y)
+            self.const_f = game_inst.frame_count
+        else:
+            super().__init__(game_inst, owner, res.armory_img,
+                             res.armory_enemy_img, vision_radius=2, hp=100,
+                             x=x, y=y)
 
 
-class ProductionBuilding(Building):
-    def __init__(self, game_inst, owner, our_img, enemy_img, vision_radius, hp,
-                 x, y):
-        super().__init__(game_inst, owner, our_img, enemy_img, vision_radius,
-                         hp, x, y)
-        self.rp_x = x
-        self.rp_y = y
-        self.building_queue = []
-        self.current_building_time = None
-        self.building_complete = True
-        self.building_start_time = 0
+class ProductionStructure:
+    def init(self):
+        self.rp_x = self.x
+        self.rp_y = self.y
+        self.production_queue = []
+        self.current_production_time = None
+        self.production_complete = True
+        self.production_start_time = 0
 
 
-class MechCenter(ProductionBuilding):
+class GuardianStructure:
+    def __init__(self):
+        self.under_construction = True
+
+
+class MechCenter(Structure, ProductionStructure):
     cost = 500
-    building_time = 100
+    build_time = 100
 
     def __init__(self, game_inst, x, y, owner=None):
         if owner is None:
@@ -411,8 +416,9 @@ class MechCenter(ProductionBuilding):
         super().__init__(game_inst, our_img=res.mech_center_img,
                          enemy_img=res.mech_center_enemy_img, x=x, y=y,
                          hp=1500, owner=owner, vision_radius=4)
+        super().init()
         self.ctrl_buttons = [game_inst.defiler_b, game_inst.centurion_b,
-                             game_inst.vulture_b, game_inst.apocalypse_b,
+                             game_inst.wyrm_b, game_inst.apocalypse_b,
                              game_inst.pioneer_b]
         self.is_big = True
         if owner.name == 'player1':
@@ -423,7 +429,7 @@ class MechCenter(ProductionBuilding):
         self.anim.visible = False
 
 
-class AttackingBuilding(Building):
+class AttackingStructure(Structure):
     def __init__(self, game_inst, owner, our_img, enemy_img, vision_radius, hp,
                  x, y, damage, cooldown):
         super().__init__(game_inst, owner, our_img, enemy_img, vision_radius,
@@ -474,9 +480,9 @@ class AttackingBuilding(Building):
         self.delete()
 
 
-class Turret(AttackingBuilding):
+class Turret(AttackingStructure):
     cost = 150
-    building_time = 100
+    build_time = 100
 
     def __init__(self, game_inst, x, y, owner=None):
         if owner is None:
@@ -834,7 +840,8 @@ class Unit(Sprite):
             print('target =', target)
             self.target_x = target[0]
             self.target_y = target[1]
-            self.pixel.x, self.pixel.y = to_minimap(self.target_x, self.target_y)
+            self.pixel.x, self.pixel.y = to_minimap(self.target_x,
+                                                    self.target_y)
         # Not moving
         else:
             self.dest_reached = True
@@ -880,7 +887,8 @@ class Unit(Sprite):
             self.pos_dict[(self.x, self.y)] = None
             self.target_x = next_target[0]
             self.target_y = next_target[1]
-            self.pixel.x, self.pixel.y = to_minimap(self.target_x, self.target_y)
+            self.pixel.x, self.pixel.y = to_minimap(self.target_x,
+                                                    self.target_y)
             self.pos_dict[(self.target_x, self.target_y)] = self
             diff_x = self.target_x - self.x
             diff_y = self.target_y - self.y
@@ -938,7 +946,7 @@ class Unit(Sprite):
 
 class Defiler(Unit):
     cost = 300
-    building_time = 10
+    build_time = 10
 
     def __init__(self, game_inst, x, y, owner=None):
         if owner is None:
@@ -953,7 +961,7 @@ class Defiler(Unit):
 
 class Centurion(Unit):
     cost = 400
-    building_time = 10
+    build_time = 10
 
     def __init__(self, game_inst, x, y, owner=None):
         if owner is None:
@@ -967,25 +975,25 @@ class Centurion(Unit):
                          ctrl_buttons=game_inst.basic_unit_c_bs)
 
 
-class Vulture(Unit):
+class Wyrm(Unit):
     cost = 150
-    building_time = 10
+    build_time = 10
 
     def __init__(self, game_inst, x, y, owner=None):
         if owner is None:
             owner = game_inst.this_player
-        super().__init__(game_inst, owner, res.vulture_img,
-                         res.vulture_enemy_img, flying=False,
+        super().__init__(game_inst, owner, res.wyrm_img,
+                         res.wyrm_enemy_img, flying=False,
                          vision_radius=3, hp=25, x=x, y=y, speed=7,
                          has_weapon=True, damage=5, cooldown=60,
                          attacks_ground=True, attacks_air=False,
-                         shadow_sprite=res.vulture_shadow_img,
+                         shadow_sprite=res.wyrm_shadow_img,
                          ctrl_buttons=game_inst.basic_unit_c_bs)
 
 
 class Apocalypse(Unit):
     cost = 600
-    building_time = 300
+    build_time = 30
 
     def __init__(self, game_inst, x, y, owner=None):
         if owner is None:
@@ -1001,7 +1009,7 @@ class Apocalypse(Unit):
 
 class Pioneer(Unit):
     cost = 50
-    building_time = 10
+    build_time = 10
 
     def __init__(self, game_inst, x, y, owner=None):
         if owner is None:
@@ -1054,7 +1062,8 @@ class Pioneer(Unit):
         elif self.to_build == "mech_center":
             x = self.task_x - PS / 2
             y = self.task_y - PS / 2
-            coords_to_check = [(x, y), (x + PS, y), (x + PS, y + PS), (x, y + PS)]
+            coords_to_check = [(x, y), (x + PS, y), (x + PS, y + PS),
+                               (x, y + PS)]
             no_place = False
             for c in coords_to_check:
                 if g_pos_coord_d[(c[0], c[1])]:
@@ -1124,7 +1133,8 @@ class PlanetEleven(pyglet.window.Window):
         self.sel_frame_cp = UI(self, res.sel_frame_img, cp_c_x, SCREEN_H - 90)
         self.cp_b_bg = UI(self, res.cp_buttons_bg_img, cp_c_x, cp_c_y)
         self.mm_textured_bg = UI(self, res.mm_textured_bg_img, MM0X, MM0Y)
-        self.mm_cam_frame_spt = Sprite(res.mm_cam_frame_img, MM0X - 1, MM0Y - 1)
+        self.mm_cam_frame_spt = Sprite(res.mm_cam_frame_img, MM0X - 1,
+                                       MM0Y - 1)
         self.mm_fow_img = pyglet.image.load('sprites/mm_fow.png')
         self.mm_fow_ImageData = self.mm_fow_img.get_image_data()
         self.npa = np.fromstring(self.mm_fow_ImageData.get_data(
@@ -1138,7 +1148,8 @@ class PlanetEleven(pyglet.window.Window):
         self.selected_icon = UI(self, res.none_img, CTRL_B_COORDS[0][0],
                                 SCREEN_H - 72)
         self.selected_hp = pyglet.text.Label('', x=self.selected_icon.x + 16,
-            y=SCREEN_H - 72, anchor_y='center', font_size=8, color=(0, 0, 0, 255))
+            y=SCREEN_H - 72, anchor_y='center', font_size=8,
+                                             color=(0, 0, 0,255))
         self.txt_out = pyglet.text.Label('', x=SCREEN_W / 2 - 50, y=100,
                 anchor_x='center', anchor_y='center', font_size=8)
         self.txt_out_upd_f = None
@@ -1182,7 +1193,7 @@ class PlanetEleven(pyglet.window.Window):
                             CTRL_B_COORDS[0][1])
         self.centurion_b = UI(self, res.centurion_img,
                               CTRL_B_COORDS[1][0], CTRL_B_COORDS[1][1])
-        self.vulture_b = UI(self, res.vulture_img, CTRL_B_COORDS[2][0],
+        self.wyrm_b = UI(self, res.wyrm_img, CTRL_B_COORDS[2][0],
                             CTRL_B_COORDS[2][1])
         self.apocalypse_b = UI(self, res.apocalypse_img,
                                CTRL_B_COORDS[3][0], CTRL_B_COORDS[3][1])
@@ -1249,7 +1260,7 @@ class PlanetEleven(pyglet.window.Window):
             self.terrain.draw()
             ground_shadows_batch.draw()
             zap_batch.draw()
-            buildings_batch.draw()
+            structures_batch.draw()
             ground_units_batch.draw()
             explosions_batch.draw()
             air_shadows_batch.draw()
@@ -1332,7 +1343,7 @@ class PlanetEleven(pyglet.window.Window):
             #                 order_unit(self, building, Pioneer)
             #                 self.computer.workers_count += 1
             #             else:
-            #                 order_unit(self, building, random.choice((Vulture,
+            #                 order_unit(self, building, random.choice((Wyrm,
             #                     Centurion, Defiler, Apocalypse)))
             # Units
             # Gathering resources
@@ -1340,7 +1351,8 @@ class PlanetEleven(pyglet.window.Window):
                 if worker.mineral_to_gather and worker.dest_reached:
                     if not worker.is_gathering:
                         try:
-                            if is_melee_dist(worker, worker.task_x, worker.task_y):
+                            if is_melee_dist(worker, worker.task_x,
+                                             worker.task_y):
                                 print("melee dist")
                                 worker.gather()
                         except TypeError:
@@ -1403,15 +1415,25 @@ class PlanetEleven(pyglet.window.Window):
             #                 unit.attack_moving = True
             #             except AttributeError:
             #                 pass
-            # Build buildings. TODO: Optimize
+            # Summon structures. TODO: Optimize
             for worker in workers:
                 if worker.to_build:
                     if worker.to_build == 'mech_center':
-                        if is_2_melee_dist(worker, worker.task_x, worker.task_y):
+                        if is_2_melee_dist(worker, worker.task_x,
+                                           worker.task_y):
                             worker.build()
                     else:
                         if is_melee_dist(worker, worker.task_x, worker.task_y):
                             worker.build()
+            # Finish summoning structures
+            if self.frame_count % 10 == 0:
+                for struct in our_buildings:
+                    try:
+                        if struct.const_f + struct.build_time <= \
+                                self.frame_count:
+                            struct.image = res.armory_img
+                    except AttributeError:
+                        pass
             # Movement
             for unit in our_units + enemy_units:
                 if not unit.dest_reached:
@@ -1674,12 +1696,12 @@ class PlanetEleven(pyglet.window.Window):
                         if g_pos_coord_d[coord[0], coord[1]] == unit:
                             unit.kill()
             elif symbol == key.Z:
-                # Fills the entire map with vultures
+                # Fills the entire map with wyrms
                 i = 0
                 for _key, value in g_pos_coord_d.items():
                     if i % 1 == 0:
                         if value is None:
-                            unit = Vulture(self, _key[0], _key[1])
+                            unit = Wyrm(self, _key[0], _key[1])
                             unit.spawn()
                     i += 1
 
@@ -1703,7 +1725,7 @@ class PlanetEleven(pyglet.window.Window):
                                 building = Turret
                             else:
                                 building = MechCenter
-                            order_building(self, selected, building, x, y)
+                            order_structure(self, selected, building, x, y)
                             self.build_loc_sel_phase = False
                     elif button == mouse.RIGHT:
                         self.build_loc_sel_phase = False
@@ -1776,8 +1798,8 @@ class PlanetEleven(pyglet.window.Window):
                             self.selected_icon.scale = 1
                         try:
                             selected.max_hp
-                            self.selected_hp.text = str(int(selected.hp)) + '/' + \
-                                str(selected.max_hp)
+                            self.selected_hp.text = str(int(selected.hp))\
+                                                + '/' + str(selected.max_hp)
                         except AttributeError:
                             self.selected_hp.text = str(int(selected.hp))
                         # Control buttons
@@ -1897,12 +1919,12 @@ class PlanetEleven(pyglet.window.Window):
                                 self.centurion_b.y - 16 <= y <= \
                                 self.centurion_b.y + 16:
                             order_unit(self, selected, Centurion)
-                        # Create vulture
-                        elif self.vulture_b.x - 16 <= x <= \
-                                self.vulture_b.x + 16 and \
-                                self.vulture_b.y - 16 <= y <= \
-                                self.vulture_b.y + 16:
-                            order_unit(self, selected, Vulture)
+                        # Create wyrm
+                        elif self.wyrm_b.x - 16 <= x <= \
+                                self.wyrm_b.x + 16 and \
+                                self.wyrm_b.y - 16 <= y <= \
+                                self.wyrm_b.y + 16:
+                            order_unit(self, selected, Wyrm)
                         # Create apocalypse
                         elif self.apocalypse_b.x - 16 <= x <= \
                                 self.apocalypse_b.x + 16 and \
@@ -1972,7 +1994,8 @@ class PlanetEleven(pyglet.window.Window):
         # Paused
         else:
             if self.options:
-                if self.fullscreen_c.x - 8 <= x <= self.fullscreen_c.x + 8 and \
+                if self.fullscreen_c.x - 8 <= x <= self.fullscreen_c.x + 8 \
+                    and \
                    self.fullscreen_c.y - 8 <= y <= self.fullscreen_c.y + 8:
                     if self.fullscreen:
                         self.set_fullscreen(False)
@@ -2062,11 +2085,11 @@ class PlanetEleven(pyglet.window.Window):
                     self.hint.x = x + lvb
                     self.hint.y = y + bvb
                     self.show_hint = True
-                # Vulture
+                # Wyrm
                 elif CTRL_B_COORDS[2][0] - 16 <= x <= CTRL_B_COORDS[2][0] + \
                         16 and CTRL_B_COORDS[2][1] - 16 <= y <= \
                         CTRL_B_COORDS[2][1] + 16:
-                    self.hint.image = res.hint_vulture
+                    self.hint.image = res.hint_wyrm
                     self.hint.x = x + lvb
                     self.hint.y = y + bvb
                     self.show_hint = True
