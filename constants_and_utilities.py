@@ -73,9 +73,10 @@ LIST_OF_FLYING = ["<class '__main__.Defiler'>",
                   "<class '__main__.Apocalypse'>"]
 our_units = []
 workers = []
-our_buildings = []
-shooting_buildings = []
-enemy_buildings = []
+our_structures = []
+enemy_structures = []
+offensive_structures = []
+guardian_dummies = []
 enemy_units = []
 projectiles = []
 

@@ -95,6 +95,8 @@ def update_shooting(game_inst, our_entities, enemy_entities):
             entity.has_weapon
             entity.dest_reached
         except AttributeError:
+            if entity.under_constr:
+                return
             entity.has_weapon = True
             entity.dest_reached = True
         if entity.has_weapon and entity.dest_reached:
@@ -121,6 +123,7 @@ def update_shooting(game_inst, our_entities, enemy_entities):
                 if (game_inst.frame_count - entity.cooldown_started) % \
                         entity.cooldown == 0:
                     entity.on_cooldown = False
+
 
 class UI(Sprite):
     """This class is used for UI elements that need to be relocated when
@@ -301,15 +304,16 @@ class Structure(Sprite):
                  hp, x, y):
         self.owner = owner
         if owner == game_inst.this_player:
-            our_buildings.append(self)
+            our_structures.append(self)
             img = our_img
             minimap_pixel = res.mm_our_img
             game_inst.update_fow(x=x, y=y, radius=vision_radius)
         else:
-            enemy_buildings.append(self)
+            enemy_structures.append(self)
             img = enemy_img
             minimap_pixel = res.mm_enemy_img
         super().__init__(img=img, x=x, y=y, batch=structures_batch)
+        self.completed_image = our_img
         self.game_inst = game_inst
         self.max_hp = hp
         self.hp = hp
@@ -358,15 +362,15 @@ class Structure(Sprite):
                             batch=minimap_pixels_batch)
 
     def kill(self, delay_del=False):
-        global our_buildings, enemy_buildings
+        global our_structures, enemy_structures
         for block in self.blocks:
             g_pos_coord_d[(block[0], block[1])] = None
         self.pixel.delete()
         if not delay_del:
             if self.owner.name == 'player1':
-                del our_buildings[our_buildings.index(self)]
+                del our_structures[our_structures.index(self)]
             else:
-                del enemy_buildings[enemy_buildings.index(self)]
+                del enemy_structures[enemy_structures.index(self)]
         for attacker in self.attackers:
             attacker.has_target_p = False
         try:
@@ -377,26 +381,8 @@ class Structure(Sprite):
         self.delete()
 
 
-class Armory(Structure):
-    cost = 200
-    build_time = 100
-
-    def __init__(self, game_inst, x, y, owner=None, skip_constr=False):
-        if owner is None:
-            owner = game_inst.this_player
-        if not skip_constr:
-            super().__init__(game_inst, owner, res.constr_dummy_anim,
-                             res.armory_enemy_img, vision_radius=2, hp=100,
-                             x=x, y=y)
-            self.const_f = game_inst.frame_count
-        else:
-            super().__init__(game_inst, owner, res.armory_img,
-                             res.armory_enemy_img, vision_radius=2, hp=100,
-                             x=x, y=y)
-
-
 class ProductionStructure:
-    def init(self):
+    def ps_init(self):
         self.rp_x = self.x
         self.rp_y = self.y
         self.production_queue = []
@@ -406,21 +392,40 @@ class ProductionStructure:
 
 
 class GuardianStructure:
-    def __init__(self):
-        self.under_construction = True
+    def gs_init(self, skip_constr):
+        if not skip_constr:
+            guardian_dummies.append(self)
+            self.image = res.constr_dummy_anim
+            self.const_f = self.game_inst.frame_count
+            self.under_constr = True
+        else:
+            self.under_constr = False
 
 
-class MechCenter(Structure, ProductionStructure):
-    cost = 500
+class Armory(Structure, GuardianStructure):
+    cost = 200
     build_time = 100
 
-    def __init__(self, game_inst, x, y, owner=None):
+    def __init__(self, game_inst, x, y, owner=None, skip_constr=False):
+        if owner is None:
+            owner = game_inst.this_player
+        super().__init__(game_inst, owner, res.armory_img,
+                         res.armory_enemy_img, vision_radius=2, hp=100, x=x, y=y)
+        super().gs_init(skip_constr)
+
+
+class MechCenter(Structure, ProductionStructure, GuardianStructure):
+    cost = 500
+    build_time = 1000
+
+    def __init__(self, game_inst, x, y, owner=None, skip_constr=False):
         if owner is None:
             owner = game_inst.this_player
         super().__init__(game_inst, our_img=res.mech_center_img,
                          enemy_img=res.mech_center_enemy_img, x=x, y=y,
                          hp=1500, owner=owner, vision_radius=4)
-        super().init()
+        super().ps_init()
+        super().gs_init(skip_constr)
         self.ctrl_buttons = [game_inst.defiler_b, game_inst.centurion_b,
                              game_inst.wyrm_b, game_inst.apocalypse_b,
                              game_inst.pioneer_b]
@@ -433,13 +438,11 @@ class MechCenter(Structure, ProductionStructure):
         self.anim.visible = False
 
 
-class AttackingStructure(Structure):
+class OffensiveStructure(Structure):
     def __init__(self, game_inst, owner, our_img, enemy_img, vision_radius, hp,
                  x, y, damage, cooldown):
         super().__init__(game_inst, owner, our_img, enemy_img, vision_radius,
                          hp, x, y)
-        self.plasma_spt = Sprite(res.plasma_anim, x, y,
-                                 batch=ground_units_batch)
         self.damage = damage
         self.shooting_radius = vision_radius * 32
         self.target_x = None
@@ -447,7 +450,7 @@ class AttackingStructure(Structure):
         self.cooldown = cooldown
         self.on_cooldown = False
         self.cooldown_started = None
-        shooting_buildings.append(self)
+        offensive_structures.append(self)
         self.projectile_sprite = res.laser_img
         self.projectile_speed = 5
         self.has_target_p = False
@@ -468,32 +471,37 @@ class AttackingStructure(Structure):
         projectiles.append(projectile)
 
     def kill(self, delay_del=False):
-        global g_pos_coord_d, our_buildings, enemy_buildings
+        global g_pos_coord_d, our_structures, enemy_structures
         g_pos_coord_d[(self.x, self.y)] = None
         self.pixel.delete()
         for attacker in self.attackers:
             attacker.has_target_p = False
         if not delay_del:
             if self.owner.name == 'player1':
-                del our_buildings[our_buildings.index(self)]
+                del our_structures[our_structures.index(self)]
             else:
-                del enemy_buildings[enemy_buildings.index(self)]
-        del shooting_buildings[shooting_buildings.index(self)]
+                del enemy_structures[enemy_structures.index(self)]
+        del offensive_structures[offensive_structures.index(self)]
         self.plasma_spt.delete()
         Explosion(self.x, self.y, self.width / PS / 2)
         self.delete()
 
 
-class Turret(AttackingStructure):
+class Turret(OffensiveStructure, GuardianStructure):
     cost = 150
     build_time = 100
 
-    def __init__(self, game_inst, x, y, owner=None):
+    def __init__(self, game_inst, x, y, owner=None, skip_constr=False):
         if owner is None:
             owner = game_inst.this_player
         super().__init__(game_inst, owner=owner, our_img=res.turret_base_img,
                          enemy_img=res.turret_base_img, vision_radius=5,
                          hp=100, x=x, y=y, damage=20, cooldown=60)
+        super().gs_init(skip_constr)
+
+    def constr_complete(self):
+        self.plasma_spt = Sprite(res.plasma_anim, self.x, self.y,
+                                 batch=ground_units_batch)
 
 
 node_count = 0
@@ -808,12 +816,12 @@ class Unit(Sprite):
         a non-default rally point."""
         if self.attack_moving:  # Will not work for computer
             if self.owner.name == 'player1':
-                if closest_enemy_2_att(self, enemy_units + enemy_buildings):
+                if closest_enemy_2_att(self, enemy_units + enemy_structures):
                     self.attack_moving = False
                     self.dest_reached = True
                     return
             else:
-                if closest_enemy_2_att(self, our_units + our_buildings):
+                if closest_enemy_2_att(self, our_units + our_structures):
                     self.attack_moving = False
                     self.dest_reached = True
                     return
@@ -1115,6 +1123,7 @@ class PlanetEleven(pyglet.window.Window):
         self.mouse_y = 0
         self.show_hint = False
         self.menu_bg = UI(self, res.menu_bg, 0, 0)
+        self.delayed_del = None
 
     def setup(self):
         global selected
@@ -1218,9 +1227,9 @@ class PlanetEleven(pyglet.window.Window):
         Mineral(self, PS / 2 + PS * 61, PS / 2 + PS * 50)
         Mineral(self, PS / 2 + PS * 63, PS / 2 + PS * 51)
         Mineral(self, PS / 2 + PS * 55, PS / 2 + PS * 58)
-        self.our_1st_base = MechCenter(self, PS * 7, PS * 8)
-        MechCenter(self, PS * 10, PS * 10, owner=self.computer)
-        MechCenter(self, PS * 50, PS * 50, owner=self.computer)
+        self.our_1st_base = MechCenter(self, PS * 7, PS * 8, skip_constr=True)
+        MechCenter(self, PS * 10, PS * 10, owner=self.computer, skip_constr=True)
+        MechCenter(self, PS * 50, PS * 50, owner=self.computer, skip_constr=True)
 
         self.sel_spt = Sprite(img=res.sel_img, x=self.our_1st_base.x,
                               y=self.our_1st_base.y)
@@ -1297,8 +1306,8 @@ class PlanetEleven(pyglet.window.Window):
             if self.cbs_to_render:
                 for button in self.cbs_to_render:
                     button.draw()
-                if selected in our_buildings and selected \
-                        not in shooting_buildings:
+                if selected in our_structures and selected \
+                        not in offensive_structures:
                     self.rp_spt.draw()
 
             self.fow_texture.width = 102
@@ -1334,14 +1343,14 @@ class PlanetEleven(pyglet.window.Window):
         if not self.paused:
             self.frame_count += 1
             # Build units
-            for building in our_buildings + enemy_buildings:
+            for building in our_structures + enemy_structures:
                 try:
                     building_spawn_unit(self, building)
                 except AttributeError:
                     pass
             # # AI ordering units
             # if self.frame_count % 60 == 0:
-            #     for building in enemy_buildings:
+            #     for building in enemy_structures:
             #         if isinstance(building, MechCenter):
             #             if self.computer.workers_count < 6:
             #                 order_unit(self, building, Pioneer)
@@ -1429,15 +1438,27 @@ class PlanetEleven(pyglet.window.Window):
                     else:
                         if is_melee_dist(worker, worker.task_x, worker.task_y):
                             worker.build()
-            # Finish summoning structures
+            # Finish summoning Guardian structures
             if self.frame_count % 10 == 0:
-                for struct in our_buildings:
+                for struct in guardian_dummies:
                     try:
                         if struct.const_f + struct.build_time <= \
                                 self.frame_count:
-                            struct.image = res.armory_img
+                            struct.under_constr = False
+                            struct.image = struct.completed_image
+                            self.delayed_del = (struct, guardian_dummies)
+                            try:
+                                struct.constr_complete()
+                            except AttributeError:
+                                pass
                     except AttributeError:
                         pass
+                # Delayed del
+                try:
+                    del self.delayed_del[1][self.delayed_del[1].index(
+                        self.delayed_del[0])]
+                except:
+                    pass
             # Movement
             for unit in our_units + enemy_units:
                 if not unit.dest_reached:
@@ -1470,14 +1491,14 @@ class PlanetEleven(pyglet.window.Window):
                                 if unit.attack_moving:
                                     if unit.owner.name == 'player1':
                                         if closest_enemy_2_att(unit,
-                                                enemy_units + enemy_buildings):
+                                                enemy_units + enemy_structures):
                                             unit.dest_reached = True
                                             unit.attack_moving = False
                                         else:
                                             unit.update_move()
                                     else:
                                         if closest_enemy_2_att(unit,
-                                                our_units + our_buildings):
+                                                our_units + our_structures):
                                             unit.dest_reached = True
                                             unit.attack_moving = False
                                         else:
@@ -1511,9 +1532,9 @@ class PlanetEleven(pyglet.window.Window):
                     except AttributeError:
                         pass
             # Shooting
-            update_shooting(self, shooting_buildings + our_units,
-                            enemy_buildings + enemy_units)
-            update_shooting(self, enemy_units, our_buildings + our_units)
+            update_shooting(self, offensive_structures + our_units,
+                            enemy_structures + enemy_units)
+            update_shooting(self, enemy_units, our_structures + our_units)
             # Projectiles
             for i, projectile in enumerate(projectiles):
                 if not projectile.eta() <= 1:
@@ -1532,8 +1553,8 @@ class PlanetEleven(pyglet.window.Window):
             for mineral in minerals_to_del:
                 minerals.remove(mineral)
             # Destroying targets
-            for entity in our_buildings + our_units + \
-                          enemy_buildings + enemy_units:
+            for entity in our_structures + our_units + \
+                          enemy_structures + enemy_units:
                 if entity.hp <= 0:
                     if entity.owner.name == 'computer1' and \
                             isinstance(entity, Pioneer):
@@ -1597,7 +1618,7 @@ class PlanetEleven(pyglet.window.Window):
                     else:
                         g_pos_coord_d[(self.sel_spt.x, self.sel_spt.y)] = None
                     selected = None
-                elif selected in our_buildings:
+                elif selected in our_structures:
                     selected.kill()
                     selected = None
             elif symbol == key.ESCAPE:
@@ -1826,7 +1847,7 @@ class PlanetEleven(pyglet.window.Window):
                                 pass
                     elif button == mouse.RIGHT:
                         # Rally point
-                        if selected in our_buildings:
+                        if selected in our_structures:
                             if g_pos_coord_d[x, y] != selected:
                                 selected.rp_x = x
                                 selected.rp_y = y
@@ -1891,7 +1912,7 @@ class PlanetEleven(pyglet.window.Window):
                                     unit.new_dest_x = x
                                     unit.new_dest_y = y
                         if not unit_found:
-                            if selected in our_buildings:
+                            if selected in our_structures:
                                 selected.rp_x = x
                                 selected.rp_y = y
                                 self.rp_spt.x = x
@@ -1900,7 +1921,6 @@ class PlanetEleven(pyglet.window.Window):
                 # Control panel other
                 else:
                     x, y = mc(x=x, y=y)
-                    # print('x =', x, 'y =', y)
                     w = self.menu_b.width
                     h = self.menu_b.height
                     if self.menu_b.x - w // 2 <= x <= \
@@ -1910,7 +1930,7 @@ class PlanetEleven(pyglet.window.Window):
                         self.paused = True
                         return
                     # Build units
-                    if selected in our_buildings:
+                    if selected in our_structures and not selected.under_constr:
                         # Create defiler
                         if self.defiler_b.x - 16 <= x <= \
                                 self.defiler_b.x + 16 and \
@@ -2217,8 +2237,8 @@ class PlanetEleven(pyglet.window.Window):
         self.selected_hp.y = SCREEN_H - 72 + bvb
         self.txt_out.x = SCREEN_W / 2 - 50 + lvb
         self.txt_out.y = 100 + bvb
-        for entity in our_buildings + our_units \
-                      + enemy_buildings + enemy_units:
+        for entity in our_structures + our_units \
+                      + enemy_structures + enemy_units:
             entity.pixel.x, entity.pixel.y = to_minimap(entity.x, entity.y)
         self.mm_cam_frame_spt.x, self.mm_cam_frame_spt.y = to_minimap(lvb, bvb)
         self.mm_cam_frame_spt.x -= 1
@@ -2258,6 +2278,7 @@ class PlanetEleven(pyglet.window.Window):
         else:
             self.to_build_spt.color = (0, 255, 0)
             self.loc_clear = True
+
 
 def main():
     game_window = PlanetEleven(SCREEN_W, SCREEN_H, SCREEN_TITLE)
