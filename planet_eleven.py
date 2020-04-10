@@ -380,6 +380,10 @@ class Structure(Sprite):
         Explosion(self.x, self.y, self.width / PS / 2)
         self.delete()
 
+    def constr_complete(self):
+        self.under_constr = False
+        self.image = self.completed_image
+
 
 class ProductionStructure:
     def ps_init(self):
@@ -416,7 +420,7 @@ class Armory(Structure, GuardianStructure):
 
 class MechCenter(Structure, ProductionStructure, GuardianStructure):
     cost = 500
-    build_time = 1000
+    build_time = 100
 
     def __init__(self, game_inst, x, y, owner=None, skip_constr=False):
         if owner is None:
@@ -500,6 +504,8 @@ class Turret(OffensiveStructure, GuardianStructure):
         super().gs_init(skip_constr)
 
     def constr_complete(self):
+        self.under_constr = False
+        self.image = self.completed_image
         self.plasma_spt = Sprite(res.plasma_anim, self.x, self.y,
                                  batch=ground_units_batch)
 
@@ -1444,13 +1450,8 @@ class PlanetEleven(pyglet.window.Window):
                     try:
                         if struct.const_f + struct.build_time <= \
                                 self.frame_count:
-                            struct.under_constr = False
-                            struct.image = struct.completed_image
+                            struct.constr_complete()
                             self.delayed_del = (struct, guardian_dummies)
-                            try:
-                                struct.constr_complete()
-                            except AttributeError:
-                                pass
                     except AttributeError:
                         pass
                 # Delayed del
@@ -1639,16 +1640,57 @@ class PlanetEleven(pyglet.window.Window):
             elif symbol == key.UP:
                 bvb += PS
                 self.update_viewport()
-            elif symbol == key.A:
+            elif symbol == key.Q:
+                # Move
+                if selected in our_units and selected.owner.name == "player1":
+                    self.set_mouse_cursor(res.cursor_target)
+                    self.m_targeting_phase = True
+                    return
+                # Build defiler
+                elif isinstance(selected, MechCenter):
+                    order_unit(self, selected, Defiler)
+            elif symbol == key.W:
+                # Stop
+                if selected in our_units:
+                    try:
+                        selected.stop_move()
+                    except AttributeError:
+                        pass
+                # Build centurion
+                elif isinstance(selected, MechCenter):
+                    order_unit(self, selected, Centurion)
+            elif symbol == key.E:
                 # Attack move
-                try:
-                    if selected.has_weapon:
-                        if selected.owner.name == 'player1':
-                            self.set_mouse_cursor(res.cursor_target)
-                        self.targeting_phase = True
-                except AttributeError:
-                    pass
-            elif symbol == key.C:
+                if selected in our_units:
+                    try:
+                        if selected.has_weapon:
+                            if selected.owner.name == 'player1':
+                                self.set_mouse_cursor(res.cursor_target)
+                            self.targeting_phase = True
+                    except AttributeError:
+                        pass
+                # Build wyrm
+                elif isinstance(selected, MechCenter):
+                    order_unit(self, selected, Wyrm)
+            elif symbol == key.A:
+                # Build armory
+                if str(type(selected)) == "<class '__main__.Pioneer'>":
+                    self.to_build_spt.image = res.armory_img
+                    self.to_build = "armory"
+                    self.hotkey_constr_cur_1b()
+                # Build apocalypse
+                elif isinstance(selected, MechCenter):
+                    order_unit(self, selected, Apocalypse)
+            elif symbol == key.S:
+                # Build turret
+                if str(type(selected)) == "<class '__main__.Pioneer'>":
+                    self.to_build_spt.image = res.turret_b_img
+                    self.to_build = "turret"
+                    self.hotkey_constr_cur_1b()
+                # Build pioneer
+                elif isinstance(selected, MechCenter):
+                    order_unit(self, selected, Pioneer)
+            elif symbol == key.D:
                 # Build mech center
                 if str(type(selected)) == "<class '__main__.Pioneer'>":
                     self.to_build_spt.image = res.mech_center_img
@@ -1684,30 +1726,6 @@ class PlanetEleven(pyglet.window.Window):
                     x += PS / 2
                     y += PS / 2
                     self.to_build_spt.x, self.to_build_spt.y = x, y
-            elif symbol == key.M:
-                # Move
-                if selected.owner.name == "player1":
-                    self.set_mouse_cursor(res.cursor_target)
-                    self.m_targeting_phase = True
-                    return
-            elif symbol == key.R:
-                # Build armory
-                if str(type(selected)) == "<class '__main__.Pioneer'>":
-                    self.to_build_spt.image = res.armory_img
-                    self.to_build = "armory"
-                    self.hotkey_constr_cur_1b()
-            elif symbol == key.S:
-                # Stop
-                try:
-                    selected.stop_move()
-                except AttributeError:
-                    pass
-            elif symbol == key.T:
-                # Build turret
-                if str(type(selected)) == "<class '__main__.Pioneer'>":
-                    self.to_build_spt.image = res.turret_b_img
-                    self.to_build = "turret"
-                    self.hotkey_constr_cur_1b()
             elif symbol == key.X:
                 # Deletes all our units on the screen
                 coords_to_delete = []
