@@ -1,3 +1,5 @@
+import os
+
 from pyglet.gl import *
 from pyglet.image.atlas import TextureAtlas
 
@@ -36,8 +38,19 @@ def center_load_anim(_str):
     return anim
 
 
-pyglet.resource.path = ['sprites', 'sprites/mech_center',
-    'sprites/plasma_hit', 'sprites/explosion', 'sprites/hints', 'sprites/menu']
+subds = next(os.walk('./sprites'))[1]
+allsubds = ['./sprites']
+for subd in subds:
+    next_subd = next(os.walk('./sprites/' + subd))[1]
+    if next_subd:
+        arr = []
+        for d in next_subd:
+            arr.append('sprites/' + subd + '/' + d)
+        allsubds += arr
+    else:
+        allsubds += ['sprites/' + subd]
+print("allsubds =", allsubds)
+pyglet.resource.path = allsubds
 pyglet.resource.reindex()
 
 # Utilities

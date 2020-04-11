@@ -1,9 +1,17 @@
-class One:
-    def __init__(self, x):
-        self.x = x
+import os
 
 
-inst = One(1)
+subds = next(os.walk('./sprites'))[1]
+print("subds =", subds)
 
-if inst.y:
-    print(1)
+allsubds = []
+for subd in subds:
+    next_subd = next(os.walk('./sprites/' + subd))[1]
+    if next_subd:
+        arr = []
+        for d in next_subd:
+            arr.append('sprites/' + subd + '/' + d)
+        allsubds += arr
+    else:
+        allsubds += ['sprites/' + subd]
+print("allsubds =", allsubds)

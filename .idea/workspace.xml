@@ -2,9 +2,137 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="8699b466-fa9b-4e8c-b41f-e5bbe759696d" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/shadow_maker.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sprites/units/apocalypse/apocalypse_shadow.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/main.rtf" beforeDir="false" afterPath="$PROJECT_DIR$/docs/main.rtf" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/planet_eleven.py" beforeDir="false" afterPath="$PROJECT_DIR$/planet_eleven.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources.py" beforeDir="false" afterPath="$PROJECT_DIR$/resources.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/16/attack.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/16/attack.psd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/16/background.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/16/base.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/16/base.psd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/16/big_base.psd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/16/blue_laser.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/16/builder.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/16/builder.psd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/16/builder_shadow.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/16/builder_shadow.psd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/16/control_panel.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/16/control_panel.psd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/16/control_panel_buttons_background.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/16/control_panel_buttons_background.psd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/16/cursor.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/16/cursor.psd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/16/cursor_fullscreen.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/16/defiler.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/16/defiler.psd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/16/defiler_shadow.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/16/defiler_shadow.psd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/16/enemy_base.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/16/minimap_black_background.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/16/minimap_cam_frame.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/16/minimap_enemy.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/16/minimap_fow.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/16/minimap_our.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/16/minimap_textured_background.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/16/move.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/16/move.psd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/16/rally_point.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/16/resolution_filler.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/16/resolution_filler.psd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/16/resolution_filler_angle.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/16/resolution_filler_angle.psd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/16/selection.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/16/stop.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/16/tank.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/16/tank.psd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/16/tank_shadow.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/16/tank_shadow.psd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/16/test_image.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/16/test_image1.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/16/test_pixel.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/16/utility_dot.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/16/vulture.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/16/vulture.psd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/16/vulture_shadow.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/16/vulture_shadow.psd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/apocalypse.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/units/apocalypse/apocalypse.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/apocalypse.psd" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/units/apocalypse/apocalypse.psd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/apocalypse_enemy.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/units/apocalypse/apocalypse_enemy.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/apocalypse_shadow.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/apocalypse_shadow.psd" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/units/apocalypse/apocalypse_shadow.psd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/armory.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/structures/armory/armory.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/armory.psd" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/structures/armory/armory.psd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/armory_enemy.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/structures/armory/armory_enemy.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/centurion.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/units/centurion/centurion.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/centurion.psd" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/units/centurion/centurion.psd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/centurion_enemy.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/units/centurion/centurion_enemy.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/centurion_shadow.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/units/centurion/centurion_shadow.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/centurion_shadow.psd" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/units/centurion/centurion_shadow.psd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/constr_dummy32.psd" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/structures/constr_dummy/constr_dummy32.psd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/constr_dummy32_1.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/structures/constr_dummy/constr_dummy32_1.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/constr_dummy32_2.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/structures/constr_dummy/constr_dummy32_2.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/constr_dummy32_3.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/structures/constr_dummy/constr_dummy32_3.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/cp.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/cp/cp.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/cp.psd" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/cp/cp.psd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/cp_b_bg.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/cp/cp_b_bg.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/cp_b_bg.psd" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/cp/cp_b_bg.psd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/cp_filler.psd" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/cp/cp_filler.psd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/defiler.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/defiler/defiler.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/defiler.psd" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/defiler/defiler.psd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/defiler_enemy.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/defiler/defiler_enemy.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/defiler_shadow.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/defiler/defiler_shadow.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/defiler_shadow.psd" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/defiler/defiler_shadow.psd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/explosion/explosion1.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/anims/explosion/explosion1.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/explosion/explosion128.psd" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/anims/explosion/explosion128.psd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/explosion/explosion2.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/anims/explosion/explosion2.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/explosion/explosion3.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/anims/explosion/explosion3.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/explosion/explosion4.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/anims/explosion/explosion4.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/explosion/explosion5.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/anims/explosion/explosion5.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/mm_black_bg.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/mm/mm_black_bg.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/mm_cam_frame.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/mm/mm_cam_frame.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/mm_enemy.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/mm/mm_enemy.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/mm_fow.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/mm/mm_fow.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/mm_our.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/mm/mm_our.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/mm_textured_bg.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/mm/mm_textured_bg.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/organic_base.psd" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/structures/organic_base/organic_base.psd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/organic_base_inner_block.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/structures/organic_base/organic_base_inner_block.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/organic_base_inner_block.psd" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/structures/organic_base/organic_base_inner_block.psd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/organic_base_mid_block.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/structures/organic_base/organic_base_mid_block.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/organic_base_mid_block.psd" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/structures/organic_base/organic_base_mid_block.psd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/organic_base_outer_block.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/structures/organic_base/organic_base_outer_block.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/organic_base_outer_block.psd" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/structures/organic_base/organic_base_outer_block.psd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/pioneer.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/units/pioneer/pioneer.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/pioneer.psd" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/units/pioneer/pioneer.psd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/pioneer_enemy.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/units/pioneer/pioneer_enemy.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/pioneer_shadow.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/units/pioneer/pioneer_shadow.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/pioneer_shadow.psd" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/units/pioneer/pioneer_shadow.psd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/plasma.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/anims/plasma/plasma.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/plasma16.psd" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/anims/plasma/plasma16.psd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/plasma16_1.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/anims/plasma/plasma16_1.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/plasma16_2.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/anims/plasma/plasma16_2.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/plasma16_3.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/anims/plasma/plasma16_3.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/plasma32.psd" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/anims/plasma/plasma32.psd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/plasma_hit/plasma16_hit.psd" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/anims/plasma_hit/plasma16_hit.psd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/plasma_hit/plasma16_hit1.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/anims/plasma_hit/plasma16_hit1.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/plasma_hit/plasma16_hit2.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/anims/plasma_hit/plasma16_hit2.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/plasma_hit/plasma16_hit3.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/anims/plasma_hit/plasma16_hit3.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/turret.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/structures/turret/turret.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/turret_b.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/structures/turret/turret_b.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/turret_base.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/structures/turret/turret_base.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/turret_base.psd" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/structures/turret/turret_base.psd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/wyrm.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/units/wyrm/wyrm.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/wyrm.psd" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/units/wyrm/wyrm.psd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/wyrm_enemy.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/units/wyrm/wyrm_enemy.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/wyrm_shadow.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/units/wyrm/wyrm_shadow.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/wyrm_shadow.psd" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/units/wyrm/wyrm_shadow.psd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/zap.psd" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/anims/zap/zap.psd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/zap1.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/anims/zap/zap1.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/zap2.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/anims/zap/zap2.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/zap3.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/anims/zap/zap3.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test1.py" beforeDir="false" afterPath="$PROJECT_DIR$/test1.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -37,18 +165,30 @@
   <component name="PropertiesComponent">
     <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/sprites/menu" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/sprites/anims/zap" />
     <property name="restartRequiresConfirmation" value="false" />
     <property name="run.code.analysis.last.selected.profile" value="aDefault" />
-    <property name="settings.editor.selected.configurable" value="preferences.sourceCode" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+  </component>
+  <component name="PyConsoleOptionsProvider">
+    <option name="myPythonConsoleState">
+      <console-settings module-name="planet_eleven" is-module-sdk="true">
+        <option name="myUseModuleSdk" value="true" />
+        <option name="myModuleName" value="planet_eleven" />
+      </console-settings>
+    </option>
+    <option name="myShowDebugConsoleByDefault" value="false" />
   </component>
   <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="D:\PycharmProjects\planet_eleven\sprites\menu" />
-      <recent name="D:\PycharmProjects\planet_eleven" />
-    </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="D:\PycharmProjects\planet_eleven" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\PycharmProjects\planet_eleven\sprites\anims\zap" />
+      <recent name="D:\PycharmProjects\planet_eleven\sprites\units\wyrm" />
+      <recent name="D:\PycharmProjects\planet_eleven\sprites\structures\turret" />
+      <recent name="D:\PycharmProjects\planet_eleven\sprites\anims\plasma" />
+      <recent name="D:\PycharmProjects\planet_eleven\sprites\units\pioneer" />
     </key>
   </component>
   <component name="RunManager" selected="Python.planet_eleven">
@@ -73,7 +213,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="test" type="PythonConfigurationType" factoryName="Python" temporary="true">
+    <configuration name="shadow_maker" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="planet_eleven" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -85,7 +225,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="D:\PycharmProjects\planet_eleven\enemy detection2.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/shadow_maker.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -94,7 +234,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="test1" type="PythonConfigurationType" factoryName="Python" temporary="true">
+    <configuration name="test1" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="planet_eleven" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -117,14 +257,14 @@
     </configuration>
     <list>
       <item itemvalue="Python.planet_eleven" />
+      <item itemvalue="Python.shadow_maker" />
       <item itemvalue="Python.test1" />
-      <item itemvalue="Python.test" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Python.planet_eleven" />
         <item itemvalue="Python.test1" />
-        <item itemvalue="Python.test" />
+        <item itemvalue="Python.shadow_maker" />
       </list>
     </recent_temporary>
   </component>
@@ -142,13 +282,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1566740526093</updated>
-    </task>
-    <task id="LOCAL-00185" summary="Can now build 2-blocks-wide buildings">
-      <created>1573999256567</created>
-      <option name="number" value="00185" />
-      <option name="presentableId" value="LOCAL-00185" />
-      <option name="project" value="LOCAL" />
-      <updated>1573999256568</updated>
     </task>
     <task id="LOCAL-00186" summary="Can now build 2-blocks-wide buildings">
       <created>1573999323732</created>
@@ -486,7 +619,14 @@
       <option name="project" value="LOCAL" />
       <updated>1586527194670</updated>
     </task>
-    <option name="localTasksCounter" value="234" />
+    <task id="LOCAL-00234" summary="Hotkeys">
+      <created>1586528904708</created>
+      <option name="number" value="00234" />
+      <option name="presentableId" value="LOCAL-00234" />
+      <option name="project" value="LOCAL" />
+      <updated>1586528904708</updated>
+    </task>
+    <option name="localTasksCounter" value="235" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -530,7 +670,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$" />
     </ignored-roots>
-    <MESSAGE value="fov construction check" />
     <MESSAGE value="mineral_small" />
     <MESSAGE value="Hints work for all units" />
     <MESSAGE value="Fixed a bug with construction sprites" />
@@ -555,33 +694,42 @@
     <MESSAGE value="Multiple inheritance for structures" />
     <MESSAGE value="&quot;Queue is full&quot;" />
     <MESSAGE value="A lot of small things" />
-    <option name="LAST_COMMIT_MESSAGE" value="A lot of small things" />
+    <MESSAGE value="Hotkeys" />
+    <option name="LAST_COMMIT_MESSAGE" value="Hotkeys" />
   </component>
   <component name="WindowStateProjectService">
+    <state x="137" y="23" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1586589784304">
+      <screen x="0" y="0" width="1366" height="738" />
+    </state>
+    <state x="137" y="23" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1366.738@0.0.1366.738" timestamp="1586589784304" />
     <state x="357" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog" timestamp="1586499471947">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
     <state x="357" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.0.1366.738@0.0.1366.738" timestamp="1586499471947" />
-    <state x="337" y="0" key="CommitChangelistDialog2" timestamp="1586527191738">
+    <state x="337" y="0" key="CommitChangelistDialog2" timestamp="1586528900558">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state x="337" y="0" key="CommitChangelistDialog2/0.0.1366.738@0.0.1366.738" timestamp="1586527191738" />
-    <state width="1344" height="145" key="GridCell.Tab.0.bottom" timestamp="1586528877643">
+    <state x="337" y="0" key="CommitChangelistDialog2/0.0.1366.738@0.0.1366.738" timestamp="1586528900558" />
+    <state x="462" y="109" key="FileChooserDialogImpl" timestamp="1586592922180">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="145" key="GridCell.Tab.0.bottom/0.0.1366.738@0.0.1366.738" timestamp="1586528877643" />
-    <state width="1344" height="145" key="GridCell.Tab.0.center" timestamp="1586528877642">
+    <state x="462" y="109" key="FileChooserDialogImpl/0.0.1366.738@0.0.1366.738" timestamp="1586592922180" />
+    <state width="1344" height="145" key="GridCell.Tab.0.bottom" timestamp="1586595390773">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="145" key="GridCell.Tab.0.center/0.0.1366.738@0.0.1366.738" timestamp="1586528877642" />
-    <state width="1344" height="145" key="GridCell.Tab.0.left" timestamp="1586528877642">
+    <state width="1344" height="145" key="GridCell.Tab.0.bottom/0.0.1366.738@0.0.1366.738" timestamp="1586595390773" />
+    <state width="1344" height="145" key="GridCell.Tab.0.center" timestamp="1586595390772">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="145" key="GridCell.Tab.0.left/0.0.1366.738@0.0.1366.738" timestamp="1586528877642" />
-    <state width="1344" height="145" key="GridCell.Tab.0.right" timestamp="1586528877643">
+    <state width="1344" height="145" key="GridCell.Tab.0.center/0.0.1366.738@0.0.1366.738" timestamp="1586595390772" />
+    <state width="1344" height="145" key="GridCell.Tab.0.left" timestamp="1586595390772">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="145" key="GridCell.Tab.0.right/0.0.1366.738@0.0.1366.738" timestamp="1586528877643" />
+    <state width="1344" height="145" key="GridCell.Tab.0.left/0.0.1366.738@0.0.1366.738" timestamp="1586595390772" />
+    <state width="1344" height="145" key="GridCell.Tab.0.right" timestamp="1586595390772">
+      <screen x="0" y="0" width="1366" height="738" />
+    </state>
+    <state width="1344" height="145" key="GridCell.Tab.0.right/0.0.1366.738@0.0.1366.738" timestamp="1586595390772" />
     <state width="1344" height="208" key="GridCell.Tab.1.bottom" timestamp="1586351808917">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
@@ -598,10 +746,10 @@
       <screen x="0" y="0" width="1366" height="738" />
     </state>
     <state width="1344" height="208" key="GridCell.Tab.1.right/0.0.1366.738@0.0.1366.738" timestamp="1586351808917" />
-    <state x="184" y="0" key="SettingsEditor" timestamp="1586514167771">
+    <state x="184" y="0" key="SettingsEditor" timestamp="1586582520077">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state x="184" y="0" key="SettingsEditor/0.0.1366.738@0.0.1366.738" timestamp="1586514167771" />
+    <state x="184" y="0" key="SettingsEditor/0.0.1366.738@0.0.1366.738" timestamp="1586582520077" />
     <state x="275" y="101" key="Vcs.Push.Dialog.v2" timestamp="1586527208186">
       <screen x="0" y="0" width="1366" height="738" />
     </state>

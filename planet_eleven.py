@@ -1018,7 +1018,7 @@ class Apocalypse(Unit):
             owner = game_inst.this_player
         super().__init__(game_inst, owner, res.apocalypse_img,
                          res.apocalypse_enemy_img, flying=True,
-                         vision_radius=6, hp=100, x=x, y=y, speed=4,
+                         vision_radius=6, hp=100, x=x, y=y, speed=2,
                          has_weapon=True, damage=30, cooldown=120,
                          attacks_ground=True, attacks_air=False,
                          shadow_sprite=res.apocalypse_shadow_img,
@@ -1049,11 +1049,11 @@ class Pioneer(Unit):
         self.task_y = None
         self.is_gathering = False
 
-        s1 = pyglet.image.load('sprites/zap1.png')
+        s1 = pyglet.image.load('sprites/anims/zap/zap1.png')
         s1.anchor_y = 8
-        s2 = pyglet.image.load('sprites/zap2.png')
+        s2 = pyglet.image.load('sprites/anims/zap/zap2.png')
         s2.anchor_y = 8
-        s3 = pyglet.image.load('sprites/zap3.png')
+        s3 = pyglet.image.load('sprites/anims/zap/zap3.png')
         s3.anchor_y = 8
         sprites = [s1, s2, s3]
         anim = pyglet.image.Animation.from_image_sequence(sprites, 0.1, True)
@@ -1154,7 +1154,7 @@ class PlanetEleven(pyglet.window.Window):
         self.mm_textured_bg = UI(self, res.mm_textured_bg_img, MM0X, MM0Y)
         self.mm_cam_frame_spt = Sprite(res.mm_cam_frame_img, MM0X - 1,
                                        MM0Y - 1)
-        self.mm_fow_img = pyglet.image.load('sprites/mm_fow.png')
+        self.mm_fow_img = pyglet.image.load('sprites/mm/mm_fow.png')
         self.mm_fow_ImageData = self.mm_fow_img.get_image_data()
         self.npa = np.fromstring(self.mm_fow_ImageData.get_data(
             'RGBA', self.mm_fow_ImageData.width * 4), dtype=np.uint8)
@@ -1234,6 +1234,7 @@ class PlanetEleven(pyglet.window.Window):
         Mineral(self, PS / 2 + PS * 63, PS / 2 + PS * 51)
         Mineral(self, PS / 2 + PS * 55, PS / 2 + PS * 58)
         self.our_1st_base = MechCenter(self, PS * 7, PS * 8, skip_constr=True)
+        selected = self.our_1st_base
         MechCenter(self, PS * 10, PS * 10, owner=self.computer, skip_constr=True)
         MechCenter(self, PS * 50, PS * 50, owner=self.computer, skip_constr=True)
 
