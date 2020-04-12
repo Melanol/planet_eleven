@@ -300,20 +300,23 @@ def building_spawn_unit(game_inst, structure):
 class Structure(Sprite):
     """This is what I call buildings. __init__ == spawn()"""
 
-    def __init__(self, game_inst, owner, our_img, enemy_img, vision_radius,
+    def __init__(self, game_inst, owner, img, team_color_img, vision_radius,
                  hp, x, y):
         self.owner = owner
+        self.team_color = Sprite(team_color_img, x, y,
+                                 batch=ground_team_color_batch)
+        self.team_color.visible = False
         if owner == game_inst.this_player:
+            self.team_color.color = OUR_TEAM_COLOR
             our_structures.append(self)
-            img = our_img
             minimap_pixel = res.mm_our_img
             game_inst.update_fow(x=x, y=y, radius=vision_radius)
         else:
+            self.team_color.color = ENEMY_TEAM_COLOR
             enemy_structures.append(self)
-            img = enemy_img
             minimap_pixel = res.mm_enemy_img
-        super().__init__(img=img, x=x, y=y, batch=structures_batch)
-        self.completed_image = our_img
+        super().__init__(img, x, y, batch=structures_batch)
+        self.completed_image = img
         self.game_inst = game_inst
         self.max_hp = hp
         self.hp = hp
@@ -365,6 +368,7 @@ class Structure(Sprite):
         global our_structures, enemy_structures
         for block in self.blocks:
             g_pos_coord_d[(block[0], block[1])] = None
+        self.team_color.delete()
         self.pixel.delete()
         if not delay_del:
             if self.owner.name == 'player1':
@@ -383,6 +387,7 @@ class Structure(Sprite):
     def constr_complete(self):
         self.under_constr = False
         self.image = self.completed_image
+        self.team_color.visible = True
 
 
 class ProductionStructure:
@@ -408,13 +413,13 @@ class GuardianStructure:
 
 class Armory(Structure, GuardianStructure):
     cost = 200
-    build_time = 100
+    build_time = 10
 
     def __init__(self, game_inst, x, y, owner=None, skip_constr=False):
         if owner is None:
             owner = game_inst.this_player
         super().__init__(game_inst, owner, res.armory_img,
-                         res.armory_enemy_img, vision_radius=2, hp=100, x=x, y=y)
+                         res.armory_team_color, vision_radius=2, hp=100, x=x, y=y)
         super().gs_init(skip_constr)
 
 
@@ -425,9 +430,9 @@ class MechCenter(Structure, ProductionStructure, GuardianStructure):
     def __init__(self, game_inst, x, y, owner=None, skip_constr=False):
         if owner is None:
             owner = game_inst.this_player
-        super().__init__(game_inst, our_img=res.mech_center_img,
-                         enemy_img=res.mech_center_enemy_img, x=x, y=y,
-                         hp=1500, owner=owner, vision_radius=4)
+        super().__init__(game_inst, owner, res.mech_center_img,
+                         res.mech_center_team_color, x=x, y=y,
+                         hp=1500, vision_radius=4)
         super().ps_init()
         super().gs_init(skip_constr)
         self.ctrl_buttons = [game_inst.defiler_b, game_inst.centurion_b,
@@ -443,9 +448,9 @@ class MechCenter(Structure, ProductionStructure, GuardianStructure):
 
 
 class OffensiveStructure(Structure):
-    def __init__(self, game_inst, owner, our_img, enemy_img, vision_radius, hp,
+    def __init__(self, game_inst, owner, img, enemy_img, vision_radius, hp,
                  x, y, damage, cooldown):
-        super().__init__(game_inst, owner, our_img, enemy_img, vision_radius,
+        super().__init__(game_inst, owner, img, enemy_img, vision_radius,
                          hp, x, y)
         self.damage = damage
         self.shooting_radius = vision_radius * 32
@@ -493,19 +498,21 @@ class OffensiveStructure(Structure):
 
 class Turret(OffensiveStructure, GuardianStructure):
     cost = 150
-    build_time = 100
+    build_time = 10
 
     def __init__(self, game_inst, x, y, owner=None, skip_constr=False):
         if owner is None:
             owner = game_inst.this_player
-        super().__init__(game_inst, owner=owner, our_img=res.turret_base_img,
-                         enemy_img=res.turret_base_img, vision_radius=5,
-                         hp=100, x=x, y=y, damage=20, cooldown=60)
+        super().__init__(game_inst, owner, res.turret_base_img,
+                         res.turret_team_color, vision_radius=5,
+                         hp=100, x=x, y=y, damage=1000, cooldown=60)
         super().gs_init(skip_constr)
 
     def constr_complete(self):
         self.under_constr = False
         self.image = self.completed_image
+        self.team_color.visible = True
+
         self.plasma_spt = Sprite(res.plasma_anim, self.x, self.y,
                                  batch=ground_units_batch)
 
@@ -732,11 +739,10 @@ class Unit(Sprite):
         self.team_color = ShadowAndUnitTC(team_color_img, x, y,
                                           ground_team_color_batch)
         if owner.name == 'player1':
-            # self.team_color.color = (14, 241, 237)
-            self.team_color.color = (0, 0, 0)
+            self.team_color.color = OUR_TEAM_COLOR
             our_units.append(self)
         else:
-            self.team_color.color = (255, 35, 56)
+            self.team_color.color = ENEMY_TEAM_COLOR
             enemy_units.append(self)
         self.flying = flying
         if not self.flying:

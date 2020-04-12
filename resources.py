@@ -49,7 +49,6 @@ for subd in subds:
         allsubds += arr
     else:
         allsubds += ['sprites/' + subd]
-print("allsubds =", allsubds)
 pyglet.resource.path = allsubds
 pyglet.resource.reindex()
 
@@ -111,7 +110,7 @@ mech_center_icon_img = center_load("mech_center_icon.png")
 # Resources
 mineral = center_load("mineral.png")
 
-# Buildings
+# Structures
 constr_dummy1 = center_load('constr_dummy32_1.png')
 constr_dummy2 = center_load('constr_dummy32_2.png')
 constr_dummy3 = center_load('constr_dummy32_3.png')
@@ -119,11 +118,12 @@ constr_dummy_anim = pyglet.image.Animation.from_image_sequence([constr_dummy1,
         constr_dummy2, constr_dummy3], 0.1, True)
 
 armory_img = center_load("armory.png")
-armory_enemy_img = center_load("armory_enemy.png")
+armory_team_color = center_load("armory_team_color.png")
 
 turret_b_img = center_load("turret_b.png")
 turret_img = center_load("turret.png")
 turret_base_img = center_load("turret_base.png")
+turret_team_color = center_load("turret_team_color.png")
 hit1 = center_load("plasma16_hit1.png")
 hit2 = center_load("plasma16_hit2.png")
 hit3 = center_load("plasma16_hit3.png")
@@ -131,7 +131,7 @@ hit_anim = pyglet.image.Animation.from_image_sequence([hit1, hit2, hit3], 0.1,
                                                       False)
 
 mech_center_img = center_load("mech_center.png")
-mech_center_enemy_img = center_load("mech_center_enemy.png")
+mech_center_team_color = center_load("mech_center_team_color.png")
 anim_img1 = center_load('mech_center_anim1.png')
 anim_img2 = center_load('mech_center_anim2.png')
 anim_img3 = center_load('mech_center_anim3.png')
