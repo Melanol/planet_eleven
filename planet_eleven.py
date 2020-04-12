@@ -408,7 +408,7 @@ class GuardianStructure:
             self.const_f = self.game_inst.frame_count
             self.under_constr = True
         else:
-            self.under_constr = False
+            self.constr_complete()
 
 
 class Armory(Structure, GuardianStructure):
@@ -1834,7 +1834,9 @@ class PlanetEleven(pyglet.window.Window):
                     print('\nglobal click coords:', x, y)
                     if button == mouse.LEFT:
                         # Selection
-                        if not modifiers == 17:  # 17 is for SHIFT
+                        print('modifiers =', bin(modifiers))
+                        if not bin(modifiers)[-1] == '1':  # Shift is pressed
+                            print("meh")
                             to_be_selected = a_pos_coord_d[(x, y)]
                             if to_be_selected:  # Air unit found
                                 selected = to_be_selected
@@ -1852,6 +1854,7 @@ class PlanetEleven(pyglet.window.Window):
                                         self.sel_spt.y = y
                                     selected = to_be_selected
                         else:
+                            print('not meh')
                             to_be_selected = g_pos_coord_d[(x, y)]
                             if to_be_selected:
                                 try:

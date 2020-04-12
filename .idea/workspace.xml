@@ -4,13 +4,8 @@
     <list default="true" id="8699b466-fa9b-4e8c-b41f-e5bbe759696d" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/constants_and_utilities.py" beforeDir="false" afterPath="$PROJECT_DIR$/constants_and_utilities.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/main.rtf" beforeDir="false" afterPath="$PROJECT_DIR$/docs/main.rtf" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/planet_eleven.py" beforeDir="false" afterPath="$PROJECT_DIR$/planet_eleven.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources.py" beforeDir="false" afterPath="$PROJECT_DIR$/resources.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/palette.psd" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/palette.psd" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/structures/armory/armory.psd" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/structures/armory/armory.psd" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/structures/armory/armory_enemy.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/structures/mech_center/mech_center.psd" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/structures/mech_center/mech_center.psd" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/structures/turret/turret_base.psd" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/structures/turret/turret_base.psd" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -160,13 +155,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1566740526093</updated>
-    </task>
-    <task id="LOCAL-00190" summary="Fixed a bug causing BigBase to ignore some black pixels">
-      <created>1574018029113</created>
-      <option name="number" value="00190" />
-      <option name="presentableId" value="LOCAL-00190" />
-      <option name="project" value="LOCAL" />
-      <updated>1574018029113</updated>
     </task>
     <task id="LOCAL-00191" summary="Fixed a bug that would allow building on top of units if they were not there when the building was ordered">
       <created>1574020079421</created>
@@ -504,7 +492,14 @@
       <option name="project" value="LOCAL" />
       <updated>1586665610413</updated>
     </task>
-    <option name="localTasksCounter" value="239" />
+    <task id="LOCAL-00239" summary="Structure team colors">
+      <created>1586668882705</created>
+      <option name="number" value="00239" />
+      <option name="presentableId" value="LOCAL-00239" />
+      <option name="project" value="LOCAL" />
+      <updated>1586668882705</updated>
+    </task>
+    <option name="localTasksCounter" value="240" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -548,7 +543,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$" />
     </ignored-roots>
-    <MESSAGE value="Fixed a bug with construction sprites" />
     <MESSAGE value="Buildings have hints" />
     <MESSAGE value="Revert here if minimap fix fails" />
     <MESSAGE value="Minimap fixed" />
@@ -573,7 +567,8 @@
     <MESSAGE value="Hotkeys" />
     <MESSAGE value="shadow_maker and allsubds for recourses" />
     <MESSAGE value="Unit team colors" />
-    <option name="LAST_COMMIT_MESSAGE" value="Unit team colors" />
+    <MESSAGE value="Structure team colors" />
+    <option name="LAST_COMMIT_MESSAGE" value="Structure team colors" />
   </component>
   <component name="WindowStateProjectService">
     <state x="137" y="23" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1586589784304">
@@ -584,30 +579,30 @@
       <screen x="0" y="0" width="1366" height="738" />
     </state>
     <state x="357" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.0.1366.738@0.0.1366.738" timestamp="1586666260294" />
-    <state x="255" y="0" key="CommitChangelistDialog2" timestamp="1586665607307">
+    <state x="255" y="0" key="CommitChangelistDialog2" timestamp="1586668878069">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state x="255" y="0" key="CommitChangelistDialog2/0.0.1366.738@0.0.1366.738" timestamp="1586665607307" />
+    <state x="255" y="0" key="CommitChangelistDialog2/0.0.1366.738@0.0.1366.738" timestamp="1586668878069" />
     <state x="462" y="109" key="FileChooserDialogImpl" timestamp="1586665464134">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
     <state x="462" y="109" key="FileChooserDialogImpl/0.0.1366.738@0.0.1366.738" timestamp="1586665464134" />
-    <state width="1344" height="145" key="GridCell.Tab.0.bottom" timestamp="1586668593712">
+    <state width="1344" height="145" key="GridCell.Tab.0.bottom" timestamp="1586671541673">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="145" key="GridCell.Tab.0.bottom/0.0.1366.738@0.0.1366.738" timestamp="1586668593712" />
-    <state width="1344" height="145" key="GridCell.Tab.0.center" timestamp="1586668593712">
+    <state width="1344" height="145" key="GridCell.Tab.0.bottom/0.0.1366.738@0.0.1366.738" timestamp="1586671541673" />
+    <state width="1344" height="145" key="GridCell.Tab.0.center" timestamp="1586671541673">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="145" key="GridCell.Tab.0.center/0.0.1366.738@0.0.1366.738" timestamp="1586668593712" />
-    <state width="1344" height="145" key="GridCell.Tab.0.left" timestamp="1586668593712">
+    <state width="1344" height="145" key="GridCell.Tab.0.center/0.0.1366.738@0.0.1366.738" timestamp="1586671541673" />
+    <state width="1344" height="145" key="GridCell.Tab.0.left" timestamp="1586671541672">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="145" key="GridCell.Tab.0.left/0.0.1366.738@0.0.1366.738" timestamp="1586668593712" />
-    <state width="1344" height="145" key="GridCell.Tab.0.right" timestamp="1586668593712">
+    <state width="1344" height="145" key="GridCell.Tab.0.left/0.0.1366.738@0.0.1366.738" timestamp="1586671541672" />
+    <state width="1344" height="145" key="GridCell.Tab.0.right" timestamp="1586671541673">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="145" key="GridCell.Tab.0.right/0.0.1366.738@0.0.1366.738" timestamp="1586668593712" />
+    <state width="1344" height="145" key="GridCell.Tab.0.right/0.0.1366.738@0.0.1366.738" timestamp="1586671541673" />
     <state width="1344" height="208" key="GridCell.Tab.1.bottom" timestamp="1586351808917">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
@@ -628,10 +623,10 @@
       <screen x="0" y="0" width="1366" height="738" />
     </state>
     <state x="184" y="0" key="SettingsEditor/0.0.1366.738@0.0.1366.738" timestamp="1586665595948" />
-    <state x="275" y="101" key="Vcs.Push.Dialog.v2" timestamp="1586527208186">
+    <state x="275" y="101" key="Vcs.Push.Dialog.v2" timestamp="1586668890814">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state x="275" y="101" key="Vcs.Push.Dialog.v2/0.0.1366.738@0.0.1366.738" timestamp="1586527208186" />
+    <state x="275" y="101" key="Vcs.Push.Dialog.v2/0.0.1366.738@0.0.1366.738" timestamp="1586668890814" />
     <state x="92" y="92" width="1182" height="554" key="com.intellij.history.integration.ui.views.FileHistoryDialog" timestamp="1586262344329">
       <screen x="0" y="0" width="1366" height="738" />
     </state>

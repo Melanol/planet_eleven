@@ -55,7 +55,8 @@ image.save('sprites/mm_cam_frame.png')
 
 DISTANCE_PER_JUMP = (2 * PS ** 2) ** 0.5
 
-OUR_TEAM_COLOR = (14, 241, 237)
+# OUR_TEAM_COLOR = (14, 241, 237)
+OUR_TEAM_COLOR = (0, 0, 0)
 ENEMY_TEAM_COLOR = (255, 88, 140)
 
 menu_b_batch = pyglet.graphics.Batch()
