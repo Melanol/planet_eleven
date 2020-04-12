@@ -1,7 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="8699b466-fa9b-4e8c-b41f-e5bbe759696d" name="Default Changelist" comment="" />
+    <list default="true" id="8699b466-fa9b-4e8c-b41f-e5bbe759696d" name="Default Changelist" comment="shadow_maker and allsubds for recourses">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/constants_and_utilities.py" beforeDir="false" afterPath="$PROJECT_DIR$/constants_and_utilities.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/guardians.rtf" beforeDir="false" afterPath="$PROJECT_DIR$/docs/guardians.rtf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/main.rtf" beforeDir="false" afterPath="$PROJECT_DIR$/docs/main.rtf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/vagrant.rtf" beforeDir="false" afterPath="$PROJECT_DIR$/docs/vagrant.rtf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/planet_eleven.py" beforeDir="false" afterPath="$PROJECT_DIR$/planet_eleven.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources.py" beforeDir="false" afterPath="$PROJECT_DIR$/resources.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/shadow.py" beforeDir="false" afterPath="$PROJECT_DIR$/shadowandunittc.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/Old/base.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/Old/base.psd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/Old/big_base.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/Old/big_base.psd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/Old/builder.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/Old/builder.psd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/Old/building_shadow32.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/Old/building_shadow32.psd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/Old/building_shadow64.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/Old/building_shadow64.psd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/Old/soldier.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/Old/tank.psd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/defiler/defiler.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/units/defiler/defiler.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/defiler/defiler.psd" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/units/defiler/defiler.psd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/defiler/defiler_enemy.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/defiler/defiler_shadow.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/units/defiler/defiler_shadow.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/defiler/defiler_shadow.psd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/units/apocalypse/apocalypse.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/units/apocalypse/apocalypse.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/units/apocalypse/apocalypse.psd" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/units/apocalypse/apocalypse.psd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/units/apocalypse/apocalypse_enemy.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/units/apocalypse/apocalypse_shadow.psd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/units/centurion/centurion.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/units/centurion/centurion.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/units/centurion/centurion.psd" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/units/centurion/centurion.psd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/units/centurion/centurion_enemy.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/units/centurion/centurion_shadow.psd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/units/pioneer/pioneer.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/units/pioneer/pioneer.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/units/pioneer/pioneer.psd" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/units/pioneer/pioneer.psd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/units/pioneer/pioneer_enemy.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/units/pioneer/pioneer_shadow.psd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/units/wyrm/wyrm.psd" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/units/wyrm/wyrm.psd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/units/wyrm/wyrm_enemy.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/units/wyrm/wyrm_shadow.psd" beforeDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -33,7 +74,7 @@
   <component name="PropertiesComponent">
     <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/sprites/anims/zap" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/sprites/units" />
     <property name="restartRequiresConfirmation" value="false" />
     <property name="run.code.analysis.last.selected.profile" value="aDefault" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
@@ -48,15 +89,15 @@
     <option name="myShowDebugConsoleByDefault" value="false" />
   </component>
   <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="D:\PycharmProjects\planet_eleven" />
-    </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\PycharmProjects\planet_eleven\sprites\units" />
       <recent name="D:\PycharmProjects\planet_eleven\sprites\anims\zap" />
       <recent name="D:\PycharmProjects\planet_eleven\sprites\units\wyrm" />
       <recent name="D:\PycharmProjects\planet_eleven\sprites\structures\turret" />
       <recent name="D:\PycharmProjects\planet_eleven\sprites\anims\plasma" />
-      <recent name="D:\PycharmProjects\planet_eleven\sprites\units\pioneer" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\PycharmProjects\planet_eleven" />
     </key>
   </component>
   <component name="RunManager" selected="Python.planet_eleven">
@@ -150,13 +191,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1566740526093</updated>
-    </task>
-    <task id="LOCAL-00187" summary="Just saving">
-      <created>1574012840495</created>
-      <option name="number" value="00187" />
-      <option name="presentableId" value="LOCAL-00187" />
-      <option name="project" value="LOCAL" />
-      <updated>1574012840496</updated>
     </task>
     <task id="LOCAL-00188" summary="Just saving">
       <created>1574013169449</created>
@@ -494,7 +528,14 @@
       <option name="project" value="LOCAL" />
       <updated>1586595728776</updated>
     </task>
-    <option name="localTasksCounter" value="236" />
+    <task id="LOCAL-00236" summary="shadow_maker and allsubds for recourses">
+      <created>1586595742744</created>
+      <option name="number" value="00236" />
+      <option name="presentableId" value="LOCAL-00236" />
+      <option name="project" value="LOCAL" />
+      <updated>1586595742744</updated>
+    </task>
+    <option name="localTasksCounter" value="237" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -570,34 +611,34 @@
       <screen x="0" y="0" width="1366" height="738" />
     </state>
     <state x="137" y="23" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1366.738@0.0.1366.738" timestamp="1586589784304" />
-    <state x="357" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog" timestamp="1586499471947">
+    <state x="357" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog" timestamp="1586664859829">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state x="357" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.0.1366.738@0.0.1366.738" timestamp="1586499471947" />
-    <state x="314" y="0" key="CommitChangelistDialog2" timestamp="1586595720578">
+    <state x="357" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.0.1366.738@0.0.1366.738" timestamp="1586664859829" />
+    <state x="314" y="0" key="CommitChangelistDialog2" timestamp="1586595740235">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state x="314" y="0" key="CommitChangelistDialog2/0.0.1366.738@0.0.1366.738" timestamp="1586595720578" />
-    <state x="462" y="109" key="FileChooserDialogImpl" timestamp="1586592922180">
+    <state x="314" y="0" key="CommitChangelistDialog2/0.0.1366.738@0.0.1366.738" timestamp="1586595740235" />
+    <state x="462" y="109" key="FileChooserDialogImpl" timestamp="1586661175943">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state x="462" y="109" key="FileChooserDialogImpl/0.0.1366.738@0.0.1366.738" timestamp="1586592922180" />
-    <state width="1344" height="145" key="GridCell.Tab.0.bottom" timestamp="1586595622896">
+    <state x="462" y="109" key="FileChooserDialogImpl/0.0.1366.738@0.0.1366.738" timestamp="1586661175943" />
+    <state width="1344" height="145" key="GridCell.Tab.0.bottom" timestamp="1586665033127">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="145" key="GridCell.Tab.0.bottom/0.0.1366.738@0.0.1366.738" timestamp="1586595622896" />
-    <state width="1344" height="145" key="GridCell.Tab.0.center" timestamp="1586595622896">
+    <state width="1344" height="145" key="GridCell.Tab.0.bottom/0.0.1366.738@0.0.1366.738" timestamp="1586665033127" />
+    <state width="1344" height="145" key="GridCell.Tab.0.center" timestamp="1586665033126">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="145" key="GridCell.Tab.0.center/0.0.1366.738@0.0.1366.738" timestamp="1586595622896" />
-    <state width="1344" height="145" key="GridCell.Tab.0.left" timestamp="1586595622896">
+    <state width="1344" height="145" key="GridCell.Tab.0.center/0.0.1366.738@0.0.1366.738" timestamp="1586665033126" />
+    <state width="1344" height="145" key="GridCell.Tab.0.left" timestamp="1586665033126">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="145" key="GridCell.Tab.0.left/0.0.1366.738@0.0.1366.738" timestamp="1586595622896" />
-    <state width="1344" height="145" key="GridCell.Tab.0.right" timestamp="1586595622896">
+    <state width="1344" height="145" key="GridCell.Tab.0.left/0.0.1366.738@0.0.1366.738" timestamp="1586665033126" />
+    <state width="1344" height="145" key="GridCell.Tab.0.right" timestamp="1586665033126">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="145" key="GridCell.Tab.0.right/0.0.1366.738@0.0.1366.738" timestamp="1586595622896" />
+    <state width="1344" height="145" key="GridCell.Tab.0.right/0.0.1366.738@0.0.1366.738" timestamp="1586665033126" />
     <state width="1344" height="208" key="GridCell.Tab.1.bottom" timestamp="1586351808917">
       <screen x="0" y="0" width="1366" height="738" />
     </state>

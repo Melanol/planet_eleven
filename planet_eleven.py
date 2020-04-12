@@ -8,7 +8,7 @@ from pyglet.gl import *
 from pyglet.window import key
 from pyglet.window import mouse
 
-from shadow import Shadow
+from shadowandunittc import ShadowAndUnitTC
 import resources as res
 from projectile import Projectile
 from constants_and_utilities import *
@@ -724,16 +724,19 @@ def find_path(start, end, is_flying):
 
 
 class Unit(Sprite):
-    def __init__(self, game_inst, owner, our_img, enemy_img, flying,
+    def __init__(self, game_inst, owner, img, team_color_img, flying,
                  vision_radius, hp, x, y, speed, has_weapon, damage, cooldown,
                  attacks_ground, attacks_air, shadow_sprite, ctrl_buttons):
         self.game_inst = game_inst
         self.owner = owner
+        self.team_color = ShadowAndUnitTC(team_color_img, x, y,
+                                          ground_team_color_batch)
         if owner.name == 'player1':
-            img = our_img
+            # self.team_color.color = (14, 241, 237)
+            self.team_color.color = (0, 0, 0)
             our_units.append(self)
         else:
-            img = enemy_img
+            self.team_color.color = (255, 35, 56)
             enemy_units.append(self)
         self.flying = flying
         if not self.flying:
@@ -742,7 +745,8 @@ class Unit(Sprite):
         else:
             self.pos_dict = a_pos_coord_d
             batch = air_batch
-        super().__init__(img=img, x=x, y=y, batch=batch)
+            self.team_color.batch = air_team_color_batch
+        super().__init__(img, x, y, batch=batch)
         self.vision_radius = vision_radius
         self.attacks_ground = attacks_ground
         self.attacks_air = attacks_air
@@ -795,17 +799,18 @@ class Unit(Sprite):
 
         # Shadow
         if self.flying:
-            self.shadow = Shadow(img=self.shadow_sprite, x=self.x + 10,
-                                 y=self.y - 10)
+            self.shadow = ShadowAndUnitTC(img=self.shadow_sprite, x=self.x + 10,
+                                          y=self.y - 10)
             self.shadow.batch = air_shadows_batch
         else:
-            self.shadow = Shadow(img=self.shadow_sprite, x=self.x + 3,
-                                 y=self.y - 3)
+            self.shadow = ShadowAndUnitTC(img=self.shadow_sprite, x=self.x + 3,
+                                          y=self.y - 3)
             self.shadow.batch = ground_shadows_batch
 
     def update(self):
         """Updates position and shadow."""
         self.x, self.y = self.x + self.velocity_x, self.y + self.velocity_y
+        self.team_color.update()
         self.shadow.update()
 
     def rotate(self, x, y):
@@ -815,6 +820,7 @@ class Unit(Sprite):
         diff_y = y - self.y
         angle = math.atan2(diff_y, diff_x)  # Rad
         self.rotation = -math.degrees(angle) + 90
+        self.team_color.rotation = -math.degrees(angle) + 90
         self.shadow.rotation = -math.degrees(angle) + 90
 
     def move(self, dest):
@@ -871,6 +877,9 @@ class Unit(Sprite):
         self.rotation = -math.degrees(angle) + 90
         self.velocity_x = math.cos(angle) * self.speed
         self.velocity_y = math.sin(angle) * self.speed
+        self.team_color.rotation = -math.degrees(angle) + 90
+        self.team_color.velocity_x = math.cos(angle) * self.speed
+        self.team_color.velocity_y = math.sin(angle) * self.speed
         self.shadow.rotation = -math.degrees(angle) + 90
         self.shadow.velocity_x = math.cos(angle) * self.speed
         self.shadow.velocity_y = math.sin(angle) * self.speed
@@ -891,6 +900,7 @@ class Unit(Sprite):
         angle = math.atan2(diff_y, diff_x)  # Rad
         d_angle = math.degrees(angle)
         self.rotation = -d_angle + 90
+        self.team_color.rotation = -math.degrees(angle) + 90
         self.shadow.rotation = -math.degrees(angle) + 90
         try:
             next_target = self.path[self.pfi]
@@ -915,6 +925,9 @@ class Unit(Sprite):
             self.rotation = -d_angle + 90
             self.velocity_x = math.cos(angle) * self.speed
             self.velocity_y = math.sin(angle) * self.speed
+            self.team_color.rotation = -math.degrees(angle) + 90
+            self.team_color.velocity_x = math.cos(angle) * self.speed
+            self.team_color.velocity_y = math.sin(angle) * self.speed
             self.shadow.rotation = -math.degrees(angle) + 90
             self.shadow.velocity_x = math.cos(angle) * self.speed
             self.shadow.velocity_y = math.sin(angle) * self.speed
@@ -931,6 +944,7 @@ class Unit(Sprite):
         y_diff = self.target_p.y - self.y
         angle = -math.degrees(math.atan2(y_diff, x_diff)) + 90
         self.rotation = angle
+        self.team_color.rotation = angle
         self.shadow.rotation = angle
         self.on_cooldown = True
         self.cooldown_started = frame_count
@@ -944,6 +958,7 @@ class Unit(Sprite):
 
     def kill(self, delay_del=False):
         self.pixel.delete()
+        self.team_color.delete()
         self.shadow.delete()
         for attacker in self.attackers:
             attacker.has_target_p = False
@@ -970,7 +985,7 @@ class Defiler(Unit):
         if owner is None:
             owner = game_inst.this_player
         super().__init__(game_inst, owner, res.defiler_img,
-                         res.defiler_enemy_img, flying=True, vision_radius=6,
+                         res.defiler_team_color, flying=True, vision_radius=6,
                          hp=70, x=x, y=y, speed=6, has_weapon=True, damage=10,
                          cooldown=60, attacks_ground=True, attacks_air=True,
                          shadow_sprite=res.defiler_shadow_img,
@@ -985,7 +1000,7 @@ class Centurion(Unit):
         if owner is None:
             owner = game_inst.this_player
         super().__init__(game_inst, owner, res.centurion_img,
-                         res.centurion_enemy_img, flying=False,
+                         res.centurion_team_color, flying=False,
                          vision_radius=6, hp=100, x=x, y=y, speed=1,
                          has_weapon=True, damage=10, cooldown=120,
                          attacks_ground=True, attacks_air=False,
@@ -1001,7 +1016,7 @@ class Wyrm(Unit):
         if owner is None:
             owner = game_inst.this_player
         super().__init__(game_inst, owner, res.wyrm_img,
-                         res.wyrm_enemy_img, flying=False,
+                         res.wyrm_team_color, flying=False,
                          vision_radius=3, hp=25, x=x, y=y, speed=7,
                          has_weapon=True, damage=5, cooldown=60,
                          attacks_ground=True, attacks_air=False,
@@ -1017,7 +1032,7 @@ class Apocalypse(Unit):
         if owner is None:
             owner = game_inst.this_player
         super().__init__(game_inst, owner, res.apocalypse_img,
-                         res.apocalypse_enemy_img, flying=True,
+                         res.apocalypse_team_color, flying=True,
                          vision_radius=6, hp=100, x=x, y=y, speed=2,
                          has_weapon=True, damage=30, cooldown=120,
                          attacks_ground=True, attacks_air=False,
@@ -1033,7 +1048,7 @@ class Pioneer(Unit):
         if owner is None:
             owner = game_inst.this_player
         super().__init__(game_inst, owner, res.pioneer_img,
-                         res.pioneer_enemy_img, flying=False,
+                         res.pioneer_team_color, flying=False,
                          vision_radius=4, hp=10, x=x, y=y, speed=4,
                          has_weapon=False, damage=0, cooldown=0,
                          attacks_ground=False, attacks_air=False,
@@ -1166,7 +1181,7 @@ class PlanetEleven(pyglet.window.Window):
             y=SCREEN_H - 20)
         self.selected_icon = UI(self, res.none_img, CTRL_B_COORDS[0][0],
                                 SCREEN_H - 72)
-        self.selected_hp = pyglet.text.Label('', x=self.selected_icon.x + 16,
+        self.selected_hp = pyglet.text.Label('', x=CTRL_B_COORDS[1][0] - 15,
             y=SCREEN_H - 72, anchor_y='center', font_size=8,
                                              color=(0, 0, 0,255))
         self.txt_out = pyglet.text.Label('', x=SCREEN_W / 2 - 50, y=100,
@@ -1282,9 +1297,11 @@ class PlanetEleven(pyglet.window.Window):
             zap_batch.draw()
             structures_batch.draw()
             ground_units_batch.draw()
+            ground_team_color_batch.draw()
             explosions_batch.draw()
             air_shadows_batch.draw()
             air_batch.draw()
+            air_team_color_batch.draw()
             if selected:
                 try:
                     selected.is_big
@@ -1475,6 +1492,8 @@ class PlanetEleven(pyglet.window.Window):
                         if not unit.move_interd:
                             unit.x = unit.target_x
                             unit.y = unit.target_y
+                            unit.team_color.x = unit.target_x
+                            unit.team_color.y = unit.target_y
                             if selected == unit:
                                 self.sel_spt.x = unit.x
                                 self.sel_spt.y = unit.y
@@ -1511,6 +1530,8 @@ class PlanetEleven(pyglet.window.Window):
                         else:
                             unit.x = unit.target_x
                             unit.y = unit.target_y
+                            unit.team_color.x = unit.target_x
+                            unit.team_color.y = unit.target_y
                             if not unit.flying:
                                 unit.shadow.x = unit.target_x + 3
                                 unit.shadow.y = unit.target_y - 3
@@ -2252,7 +2273,7 @@ class PlanetEleven(pyglet.window.Window):
             el.y = el.org_y + bvb
         self.min_count_label.x = SCREEN_W - 180 + lvb
         self.min_count_label.y = SCREEN_H - 20 + bvb
-        self.selected_hp.x = CTRL_B_COORDS[1][0] + lvb
+        self.selected_hp.x = CTRL_B_COORDS[1][0] - 15 + lvb
         self.selected_hp.y = SCREEN_H - 72 + bvb
         self.txt_out.x = SCREEN_W / 2 - 50 + lvb
         self.txt_out.y = 100 + bvb

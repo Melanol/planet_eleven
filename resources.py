@@ -145,23 +145,23 @@ anim_enemy = pyglet.image.Animation.from_image_sequence([anim_enemy_img1,
 
 # Units
 defiler_img = center_load("defiler.png")
-defiler_enemy_img = center_load("defiler_enemy.png")
+defiler_team_color = center_load("defiler_team_color.png")
 defiler_shadow_img = center_load("defiler_shadow.png")
 
 centurion_img = center_load("centurion.png")
-centurion_enemy_img = center_load("centurion_enemy.png")
+centurion_team_color = center_load("centurion_team_color.png")
 centurion_shadow_img = center_load("centurion_shadow.png")
 
 wyrm_img = center_load("wyrm.png")
-wyrm_enemy_img = center_load("wyrm_enemy.png")
+wyrm_team_color = center_load("wyrm_team_color.png")
 wyrm_shadow_img = center_load("wyrm_shadow.png")
 
 pioneer_img = center_load("pioneer.png")
-pioneer_enemy_img = center_load("pioneer_enemy.png")
+pioneer_team_color = center_load("pioneer_team_color.png")
 pioneer_shadow_img = center_load("pioneer_shadow.png")
 
 apocalypse_img = center_load("apocalypse.png")
-apocalypse_enemy_img = center_load("apocalypse_enemy.png")
+apocalypse_team_color = center_load("apocalypse_team_color.png")
 apocalypse_shadow_img = center_load("apocalypse_shadow.png")
 
 # Other

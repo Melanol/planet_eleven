@@ -1,7 +1,7 @@
 import pyglet
 
 
-class Shadow(pyglet.sprite.Sprite):
+class ShadowAndUnitTC(pyglet.sprite.Sprite):
     def __init__(self, img, x, y, batch=None):
         super().__init__(img=img, x=x, y=y, batch=batch)
         self.velocity_x = 0
