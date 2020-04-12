@@ -300,12 +300,13 @@ def building_spawn_unit(game_inst, structure):
 class Structure(Sprite):
     """This is what I call buildings. __init__ == spawn()"""
 
-    def __init__(self, game_inst, owner, img, team_color_img, vision_radius,
+    def __init__(self, game_inst, owner, img, team_color_img, icon, vision_radius,
                  hp, x, y):
         self.owner = owner
         self.team_color = Sprite(team_color_img, x, y,
                                  batch=ground_team_color_batch)
         self.team_color.visible = False
+        self.icon = icon
         if owner == game_inst.this_player:
             self.team_color.color = OUR_TEAM_COLOR
             our_structures.append(self)
@@ -419,7 +420,8 @@ class Armory(Structure, GuardianStructure):
         if owner is None:
             owner = game_inst.this_player
         super().__init__(game_inst, owner, res.armory_img,
-                         res.armory_team_color, vision_radius=2, hp=100, x=x, y=y)
+                         res.armory_team_color, res.armory_icon_img,
+                         vision_radius=2,  hp=100, x=x, y=y)
         super().gs_init(skip_constr)
 
 
@@ -431,8 +433,8 @@ class MechCenter(Structure, ProductionStructure, GuardianStructure):
         if owner is None:
             owner = game_inst.this_player
         super().__init__(game_inst, owner, res.mech_center_img,
-                         res.mech_center_team_color, x=x, y=y,
-                         hp=1500, vision_radius=4)
+                         res.mech_center_team_color, res.mech_center_icon_img,
+                         x=x, y=y, hp=1500, vision_radius=4)
         super().ps_init()
         super().gs_init(skip_constr)
         self.ctrl_buttons = [game_inst.defiler_b, game_inst.centurion_b,
@@ -448,9 +450,9 @@ class MechCenter(Structure, ProductionStructure, GuardianStructure):
 
 
 class OffensiveStructure(Structure):
-    def __init__(self, game_inst, owner, img, enemy_img, vision_radius, hp,
+    def __init__(self, game_inst, owner, img, team_color, icon, vision_radius, hp,
                  x, y, damage, cooldown):
-        super().__init__(game_inst, owner, img, enemy_img, vision_radius,
+        super().__init__(game_inst, owner, img, team_color, icon, vision_radius,
                          hp, x, y)
         self.damage = damage
         self.shooting_radius = vision_radius * 32
@@ -503,8 +505,9 @@ class Turret(OffensiveStructure, GuardianStructure):
     def __init__(self, game_inst, x, y, owner=None, skip_constr=False):
         if owner is None:
             owner = game_inst.this_player
-        super().__init__(game_inst, owner, res.turret_base_img,
-                         res.turret_team_color, vision_radius=5,
+        super().__init__(game_inst, owner, res.turret_img,
+                         res.turret_team_color, res.turret_icon_img,
+                         vision_radius=5,
                          hp=100, x=x, y=y, damage=1000, cooldown=60)
         super().gs_init(skip_constr)
 
@@ -731,13 +734,14 @@ def find_path(start, end, is_flying):
 
 
 class Unit(Sprite):
-    def __init__(self, game_inst, owner, img, team_color_img, flying,
+    def __init__(self, game_inst, owner, img, team_color_img, icon, flying,
                  vision_radius, hp, x, y, speed, has_weapon, damage, cooldown,
                  attacks_ground, attacks_air, shadow_sprite, ctrl_buttons):
         self.game_inst = game_inst
         self.owner = owner
         self.team_color = ShadowAndUnitTC(team_color_img, x, y,
                                           ground_team_color_batch)
+        self.icon = icon
         if owner.name == 'player1':
             self.team_color.color = OUR_TEAM_COLOR
             our_units.append(self)
@@ -983,18 +987,20 @@ class Unit(Sprite):
             pass
 
 
-class Defiler(Unit):
-    cost = 300
-    build_time = 10
+class Apocalypse(Unit):
+    cost = 600
+    build_time = 30
 
     def __init__(self, game_inst, x, y, owner=None):
         if owner is None:
             owner = game_inst.this_player
-        super().__init__(game_inst, owner, res.defiler_img,
-                         res.defiler_team_color, flying=True, vision_radius=6,
-                         hp=70, x=x, y=y, speed=6, has_weapon=True, damage=10,
-                         cooldown=60, attacks_ground=True, attacks_air=True,
-                         shadow_sprite=res.defiler_shadow_img,
+        super().__init__(game_inst, owner, res.apocalypse_img,
+                         res.apocalypse_team_color, res.apocalypse_icon_img,
+                         flying=True,
+                         vision_radius=6, hp=100, x=x, y=y, speed=2,
+                         has_weapon=True, damage=30, cooldown=120,
+                         attacks_ground=True, attacks_air=False,
+                         shadow_sprite=res.apocalypse_shadow_img,
                          ctrl_buttons=game_inst.basic_unit_c_bs)
 
 
@@ -1006,7 +1012,8 @@ class Centurion(Unit):
         if owner is None:
             owner = game_inst.this_player
         super().__init__(game_inst, owner, res.centurion_img,
-                         res.centurion_team_color, flying=False,
+                         res.centurion_team_color, res.centurion_icon_img,
+                         flying=False,
                          vision_radius=6, hp=100, x=x, y=y, speed=1,
                          has_weapon=True, damage=10, cooldown=120,
                          attacks_ground=True, attacks_air=False,
@@ -1014,35 +1021,19 @@ class Centurion(Unit):
                          ctrl_buttons=game_inst.basic_unit_c_bs)
 
 
-class Wyrm(Unit):
-    cost = 150
+class Defiler(Unit):
+    cost = 300
     build_time = 10
 
     def __init__(self, game_inst, x, y, owner=None):
         if owner is None:
             owner = game_inst.this_player
-        super().__init__(game_inst, owner, res.wyrm_img,
-                         res.wyrm_team_color, flying=False,
-                         vision_radius=3, hp=25, x=x, y=y, speed=7,
-                         has_weapon=True, damage=5, cooldown=60,
-                         attacks_ground=True, attacks_air=False,
-                         shadow_sprite=res.wyrm_shadow_img,
-                         ctrl_buttons=game_inst.basic_unit_c_bs)
-
-
-class Apocalypse(Unit):
-    cost = 600
-    build_time = 30
-
-    def __init__(self, game_inst, x, y, owner=None):
-        if owner is None:
-            owner = game_inst.this_player
-        super().__init__(game_inst, owner, res.apocalypse_img,
-                         res.apocalypse_team_color, flying=True,
-                         vision_radius=6, hp=100, x=x, y=y, speed=2,
-                         has_weapon=True, damage=30, cooldown=120,
-                         attacks_ground=True, attacks_air=False,
-                         shadow_sprite=res.apocalypse_shadow_img,
+        super().__init__(game_inst, owner, res.defiler_img,
+                         res.defiler_team_color, res.defiler_icon_img, flying=True,
+                         vision_radius=6, hp=70, x=x, y=y, speed=6,
+                         has_weapon=True, damage=10, cooldown=60,
+                         attacks_ground=True, attacks_air=True,
+                         shadow_sprite=res.defiler_shadow_img,
                          ctrl_buttons=game_inst.basic_unit_c_bs)
 
 
@@ -1054,15 +1045,15 @@ class Pioneer(Unit):
         if owner is None:
             owner = game_inst.this_player
         super().__init__(game_inst, owner, res.pioneer_img,
-                         res.pioneer_team_color, flying=False,
+                         res.pioneer_team_color, res.pioneer_icon_img, flying=False,
                          vision_radius=4, hp=10, x=x, y=y, speed=4,
                          has_weapon=False, damage=0, cooldown=0,
                          attacks_ground=False, attacks_air=False,
                          shadow_sprite=res.pioneer_shadow_img,
                          ctrl_buttons=game_inst.basic_unit_c_bs +
-                                      [game_inst.armory_b] +
-                                      [game_inst.turret_b] +
-                                      [game_inst.mech_center_b])
+                                      [game_inst.armory_icon] +
+                                      [game_inst.turret_icon] +
+                                      [game_inst.mech_center_icon])
         workers.append(self)
         self.to_build = None
         self.mineral_to_gather = None
@@ -1135,6 +1126,22 @@ class Pioneer(Unit):
         self.task_y = None
         self.is_gathering = False
         self.zap_sprite.visible = False
+
+
+class Wyrm(Unit):
+    cost = 150
+    build_time = 10
+
+    def __init__(self, game_inst, x, y, owner=None):
+        if owner is None:
+            owner = game_inst.this_player
+        super().__init__(game_inst, owner, res.wyrm_img,
+                         res.wyrm_team_color, res.wyrm_icon_img, flying=False,
+                         vision_radius=3, hp=25, x=x, y=y, speed=7,
+                         has_weapon=True, damage=5, cooldown=60,
+                         attacks_ground=True, attacks_air=False,
+                         shadow_sprite=res.wyrm_shadow_img,
+                         ctrl_buttons=game_inst.basic_unit_c_bs)
 
 
 class PlanetEleven(pyglet.window.Window):
@@ -1217,12 +1224,12 @@ class PlanetEleven(pyglet.window.Window):
                          batch=options_batch)
 
         # Control panel buttons
-        self.armory_b = UI(self, res.armory_img, CTRL_B_COORDS[3][0],
-                           CTRL_B_COORDS[3][1])
-        self.turret_b = UI(self, res.turret_b_img, CTRL_B_COORDS[4][0],
-                           CTRL_B_COORDS[4][1])
-        self.mech_center_b = UI(self, res.mech_center_icon_img,
-                                CTRL_B_COORDS[5][0], CTRL_B_COORDS[5][1])
+        self.armory_icon = UI(self, res.armory_icon_img, CTRL_B_COORDS[3][0],
+                              CTRL_B_COORDS[3][1])
+        self.turret_icon = UI(self, res.turret_icon_img, CTRL_B_COORDS[4][0],
+                              CTRL_B_COORDS[4][1])
+        self.mech_center_icon = UI(self, res.mech_center_icon_img,
+                                   CTRL_B_COORDS[5][0], CTRL_B_COORDS[5][1])
         self.move_b = UI(self, res.move_img, CTRL_B_COORDS[0][0],
                          CTRL_B_COORDS[0][1])
         self.stop_b = UI(self, res.stop_img, CTRL_B_COORDS[1][0],
@@ -1712,7 +1719,7 @@ class PlanetEleven(pyglet.window.Window):
             elif symbol == key.S:
                 # Build turret
                 if str(type(selected)) == "<class '__main__.Pioneer'>":
-                    self.to_build_spt.image = res.turret_b_img
+                    self.to_build_spt.image = res.turret_icon_img
                     self.to_build = "turret"
                     self.hotkey_constr_cur_1b()
                 # Build pioneer
@@ -1834,9 +1841,7 @@ class PlanetEleven(pyglet.window.Window):
                     print('\nglobal click coords:', x, y)
                     if button == mouse.LEFT:
                         # Selection
-                        print('modifiers =', bin(modifiers))
                         if not bin(modifiers)[-1] == '1':  # Shift is pressed
-                            print("meh")
                             to_be_selected = a_pos_coord_d[(x, y)]
                             if to_be_selected:  # Air unit found
                                 selected = to_be_selected
@@ -1854,7 +1859,6 @@ class PlanetEleven(pyglet.window.Window):
                                         self.sel_spt.y = y
                                     selected = to_be_selected
                         else:
-                            print('not meh')
                             to_be_selected = g_pos_coord_d[(x, y)]
                             if to_be_selected:
                                 try:
@@ -1865,15 +1869,11 @@ class PlanetEleven(pyglet.window.Window):
                                     self.sel_spt.x = x
                                     self.sel_spt.y = y
                                 selected = to_be_selected
-                        self.selected_icon.image = selected.image
-                        if self.selected_icon.image.width != 32:
-                            self.selected_icon.scale = 0.5
-                        else:
-                            self.selected_icon.scale = 1
+                        self.selected_icon.image = selected.icon
                         try:
                             selected.max_hp
-                            self.selected_hp.text = str(int(selected.hp))\
-                                                + '/' + str(selected.max_hp)
+                            self.selected_hp.text = str(int(selected.hp)) \
+                                + '/' + str(selected.max_hp)
                         except AttributeError:
                             self.selected_hp.text = str(int(selected.hp))
                         # Control buttons
@@ -2035,30 +2035,30 @@ class PlanetEleven(pyglet.window.Window):
                             except AttributeError:
                                 pass
                             return
-                        # Build buildings
+                        # Construct structures
                         if str(type(selected)) == "<class '__main__.Pioneer'>":
-                            if self.armory_b.x - 16 <= x <= \
-                                    self.armory_b.x + 16 and \
-                                    self.armory_b.y - 16 <= y <= \
-                                    self.armory_b.y + 16:
+                            if self.armory_icon.x - 16 <= x <= \
+                                    self.armory_icon.x + 16 and \
+                                    self.armory_icon.y - 16 <= y <= \
+                                    self.armory_icon.y + 16:
                                 self.to_build_spt.image = res.armory_img
                                 self.to_build_spt.color = (0, 255, 0)
                                 self.build_loc_sel_phase = True
                                 self.to_build = "armory"
                                 self.to_build_spt.x, self.to_build_spt.y = x, y
-                            elif self.turret_b.x - 16 <= x <= \
-                                    self.turret_b.x + 16 and \
-                                    self.turret_b.y - 16 <= y <= \
-                                    self.turret_b.y + 16:
-                                self.to_build_spt.image = res.turret_b_img
+                            elif self.turret_icon.x - 16 <= x <= \
+                                    self.turret_icon.x + 16 and \
+                                    self.turret_icon.y - 16 <= y <= \
+                                    self.turret_icon.y + 16:
+                                self.to_build_spt.image = res.turret_icon_img
                                 self.to_build_spt.color = (0, 255, 0)
                                 self.build_loc_sel_phase = True
                                 self.to_build = "turret"
                                 self.to_build_spt.x, self.to_build_spt.y = x, y
-                            elif self.mech_center_b.x - 16 <= x <= \
-                                    self.mech_center_b.x + 16 and \
-                                    self.mech_center_b.y - 16 <= y <= \
-                                    self.mech_center_b.y + 16:
+                            elif self.mech_center_icon.x - 16 <= x <= \
+                                    self.mech_center_icon.x + 16 and \
+                                    self.mech_center_icon.y - 16 <= y <= \
+                                    self.mech_center_icon.y + 16:
                                 self.to_build_spt.image = res.mech_center_img
                                 self.to_build_spt.color = (0, 255, 0)
                                 self.build_loc_sel_phase = True
