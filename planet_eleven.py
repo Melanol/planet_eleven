@@ -167,6 +167,7 @@ class Mineral(Sprite):
         self.hp = hp
         minerals.append(self)
         g_pos_coord_d[(x, y)] = self
+        self.icon = res.mineral
 
     def kill(self):
         for worker in self.workers:
@@ -1249,18 +1250,16 @@ class PlanetEleven(pyglet.window.Window):
 
         # Spawn buildings and minerals
         Mineral(self, PS / 2 + PS * 4, PS / 2 + PS * 7)
-        Mineral(self, PS / 2 + PS * 5,  PS / 2 + PS * 8)
+        Mineral(self, PS / 2 + PS * 4,  PS / 2 + PS * 8)
         Mineral(self, PS / 2 + PS * 6, PS / 2 + PS * 4)
         Mineral(self, PS / 2 + PS * 7, PS / 2 + PS * 3)
         Mineral(self, PS / 2 + PS * 10, PS / 2 + PS * 4)
         Mineral(self, PS / 2 + PS * 11, PS / 2 + PS * 4)
 
-        Mineral(self, PS / 2 + PS * 55, PS / 2 + PS * 55)
-        Mineral(self, PS / 2 + PS * 56, PS / 2 + PS * 55)
-        Mineral(self, PS / 2 + PS * 59, PS / 2 + PS * 50)
-        Mineral(self, PS / 2 + PS * 61, PS / 2 + PS * 50)
-        Mineral(self, PS / 2 + PS * 63, PS / 2 + PS * 51)
-        Mineral(self, PS / 2 + PS * 55, PS / 2 + PS * 58)
+        Mineral(self, PS / 2 + PS * 52, PS / 2 + PS * 47)
+        Mineral(self, PS / 2 + PS * 52, PS / 2 + PS * 46)
+        Mineral(self, PS / 2 + PS * 46, PS / 2 + PS * 46)
+        Mineral(self, PS / 2 + PS * 46, PS / 2 + PS * 48)
         self.our_1st_base = MechCenter(self, PS * 7, PS * 8, skip_constr=True)
         selected = self.our_1st_base
         MechCenter(self, PS * 10, PS * 10, owner=self.computer, skip_constr=True)

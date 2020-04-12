@@ -1,7 +1,0 @@
-Ready:
-
-
-TODO:
--Cannon charge animation
--Plasma hit animation
--Control panel image

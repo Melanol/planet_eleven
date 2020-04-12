@@ -3,13 +3,27 @@
   <component name="ChangeListManager">
     <list default="true" id="8699b466-fa9b-4e8c-b41f-e5bbe759696d" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/constants_and_utilities.py" beforeDir="false" afterPath="$PROJECT_DIR$/constants_and_utilities.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/demos/twitter updates/3/updates to include.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/main.rtf" beforeDir="false" afterPath="$PROJECT_DIR$/docs/main.rtf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.tmx" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/planet_eleven.py" beforeDir="false" afterPath="$PROJECT_DIR$/planet_eleven.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources.py" beforeDir="false" afterPath="$PROJECT_DIR$/resources.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/structures/mech_center/mech_center_icon.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/structures/mech_center/mech_center_icon.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/structures/turret/turret_b.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/structures/turret/turret_base.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/structures/turret/turret_base.psd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/terrain.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/terrain.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tiles/background.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tiles/background.tmx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tiles/background1.tmx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tiles/horizontal.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tiles/horizontal.psd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tiles/rocks.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tiles/rocks.psd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tiles/rocks_emerald.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tiles/rocks_emerald.psd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tiles/sand.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tiles/sand.psd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tiles/sand_red.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tiles/sssr_angle.psd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tiles/sssr_angle_transp.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tiles/top_right_angle.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tiles/top_right_angle.psd" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -159,20 +173,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1566740526093</updated>
-    </task>
-    <task id="LOCAL-00192" summary="Buildings cost minerals">
-      <created>1574021890763</created>
-      <option name="number" value="00192" />
-      <option name="presentableId" value="LOCAL-00192" />
-      <option name="project" value="LOCAL" />
-      <updated>1574021890763</updated>
-    </task>
-    <task id="LOCAL-00193" summary="Building cost refund if place occupied">
-      <created>1574022168607</created>
-      <option name="number" value="00193" />
-      <option name="presentableId" value="LOCAL-00193" />
-      <option name="project" value="LOCAL" />
-      <updated>1574022168608</updated>
     </task>
     <task id="LOCAL-00194" summary="AI can gather minerals">
       <created>1574198488407</created>
@@ -503,7 +503,21 @@
       <option name="project" value="LOCAL" />
       <updated>1586671943916</updated>
     </task>
-    <option name="localTasksCounter" value="241" />
+    <task id="LOCAL-00241" summary="Icons">
+      <created>1586679276699</created>
+      <option name="number" value="00241" />
+      <option name="presentableId" value="LOCAL-00241" />
+      <option name="project" value="LOCAL" />
+      <updated>1586679276700</updated>
+    </task>
+    <task id="LOCAL-00242" summary="Icons">
+      <created>1586679290374</created>
+      <option name="number" value="00242" />
+      <option name="presentableId" value="LOCAL-00242" />
+      <option name="project" value="LOCAL" />
+      <updated>1586679290374</updated>
+    </task>
+    <option name="localTasksCounter" value="243" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -547,7 +561,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$" />
     </ignored-roots>
-    <MESSAGE value="Revert here if minimap fix fails" />
     <MESSAGE value="Minimap fixed" />
     <MESSAGE value="Menu buttons added" />
     <MESSAGE value="BigBase renamed to MechCenter" />
@@ -572,7 +585,8 @@
     <MESSAGE value="Unit team colors" />
     <MESSAGE value="Structure team colors" />
     <MESSAGE value="Shift bug fixed" />
-    <option name="LAST_COMMIT_MESSAGE" value="Shift bug fixed" />
+    <MESSAGE value="Icons" />
+    <option name="LAST_COMMIT_MESSAGE" value="Icons" />
   </component>
   <component name="WindowStateProjectService">
     <state x="137" y="23" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1586589784304">
@@ -583,30 +597,30 @@
       <screen x="0" y="0" width="1366" height="738" />
     </state>
     <state x="357" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.0.1366.738@0.0.1366.738" timestamp="1586666260294" />
-    <state x="255" y="0" key="CommitChangelistDialog2" timestamp="1586671941507">
+    <state x="255" y="0" key="CommitChangelistDialog2" timestamp="1586679287775">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state x="255" y="0" key="CommitChangelistDialog2/0.0.1366.738@0.0.1366.738" timestamp="1586671941507" />
+    <state x="255" y="0" key="CommitChangelistDialog2/0.0.1366.738@0.0.1366.738" timestamp="1586679287775" />
     <state x="462" y="109" key="FileChooserDialogImpl" timestamp="1586665464134">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
     <state x="462" y="109" key="FileChooserDialogImpl/0.0.1366.738@0.0.1366.738" timestamp="1586665464134" />
-    <state width="1344" height="57" key="GridCell.Tab.0.bottom" timestamp="1586679069970">
+    <state width="1344" height="180" key="GridCell.Tab.0.bottom" timestamp="1586695860631">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="57" key="GridCell.Tab.0.bottom/0.0.1366.738@0.0.1366.738" timestamp="1586679069970" />
-    <state width="1344" height="57" key="GridCell.Tab.0.center" timestamp="1586679069969">
+    <state width="1344" height="180" key="GridCell.Tab.0.bottom/0.0.1366.738@0.0.1366.738" timestamp="1586695860631" />
+    <state width="1344" height="180" key="GridCell.Tab.0.center" timestamp="1586695860631">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="57" key="GridCell.Tab.0.center/0.0.1366.738@0.0.1366.738" timestamp="1586679069969" />
-    <state width="1344" height="57" key="GridCell.Tab.0.left" timestamp="1586679069969">
+    <state width="1344" height="180" key="GridCell.Tab.0.center/0.0.1366.738@0.0.1366.738" timestamp="1586695860631" />
+    <state width="1344" height="180" key="GridCell.Tab.0.left" timestamp="1586695860631">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="57" key="GridCell.Tab.0.left/0.0.1366.738@0.0.1366.738" timestamp="1586679069969" />
-    <state width="1344" height="57" key="GridCell.Tab.0.right" timestamp="1586679069970">
+    <state width="1344" height="180" key="GridCell.Tab.0.left/0.0.1366.738@0.0.1366.738" timestamp="1586695860631" />
+    <state width="1344" height="180" key="GridCell.Tab.0.right" timestamp="1586695860631">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="57" key="GridCell.Tab.0.right/0.0.1366.738@0.0.1366.738" timestamp="1586679069970" />
+    <state width="1344" height="180" key="GridCell.Tab.0.right/0.0.1366.738@0.0.1366.738" timestamp="1586695860631" />
     <state width="1344" height="208" key="GridCell.Tab.1.bottom" timestamp="1586351808917">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
