@@ -1,47 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="8699b466-fa9b-4e8c-b41f-e5bbe759696d" name="Default Changelist" comment="shadow_maker and allsubds for recourses">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/constants_and_utilities.py" beforeDir="false" afterPath="$PROJECT_DIR$/constants_and_utilities.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/guardians.rtf" beforeDir="false" afterPath="$PROJECT_DIR$/docs/guardians.rtf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/main.rtf" beforeDir="false" afterPath="$PROJECT_DIR$/docs/main.rtf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/vagrant.rtf" beforeDir="false" afterPath="$PROJECT_DIR$/docs/vagrant.rtf" afterDir="false" />
+    <list default="true" id="8699b466-fa9b-4e8c-b41f-e5bbe759696d" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/planet_eleven.py" beforeDir="false" afterPath="$PROJECT_DIR$/planet_eleven.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources.py" beforeDir="false" afterPath="$PROJECT_DIR$/resources.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/shadow.py" beforeDir="false" afterPath="$PROJECT_DIR$/shadowandunittc.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/Old/base.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/Old/base.psd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/Old/big_base.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/Old/big_base.psd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/Old/builder.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/Old/builder.psd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/Old/building_shadow32.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/Old/building_shadow32.psd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/Old/building_shadow64.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/Old/building_shadow64.psd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/Old/soldier.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/Old/tank.psd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/defiler/defiler.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/units/defiler/defiler.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/defiler/defiler.psd" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/units/defiler/defiler.psd" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/defiler/defiler_enemy.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/defiler/defiler_shadow.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/units/defiler/defiler_shadow.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/defiler/defiler_shadow.psd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/units/apocalypse/apocalypse.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/units/apocalypse/apocalypse.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/units/apocalypse/apocalypse.psd" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/units/apocalypse/apocalypse.psd" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/units/apocalypse/apocalypse_enemy.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/units/apocalypse/apocalypse_shadow.psd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/units/centurion/centurion.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/units/centurion/centurion.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/units/centurion/centurion.psd" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/units/centurion/centurion.psd" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/units/centurion/centurion_enemy.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/units/centurion/centurion_shadow.psd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/units/pioneer/pioneer.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/units/pioneer/pioneer.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/units/pioneer/pioneer.psd" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/units/pioneer/pioneer.psd" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/units/pioneer/pioneer_enemy.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/units/pioneer/pioneer_shadow.psd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/units/wyrm/wyrm.psd" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/units/wyrm/wyrm.psd" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/units/wyrm/wyrm_enemy.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/units/wyrm/wyrm_shadow.psd" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -191,13 +152,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1566740526093</updated>
-    </task>
-    <task id="LOCAL-00188" summary="Just saving">
-      <created>1574013169449</created>
-      <option name="number" value="00188" />
-      <option name="presentableId" value="LOCAL-00188" />
-      <option name="project" value="LOCAL" />
-      <updated>1574013169449</updated>
     </task>
     <task id="LOCAL-00189" summary="Fixed the bug with workers unable to move but having a mineral to mine.">
       <created>1574014327130</created>
@@ -535,7 +489,14 @@
       <option name="project" value="LOCAL" />
       <updated>1586595742744</updated>
     </task>
-    <option name="localTasksCounter" value="237" />
+    <task id="LOCAL-00237" summary="Unit team colors">
+      <created>1586665270832</created>
+      <option name="number" value="00237" />
+      <option name="presentableId" value="LOCAL-00237" />
+      <option name="project" value="LOCAL" />
+      <updated>1586665270855</updated>
+    </task>
+    <option name="localTasksCounter" value="238" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -579,7 +540,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$" />
     </ignored-roots>
-    <MESSAGE value="Hints work for all units" />
     <MESSAGE value="Fixed a bug with construction sprites" />
     <MESSAGE value="Buildings have hints" />
     <MESSAGE value="Revert here if minimap fix fails" />
@@ -604,7 +564,8 @@
     <MESSAGE value="A lot of small things" />
     <MESSAGE value="Hotkeys" />
     <MESSAGE value="shadow_maker and allsubds for recourses" />
-    <option name="LAST_COMMIT_MESSAGE" value="shadow_maker and allsubds for recourses" />
+    <MESSAGE value="Unit team colors" />
+    <option name="LAST_COMMIT_MESSAGE" value="Unit team colors" />
   </component>
   <component name="WindowStateProjectService">
     <state x="137" y="23" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1586589784304">
@@ -615,10 +576,10 @@
       <screen x="0" y="0" width="1366" height="738" />
     </state>
     <state x="357" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.0.1366.738@0.0.1366.738" timestamp="1586664859829" />
-    <state x="314" y="0" key="CommitChangelistDialog2" timestamp="1586595740235">
+    <state x="314" y="0" key="CommitChangelistDialog2" timestamp="1586665247557">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state x="314" y="0" key="CommitChangelistDialog2/0.0.1366.738@0.0.1366.738" timestamp="1586595740235" />
+    <state x="314" y="0" key="CommitChangelistDialog2/0.0.1366.738@0.0.1366.738" timestamp="1586665247557" />
     <state x="462" y="109" key="FileChooserDialogImpl" timestamp="1586661175943">
       <screen x="0" y="0" width="1366" height="738" />
     </state>

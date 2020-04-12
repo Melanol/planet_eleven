@@ -298,7 +298,7 @@ def building_spawn_unit(game_inst, structure):
 
 
 class Structure(Sprite):
-    """__init__ == spawn()"""
+    """This is what I call buildings. __init__ == spawn()"""
 
     def __init__(self, game_inst, owner, our_img, enemy_img, vision_radius,
                  hp, x, y):
