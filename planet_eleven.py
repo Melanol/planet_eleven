@@ -1,3 +1,4 @@
+import random
 import math
 import sys
 import numpy as np
@@ -10,7 +11,7 @@ from pyglet.window import mouse
 
 from shadowandunittc import ShadowAndUnitTC
 import resources as res
-from projectile import Projectile
+from weapons import *
 from constants_and_utilities import *
 
 lvb = 0
@@ -92,14 +93,14 @@ def closest_enemy_2_att(entity, enemy_entities):
 def update_shooting(game_inst, our_entities, enemy_entities):
     for entity in our_entities:
         try:  # For shooting structures
-            entity.has_weapon
+            entity.weapon_type
             entity.dest_reached
         except AttributeError:
             if entity.under_constr:
                 return
-            entity.has_weapon = True
+            entity.weapon_type = 'projectile'
             entity.dest_reached = True
-        if entity.has_weapon and entity.dest_reached:
+        if entity.weapon_type != 'none' and entity.dest_reached:
             if not entity.on_cooldown:
                 if not entity.has_target_p:
                     closest_enemy = closest_enemy_2_att(entity,
@@ -147,7 +148,7 @@ class CheckB(Sprite):
 
 class Player:
     def __init__(self, name):
-        self.mineral_count = 50000
+        self.mineral_count = 5000
         self.name = name
 
 class HitAnim(Sprite):
@@ -495,6 +496,7 @@ class OffensiveStructure(Structure):
                 del enemy_structures[enemy_structures.index(self)]
         del offensive_structures[offensive_structures.index(self)]
         self.plasma_spt.delete()
+        self.team_color.delete()
         Explosion(self.x, self.y, self.width / PS / 2)
         self.delete()
 
@@ -509,7 +511,7 @@ class Turret(OffensiveStructure, GuardianStructure):
         super().__init__(game_inst, owner, res.turret_img,
                          res.turret_team_color, res.turret_icon_img,
                          vision_radius=5,
-                         hp=100, x=x, y=y, damage=1000, cooldown=60)
+                         hp=100, x=x, y=y, damage=20, cooldown=60)
         super().gs_init(skip_constr)
 
     def constr_complete(self):
@@ -736,7 +738,7 @@ def find_path(start, end, is_flying):
 
 class Unit(Sprite):
     def __init__(self, game_inst, owner, img, team_color_img, icon, flying,
-                 vision_radius, hp, x, y, speed, has_weapon, damage, cooldown,
+                 vision_radius, hp, x, y, speed, weapon_type, damage, cooldown,
                  attacks_ground, attacks_air, shadow_sprite, ctrl_buttons):
         self.game_inst = game_inst
         self.owner = owner
@@ -766,7 +768,7 @@ class Unit(Sprite):
         self.x = x
         self.y = y
         self.speed = speed
-        self.has_weapon = has_weapon
+        self.weapon_type = weapon_type
         self.damage = damage
         self.cooldown = cooldown
         self.attacks_ground = attacks_ground
@@ -947,10 +949,16 @@ class Unit(Sprite):
             self.dest_reached = True
 
     def shoot(self, frame_count):
-        global projectiles
-        projectile = Projectile(x=self.x, y=self.y, target_x=self.target_p.x,
-                                target_y=self.target_p.y, damage=self.damage,
-                                speed=5, target_obj=self.target_p)
+        if self.weapon_type == 'projectile':
+            projectile = Projectile(x=self.x, y=self.y, target_x=self.target_p.x,
+                                    target_y=self.target_p.y, damage=self.damage,
+                                    speed=5, target_obj=self.target_p)
+            projectiles.append(projectile)
+        else:
+            self.target_p.hp -= self.damage
+            Zap(self.x, self.y, self.target_p.x, self.target_p.y,
+                self.game_inst.frame_count)
+            HitAnim(self.target_p.x, self.target_p.y)
         x_diff = self.target_p.x - self.x
         y_diff = self.target_p.y - self.y
         angle = -math.degrees(math.atan2(y_diff, x_diff)) + 90
@@ -959,7 +967,7 @@ class Unit(Sprite):
         self.shadow.rotation = angle
         self.on_cooldown = True
         self.cooldown_started = frame_count
-        projectiles.append(projectile)
+
 
     def stop_move(self):
         """Stops movement."""
@@ -999,7 +1007,7 @@ class Apocalypse(Unit):
                          res.apocalypse_team_color, res.apocalypse_icon_img,
                          flying=True,
                          vision_radius=6, hp=100, x=x, y=y, speed=2,
-                         has_weapon=True, damage=30, cooldown=120,
+                         weapon_type='projectile', damage=30, cooldown=120,
                          attacks_ground=True, attacks_air=False,
                          shadow_sprite=res.apocalypse_shadow_img,
                          ctrl_buttons=game_inst.basic_unit_c_bs)
@@ -1016,7 +1024,7 @@ class Centurion(Unit):
                          res.centurion_team_color, res.centurion_icon_img,
                          flying=False,
                          vision_radius=6, hp=100, x=x, y=y, speed=1,
-                         has_weapon=True, damage=10, cooldown=120,
+                         weapon_type='projectile', damage=10, cooldown=120,
                          attacks_ground=True, attacks_air=False,
                          shadow_sprite=res.centurion_shadow_img,
                          ctrl_buttons=game_inst.basic_unit_c_bs)
@@ -1032,7 +1040,7 @@ class Defiler(Unit):
         super().__init__(game_inst, owner, res.defiler_img,
                          res.defiler_team_color, res.defiler_icon_img, flying=True,
                          vision_radius=6, hp=70, x=x, y=y, speed=6,
-                         has_weapon=True, damage=10, cooldown=60,
+                         weapon_type='instant', damage=10, cooldown=60,
                          attacks_ground=True, attacks_air=True,
                          shadow_sprite=res.defiler_shadow_img,
                          ctrl_buttons=game_inst.basic_unit_c_bs)
@@ -1048,7 +1056,7 @@ class Pioneer(Unit):
         super().__init__(game_inst, owner, res.pioneer_img,
                          res.pioneer_team_color, res.pioneer_icon_img, flying=False,
                          vision_radius=4, hp=10, x=x, y=y, speed=4,
-                         has_weapon=False, damage=0, cooldown=0,
+                         weapon_type='none', damage=0, cooldown=0,
                          attacks_ground=False, attacks_air=False,
                          shadow_sprite=res.pioneer_shadow_img,
                          ctrl_buttons=game_inst.basic_unit_c_bs +
@@ -1061,16 +1069,8 @@ class Pioneer(Unit):
         self.task_x = None
         self.task_y = None
         self.is_gathering = False
-
-        s1 = pyglet.image.load('sprites/anims/zap/zap1.png')
-        s1.anchor_y = 8
-        s2 = pyglet.image.load('sprites/anims/zap/zap2.png')
-        s2.anchor_y = 8
-        s3 = pyglet.image.load('sprites/anims/zap/zap3.png')
-        s3.anchor_y = 8
-        sprites = [s1, s2, s3]
-        anim = pyglet.image.Animation.from_image_sequence(sprites, 0.1, True)
-        self.zap_sprite = Sprite(anim, self.x, self.y, batch=zap_batch)
+        self.zap_sprite = Sprite(res.zap_anim, self.x, self.y,
+                                 batch=weapons_batch)
         self.zap_sprite.visible = False
 
     def build(self):
@@ -1139,7 +1139,7 @@ class Wyrm(Unit):
         super().__init__(game_inst, owner, res.wyrm_img,
                          res.wyrm_team_color, res.wyrm_icon_img, flying=False,
                          vision_radius=3, hp=25, x=x, y=y, speed=7,
-                         has_weapon=True, damage=5, cooldown=60,
+                         weapon_type='projectile', damage=5, cooldown=60,
                          attacks_ground=True, attacks_air=False,
                          shadow_sprite=res.wyrm_shadow_img,
                          ctrl_buttons=game_inst.basic_unit_c_bs)
@@ -1158,7 +1158,6 @@ class PlanetEleven(pyglet.window.Window):
         self.mouse_y = 0
         self.show_hint = False
         self.menu_bg = UI(self, res.menu_bg, 0, 0)
-        self.delayed_del = None
 
     def setup(self):
         global selected
@@ -1306,10 +1305,10 @@ class PlanetEleven(pyglet.window.Window):
         if not self.paused:
             self.terrain.draw()
             ground_shadows_batch.draw()
-            zap_batch.draw()
             structures_batch.draw()
             ground_units_batch.draw()
             ground_team_color_batch.draw()
+            weapons_batch.draw()
             explosions_batch.draw()
             air_shadows_batch.draw()
             air_batch.draw()
@@ -1351,10 +1350,6 @@ class PlanetEleven(pyglet.window.Window):
             self.fow_texture.blit(minimap_fow_x, minimap_fow_y)
 
             self.mm_cam_frame_spt.draw()
-
-            for projectile in projectiles:
-                projectile.draw()
-
             self.min_count_label.draw()
             self.mineral_small.draw()
             if self.show_fps:
@@ -1385,15 +1380,15 @@ class PlanetEleven(pyglet.window.Window):
                 except AttributeError:
                     pass
             # # AI ordering units
-            # if self.frame_count % 60 == 0:
-            #     for building in enemy_structures:
-            #         if isinstance(building, MechCenter):
-            #             if self.computer.workers_count < 6:
-            #                 order_unit(self, building, Pioneer)
-            #                 self.computer.workers_count += 1
-            #             else:
-            #                 order_unit(self, building, random.choice((Wyrm,
-            #                     Centurion, Defiler, Apocalypse)))
+            if self.frame_count % 60 == 0:
+                for building in enemy_structures:
+                    if isinstance(building, MechCenter):
+                        if self.computer.workers_count < 6:
+                            order_unit(self, building, Pioneer)
+                            self.computer.workers_count += 1
+                        else:
+                            order_unit(self, building, random.choice((Wyrm,
+                                Centurion, Defiler, Apocalypse)))
             # Units
             # Gathering resources
             for worker in workers:
@@ -1413,57 +1408,57 @@ class PlanetEleven(pyglet.window.Window):
                         if owner.name == 'player1':
                             self.update_min_c_label()
             # AI gathering resources
-            # if self.frame_count % 120 == 0:
-            #     try:
-            #         closest_min = minerals[0]
-            #         for worker in workers:
-            #             if all((not worker.is_gathering,
-            #                     worker.dest_reached,
-            #                     worker.owner.name == 'computer1')):
-            #                 dist_2_closest_min = dist(closest_min, worker)
-            #                 for mineral in minerals[1:]:
-            #                     dist_2_min = dist(mineral, worker)
-            #                     if dist_2_min < dist_2_closest_min:
-            #                         closest_min = mineral
-            #                         dist_2_closest_min = dist_2_min
-            #                 worker.move((closest_min.x, closest_min.y))
-            #                 worker.clear_task()
-            #                 print('go gather, lazy worker!')
-            #                 worker.mineral_to_gather = closest_min
-            #                 worker.task_x = closest_min.x
-            #                 worker.task_y = closest_min.y
-            #                 closest_min.workers.append(worker)
-            #     except IndexError:
-            #         pass
-            # # AI sending units to attack:
-            # if self.frame_count % 300 == 0:
-            #     for unit in enemy_units:
-            #         if unit.has_weapon and not unit.has_target_p:
-            #             closest_enemy = None
-            #             closest_enemy_dist = None
-            #             for entity in our_units + our_buildings:
-            #                 try:
-            #                     if not unit.attacks_air and entity.flying:
-            #                         continue
-            #                     if not unit.attacks_ground \
-            #                             and not entity.flying:
-            #                         continue
-            #                 except AttributeError:
-            #                     pass
-            #                 dist_to_enemy = dist(unit, entity)
-            #                 if not closest_enemy:
-            #                     closest_enemy = entity
-            #                     closest_enemy_dist = dist_to_enemy
-            #                 else:
-            #                     if dist_to_enemy < closest_enemy_dist:
-            #                         closest_enemy = entity
-            #                         closest_enemy_dist = dist_to_enemy
-            #             try:
-            #                 unit.move(round_coords(closest_enemy.x,
-            #                                        closest_enemy.y))
-            #                 unit.attack_moving = True
-            #             except AttributeError:
-            #                 pass
+            if self.frame_count % 120 == 0:
+                try:
+                    closest_min = minerals[0]
+                    for worker in workers:
+                        if all((not worker.is_gathering,
+                                worker.dest_reached,
+                                worker.owner.name == 'computer1')):
+                            dist_2_closest_min = dist(closest_min, worker)
+                            for mineral in minerals[1:]:
+                                dist_2_min = dist(mineral, worker)
+                                if dist_2_min < dist_2_closest_min:
+                                    closest_min = mineral
+                                    dist_2_closest_min = dist_2_min
+                            worker.move((closest_min.x, closest_min.y))
+                            worker.clear_task()
+                            print('go gather, lazy worker!')
+                            worker.mineral_to_gather = closest_min
+                            worker.task_x = closest_min.x
+                            worker.task_y = closest_min.y
+                            closest_min.workers.append(worker)
+                except IndexError:
+                    pass
+            # AI sending units to attack:
+            if self.frame_count % 300 == 0:
+                for unit in enemy_units:
+                    if unit.weapon_type != 'none' and not unit.has_target_p:
+                        closest_enemy = None
+                        closest_enemy_dist = None
+                        for entity in our_units + our_structures:
+                            try:
+                                if not unit.attacks_air and entity.flying:
+                                    continue
+                                if not unit.attacks_ground \
+                                        and not entity.flying:
+                                    continue
+                            except AttributeError:
+                                pass
+                            dist_to_enemy = dist(unit, entity)
+                            if not closest_enemy:
+                                closest_enemy = entity
+                                closest_enemy_dist = dist_to_enemy
+                            else:
+                                if dist_to_enemy < closest_enemy_dist:
+                                    closest_enemy = entity
+                                    closest_enemy_dist = dist_to_enemy
+                        try:
+                            unit.move(round_coords(closest_enemy.x,
+                                                   closest_enemy.y))
+                            unit.attack_moving = True
+                        except AttributeError:
+                            pass
             # Summon structures. TODO: Optimize
             for worker in workers:
                 if worker.to_build:
@@ -1481,13 +1476,13 @@ class PlanetEleven(pyglet.window.Window):
                         if struct.const_f + struct.build_time <= \
                                 self.frame_count:
                             struct.constr_complete()
-                            self.delayed_del = (struct, guardian_dummies)
+                            delayed_del = (struct, guardian_dummies)
                     except AttributeError:
                         pass
                 # Delayed del
                 try:
-                    del self.delayed_del[1][self.delayed_del[1].index(
-                        self.delayed_del[0])]
+                    del delayed_del[1][delayed_del[1].index(
+                        delayed_del[0])]
                 except:
                     pass
             # Movement
@@ -1579,6 +1574,16 @@ class PlanetEleven(pyglet.window.Window):
                     HitAnim(projectile.x, projectile.y)
                     projectile.delete()
                     del projectiles[i]
+            # Zaps
+            delayed_del = []
+            for zap in zaps:
+                if zap.f_started + ZAPS_LAST_F <= self.frame_count:
+                    delayed_del.append(zap)
+            # Delayed del
+            for zap in delayed_del:
+                del zaps[zaps.index(zap)]
+                zap.delete()
+                print('zap deleted')
             # Destroying minerals
             minerals_to_del = []
             for mineral in minerals:
@@ -1697,7 +1702,7 @@ class PlanetEleven(pyglet.window.Window):
                 # Attack move
                 if selected in our_units:
                     try:
-                        if selected.has_weapon:
+                        if selected.weapon_type != 'none':
                             if selected.owner.name == 'player1':
                                 self.set_mouse_cursor(res.cursor_target)
                             self.targeting_phase = True
@@ -2026,7 +2031,7 @@ class PlanetEleven(pyglet.window.Window):
                                 and self.attack_b.y - 16 <= y <= \
                                 self.attack_b.y + 16:
                             try:
-                                if selected.has_weapon:
+                                if selected.weapon_type != 'none':
                                     if selected.owner.name == 'player1':
                                         self.set_mouse_cursor(
                                             res.cursor_target)

@@ -180,6 +180,15 @@ plasma3 = center_load('plasma16_3.png')
 plasma_anim = pyglet.image.Animation.from_image_sequence([plasma1, plasma2,
                                                           plasma3], 0.1, True)
 
+zap1 = pyglet.image.load('sprites/anims/zap/zap1.png')
+zap1.anchor_y = 8
+zap2 = pyglet.image.load('sprites/anims/zap/zap2.png')
+zap2.anchor_y = 8
+zap3 = pyglet.image.load('sprites/anims/zap/zap3.png')
+zap3.anchor_y = 8
+zap_anim = pyglet.image.Animation.from_image_sequence([zap1, zap2, zap3],
+                                                      0.1, True)
+
 explosion1 = center_load('explosion1.png')
 explosion2 = center_load('explosion2.png')
 explosion3 = center_load('explosion3.png')

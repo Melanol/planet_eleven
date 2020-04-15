@@ -3,27 +3,12 @@
   <component name="ChangeListManager">
     <list default="true" id="8699b466-fa9b-4e8c-b41f-e5bbe759696d" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/demos/twitter updates/3/updates to include.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/constants_and_utilities.py" beforeDir="false" afterPath="$PROJECT_DIR$/constants_and_utilities.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/main.rtf" beforeDir="false" afterPath="$PROJECT_DIR$/docs/main.rtf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.tmx" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/planet_eleven.py" beforeDir="false" afterPath="$PROJECT_DIR$/planet_eleven.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/terrain.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/terrain.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tiles/background.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tiles/background.tmx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tiles/background1.tmx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tiles/horizontal.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tiles/horizontal.psd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tiles/rocks.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tiles/rocks.psd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tiles/rocks_emerald.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tiles/rocks_emerald.psd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tiles/sand.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tiles/sand.psd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tiles/sand_red.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tiles/sssr_angle.psd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tiles/sssr_angle_transp.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tiles/top_right_angle.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tiles/top_right_angle.psd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/projectile.py" beforeDir="false" afterPath="$PROJECT_DIR$/weapons.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources.py" beforeDir="false" afterPath="$PROJECT_DIR$/resources.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tiles/rocks/rocks.psd" beforeDir="false" afterPath="$PROJECT_DIR$/tiles/rocks/rocks.psd" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -173,20 +158,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1566740526093</updated>
-    </task>
-    <task id="LOCAL-00194" summary="AI can gather minerals">
-      <created>1574198488407</created>
-      <option name="number" value="00194" />
-      <option name="presentableId" value="LOCAL-00194" />
-      <option name="project" value="LOCAL" />
-      <updated>1574198488408</updated>
-    </task>
-    <task id="LOCAL-00195" summary="AI building random fighting units">
-      <created>1574199560089</created>
-      <option name="number" value="00195" />
-      <option name="presentableId" value="LOCAL-00195" />
-      <option name="project" value="LOCAL" />
-      <updated>1574199560090</updated>
     </task>
     <task id="LOCAL-00196" summary="AI no longer shoots ghosts of buildings">
       <created>1574261496331</created>
@@ -517,7 +488,21 @@
       <option name="project" value="LOCAL" />
       <updated>1586679290374</updated>
     </task>
-    <option name="localTasksCounter" value="243" />
+    <task id="LOCAL-00243" summary="Half tiles">
+      <created>1586696109797</created>
+      <option name="number" value="00243" />
+      <option name="presentableId" value="LOCAL-00243" />
+      <option name="project" value="LOCAL" />
+      <updated>1586696109797</updated>
+    </task>
+    <task id="LOCAL-00244" summary="Half tiles">
+      <created>1586696123038</created>
+      <option name="number" value="00244" />
+      <option name="presentableId" value="LOCAL-00244" />
+      <option name="project" value="LOCAL" />
+      <updated>1586696123038</updated>
+    </task>
+    <option name="localTasksCounter" value="245" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -561,7 +546,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$" />
     </ignored-roots>
-    <MESSAGE value="Minimap fixed" />
     <MESSAGE value="Menu buttons added" />
     <MESSAGE value="BigBase renamed to MechCenter" />
     <MESSAGE value="Proper fullscreen restored" />
@@ -586,7 +570,8 @@
     <MESSAGE value="Structure team colors" />
     <MESSAGE value="Shift bug fixed" />
     <MESSAGE value="Icons" />
-    <option name="LAST_COMMIT_MESSAGE" value="Icons" />
+    <MESSAGE value="Half tiles" />
+    <option name="LAST_COMMIT_MESSAGE" value="Half tiles" />
   </component>
   <component name="WindowStateProjectService">
     <state x="137" y="23" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1586589784304">
@@ -597,30 +582,30 @@
       <screen x="0" y="0" width="1366" height="738" />
     </state>
     <state x="357" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.0.1366.738@0.0.1366.738" timestamp="1586666260294" />
-    <state x="255" y="0" key="CommitChangelistDialog2" timestamp="1586679287775">
+    <state x="255" y="0" key="CommitChangelistDialog2" timestamp="1586696120180">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state x="255" y="0" key="CommitChangelistDialog2/0.0.1366.738@0.0.1366.738" timestamp="1586679287775" />
+    <state x="255" y="0" key="CommitChangelistDialog2/0.0.1366.738@0.0.1366.738" timestamp="1586696120180" />
     <state x="462" y="109" key="FileChooserDialogImpl" timestamp="1586665464134">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
     <state x="462" y="109" key="FileChooserDialogImpl/0.0.1366.738@0.0.1366.738" timestamp="1586665464134" />
-    <state width="1344" height="180" key="GridCell.Tab.0.bottom" timestamp="1586695860631">
+    <state width="1344" height="148" key="GridCell.Tab.0.bottom" timestamp="1586942317837">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="180" key="GridCell.Tab.0.bottom/0.0.1366.738@0.0.1366.738" timestamp="1586695860631" />
-    <state width="1344" height="180" key="GridCell.Tab.0.center" timestamp="1586695860631">
+    <state width="1344" height="148" key="GridCell.Tab.0.bottom/0.0.1366.738@0.0.1366.738" timestamp="1586942317837" />
+    <state width="1344" height="148" key="GridCell.Tab.0.center" timestamp="1586942317837">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="180" key="GridCell.Tab.0.center/0.0.1366.738@0.0.1366.738" timestamp="1586695860631" />
-    <state width="1344" height="180" key="GridCell.Tab.0.left" timestamp="1586695860631">
+    <state width="1344" height="148" key="GridCell.Tab.0.center/0.0.1366.738@0.0.1366.738" timestamp="1586942317837" />
+    <state width="1344" height="148" key="GridCell.Tab.0.left" timestamp="1586942317836">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="180" key="GridCell.Tab.0.left/0.0.1366.738@0.0.1366.738" timestamp="1586695860631" />
-    <state width="1344" height="180" key="GridCell.Tab.0.right" timestamp="1586695860631">
+    <state width="1344" height="148" key="GridCell.Tab.0.left/0.0.1366.738@0.0.1366.738" timestamp="1586942317836" />
+    <state width="1344" height="148" key="GridCell.Tab.0.right" timestamp="1586942317837">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="180" key="GridCell.Tab.0.right/0.0.1366.738@0.0.1366.738" timestamp="1586695860631" />
+    <state width="1344" height="148" key="GridCell.Tab.0.right/0.0.1366.738@0.0.1366.738" timestamp="1586942317837" />
     <state width="1344" height="208" key="GridCell.Tab.1.bottom" timestamp="1586351808917">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
@@ -653,6 +638,10 @@
       <screen x="0" y="0" width="1366" height="738" />
     </state>
     <state x="92" y="92" width="1182" height="554" key="com.intellij.history.integration.ui.views.FileHistoryDialog/0.0.1366.738@0.0.1366.738" timestamp="1586262344329" />
+    <state x="492" y="282" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1586937427759">
+      <screen x="0" y="0" width="1366" height="738" />
+    </state>
+    <state x="492" y="282" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1366.738@0.0.1366.738" timestamp="1586937427759" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

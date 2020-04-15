@@ -71,7 +71,6 @@ utilities_batch = pyglet.graphics.Batch()
 minimap_pixels_batch = pyglet.graphics.Batch()
 ground_shadows_batch = pyglet.graphics.Batch()
 air_shadows_batch = pyglet.graphics.Batch()
-zap_batch = pyglet.graphics.Batch()
 explosions_batch = pyglet.graphics.Batch()
 
 minerals = []
