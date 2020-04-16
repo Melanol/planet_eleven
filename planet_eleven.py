@@ -382,19 +382,16 @@ class Structure(Sprite):
         self.team_color.delete()
         self.pixel.delete()
         if not delay_del:
-            if self.owner.name == 'player1':
-                del our_structs[our_structs.index(self)]
-            else:
-                del enemy_structs[enemy_structs.index(self)]
+            for arr in (our_structs, enemy_structs, prod_structs):
+                try:
+                    arr.remove(self)
+                except ValueError:
+                    pass
         for attacker in self.attackers:
             attacker.has_target_p = False
         try:
             self.anim.delete()
         except AttributeError:
-            pass
-        try:
-            del prod_structs[prod_structs.index(self)]
-        except ValueError:
             pass
         Explosion(self.x, self.y, self.width / PS / 2)
         self.delete()
