@@ -3,8 +3,9 @@
   <component name="ChangeListManager">
     <list default="true" id="8699b466-fa9b-4e8c-b41f-e5bbe759696d" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/main.rtf" beforeDir="false" afterPath="$PROJECT_DIR$/docs/main.rtf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/main.rtf" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/planet_eleven.py" beforeDir="false" afterPath="$PROJECT_DIR$/planet_eleven.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/cp/cp.psd" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/cp/cp.psd" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -154,13 +155,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1566740526093</updated>
-    </task>
-    <task id="LOCAL-00197" summary="Moving enemy units no longer share vision with the player">
-      <created>1574262876926</created>
-      <option name="number" value="00197" />
-      <option name="presentableId" value="LOCAL-00197" />
-      <option name="project" value="LOCAL" />
-      <updated>1574262876926</updated>
     </task>
     <task id="LOCAL-00198" summary="Scuffed attack_move()">
       <created>1574448320805</created>
@@ -498,7 +492,14 @@
       <option name="project" value="LOCAL" />
       <updated>1586942430805</updated>
     </task>
-    <option name="localTasksCounter" value="246" />
+    <task id="LOCAL-00246" summary="Movement bug fixed">
+      <created>1586944730141</created>
+      <option name="number" value="00246" />
+      <option name="presentableId" value="LOCAL-00246" />
+      <option name="project" value="LOCAL" />
+      <updated>1586944730141</updated>
+    </task>
+    <option name="localTasksCounter" value="247" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -542,7 +543,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$" />
     </ignored-roots>
-    <MESSAGE value="BigBase renamed to MechCenter" />
     <MESSAGE value="Proper fullscreen restored" />
     <MESSAGE value="Fullscreen moved to options" />
     <MESSAGE value="Added back buttons" />
@@ -567,7 +567,8 @@
     <MESSAGE value="Icons" />
     <MESSAGE value="Half tiles" />
     <MESSAGE value="Instant weapon" />
-    <option name="LAST_COMMIT_MESSAGE" value="Instant weapon" />
+    <MESSAGE value="Movement bug fixed" />
+    <option name="LAST_COMMIT_MESSAGE" value="Movement bug fixed" />
   </component>
   <component name="WindowStateProjectService">
     <state x="137" y="23" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1586589784304">
@@ -578,30 +579,30 @@
       <screen x="0" y="0" width="1366" height="738" />
     </state>
     <state x="357" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.0.1366.738@0.0.1366.738" timestamp="1586666260294" />
-    <state x="255" y="0" key="CommitChangelistDialog2" timestamp="1586942416344">
+    <state x="255" y="0" key="CommitChangelistDialog2" timestamp="1586944727553">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state x="255" y="0" key="CommitChangelistDialog2/0.0.1366.738@0.0.1366.738" timestamp="1586942416344" />
+    <state x="255" y="0" key="CommitChangelistDialog2/0.0.1366.738@0.0.1366.738" timestamp="1586944727553" />
     <state x="462" y="109" key="FileChooserDialogImpl" timestamp="1586665464134">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
     <state x="462" y="109" key="FileChooserDialogImpl/0.0.1366.738@0.0.1366.738" timestamp="1586665464134" />
-    <state width="1344" height="83" key="GridCell.Tab.0.bottom" timestamp="1586944682748">
+    <state width="1344" height="187" key="GridCell.Tab.0.bottom" timestamp="1587034135184">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="83" key="GridCell.Tab.0.bottom/0.0.1366.738@0.0.1366.738" timestamp="1586944682748" />
-    <state width="1344" height="83" key="GridCell.Tab.0.center" timestamp="1586944682745">
+    <state width="1344" height="187" key="GridCell.Tab.0.bottom/0.0.1366.738@0.0.1366.738" timestamp="1587034135184" />
+    <state width="1344" height="187" key="GridCell.Tab.0.center" timestamp="1587034135181">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="83" key="GridCell.Tab.0.center/0.0.1366.738@0.0.1366.738" timestamp="1586944682745" />
-    <state width="1344" height="83" key="GridCell.Tab.0.left" timestamp="1586944682745">
+    <state width="1344" height="187" key="GridCell.Tab.0.center/0.0.1366.738@0.0.1366.738" timestamp="1587034135181" />
+    <state width="1344" height="187" key="GridCell.Tab.0.left" timestamp="1587034135177">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="83" key="GridCell.Tab.0.left/0.0.1366.738@0.0.1366.738" timestamp="1586944682745" />
-    <state width="1344" height="83" key="GridCell.Tab.0.right" timestamp="1586944682748">
+    <state width="1344" height="187" key="GridCell.Tab.0.left/0.0.1366.738@0.0.1366.738" timestamp="1587034135177" />
+    <state width="1344" height="187" key="GridCell.Tab.0.right" timestamp="1587034135184">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="83" key="GridCell.Tab.0.right/0.0.1366.738@0.0.1366.738" timestamp="1586944682748" />
+    <state width="1344" height="187" key="GridCell.Tab.0.right/0.0.1366.738@0.0.1366.738" timestamp="1587034135184" />
     <state width="1344" height="208" key="GridCell.Tab.1.bottom" timestamp="1586351808917">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
@@ -630,10 +631,10 @@
       <screen x="0" y="0" width="1366" height="738" />
     </state>
     <state x="275" y="101" key="Vcs.Push.Dialog.v2/0.0.1366.738@0.0.1366.738" timestamp="1586668890814" />
-    <state x="92" y="92" width="1182" height="554" key="com.intellij.history.integration.ui.views.FileHistoryDialog" timestamp="1586262344329">
+    <state x="92" y="92" width="1182" height="554" key="com.intellij.history.integration.ui.views.FileHistoryDialog" timestamp="1587034165941">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state x="92" y="92" width="1182" height="554" key="com.intellij.history.integration.ui.views.FileHistoryDialog/0.0.1366.738@0.0.1366.738" timestamp="1586262344329" />
+    <state x="92" y="92" width="1182" height="554" key="com.intellij.history.integration.ui.views.FileHistoryDialog/0.0.1366.738@0.0.1366.738" timestamp="1587034165941" />
     <state x="492" y="282" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1586937427759">
       <screen x="0" y="0" width="1366" height="738" />
     </state>

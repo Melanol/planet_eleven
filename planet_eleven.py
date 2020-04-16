@@ -1785,9 +1785,14 @@ class PlanetEleven(pyglet.window.Window):
                             unit = Wyrm(self, _key[0], _key[1])
                             unit.spawn()
                     i += 1
+        # Menu
+        else:
+            if symbol == key.ESCAPE:
+                self.paused = False
 
     def on_mouse_press(self, x, y, button, modifiers):
-        global selected, our_units, lvb, bvb
+        global selected
+        print('x =', x, 'y =', y)
         if self.fullscreen:
             x //= 2
             y //= 2
@@ -2070,6 +2075,7 @@ class PlanetEleven(pyglet.window.Window):
                                 self.to_build_spt.x, self.to_build_spt.y = x, y
         # Paused
         else:
+            x, y = mc(x=x, y=y)
             if self.options:
                 if self.fullscreen_c.x - 8 <= x <= self.fullscreen_c.x + 8 \
                     and \
