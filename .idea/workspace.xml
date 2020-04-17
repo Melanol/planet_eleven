@@ -1,16 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="8699b466-fa9b-4e8c-b41f-e5bbe759696d" name="Default Changelist" comment="building_spawn_unit optimised">
+    <list default="true" id="8699b466-fa9b-4e8c-b41f-e5bbe759696d" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/todo.rtf" beforeDir="false" afterPath="$PROJECT_DIR$/docs/todo.rtf" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/planet_eleven.py" beforeDir="false" afterPath="$PROJECT_DIR$/planet_eleven.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources.py" beforeDir="false" afterPath="$PROJECT_DIR$/resources.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/attack.psd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/move.psd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/sel_frame.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/cp/sel_frame.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/sel_frame.psd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/stop.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/stop.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/stop.psd" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -183,20 +177,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1566740526093</updated>
-    </task>
-    <task id="LOCAL-00205" summary="Key M works">
-      <created>1576139340092</created>
-      <option name="number" value="00205" />
-      <option name="presentableId" value="LOCAL-00205" />
-      <option name="project" value="LOCAL" />
-      <updated>1576139340092</updated>
-    </task>
-    <task id="LOCAL-00206" summary="Phases optimized">
-      <created>1576140155789</created>
-      <option name="number" value="00206" />
-      <option name="presentableId" value="LOCAL-00206" />
-      <option name="project" value="LOCAL" />
-      <updated>1576140155789</updated>
     </task>
     <task id="LOCAL-00207" summary="Fixed a rally point bug">
       <created>1576210838283</created>
@@ -527,7 +507,21 @@
       <option name="project" value="LOCAL" />
       <updated>1587119223259</updated>
     </task>
-    <option name="localTasksCounter" value="254" />
+    <task id="LOCAL-00254" summary="cancel_prod()">
+      <created>1587130464845</created>
+      <option name="number" value="00254" />
+      <option name="presentableId" value="LOCAL-00254" />
+      <option name="project" value="LOCAL" />
+      <updated>1587130464846</updated>
+    </task>
+    <task id="LOCAL-00255" summary="cancel_prod()">
+      <created>1587130474019</created>
+      <option name="number" value="00255" />
+      <option name="presentableId" value="LOCAL-00255" />
+      <option name="project" value="LOCAL" />
+      <updated>1587130474019</updated>
+    </task>
+    <option name="localTasksCounter" value="256" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -571,7 +565,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$" />
     </ignored-roots>
-    <MESSAGE value="Small changes" />
     <MESSAGE value="Holding SHIFT selects ground entities only" />
     <MESSAGE value="Fixed hotkey construction curcor bug for fullscreen" />
     <MESSAGE value="hotkey_constr_cur_1b()" />
@@ -596,7 +589,8 @@
     <MESSAGE value="prod_structs" />
     <MESSAGE value="Struct.kill() modified" />
     <MESSAGE value="building_spawn_unit optimised" />
-    <option name="LAST_COMMIT_MESSAGE" value="building_spawn_unit optimised" />
+    <MESSAGE value="cancel_prod()" />
+    <option name="LAST_COMMIT_MESSAGE" value="cancel_prod()" />
   </component>
   <component name="WindowStateProjectService">
     <state x="137" y="23" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1586589784304">
@@ -607,30 +601,30 @@
       <screen x="0" y="0" width="1366" height="738" />
     </state>
     <state x="357" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.0.1366.738@0.0.1366.738" timestamp="1587063913382" />
-    <state x="255" y="0" key="CommitChangelistDialog2" timestamp="1587121515294">
+    <state x="255" y="0" key="CommitChangelistDialog2" timestamp="1587130472526">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state x="255" y="0" key="CommitChangelistDialog2/0.0.1366.738@0.0.1366.738" timestamp="1587121515294" />
+    <state x="255" y="0" key="CommitChangelistDialog2/0.0.1366.738@0.0.1366.738" timestamp="1587130472526" />
     <state x="462" y="109" key="FileChooserDialogImpl" timestamp="1587120374789">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
     <state x="462" y="109" key="FileChooserDialogImpl/0.0.1366.738@0.0.1366.738" timestamp="1587120374789" />
-    <state width="1344" height="93" key="GridCell.Tab.0.bottom" timestamp="1587130318650">
+    <state width="1344" height="93" key="GridCell.Tab.0.bottom" timestamp="1587131308290">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="93" key="GridCell.Tab.0.bottom/0.0.1366.738@0.0.1366.738" timestamp="1587130318650" />
-    <state width="1344" height="93" key="GridCell.Tab.0.center" timestamp="1587130318650">
+    <state width="1344" height="93" key="GridCell.Tab.0.bottom/0.0.1366.738@0.0.1366.738" timestamp="1587131308290" />
+    <state width="1344" height="93" key="GridCell.Tab.0.center" timestamp="1587131308289">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="93" key="GridCell.Tab.0.center/0.0.1366.738@0.0.1366.738" timestamp="1587130318650" />
-    <state width="1344" height="93" key="GridCell.Tab.0.left" timestamp="1587130318650">
+    <state width="1344" height="93" key="GridCell.Tab.0.center/0.0.1366.738@0.0.1366.738" timestamp="1587131308289" />
+    <state width="1344" height="93" key="GridCell.Tab.0.left" timestamp="1587131308289">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="93" key="GridCell.Tab.0.left/0.0.1366.738@0.0.1366.738" timestamp="1587130318650" />
-    <state width="1344" height="93" key="GridCell.Tab.0.right" timestamp="1587130318650">
+    <state width="1344" height="93" key="GridCell.Tab.0.left/0.0.1366.738@0.0.1366.738" timestamp="1587131308289" />
+    <state width="1344" height="93" key="GridCell.Tab.0.right" timestamp="1587131308290">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="93" key="GridCell.Tab.0.right/0.0.1366.738@0.0.1366.738" timestamp="1587130318650" />
+    <state width="1344" height="93" key="GridCell.Tab.0.right/0.0.1366.738@0.0.1366.738" timestamp="1587131308290" />
     <state width="1344" height="208" key="GridCell.Tab.1.bottom" timestamp="1586351808917">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
@@ -655,10 +649,10 @@
       <screen x="0" y="0" width="1366" height="738" />
     </state>
     <state width="498" height="446" key="SwitcherDM/0.0.1366.738@0.0.1366.738" timestamp="1586675087110" />
-    <state x="275" y="101" key="Vcs.Push.Dialog.v2" timestamp="1587119229414">
+    <state x="275" y="101" key="Vcs.Push.Dialog.v2" timestamp="1587130479143">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state x="275" y="101" key="Vcs.Push.Dialog.v2/0.0.1366.738@0.0.1366.738" timestamp="1587119229414" />
+    <state x="275" y="101" key="Vcs.Push.Dialog.v2/0.0.1366.738@0.0.1366.738" timestamp="1587130479143" />
     <state x="92" y="92" width="1182" height="554" key="com.intellij.history.integration.ui.views.FileHistoryDialog" timestamp="1587034165941">
       <screen x="0" y="0" width="1366" height="738" />
     </state>

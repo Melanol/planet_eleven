@@ -1642,6 +1642,13 @@ class PlanetEleven(pyglet.window.Window):
                         self.prod_bar.visible = False
                 except (AttributeError, TypeError):
                     pass
+        if self.f % 50 == 0:
+            if not enemy_structs:
+                self.txt_out.text = "Victory"
+                self.txt_out_upd_f = self.f
+            elif not our_structs:
+                self.txt_out.text = "Defeat"
+                self.txt_out_upd_f = self.f
 
     def on_key_press(self, symbol, modifiers):
         """Called whenever a key is pressed."""
