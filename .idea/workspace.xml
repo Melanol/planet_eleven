@@ -2,12 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="8699b466-fa9b-4e8c-b41f-e5bbe759696d" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/long_line_finder.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/constants_and_utilities.py" beforeDir="false" afterPath="$PROJECT_DIR$/constants_and_utilities.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/todo.rtf" beforeDir="false" afterPath="$PROJECT_DIR$/docs/todo.rtf" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/planet_eleven.py" beforeDir="false" afterPath="$PROJECT_DIR$/planet_eleven.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test1.py" beforeDir="false" afterPath="$PROJECT_DIR$/test.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -180,13 +176,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1566740526093</updated>
-    </task>
-    <task id="LOCAL-00203" summary="Fixed an bug that would allow building buildings atop of each other">
-      <created>1574927958575</created>
-      <option name="number" value="00203" />
-      <option name="presentableId" value="LOCAL-00203" />
-      <option name="project" value="LOCAL" />
-      <updated>1574927958576</updated>
     </task>
     <task id="LOCAL-00204" summary="Control panel move command works">
       <created>1576138567174</created>
@@ -524,7 +513,14 @@
       <option name="project" value="LOCAL" />
       <updated>1587063892745</updated>
     </task>
-    <option name="localTasksCounter" value="252" />
+    <task id="LOCAL-00252" summary="building_spawn_unit optimised">
+      <created>1587117640107</created>
+      <option name="number" value="00252" />
+      <option name="presentableId" value="LOCAL-00252" />
+      <option name="project" value="LOCAL" />
+      <updated>1587117640108</updated>
+    </task>
+    <option name="localTasksCounter" value="253" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -568,7 +564,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$" />
     </ignored-roots>
-    <MESSAGE value="Last commit before 0.3" />
     <MESSAGE value="Small changes" />
     <MESSAGE value="Holding SHIFT selects ground entities only" />
     <MESSAGE value="Fixed hotkey construction curcor bug for fullscreen" />
@@ -593,7 +588,8 @@
     <MESSAGE value="prod_bar" />
     <MESSAGE value="prod_structs" />
     <MESSAGE value="Struct.kill() modified" />
-    <option name="LAST_COMMIT_MESSAGE" value="Struct.kill() modified" />
+    <MESSAGE value="building_spawn_unit optimised" />
+    <option name="LAST_COMMIT_MESSAGE" value="building_spawn_unit optimised" />
   </component>
   <component name="WindowStateProjectService">
     <state x="137" y="23" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1586589784304">
@@ -604,30 +600,30 @@
       <screen x="0" y="0" width="1366" height="738" />
     </state>
     <state x="357" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.0.1366.738@0.0.1366.738" timestamp="1587063913382" />
-    <state x="255" y="0" key="CommitChangelistDialog2" timestamp="1587063890213">
+    <state x="255" y="0" key="CommitChangelistDialog2" timestamp="1587117631138">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state x="255" y="0" key="CommitChangelistDialog2/0.0.1366.738@0.0.1366.738" timestamp="1587063890213" />
+    <state x="255" y="0" key="CommitChangelistDialog2/0.0.1366.738@0.0.1366.738" timestamp="1587117631138" />
     <state x="462" y="109" key="FileChooserDialogImpl" timestamp="1586665464134">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
     <state x="462" y="109" key="FileChooserDialogImpl/0.0.1366.738@0.0.1366.738" timestamp="1586665464134" />
-    <state width="1344" height="93" key="GridCell.Tab.0.bottom" timestamp="1587117435143">
+    <state width="1344" height="93" key="GridCell.Tab.0.bottom" timestamp="1587119188471">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="93" key="GridCell.Tab.0.bottom/0.0.1366.738@0.0.1366.738" timestamp="1587117435143" />
-    <state width="1344" height="93" key="GridCell.Tab.0.center" timestamp="1587117435143">
+    <state width="1344" height="93" key="GridCell.Tab.0.bottom/0.0.1366.738@0.0.1366.738" timestamp="1587119188471" />
+    <state width="1344" height="93" key="GridCell.Tab.0.center" timestamp="1587119188470">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="93" key="GridCell.Tab.0.center/0.0.1366.738@0.0.1366.738" timestamp="1587117435143" />
-    <state width="1344" height="93" key="GridCell.Tab.0.left" timestamp="1587117435143">
+    <state width="1344" height="93" key="GridCell.Tab.0.center/0.0.1366.738@0.0.1366.738" timestamp="1587119188470" />
+    <state width="1344" height="93" key="GridCell.Tab.0.left" timestamp="1587119188470">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="93" key="GridCell.Tab.0.left/0.0.1366.738@0.0.1366.738" timestamp="1587117435143" />
-    <state width="1344" height="93" key="GridCell.Tab.0.right" timestamp="1587117435143">
+    <state width="1344" height="93" key="GridCell.Tab.0.left/0.0.1366.738@0.0.1366.738" timestamp="1587119188470" />
+    <state width="1344" height="93" key="GridCell.Tab.0.right" timestamp="1587119188471">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="93" key="GridCell.Tab.0.right/0.0.1366.738@0.0.1366.738" timestamp="1587117435143" />
+    <state width="1344" height="93" key="GridCell.Tab.0.right/0.0.1366.738@0.0.1366.738" timestamp="1587119188471" />
     <state width="1344" height="208" key="GridCell.Tab.1.bottom" timestamp="1586351808917">
       <screen x="0" y="0" width="1366" height="738" />
     </state>

@@ -214,7 +214,7 @@ def building_spawn_unit(game_inst, struct):
     if struct.prod_q:
         unit = struct.prod_q[0]
         struct.cur_max_prod_time = unit.build_time
-        # Time to spawn
+        # Is it time to spawn?
         if game_inst.f - struct.prod_start_f == struct.cur_max_prod_time:
             if str(struct.prod_q[0]) not in LIST_OF_FLYING:
                 dict_to_check = g_pos_coord_d
@@ -255,22 +255,8 @@ def building_spawn_unit(game_inst, struct):
                     break
             if place_found:
                 unit = struct.prod_q.pop(0)
-                if str(unit) == "<class '__main__.Defiler'>":
-                    unit = Defiler(game_inst, x=x, y=y, owner=struct.owner)
-                    unit.spawn()
-                elif str(unit) == "<class '__main__.Centurion'>":
-                    unit = Centurion(game_inst, x=x, y=y, owner=struct.owner)
-                    unit.spawn()
-                elif str(unit) == "<class '__main__.Wyrm'>":
-                    unit = Wyrm(game_inst, x=x, y=y, owner=struct.owner)
-                    unit.spawn()
-                elif str(unit) == "<class '__main__.Apocalypse'>":
-                    unit = Apocalypse(game_inst, x=x, y=y, owner=struct.owner)
-                    unit.spawn()
-                elif str(unit) == "<class '__main__.Pioneer'>":
-                    print(struct.prod_q)
-                    unit = Pioneer(game_inst, x=x, y=y, owner=struct.owner)
-                    unit.spawn()
+                unit = unit(game_inst, x=x, y=y, owner=struct.owner)
+                unit.spawn()
                 struct.prod_start_f += struct.cur_max_prod_time
                 if not struct.prod_q:
                     struct.anim.visible = False
@@ -278,7 +264,8 @@ def building_spawn_unit(game_inst, struct):
                     unit.move((struct.rp_x, struct.rp_y))
             else:
                 struct.prod_start_f += 1
-                # print('No space')
+                game_inst.txt_out.text = "No place"
+                game_inst.txt_out_upd_f = game_inst.f
 
 
 def order_structure(game_inst, unit, struct, x, y):
