@@ -1824,8 +1824,8 @@ class PlanetEleven(pyglet.window.Window):
                 self.paused = False
 
     def on_mouse_press(self, x, y, button, modifiers):
-        """Don't play with mc()."""
-        global selected
+        """Don't play with mc(), globals"""
+        global selected, lvb, bvb
         if self.fullscreen:
             x //= 2
             y //= 2
