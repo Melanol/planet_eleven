@@ -105,7 +105,7 @@ hint_pioneer = right_bottom_load('hint_pioneer.png')
 move_img = center_load('move.png')
 stop_img = center_load('stop.png')
 attack_img = center_load('attack.png')
-mech_center_icon_img = center_load('mech_center_icon.png')
+cancel_img = center_load('cancel.png')
 
 # Resources
 mineral = center_load('mineral.png')

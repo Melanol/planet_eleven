@@ -148,7 +148,7 @@ class CheckB(Sprite):
 
 class Player:
     def __init__(self, name):
-        self.mineral_count = 5000
+        self.min_c = 5000
         self.name = name
 
 class HitAnim(Sprite):
@@ -187,8 +187,8 @@ def order_unit(game_inst, struct, unit):
         game_inst.txt_out_upd_f = game_inst.f
         return
     # Enough minerals
-    if owner.mineral_count - unit.cost >= 0:
-        owner.mineral_count -= unit.cost
+    if owner.min_c - unit.cost >= 0:
+        owner.min_c -= unit.cost
         game_inst.update_min_c_label()
         struct.prod_q.append(unit)
         struct.anim.visible = True
@@ -262,6 +262,9 @@ def building_spawn_unit(game_inst, struct):
                     struct.anim.visible = False
                 if not struct.default_rp:
                     unit.move((struct.rp_x, struct.rp_y))
+                game_inst.prod_icon1.image = game_inst.prod_icon2.image
+                game_inst.prod_icon2.image = game_inst.prod_icon3.image
+                game_inst.prod_icon3.image = res.none_img
             else:
                 struct.prod_start_f += 1
                 game_inst.txt_out.text = "No place"
@@ -270,8 +273,8 @@ def building_spawn_unit(game_inst, struct):
 
 def order_structure(game_inst, unit, struct, x, y):
     owner = unit.owner
-    if owner.mineral_count - struct.cost >= 0:
-        owner.mineral_count -= struct.cost
+    if owner.min_c - struct.cost >= 0:
+        owner.min_c -= struct.cost
         game_inst.update_min_c_label()
         unit.to_build = game_inst.to_build
         unit.task_x = game_inst.to_build_spt.x
@@ -378,7 +381,7 @@ class Struct(Sprite):
         self.team_color.visible = True
 
 
-class ProductionStructure:
+class ProductionStruct:
     def ps_init(self):
         prod_structs.append(self)
         self.rp_x = self.x
@@ -413,7 +416,7 @@ class Armory(Struct, GuardianStructure):
         super().gs_init(skip_constr)
 
 
-class MechCenter(Struct, ProductionStructure, GuardianStructure):
+class MechCenter(Struct, ProductionStruct, GuardianStructure):
     cost = 500
     build_time = 100
 
@@ -425,9 +428,9 @@ class MechCenter(Struct, ProductionStructure, GuardianStructure):
                          x=x, y=y, hp=1500, vision_radius=4)
         super().ps_init()
         super().gs_init(skip_constr)
-        self.ctrl_buttons = [game_inst.defiler_b, game_inst.centurion_b,
-                             game_inst.wyrm_b, game_inst.apocalypse_b,
-                             game_inst.pioneer_b]
+        self.cbs = [game_inst.defiler_b, game_inst.centurion_b,
+                    game_inst.wyrm_b, game_inst.apocalypse_b,
+                    game_inst.pioneer_b, game_inst.cancel_b]
         self.is_big = True
         if owner.name == 'player1':
             self.anim = Sprite(img=res.anim, x=x, y=y, batch=ground_units_batch)
@@ -725,7 +728,7 @@ def find_path(start, end, is_flying):
 class Unit(Sprite):
     def __init__(self, game_inst, owner, img, team_color_img, icon, flying,
                  vision_radius, hp, x, y, speed, weapon_type, damage, cooldown,
-                 attacks_ground, attacks_air, shadow_sprite, ctrl_buttons):
+                 attacks_ground, attacks_air, shadow_sprite, cbs):
         self.game_inst = game_inst
         self.owner = owner
         self.team_color = ShadowAndUnitTC(team_color_img, x, y,
@@ -761,7 +764,7 @@ class Unit(Sprite):
         self.attacks_air = attacks_air
         self.shooting_radius = vision_radius * 32
         self.shadow_sprite = shadow_sprite
-        self.ctrl_buttons = ctrl_buttons
+        self.cbs = cbs
 
         self.dest_reached = True
         self.move_interd = False
@@ -997,7 +1000,7 @@ class Apocalypse(Unit):
                          weapon_type='projectile', damage=30, cooldown=120,
                          attacks_ground=True, attacks_air=False,
                          shadow_sprite=res.apocalypse_shadow_img,
-                         ctrl_buttons=game_inst.basic_unit_c_bs)
+                         cbs=game_inst.basic_unit_c_bs)
 
 
 class Centurion(Unit):
@@ -1015,7 +1018,7 @@ class Centurion(Unit):
                          weapon_type='projectile', damage=10, cooldown=120,
                          attacks_ground=True, attacks_air=False,
                          shadow_sprite=res.centurion_shadow_img,
-                         ctrl_buttons=game_inst.basic_unit_c_bs)
+                         cbs=game_inst.basic_unit_c_bs)
 
 
 class Defiler(Unit):
@@ -1033,7 +1036,7 @@ class Defiler(Unit):
                          weapon_type='instant', damage=10, cooldown=60,
                          attacks_ground=True, attacks_air=True,
                          shadow_sprite=res.defiler_shadow_img,
-                         ctrl_buttons=game_inst.basic_unit_c_bs)
+                         cbs=game_inst.basic_unit_c_bs)
 
 
 class Pioneer(Unit):
@@ -1051,7 +1054,7 @@ class Pioneer(Unit):
                          weapon_type='none', damage=0, cooldown=0,
                          attacks_ground=False, attacks_air=False,
                          shadow_sprite=res.pioneer_shadow_img,
-                         ctrl_buttons=game_inst.basic_unit_c_bs +
+                         cbs=game_inst.basic_unit_c_bs +
                                       [game_inst.armory_icon] +
                                       [game_inst.turret_icon] +
                                       [game_inst.mech_center_icon])
@@ -1076,12 +1079,12 @@ class Pioneer(Unit):
             if not g_pos_coord_d[(self.task_x, self.task_y)]:
                 Armory(self.game_inst, self.task_x, self.task_y)
             else:
-                self.owner.mineral_count += Armory.cost
+                self.owner.min_c += Armory.cost
         elif self.to_build == "turret":
             if not g_pos_coord_d[(self.task_x, self.task_y)]:
                 Turret(self.game_inst, self.task_x, self.task_y)
             else:
-                self.owner.mineral_count += Turret.cost
+                self.owner.min_c += Turret.cost
         elif self.to_build == "mech_center":
             x = self.task_x - PS / 2
             y = self.task_y - PS / 2
@@ -1095,7 +1098,7 @@ class Pioneer(Unit):
             if no_place is False:
                 MechCenter(self.game_inst, self.task_x, self.task_y)
             else:
-                self.owner.mineral_count += MechCenter.cost
+                self.owner.min_c += MechCenter.cost
         self.to_build = None
 
     def gather(self):
@@ -1135,7 +1138,7 @@ class Wyrm(Unit):
                          weapon_type='projectile', damage=5, cooldown=60,
                          attacks_ground=True, attacks_air=False,
                          shadow_sprite=res.wyrm_shadow_img,
-                         ctrl_buttons=game_inst.basic_unit_c_bs)
+                         cbs=game_inst.basic_unit_c_bs)
 
 
 class PlanetEleven(pyglet.window.Window):
@@ -1180,8 +1183,8 @@ class PlanetEleven(pyglet.window.Window):
         self.npa = np.fromstring(self.mm_fow_ImageData.get_data(
             'RGBA', self.mm_fow_ImageData.width * 4), dtype=np.uint8)
         self.npa = self.npa.reshape((102, 102, 4))
-        self.min_count_label = pyglet.text.Label(
-            str(self.this_player.mineral_count), x=SCREEN_W - 180,
+        self.min_c_label = pyglet.text.Label(
+            str(self.this_player.min_c), x=SCREEN_W - 180,
             y=SCREEN_H - 20, anchor_x='center', anchor_y='center')
         self.mineral_small = UI(self, res.mineral_small, x=SCREEN_W - 210,
             y=SCREEN_H - 20)
@@ -1195,13 +1198,13 @@ class PlanetEleven(pyglet.window.Window):
                 anchor_x='center', anchor_y='center', font_size=8)
         self.txt_out_upd_f = None
         self.prod_bar_bg = UI(self, res.prod_bar_bg_img, CP_CENTER_X,
-                              SCREEN_H - 99)
+                              SCREEN_H - 93)
         self.prod_bar_bg.visible = False
-        self.prod_bar = UI(self, res.prod_bar_img, SCREEN_W - 120, SCREEN_H - 100)
+        self.prod_bar = UI(self, res.prod_bar_img, SCREEN_W - 120, SCREEN_H - 94)
         self.prod_bar.visible = False
-        self.prod_icon1 = UI(self, res.none_img, CB_COORDS[0][0], SCREEN_H - 120)
-        self.prod_icon2 = UI(self, res.none_img, CB_COORDS[1][0], SCREEN_H - 120)
-        self.prod_icon3 = UI(self, res.none_img, CB_COORDS[2][0], SCREEN_H - 120)
+        self.prod_icon1 = UI(self, res.none_img, CB_COORDS[0][0], SCREEN_H - 110)
+        self.prod_icon2 = UI(self, res.none_img, CB_COORDS[1][0], SCREEN_H - 110)
+        self.prod_icon3 = UI(self, res.none_img, CB_COORDS[2][0], SCREEN_H - 110)
 
         # Hints
         self.hint = UI(self, res.hint_defiler, 100, 100)
@@ -1238,6 +1241,8 @@ class PlanetEleven(pyglet.window.Window):
                          CB_COORDS[1][1])
         self.attack_b = UI(self, res.attack_img, CB_COORDS[2][0],
                            CB_COORDS[2][1])
+        self.cancel_b = UI(self, res.cancel_img, CB_COORDS[8][0],
+                           CB_COORDS[8][1])
         self.defiler_b = UI(self, res.defiler_img, CB_COORDS[0][0],
                             CB_COORDS[0][1])
         self.centurion_b = UI(self, res.centurion_img,
@@ -1274,7 +1279,7 @@ class PlanetEleven(pyglet.window.Window):
                              y=self.our_1st_base.rp_y)
 
         self.basic_unit_c_bs = [self.move_b, self.stop_b, self.attack_b]
-        self.cbs_to_render = self.our_1st_base.ctrl_buttons
+        self.cbs_to_render = self.our_1st_base.cbs
         self.to_build_spt = Sprite(img=res.armory_img, x=-100, y=-100)
         self.to_build_spt.color = (0, 255, 0)
 
@@ -1357,7 +1362,7 @@ class PlanetEleven(pyglet.window.Window):
             self.fow_texture.blit(minimap_fow_x, minimap_fow_y)
 
             self.mm_cam_frame_spt.draw()
-            self.min_count_label.draw()
+            self.min_c_label.draw()
             self.mineral_small.draw()
             if self.show_fps:
                 self.fps_display.draw()
@@ -1413,7 +1418,7 @@ class PlanetEleven(pyglet.window.Window):
                     else:
                         worker.mineral_to_gather.hp -= 0.03
                         owner = worker.owner
-                        owner.mineral_count += 0.03
+                        owner.min_c += 0.03
                         if owner.name == 'player1':
                             self.update_min_c_label()
             # AI gathering resources
@@ -1662,10 +1667,10 @@ class PlanetEleven(pyglet.window.Window):
                 self.mm_fow_ImageData.set_data('RGBA',
                     self.mm_fow_ImageData.width * 4, data=self.npa.tobytes())
             elif symbol == key.F5:
-                self.this_player.mineral_count = 99999
+                self.this_player.min_c = 99999
                 self.update_min_c_label()
             elif symbol == key.F6:
-                self.this_player.mineral_count = 0
+                self.this_player.min_c = 0
                 self.update_min_c_label()
             elif symbol == key.DELETE:
                 # Kill entity
@@ -1783,6 +1788,8 @@ class PlanetEleven(pyglet.window.Window):
                     x += PS / 2
                     y += PS / 2
                     self.to_build_spt.x, self.to_build_spt.y = x, y
+            elif symbol == key.C:
+                self.cancel_prod()
             elif symbol == key.X:
                 # Deletes all our units on the screen
                 coords_to_delete = []
@@ -1916,7 +1923,7 @@ class PlanetEleven(pyglet.window.Window):
                             if selected.owner.name == 'player1':
                                 try:
                                     self.cbs_to_render = \
-                                        selected.ctrl_buttons
+                                        selected.cbs
                                 except AttributeError:
                                     self.cbs_to_render = None
                             else:
@@ -2043,6 +2050,12 @@ class PlanetEleven(pyglet.window.Window):
                                 self.pioneer_b.y - 16 <= y <= \
                                 self.pioneer_b.y + 16:
                             order_unit(self, selected, Pioneer)
+                        # Cancel last order
+                        elif self.cancel_b.x - 16 <= x <= \
+                                self.cancel_b.x + 16 and \
+                                self.cancel_b.y - 16 <= y <= \
+                                self.cancel_b.y + 16:
+                            self.cancel_prod()
                     elif selected in our_units:
                         # Move
                         if self.move_b.x - 16 <= x <= self.move_b.x + 16 and \
@@ -2314,8 +2327,8 @@ class PlanetEleven(pyglet.window.Window):
         for el in self.ui:
             el.x = el.org_x + lvb
             el.y = el.org_y + bvb
-        self.min_count_label.x = SCREEN_W - 180 + lvb
-        self.min_count_label.y = SCREEN_H - 20 + bvb
+        self.min_c_label.x = SCREEN_W - 180 + lvb
+        self.min_c_label.y = SCREEN_H - 20 + bvb
         self.selected_hp.x = CB_COORDS[1][0] - 15 + lvb
         self.selected_hp.y = SCREEN_H - 72 + bvb
         self.txt_out.x = SCREEN_W / 2 - 50 + lvb
@@ -2342,7 +2355,7 @@ class PlanetEleven(pyglet.window.Window):
                                        * 4, data=self.npa.tobytes())
 
     def update_min_c_label(self):
-        self.min_count_label.text = str(int(self.this_player.mineral_count))
+        self.min_c_label.text = str(int(self.this_player.min_c))
 
     def hotkey_constr_cur_1b(self):
         self.build_loc_sel_phase = True
@@ -2361,6 +2374,20 @@ class PlanetEleven(pyglet.window.Window):
         else:
             self.to_build_spt.color = (0, 255, 0)
             self.loc_clear = True
+
+    def cancel_prod(self):
+        try:
+            self.this_player.min_c += selected.prod_q[-1].cost
+            self.update_min_c_label()
+            del selected.prod_q[-1]
+            if not selected.prod_q:
+                selected.anim.visible = False
+                selected.prod_complete = True
+            exec("self.prod_icon{}.image = res.none_img".format(
+                len(selected.prod_q) + 1))
+            self.prod_bar.scale_x = 1
+        except (AttributeError, IndexError):
+            return
 
 
 def main():

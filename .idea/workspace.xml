@@ -1,9 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="8699b466-fa9b-4e8c-b41f-e5bbe759696d" name="Default Changelist" comment="">
+    <list default="true" id="8699b466-fa9b-4e8c-b41f-e5bbe759696d" name="Default Changelist" comment="building_spawn_unit optimised">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/planet_eleven.py" beforeDir="false" afterPath="$PROJECT_DIR$/planet_eleven.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources.py" beforeDir="false" afterPath="$PROJECT_DIR$/resources.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/attack.psd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/move.psd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/sel_frame.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/cp/sel_frame.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/sel_frame.psd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/stop.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/stop.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/stop.psd" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -36,7 +43,7 @@
   <component name="PropertiesComponent">
     <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/sprites/structures" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/sprites/cp" />
     <property name="restartRequiresConfirmation" value="false" />
     <property name="run.code.analysis.last.selected.profile" value="aDefault" />
     <property name="settings.editor.selected.configurable" value="preferences.sourceCode" />
@@ -51,15 +58,15 @@
     <option name="myShowDebugConsoleByDefault" value="false" />
   </component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\PycharmProjects\planet_eleven" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\PycharmProjects\planet_eleven\sprites\cp" />
       <recent name="D:\PycharmProjects\planet_eleven\sprites\structures" />
       <recent name="D:\PycharmProjects\planet_eleven\sprites\units" />
       <recent name="D:\PycharmProjects\planet_eleven\sprites\anims\zap" />
       <recent name="D:\PycharmProjects\planet_eleven\sprites\units\wyrm" />
-      <recent name="D:\PycharmProjects\planet_eleven\sprites\structures\turret" />
-    </key>
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="D:\PycharmProjects\planet_eleven" />
     </key>
   </component>
   <component name="RunManager" selected="Python.planet_eleven">
@@ -176,13 +183,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1566740526093</updated>
-    </task>
-    <task id="LOCAL-00204" summary="Control panel move command works">
-      <created>1576138567174</created>
-      <option name="number" value="00204" />
-      <option name="presentableId" value="LOCAL-00204" />
-      <option name="project" value="LOCAL" />
-      <updated>1576138567175</updated>
     </task>
     <task id="LOCAL-00205" summary="Key M works">
       <created>1576139340092</created>
@@ -520,7 +520,14 @@
       <option name="project" value="LOCAL" />
       <updated>1587117640108</updated>
     </task>
-    <option name="localTasksCounter" value="253" />
+    <task id="LOCAL-00253" summary="building_spawn_unit optimised">
+      <created>1587119223258</created>
+      <option name="number" value="00253" />
+      <option name="presentableId" value="LOCAL-00253" />
+      <option name="project" value="LOCAL" />
+      <updated>1587119223259</updated>
+    </task>
+    <option name="localTasksCounter" value="254" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -600,30 +607,30 @@
       <screen x="0" y="0" width="1366" height="738" />
     </state>
     <state x="357" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.0.1366.738@0.0.1366.738" timestamp="1587063913382" />
-    <state x="255" y="0" key="CommitChangelistDialog2" timestamp="1587117631138">
+    <state x="255" y="0" key="CommitChangelistDialog2" timestamp="1587121515294">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state x="255" y="0" key="CommitChangelistDialog2/0.0.1366.738@0.0.1366.738" timestamp="1587117631138" />
-    <state x="462" y="109" key="FileChooserDialogImpl" timestamp="1586665464134">
+    <state x="255" y="0" key="CommitChangelistDialog2/0.0.1366.738@0.0.1366.738" timestamp="1587121515294" />
+    <state x="462" y="109" key="FileChooserDialogImpl" timestamp="1587120374789">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state x="462" y="109" key="FileChooserDialogImpl/0.0.1366.738@0.0.1366.738" timestamp="1586665464134" />
-    <state width="1344" height="93" key="GridCell.Tab.0.bottom" timestamp="1587119188471">
+    <state x="462" y="109" key="FileChooserDialogImpl/0.0.1366.738@0.0.1366.738" timestamp="1587120374789" />
+    <state width="1344" height="93" key="GridCell.Tab.0.bottom" timestamp="1587130318650">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="93" key="GridCell.Tab.0.bottom/0.0.1366.738@0.0.1366.738" timestamp="1587119188471" />
-    <state width="1344" height="93" key="GridCell.Tab.0.center" timestamp="1587119188470">
+    <state width="1344" height="93" key="GridCell.Tab.0.bottom/0.0.1366.738@0.0.1366.738" timestamp="1587130318650" />
+    <state width="1344" height="93" key="GridCell.Tab.0.center" timestamp="1587130318650">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="93" key="GridCell.Tab.0.center/0.0.1366.738@0.0.1366.738" timestamp="1587119188470" />
-    <state width="1344" height="93" key="GridCell.Tab.0.left" timestamp="1587119188470">
+    <state width="1344" height="93" key="GridCell.Tab.0.center/0.0.1366.738@0.0.1366.738" timestamp="1587130318650" />
+    <state width="1344" height="93" key="GridCell.Tab.0.left" timestamp="1587130318650">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="93" key="GridCell.Tab.0.left/0.0.1366.738@0.0.1366.738" timestamp="1587119188470" />
-    <state width="1344" height="93" key="GridCell.Tab.0.right" timestamp="1587119188471">
+    <state width="1344" height="93" key="GridCell.Tab.0.left/0.0.1366.738@0.0.1366.738" timestamp="1587130318650" />
+    <state width="1344" height="93" key="GridCell.Tab.0.right" timestamp="1587130318650">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="93" key="GridCell.Tab.0.right/0.0.1366.738@0.0.1366.738" timestamp="1587119188471" />
+    <state width="1344" height="93" key="GridCell.Tab.0.right/0.0.1366.738@0.0.1366.738" timestamp="1587130318650" />
     <state width="1344" height="208" key="GridCell.Tab.1.bottom" timestamp="1586351808917">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
@@ -648,10 +655,10 @@
       <screen x="0" y="0" width="1366" height="738" />
     </state>
     <state width="498" height="446" key="SwitcherDM/0.0.1366.738@0.0.1366.738" timestamp="1586675087110" />
-    <state x="275" y="101" key="Vcs.Push.Dialog.v2" timestamp="1587063317993">
+    <state x="275" y="101" key="Vcs.Push.Dialog.v2" timestamp="1587119229414">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state x="275" y="101" key="Vcs.Push.Dialog.v2/0.0.1366.738@0.0.1366.738" timestamp="1587063317993" />
+    <state x="275" y="101" key="Vcs.Push.Dialog.v2/0.0.1366.738@0.0.1366.738" timestamp="1587119229414" />
     <state x="92" y="92" width="1182" height="554" key="com.intellij.history.integration.ui.views.FileHistoryDialog" timestamp="1587034165941">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
