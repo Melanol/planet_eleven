@@ -1849,8 +1849,17 @@ class PlanetEleven(pyglet.window.Window):
                         self.build_loc_sel_phase = False
             # Movement target selection phase
             elif self.m_targeting_phase:
-                x, y = round_coords(x, y)
                 x, y = mc(x=x, y=y)
+                # Game field
+                if x < SCREEN_W - 139:
+                    pass
+                # Minimap
+                elif MM0X <= x <= MM0X + 100 and MM0Y <= y <= MM0Y + 100:
+                    x = (x - MM0X) * PS
+                    y = (y - MM0Y) * PS
+                else:
+                    return
+                x, y = round_coords(x, y)
                 if selected.dest_reached:
                     selected.move((x, y))
                 # Movement interruption
@@ -1864,14 +1873,21 @@ class PlanetEleven(pyglet.window.Window):
             # Targeting phase
             elif self.targeting_phase:
                 if button == mouse.LEFT:
+                    x, y = mc(x=x, y=y)
+                    # Game field
                     if x < SCREEN_W - 139:
-                        x, y = round_coords(x, y)
-                        x, y = mc(x=x, y=y)
-                        print('\nglobal click coords:', x, y)
-                        selected.attack_moving = True
-                        selected.move((x, y))
-                self.targeting_phase = False
-                self.set_mouse_cursor(res.cursor)
+                        pass
+                    # Minimap
+                    elif MM0X <= x <= MM0X + 100 and MM0Y <= y <= MM0Y + 100:
+                        x = (x - MM0X) * PS
+                        y = (y - MM0Y) * PS
+                    else:
+                        return
+                    x, y = round_coords(x, y)
+                    selected.attack_moving = True
+                    selected.move((x, y))
+                    self.targeting_phase = False
+                    self.set_mouse_cursor(res.cursor)
             # Normal phase
             else:
                 self.show_hint = False  # Fixes a bug with hints
