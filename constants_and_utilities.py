@@ -25,15 +25,15 @@ cp_c_x = CP_CENTER_X
 cp_c_y = (SCREEN_H / 2 - 50) / 2
 x_space = 34
 y_space = 34
-CTRL_B_COORDS = [(cp_c_x - x_space, cp_c_y + y_space),
-                 (cp_c_x, cp_c_y + y_space),
-                 (cp_c_x + x_space, cp_c_y + y_space),
-                 (cp_c_x - x_space, cp_c_y),
-                 (cp_c_x, cp_c_y), (cp_c_x + x_space, cp_c_y),
-                 (cp_c_x - x_space, cp_c_y - y_space),
-                 (cp_c_x, cp_c_y - y_space),
-                 (cp_c_x + x_space, cp_c_y - y_space)
-                 ]
+CB_COORDS = [(cp_c_x - x_space, cp_c_y + y_space),
+             (cp_c_x, cp_c_y + y_space),
+             (cp_c_x + x_space, cp_c_y + y_space),
+             (cp_c_x - x_space, cp_c_y),
+             (cp_c_x, cp_c_y), (cp_c_x + x_space, cp_c_y),
+             (cp_c_x - x_space, cp_c_y - y_space),
+             (cp_c_x, cp_c_y - y_space),
+             (cp_c_x + x_space, cp_c_y - y_space)
+             ]
 
 # Generate minimap_cam_frame
 fully_visible_width = (SCREEN_W - 139) // PS

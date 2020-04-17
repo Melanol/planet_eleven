@@ -198,7 +198,11 @@ def order_unit(game_inst, struct, unit):
             game_inst.prod_bar.visible = True
         if len(struct.prod_q) == 1:
             struct.prod_start_f = game_inst.f
-
+            game_inst.prod_icon1.image = unit.icon
+        elif len(struct.prod_q) == 2:
+            game_inst.prod_icon2.image = unit.icon
+        else:
+            game_inst.prod_icon3.image = unit.icon
     # Not enough minerals
     else:
         if owner == game_inst.this_player:
@@ -206,36 +210,27 @@ def order_unit(game_inst, struct, unit):
             game_inst.txt_out_upd_f = game_inst.f
 
 
-def building_spawn_unit(game_inst, structure):
-    if structure.prod_q:
-        unit = structure.prod_q[0]
-        if str(unit) == "<class '__main__.Defiler'>":
-            structure.cur_max_prod_time = Defiler.build_time
-        elif str(unit) == "<class '__main__.Centurion'>":
-            structure.cur_max_prod_time = Centurion.build_time
-        elif str(unit) == "<class '__main__.Wyrm'>":
-            structure.cur_max_prod_time = Wyrm.build_time
-        elif str(unit) == "<class '__main__.Apocalypse'>":
-            structure.cur_max_prod_time = Apocalypse.build_time
-        elif str(unit) == "<class '__main__.Pioneer'>":
-            structure.cur_max_prod_time = Pioneer.build_time
-        if game_inst.f - structure.prod_start_f == \
-                structure.cur_max_prod_time:
-            if str(structure.prod_q[0]) not in LIST_OF_FLYING:
+def building_spawn_unit(game_inst, struct):
+    if struct.prod_q:
+        unit = struct.prod_q[0]
+        struct.cur_max_prod_time = unit.build_time
+        # Time to spawn
+        if game_inst.f - struct.prod_start_f == struct.cur_max_prod_time:
+            if str(struct.prod_q[0]) not in LIST_OF_FLYING:
                 dict_to_check = g_pos_coord_d
             else:
                 dict_to_check = a_pos_coord_d
             # Searching for a place to build
-            if structure.width == PS:
-                x = structure.x - PS
-                y = structure.y - PS
+            if struct.width == PS:
+                x = struct.x - PS
+                y = struct.y - PS
             else:
-                x = structure.x - PS * 1.5
-                y = structure.y - PS * 1.5
+                x = struct.x - PS * 1.5
+                y = struct.y - PS * 1.5
             org_x = x
             org_y = y
             place_found = False
-            n = structure.width // PS + 2
+            n = struct.width // PS + 2
             for i in range(n):
                 x = org_x + PS * i
                 if dict_to_check[(x, y)] is None:
@@ -259,43 +254,37 @@ def building_spawn_unit(game_inst, structure):
                     place_found = True
                     break
             if place_found:
-                unit = structure.prod_q.pop(0)
+                unit = struct.prod_q.pop(0)
                 if str(unit) == "<class '__main__.Defiler'>":
-                    unit = Defiler(game_inst, x=x, y=y,
-                                   owner=structure.owner)
+                    unit = Defiler(game_inst, x=x, y=y, owner=struct.owner)
                     unit.spawn()
                 elif str(unit) == "<class '__main__.Centurion'>":
-                    unit = Centurion(game_inst, x=x, y=y,
-                                     owner=structure.owner)
+                    unit = Centurion(game_inst, x=x, y=y, owner=struct.owner)
                     unit.spawn()
                 elif str(unit) == "<class '__main__.Wyrm'>":
-                    unit = Wyrm(game_inst, x=x, y=y,
-                                owner=structure.owner)
+                    unit = Wyrm(game_inst, x=x, y=y, owner=struct.owner)
                     unit.spawn()
                 elif str(unit) == "<class '__main__.Apocalypse'>":
-                    unit = Apocalypse(game_inst, x=x, y=y,
-                                      owner=structure.owner)
+                    unit = Apocalypse(game_inst, x=x, y=y, owner=struct.owner)
                     unit.spawn()
                 elif str(unit) == "<class '__main__.Pioneer'>":
-                    print(structure.prod_q)
-                    unit = Pioneer(game_inst, x=x, y=y,
-                                   owner=structure.owner)
+                    print(struct.prod_q)
+                    unit = Pioneer(game_inst, x=x, y=y, owner=struct.owner)
                     unit.spawn()
-                structure.prod_start_f += \
-                structure.cur_max_prod_time
-                if not structure.prod_q:
-                    structure.anim.visible = False
-                if not structure.default_rp:
-                    unit.move((structure.rp_x, structure.rp_y))
+                struct.prod_start_f += struct.cur_max_prod_time
+                if not struct.prod_q:
+                    struct.anim.visible = False
+                if not struct.default_rp:
+                    unit.move((struct.rp_x, struct.rp_y))
             else:
-                structure.prod_start_f += 1
+                struct.prod_start_f += 1
                 # print('No space')
 
 
-def order_structure(game_inst, unit, structure, x, y):
+def order_structure(game_inst, unit, struct, x, y):
     owner = unit.owner
-    if owner.mineral_count - structure.cost >= 0:
-        owner.mineral_count -= structure.cost
+    if owner.mineral_count - struct.cost >= 0:
+        owner.mineral_count -= struct.cost
         game_inst.update_min_c_label()
         unit.to_build = game_inst.to_build
         unit.task_x = game_inst.to_build_spt.x
@@ -307,7 +296,7 @@ def order_structure(game_inst, unit, structure, x, y):
             game_inst.txt_out_upd_f = game_inst.f
 
 
-class Structure(Sprite):
+class Struct(Sprite):
     """This is what I call buildings. __init__ == spawn()"""
 
     def __init__(self, game_inst, owner, img, team_color_img, icon, vision_radius,
@@ -424,7 +413,7 @@ class GuardianStructure:
             self.constr_complete()
 
 
-class Armory(Structure, GuardianStructure):
+class Armory(Struct, GuardianStructure):
     cost = 200
     build_time = 10
 
@@ -437,7 +426,7 @@ class Armory(Structure, GuardianStructure):
         super().gs_init(skip_constr)
 
 
-class MechCenter(Structure, ProductionStructure, GuardianStructure):
+class MechCenter(Struct, ProductionStructure, GuardianStructure):
     cost = 500
     build_time = 100
 
@@ -461,7 +450,7 @@ class MechCenter(Structure, ProductionStructure, GuardianStructure):
         self.anim.visible = False
 
 
-class OffensiveStructure(Structure):
+class OffensiveStruct(Struct):
     def __init__(self, game_inst, owner, img, team_color, icon, vision_radius, hp,
                  x, y, damage, cooldown):
         super().__init__(game_inst, owner, img, team_color, icon, vision_radius,
@@ -511,7 +500,7 @@ class OffensiveStructure(Structure):
         self.delete()
 
 
-class Turret(OffensiveStructure, GuardianStructure):
+class Turret(OffensiveStruct, GuardianStructure):
     cost = 150
     build_time = 10
 
@@ -1009,6 +998,7 @@ class Unit(Sprite):
 class Apocalypse(Unit):
     cost = 600
     build_time = 1000
+    icon = res.apocalypse_icon_img
 
     def __init__(self, game_inst, x, y, owner=None):
         if owner is None:
@@ -1026,6 +1016,7 @@ class Apocalypse(Unit):
 class Centurion(Unit):
     cost = 400
     build_time = 10
+    icon = res.centurion_icon_img
 
     def __init__(self, game_inst, x, y, owner=None):
         if owner is None:
@@ -1043,12 +1034,14 @@ class Centurion(Unit):
 class Defiler(Unit):
     cost = 300
     build_time = 10
+    icon = res.defiler_icon_img
 
     def __init__(self, game_inst, x, y, owner=None):
         if owner is None:
             owner = game_inst.this_player
         super().__init__(game_inst, owner, res.defiler_img,
-                         res.defiler_team_color, res.defiler_icon_img, flying=True,
+                         res.defiler_team_color, res.defiler_icon_img,
+                         flying=True,
                          vision_radius=6, hp=70, x=x, y=y, speed=6,
                          weapon_type='instant', damage=10, cooldown=60,
                          attacks_ground=True, attacks_air=True,
@@ -1058,13 +1051,15 @@ class Defiler(Unit):
 
 class Pioneer(Unit):
     cost = 50
-    build_time = 10
+    build_time = 50
+    icon = res.pioneer_icon_img
 
     def __init__(self, game_inst, x, y, owner=None):
         if owner is None:
             owner = game_inst.this_player
         super().__init__(game_inst, owner, res.pioneer_img,
-                         res.pioneer_team_color, res.pioneer_icon_img, flying=False,
+                         res.pioneer_team_color, res.pioneer_icon_img,
+                         flying=False,
                          vision_radius=4, hp=10, x=x, y=y, speed=4,
                          weapon_type='none', damage=0, cooldown=0,
                          attacks_ground=False, attacks_air=False,
@@ -1142,6 +1137,7 @@ class Pioneer(Unit):
 class Wyrm(Unit):
     cost = 150
     build_time = 10
+    icon = res.wyrm_icon_img
 
     def __init__(self, game_inst, x, y, owner=None):
         if owner is None:
@@ -1202,10 +1198,11 @@ class PlanetEleven(pyglet.window.Window):
             y=SCREEN_H - 20, anchor_x='center', anchor_y='center')
         self.mineral_small = UI(self, res.mineral_small, x=SCREEN_W - 210,
             y=SCREEN_H - 20)
-        self.selected_icon = UI(self, res.none_img, CTRL_B_COORDS[0][0],
+        self.selected_icon = UI(self, res.none_img, CB_COORDS[0][0],
                                 SCREEN_H - 72)
-        self.selected_hp = pyglet.text.Label('', x=CTRL_B_COORDS[1][0] - 15,
-            y=SCREEN_H - 72, anchor_y='center', font_size=8,
+        self.selected_hp = pyglet.text.Label('', x=CB_COORDS[1][0] - 15,
+                                             y=SCREEN_H - 72, anchor_y='center',
+                                             font_size=8,
                                              color=(0, 0, 0,255))
         self.txt_out = pyglet.text.Label('', x=SCREEN_W / 2 - 50, y=100,
                 anchor_x='center', anchor_y='center', font_size=8)
@@ -1215,6 +1212,9 @@ class PlanetEleven(pyglet.window.Window):
         self.prod_bar_bg.visible = False
         self.prod_bar = UI(self, res.prod_bar_img, SCREEN_W - 120, SCREEN_H - 100)
         self.prod_bar.visible = False
+        self.prod_icon1 = UI(self, res.none_img, CB_COORDS[0][0], SCREEN_H - 120)
+        self.prod_icon2 = UI(self, res.none_img, CB_COORDS[1][0], SCREEN_H - 120)
+        self.prod_icon3 = UI(self, res.none_img, CB_COORDS[2][0], SCREEN_H - 120)
 
         # Hints
         self.hint = UI(self, res.hint_defiler, 100, 100)
@@ -1239,28 +1239,28 @@ class PlanetEleven(pyglet.window.Window):
                          batch=options_batch)
 
         # Control panel buttons
-        self.armory_icon = UI(self, res.armory_icon_img, CTRL_B_COORDS[3][0],
-                              CTRL_B_COORDS[3][1])
-        self.turret_icon = UI(self, res.turret_icon_img, CTRL_B_COORDS[4][0],
-                              CTRL_B_COORDS[4][1])
+        self.armory_icon = UI(self, res.armory_icon_img, CB_COORDS[3][0],
+                              CB_COORDS[3][1])
+        self.turret_icon = UI(self, res.turret_icon_img, CB_COORDS[4][0],
+                              CB_COORDS[4][1])
         self.mech_center_icon = UI(self, res.mech_center_icon_img,
-                                   CTRL_B_COORDS[5][0], CTRL_B_COORDS[5][1])
-        self.move_b = UI(self, res.move_img, CTRL_B_COORDS[0][0],
-                         CTRL_B_COORDS[0][1])
-        self.stop_b = UI(self, res.stop_img, CTRL_B_COORDS[1][0],
-                         CTRL_B_COORDS[1][1])
-        self.attack_b = UI(self, res.attack_img, CTRL_B_COORDS[2][0],
-                           CTRL_B_COORDS[2][1])
-        self.defiler_b = UI(self, res.defiler_img, CTRL_B_COORDS[0][0],
-                            CTRL_B_COORDS[0][1])
+                                   CB_COORDS[5][0], CB_COORDS[5][1])
+        self.move_b = UI(self, res.move_img, CB_COORDS[0][0],
+                         CB_COORDS[0][1])
+        self.stop_b = UI(self, res.stop_img, CB_COORDS[1][0],
+                         CB_COORDS[1][1])
+        self.attack_b = UI(self, res.attack_img, CB_COORDS[2][0],
+                           CB_COORDS[2][1])
+        self.defiler_b = UI(self, res.defiler_img, CB_COORDS[0][0],
+                            CB_COORDS[0][1])
         self.centurion_b = UI(self, res.centurion_img,
-                              CTRL_B_COORDS[1][0], CTRL_B_COORDS[1][1])
-        self.wyrm_b = UI(self, res.wyrm_img, CTRL_B_COORDS[2][0],
-                            CTRL_B_COORDS[2][1])
+                              CB_COORDS[1][0], CB_COORDS[1][1])
+        self.wyrm_b = UI(self, res.wyrm_img, CB_COORDS[2][0],
+                         CB_COORDS[2][1])
         self.apocalypse_b = UI(self, res.apocalypse_img,
-                               CTRL_B_COORDS[3][0], CTRL_B_COORDS[3][1])
-        self.pioneer_b = UI(self, res.pioneer_img, CTRL_B_COORDS[4][0],
-                            CTRL_B_COORDS[4][1])
+                               CB_COORDS[3][0], CB_COORDS[3][1])
+        self.pioneer_b = UI(self, res.pioneer_img, CB_COORDS[4][0],
+                            CB_COORDS[4][1])
 
         # Spawn buildings and minerals
         Mineral(self, PS / 2 + PS * 4, PS / 2 + PS * 7)
@@ -1350,6 +1350,9 @@ class PlanetEleven(pyglet.window.Window):
             self.selected_icon.draw()
             self.prod_bar_bg.draw()
             self.prod_bar.draw()
+            self.prod_icon1.draw()
+            self.prod_icon2.draw()
+            self.prod_icon3.draw()
             self.selected_hp.draw()
             self.cp_b_bg.draw()
             self.mm_textured_bg.draw()
@@ -2187,41 +2190,41 @@ class PlanetEleven(pyglet.window.Window):
             # Hits
             if isinstance(selected, MechCenter):
                 # Defiler
-                if CTRL_B_COORDS[0][0] - 16 <= x <= CTRL_B_COORDS[0][0] + \
-                        16 and CTRL_B_COORDS[0][1] - 16 <= y <= \
-                        CTRL_B_COORDS[0][1] + 16:
+                if CB_COORDS[0][0] - 16 <= x <= CB_COORDS[0][0] + \
+                        16 and CB_COORDS[0][1] - 16 <= y <= \
+                        CB_COORDS[0][1] + 16:
                     self.hint.image = res.hint_defiler
                     self.hint.x = x + lvb
                     self.hint.y = y + bvb
                     self.show_hint = True
                 # Centurion
-                elif CTRL_B_COORDS[1][0] - 16 <= x <= CTRL_B_COORDS[1][0] + \
-                        16 and CTRL_B_COORDS[1][1] - 16 <= y <= \
-                        CTRL_B_COORDS[1][1] + 16:
+                elif CB_COORDS[1][0] - 16 <= x <= CB_COORDS[1][0] + \
+                        16 and CB_COORDS[1][1] - 16 <= y <= \
+                        CB_COORDS[1][1] + 16:
                     self.hint.image = res.hint_centurion
                     self.hint.x = x + lvb
                     self.hint.y = y + bvb
                     self.show_hint = True
                 # Wyrm
-                elif CTRL_B_COORDS[2][0] - 16 <= x <= CTRL_B_COORDS[2][0] + \
-                        16 and CTRL_B_COORDS[2][1] - 16 <= y <= \
-                        CTRL_B_COORDS[2][1] + 16:
+                elif CB_COORDS[2][0] - 16 <= x <= CB_COORDS[2][0] + \
+                        16 and CB_COORDS[2][1] - 16 <= y <= \
+                        CB_COORDS[2][1] + 16:
                     self.hint.image = res.hint_wyrm
                     self.hint.x = x + lvb
                     self.hint.y = y + bvb
                     self.show_hint = True
                 # Apocalypse
-                elif CTRL_B_COORDS[3][0] - 16 <= x <= CTRL_B_COORDS[3][0] + \
-                        16 and CTRL_B_COORDS[3][1] - 16 <= y <= \
-                        CTRL_B_COORDS[3][1] + 16:
+                elif CB_COORDS[3][0] - 16 <= x <= CB_COORDS[3][0] + \
+                        16 and CB_COORDS[3][1] - 16 <= y <= \
+                        CB_COORDS[3][1] + 16:
                     self.hint.image = res.hint_apocalypse
                     self.hint.x = x + lvb
                     self.hint.y = y + bvb
                     self.show_hint = True
                 # Pioneer
-                elif CTRL_B_COORDS[4][0] - 16 <= x <= CTRL_B_COORDS[4][0] + \
-                        16 and CTRL_B_COORDS[4][1] - 16 <= y <= \
-                        CTRL_B_COORDS[4][1] + 16:
+                elif CB_COORDS[4][0] - 16 <= x <= CB_COORDS[4][0] + \
+                        16 and CB_COORDS[4][1] - 16 <= y <= \
+                        CB_COORDS[4][1] + 16:
                     self.hint.image = res.hint_pioneer
                     self.hint.x = x + lvb
                     self.hint.y = y + bvb
@@ -2230,24 +2233,24 @@ class PlanetEleven(pyglet.window.Window):
                     self.show_hint = False
             elif isinstance(selected, Pioneer):
                 # Armory
-                if CTRL_B_COORDS[3][0] - 16 <= x <= CTRL_B_COORDS[3][0] + \
-                        16 and CTRL_B_COORDS[3][1] - 16 <= y <= \
-                        CTRL_B_COORDS[3][1] + 16:
+                if CB_COORDS[3][0] - 16 <= x <= CB_COORDS[3][0] + \
+                        16 and CB_COORDS[3][1] - 16 <= y <= \
+                        CB_COORDS[3][1] + 16:
                     self.hint.image = res.hint_armory
                     self.hint.x = x + lvb
                     self.hint.y = y + bvb
                     self.show_hint = True
                     # Armory
-                elif CTRL_B_COORDS[4][0] - 16 <= x <= CTRL_B_COORDS[4][0] + \
-                        16 and CTRL_B_COORDS[4][1] - 16 <= y <= \
-                        CTRL_B_COORDS[4][1] + 16:
+                elif CB_COORDS[4][0] - 16 <= x <= CB_COORDS[4][0] + \
+                        16 and CB_COORDS[4][1] - 16 <= y <= \
+                        CB_COORDS[4][1] + 16:
                     self.hint.image = res.hint_turret
                     self.hint.x = x + lvb
                     self.hint.y = y + bvb
                     self.show_hint = True
-                elif CTRL_B_COORDS[5][0] - 16 <= x <= CTRL_B_COORDS[5][0] + \
-                        16 and CTRL_B_COORDS[5][1] - 16 <= y <= \
-                        CTRL_B_COORDS[5][1] + 16:
+                elif CB_COORDS[5][0] - 16 <= x <= CB_COORDS[5][0] + \
+                        16 and CB_COORDS[5][1] - 16 <= y <= \
+                        CB_COORDS[5][1] + 16:
                     self.hint.image = res.hint_mech_center
                     self.hint.x = x + lvb
                     self.hint.y = y + bvb
@@ -2326,7 +2329,7 @@ class PlanetEleven(pyglet.window.Window):
             el.y = el.org_y + bvb
         self.min_count_label.x = SCREEN_W - 180 + lvb
         self.min_count_label.y = SCREEN_H - 20 + bvb
-        self.selected_hp.x = CTRL_B_COORDS[1][0] - 15 + lvb
+        self.selected_hp.x = CB_COORDS[1][0] - 15 + lvb
         self.selected_hp.y = SCREEN_H - 72 + bvb
         self.txt_out.x = SCREEN_W / 2 - 50 + lvb
         self.txt_out.y = 100 + bvb

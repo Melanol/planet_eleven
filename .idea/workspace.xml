@@ -2,7 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="8699b466-fa9b-4e8c-b41f-e5bbe759696d" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/long_line_finder.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/constants_and_utilities.py" beforeDir="false" afterPath="$PROJECT_DIR$/constants_and_utilities.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/todo.rtf" beforeDir="false" afterPath="$PROJECT_DIR$/docs/todo.rtf" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/planet_eleven.py" beforeDir="false" afterPath="$PROJECT_DIR$/planet_eleven.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test1.py" beforeDir="false" afterPath="$PROJECT_DIR$/test.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -62,6 +67,27 @@
     </key>
   </component>
   <component name="RunManager" selected="Python.planet_eleven">
+    <configuration name="long_line_finder" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="planet_eleven" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/long_line_finder.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="planet_eleven" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="planet_eleven" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -104,7 +130,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="test1" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="test" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="planet_eleven" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -116,7 +142,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/test1.py" />
+      <option name="SCRIPT_NAME" value="D:\PycharmProjects\planet_eleven\test.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -129,10 +155,12 @@
       <item itemvalue="Python.planet_eleven" />
       <item itemvalue="Python.shadow_maker" />
       <item itemvalue="Python.test1" />
+      <item itemvalue="Python.long_line_finder" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Python.planet_eleven" />
+        <item itemvalue="Python.long_line_finder" />
         <item itemvalue="Python.test1" />
         <item itemvalue="Python.shadow_maker" />
       </list>
@@ -152,13 +180,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1566740526093</updated>
-    </task>
-    <task id="LOCAL-00202" summary="Major minimap bug fixed">
-      <created>1574741418877</created>
-      <option name="number" value="00202" />
-      <option name="presentableId" value="LOCAL-00202" />
-      <option name="project" value="LOCAL" />
-      <updated>1574741418878</updated>
     </task>
     <task id="LOCAL-00203" summary="Fixed an bug that would allow building buildings atop of each other">
       <created>1574927958575</created>
@@ -496,7 +517,14 @@
       <option name="project" value="LOCAL" />
       <updated>1587063304996</updated>
     </task>
-    <option name="localTasksCounter" value="251" />
+    <task id="LOCAL-00251" summary="Struct.kill() modified">
+      <created>1587063892745</created>
+      <option name="number" value="00251" />
+      <option name="presentableId" value="LOCAL-00251" />
+      <option name="project" value="LOCAL" />
+      <updated>1587063892745</updated>
+    </task>
+    <option name="localTasksCounter" value="252" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -540,7 +568,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$" />
     </ignored-roots>
-    <MESSAGE value="Code prettiness" />
     <MESSAGE value="Last commit before 0.3" />
     <MESSAGE value="Small changes" />
     <MESSAGE value="Holding SHIFT selects ground entities only" />
@@ -565,41 +592,42 @@
     <MESSAGE value="Fixed a menu bug" />
     <MESSAGE value="prod_bar" />
     <MESSAGE value="prod_structs" />
-    <option name="LAST_COMMIT_MESSAGE" value="prod_structs" />
+    <MESSAGE value="Struct.kill() modified" />
+    <option name="LAST_COMMIT_MESSAGE" value="Struct.kill() modified" />
   </component>
   <component name="WindowStateProjectService">
     <state x="137" y="23" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1586589784304">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
     <state x="137" y="23" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1366.738@0.0.1366.738" timestamp="1586589784304" />
-    <state x="357" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog" timestamp="1586666260294">
+    <state x="357" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog" timestamp="1587063913382">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state x="357" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.0.1366.738@0.0.1366.738" timestamp="1586666260294" />
-    <state x="255" y="0" key="CommitChangelistDialog2" timestamp="1587063301969">
+    <state x="357" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.0.1366.738@0.0.1366.738" timestamp="1587063913382" />
+    <state x="255" y="0" key="CommitChangelistDialog2" timestamp="1587063890213">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state x="255" y="0" key="CommitChangelistDialog2/0.0.1366.738@0.0.1366.738" timestamp="1587063301969" />
+    <state x="255" y="0" key="CommitChangelistDialog2/0.0.1366.738@0.0.1366.738" timestamp="1587063890213" />
     <state x="462" y="109" key="FileChooserDialogImpl" timestamp="1586665464134">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
     <state x="462" y="109" key="FileChooserDialogImpl/0.0.1366.738@0.0.1366.738" timestamp="1586665464134" />
-    <state width="1344" height="135" key="GridCell.Tab.0.bottom" timestamp="1587063631261">
+    <state width="1344" height="93" key="GridCell.Tab.0.bottom" timestamp="1587117435143">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="135" key="GridCell.Tab.0.bottom/0.0.1366.738@0.0.1366.738" timestamp="1587063631261" />
-    <state width="1344" height="135" key="GridCell.Tab.0.center" timestamp="1587063631260">
+    <state width="1344" height="93" key="GridCell.Tab.0.bottom/0.0.1366.738@0.0.1366.738" timestamp="1587117435143" />
+    <state width="1344" height="93" key="GridCell.Tab.0.center" timestamp="1587117435143">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="135" key="GridCell.Tab.0.center/0.0.1366.738@0.0.1366.738" timestamp="1587063631260" />
-    <state width="1344" height="135" key="GridCell.Tab.0.left" timestamp="1587063631260">
+    <state width="1344" height="93" key="GridCell.Tab.0.center/0.0.1366.738@0.0.1366.738" timestamp="1587117435143" />
+    <state width="1344" height="93" key="GridCell.Tab.0.left" timestamp="1587117435143">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="135" key="GridCell.Tab.0.left/0.0.1366.738@0.0.1366.738" timestamp="1587063631260" />
-    <state width="1344" height="135" key="GridCell.Tab.0.right" timestamp="1587063631261">
+    <state width="1344" height="93" key="GridCell.Tab.0.left/0.0.1366.738@0.0.1366.738" timestamp="1587117435143" />
+    <state width="1344" height="93" key="GridCell.Tab.0.right" timestamp="1587117435143">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="135" key="GridCell.Tab.0.right/0.0.1366.738@0.0.1366.738" timestamp="1587063631261" />
+    <state width="1344" height="93" key="GridCell.Tab.0.right/0.0.1366.738@0.0.1366.738" timestamp="1587117435143" />
     <state width="1344" height="208" key="GridCell.Tab.1.bottom" timestamp="1586351808917">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
@@ -616,10 +644,10 @@
       <screen x="0" y="0" width="1366" height="738" />
     </state>
     <state width="1344" height="208" key="GridCell.Tab.1.right/0.0.1366.738@0.0.1366.738" timestamp="1586351808917" />
-    <state x="184" y="0" key="SettingsEditor" timestamp="1586675912784">
+    <state x="184" y="0" key="SettingsEditor" timestamp="1587110389827">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state x="184" y="0" key="SettingsEditor/0.0.1366.738@0.0.1366.738" timestamp="1586675912784" />
+    <state x="184" y="0" key="SettingsEditor/0.0.1366.738@0.0.1366.738" timestamp="1587110389827" />
     <state width="498" height="446" key="SwitcherDM" timestamp="1586675087110">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
