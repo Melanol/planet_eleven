@@ -166,9 +166,10 @@ class Mineral(Sprite):
         self.outer_instance = outer_instance
         self.workers = []
         self.hp = hp
+        self.cbs = None
+        self.icon = res.mineral
         minerals.append(self)
         g_pos_coord_d[(x, y)] = self
-        self.icon = res.mineral
 
     def kill(self):
         for worker in self.workers:
@@ -1279,7 +1280,7 @@ class PlanetEleven(pyglet.window.Window):
                              y=self.our_1st_base.rp_y)
 
         self.basic_unit_c_bs = [self.move_b, self.stop_b, self.attack_b]
-        self.cbs_to_render = self.our_1st_base.cbs
+        self.cbs_2_render = self.our_1st_base.cbs
         self.to_build_spt = Sprite(img=res.armory_img, x=-100, y=-100)
         self.to_build_spt.color = (0, 255, 0)
 
@@ -1350,8 +1351,8 @@ class PlanetEleven(pyglet.window.Window):
             self.mm_textured_bg.draw()
             minimap_pixels_batch.draw()
 
-            if self.cbs_to_render:
-                for button in self.cbs_to_render:
+            if self.cbs_2_render:
+                for button in self.cbs_2_render:
                     button.draw()
                 if selected in our_structs and selected \
                         not in offensive_structs:
@@ -1818,6 +1819,9 @@ class PlanetEleven(pyglet.window.Window):
                             unit = Wyrm(self, _key[0], _key[1])
                             unit.spawn()
                     i += 1
+            elif symbol == key.V:
+                print(lvb, bvb)
+                print(lvb % 32 == 0, bvb % 32 == 0)
         # Menu
         else:
             if symbol == key.ESCAPE:
@@ -1940,23 +1944,24 @@ class PlanetEleven(pyglet.window.Window):
                             self.prod_bar_bg.visible = False
                             self.prod_bar.visible = False
                         # Control buttons
-                        if isinstance(selected, Mineral):
-                            self.cbs_to_render = None
-                        else:
+                        try:
                             if selected.owner.name == 'player1':
                                 try:
-                                    self.cbs_to_render = \
-                                        selected.cbs
+                                    if not selected.under_constr:
+                                        self.cbs_2_render = selected.cbs
+                                    else:
+                                        self.cbs_2_render = None
                                 except AttributeError:
-                                    self.cbs_to_render = None
+                                    self.cbs_2_render = selected.cbs
                             else:
-                                self.cbs_to_render = None
-                            print('SELECTED CLASS =', type(selected))
-                            try:
-                                self.rp_spt.x = selected.rp_x
-                                self.rp_spt.y = selected.rp_y
-                            except AttributeError:
-                                pass
+                                self.cbs_2_render = None
+                        except AttributeError:  # For minerals
+                            self.cbs_2_render = None
+                        try:
+                            self.rp_spt.x = selected.rp_x
+                            self.rp_spt.y = selected.rp_y
+                        except AttributeError:
+                            pass
                     elif button == mouse.RIGHT:
                         # Rally point
                         if selected in our_structs:

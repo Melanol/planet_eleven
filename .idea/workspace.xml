@@ -149,16 +149,15 @@
       <method v="2" />
     </configuration>
     <list>
+      <item itemvalue="Python.long_line_finder" />
       <item itemvalue="Python.planet_eleven" />
       <item itemvalue="Python.shadow_maker" />
-      <item itemvalue="Python.test1" />
-      <item itemvalue="Python.long_line_finder" />
+      <item itemvalue="Python.test" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Python.planet_eleven" />
         <item itemvalue="Python.long_line_finder" />
-        <item itemvalue="Python.test1" />
         <item itemvalue="Python.shadow_maker" />
       </list>
     </recent_temporary>
@@ -177,13 +176,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1566740526093</updated>
-    </task>
-    <task id="LOCAL-00211" summary="Hints work for all units">
-      <created>1576410606064</created>
-      <option name="number" value="00211" />
-      <option name="presentableId" value="LOCAL-00211" />
-      <option name="project" value="LOCAL" />
-      <updated>1576410606065</updated>
     </task>
     <task id="LOCAL-00212" summary="Fixed a bug with construction sprites">
       <created>1576411955814</created>
@@ -521,7 +513,14 @@
       <option name="project" value="LOCAL" />
       <updated>1587139713203</updated>
     </task>
-    <option name="localTasksCounter" value="260" />
+    <task id="LOCAL-00260" summary="Attack and move commands work on the minimap">
+      <created>1587143892690</created>
+      <option name="number" value="00260" />
+      <option name="presentableId" value="LOCAL-00260" />
+      <option name="project" value="LOCAL" />
+      <updated>1587143892690</updated>
+    </task>
+    <option name="localTasksCounter" value="261" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -565,7 +564,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$" />
     </ignored-roots>
-    <MESSAGE value="hotkey_constr_cur_1b()" />
     <MESSAGE value="Selected icon" />
     <MESSAGE value="Selected hp" />
     <MESSAGE value="Selected hp autoupdates + selected_icon disappears after the entity is no more" />
@@ -590,7 +588,8 @@
     <MESSAGE value="cancel_prod()" />
     <MESSAGE value="Victory and defeat txt_out" />
     <MESSAGE value="Minimap click bug fixed" />
-    <option name="LAST_COMMIT_MESSAGE" value="Minimap click bug fixed" />
+    <MESSAGE value="Attack and move commands work on the minimap" />
+    <option name="LAST_COMMIT_MESSAGE" value="Attack and move commands work on the minimap" />
   </component>
   <component name="WindowStateProjectService">
     <state x="137" y="23" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1586589784304">
@@ -601,30 +600,30 @@
       <screen x="0" y="0" width="1366" height="738" />
     </state>
     <state x="357" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.0.1366.738@0.0.1366.738" timestamp="1587063913382" />
-    <state x="240" y="0" key="CommitChangelistDialog2" timestamp="1587139708699">
+    <state x="240" y="0" key="CommitChangelistDialog2" timestamp="1587143890578">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state x="240" y="0" key="CommitChangelistDialog2/0.0.1366.738@0.0.1366.738" timestamp="1587139708699" />
+    <state x="240" y="0" key="CommitChangelistDialog2/0.0.1366.738@0.0.1366.738" timestamp="1587143890578" />
     <state x="462" y="109" key="FileChooserDialogImpl" timestamp="1587120374789">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
     <state x="462" y="109" key="FileChooserDialogImpl/0.0.1366.738@0.0.1366.738" timestamp="1587120374789" />
-    <state width="1344" height="95" key="GridCell.Tab.0.bottom" timestamp="1587143763195">
+    <state width="1344" height="95" key="GridCell.Tab.0.bottom" timestamp="1587307593645">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="95" key="GridCell.Tab.0.bottom/0.0.1366.738@0.0.1366.738" timestamp="1587143763195" />
-    <state width="1344" height="95" key="GridCell.Tab.0.center" timestamp="1587143763195">
+    <state width="1344" height="95" key="GridCell.Tab.0.bottom/0.0.1366.738@0.0.1366.738" timestamp="1587307593645" />
+    <state width="1344" height="95" key="GridCell.Tab.0.center" timestamp="1587307593630">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="95" key="GridCell.Tab.0.center/0.0.1366.738@0.0.1366.738" timestamp="1587143763195" />
-    <state width="1344" height="95" key="GridCell.Tab.0.left" timestamp="1587143763195">
+    <state width="1344" height="95" key="GridCell.Tab.0.center/0.0.1366.738@0.0.1366.738" timestamp="1587307593630" />
+    <state width="1344" height="95" key="GridCell.Tab.0.left" timestamp="1587307593630">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="95" key="GridCell.Tab.0.left/0.0.1366.738@0.0.1366.738" timestamp="1587143763195" />
-    <state width="1344" height="95" key="GridCell.Tab.0.right" timestamp="1587143763195">
+    <state width="1344" height="95" key="GridCell.Tab.0.left/0.0.1366.738@0.0.1366.738" timestamp="1587307593630" />
+    <state width="1344" height="95" key="GridCell.Tab.0.right" timestamp="1587307593630">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="95" key="GridCell.Tab.0.right/0.0.1366.738@0.0.1366.738" timestamp="1587143763195" />
+    <state width="1344" height="95" key="GridCell.Tab.0.right/0.0.1366.738@0.0.1366.738" timestamp="1587307593630" />
     <state width="1344" height="208" key="GridCell.Tab.1.bottom" timestamp="1586351808917">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
@@ -641,10 +640,10 @@
       <screen x="0" y="0" width="1366" height="738" />
     </state>
     <state width="1344" height="208" key="GridCell.Tab.1.right/0.0.1366.738@0.0.1366.738" timestamp="1586351808917" />
-    <state x="184" y="0" key="SettingsEditor" timestamp="1587110389827">
+    <state x="184" y="0" key="SettingsEditor" timestamp="1587301492650">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state x="184" y="0" key="SettingsEditor/0.0.1366.738@0.0.1366.738" timestamp="1587110389827" />
+    <state x="184" y="0" key="SettingsEditor/0.0.1366.738@0.0.1366.738" timestamp="1587301492650" />
     <state width="498" height="446" key="SwitcherDM" timestamp="1586675087110">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
