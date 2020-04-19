@@ -84,7 +84,6 @@ prod_structs = []
 offensive_structs = []
 guardian_dummies = []
 enemy_units = []
-projectiles = []
 
 minimap_fow_x = MM0X - 1
 minimap_fow_y = MM0Y - 1

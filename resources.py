@@ -115,7 +115,7 @@ constr_dummy1 = center_load('constr_dummy32_1.png')
 constr_dummy2 = center_load('constr_dummy32_2.png')
 constr_dummy3 = center_load('constr_dummy32_3.png')
 constr_dummy_anim = pyglet.image.Animation.from_image_sequence([constr_dummy1,
-        constr_dummy2, constr_dummy3], 0.1, True)
+    constr_dummy2, constr_dummy3], 0.1, True)
 
 armory_img = center_load('armory.png')
 armory_team_color = center_load('armory_team_color.png')
@@ -188,6 +188,12 @@ zap3 = pyglet.image.load('sprites/anims/zap/zap3.png')
 zap3.anchor_y = 8
 zap_anim = pyglet.image.Animation.from_image_sequence([zap1, zap2, zap3],
                                                       0.1, True)
+
+bomb1 = center_load('bomb16_1.png')
+bomb2 = center_load('bomb16_2.png')
+bomb3 = center_load('bomb16_3.png')
+bomb_anim = pyglet.image.Animation.from_image_sequence([bomb1, bomb2,
+                                                          bomb3], 0.1, True)
 
 explosion1 = center_load('explosion1.png')
 explosion2 = center_load('explosion2.png')

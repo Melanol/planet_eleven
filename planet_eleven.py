@@ -942,9 +942,14 @@ class Unit(Sprite):
         if self.weapon_type == 'projectile':
             projectile = Projectile(x=self.x, y=self.y, target_x=self.target_p.x,
                                     target_y=self.target_p.y, damage=self.damage,
-                                    speed=5, target_obj=self.target_p)
+                                    speed=10, target_obj=self.target_p)
             projectiles.append(projectile)
-        else:
+        elif self.weapon_type == 'bomb':
+            bomb = Bomb(x=self.x, y=self.y, target_x=self.target_p.x,
+                        target_y=self.target_p.y, damage=self.damage,
+                        speed=2)
+            bombs.append(bomb)
+        else:  # Zap
             self.target_p.hp -= self.damage
             Zap(self.x, self.y, self.target_p.x, self.target_p.y,
                 self.game_inst.f)
@@ -988,7 +993,7 @@ class Unit(Sprite):
 
 class Apocalypse(Unit):
     cost = 600
-    build_time = 1000
+    build_time = 10
     icon = res.apocalypse_icon_img
 
     def __init__(self, game_inst, x, y, owner=None):
@@ -997,8 +1002,8 @@ class Apocalypse(Unit):
         super().__init__(game_inst, owner, res.apocalypse_img,
                          res.apocalypse_team_color, res.apocalypse_icon_img,
                          flying=True,
-                         vision_radius=6, hp=100, x=x, y=y, speed=2,
-                         weapon_type='projectile', damage=30, cooldown=120,
+                         vision_radius=6, hp=100, x=x, y=y, speed=1,
+                         weapon_type='bomb', damage=100, cooldown=200,
                          attacks_ground=True, attacks_air=False,
                          shadow_sprite=res.apocalypse_shadow_img,
                          cbs=game_inst.basic_unit_c_bs)
@@ -1269,6 +1274,7 @@ class PlanetEleven(pyglet.window.Window):
         Mineral(self, PS / 2 + PS * 46, PS / 2 + PS * 48)
         self.our_1st_base = MechCenter(self, PS * 7, PS * 8, skip_constr=True)
         selected = self.our_1st_base
+        self.selected_icon.image = selected.icon
         MechCenter(self, PS * 10, PS * 10, owner=self.computer, skip_constr=True)
         MechCenter(self, PS * 50, PS * 50, owner=self.computer, skip_constr=True)
 
@@ -1581,23 +1587,48 @@ class PlanetEleven(pyglet.window.Window):
                             enemy_structs + enemy_units)
             update_shooting(self, enemy_units, our_structs + our_units)
             # Projectiles
+            delayed_del = []
             for i, projectile in enumerate(projectiles):
                 if not projectile.eta() <= 1:
                     projectile.update()
                 else:  # Hit!
                     projectile.target_obj.hp -= projectile.damage
                     HitAnim(projectile.x, projectile.y)
-                    projectile.delete()
-                    del projectiles[i]
+                    delayed_del.append(projectile)
+            for projectile in delayed_del:
+                projectiles.remove(projectile)
+                projectile.delete()
             # Zaps
             delayed_del = []
             for zap in zaps:
                 if zap.f_started + ZAPS_LAST_F <= self.f:
                     delayed_del.append(zap)
-            # Delayed del
             for zap in delayed_del:
-                del zaps[zaps.index(zap)]
+                zaps.remove(zap)
                 zap.delete()
+            # Bombs
+            delayed_del = []
+            for i, bomb in enumerate(bombs):
+                if not bomb.eta() <= 1:
+                    bomb.update()
+                else:  # Hit!
+                    try:
+                        g_pos_coord_d[(bomb.target_x, bomb.target_y)].hp -= \
+                            bomb.damage
+                    # This is because of 2-block-wide
+                    # structures and the way enemy-finding workds
+                    except KeyError:
+                        try:
+                            g_pos_coord_d[(bomb.target_x - 16 ,
+                                           bomb.target_y - 16)].hp -= bomb.damage
+                        except AttributeError:
+                            pass
+                    hit_anim = HitAnim(bomb.x, bomb.y)
+                    hit_anim.color = (255, 200, 200)
+                    delayed_del.append(bomb)
+            for bomb in delayed_del:
+                bombs.remove(bomb)
+                bomb.delete()
             # Destroying minerals
             minerals_to_del = []
             for mineral in minerals:
