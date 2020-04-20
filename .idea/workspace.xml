@@ -1,12 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="8699b466-fa9b-4e8c-b41f-e5bbe759696d" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/todo.rtf" beforeDir="false" afterPath="$PROJECT_DIR$/docs/todo.rtf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/planet_eleven.py" beforeDir="false" afterPath="$PROJECT_DIR$/planet_eleven.py" afterDir="false" />
-    </list>
+    <list default="true" id="8699b466-fa9b-4e8c-b41f-e5bbe759696d" name="Default Changelist" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -177,13 +172,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1566740526093</updated>
-    </task>
-    <task id="LOCAL-00214" summary="Revert here if minimap fix fails">
-      <created>1576489327916</created>
-      <option name="number" value="00214" />
-      <option name="presentableId" value="LOCAL-00214" />
-      <option name="project" value="LOCAL" />
-      <updated>1576489327920</updated>
     </task>
     <task id="LOCAL-00215" summary="Minimap fixed">
       <created>1576513805870</created>
@@ -521,7 +509,14 @@
       <option name="project" value="LOCAL" />
       <updated>1587326990050</updated>
     </task>
-    <option name="localTasksCounter" value="263" />
+    <task id="LOCAL-00263" summary="ai()">
+      <created>1587377925417</created>
+      <option name="number" value="00263" />
+      <option name="presentableId" value="LOCAL-00263" />
+      <option name="project" value="LOCAL" />
+      <updated>1587377925418</updated>
+    </task>
+    <option name="localTasksCounter" value="264" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -565,7 +560,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$" />
     </ignored-roots>
-    <MESSAGE value="Selected hp autoupdates + selected_icon disappears after the entity is no more" />
     <MESSAGE value="txt_out" />
     <MESSAGE value="Multiple inheritance for structures" />
     <MESSAGE value="&quot;Queue is full&quot;" />
@@ -590,7 +584,8 @@
     <MESSAGE value="Attack and move commands work on the minimap" />
     <MESSAGE value="Control buttons for structures under construction are off" />
     <MESSAGE value="Bomb class" />
-    <option name="LAST_COMMIT_MESSAGE" value="Bomb class" />
+    <MESSAGE value="ai()" />
+    <option name="LAST_COMMIT_MESSAGE" value="ai()" />
   </component>
   <component name="WindowStateProjectService">
     <state x="137" y="23" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1586589784304">
@@ -601,30 +596,30 @@
       <screen x="0" y="0" width="1366" height="738" />
     </state>
     <state x="357" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.0.1366.738@0.0.1366.738" timestamp="1587063913382" />
-    <state x="240" y="0" key="CommitChangelistDialog2" timestamp="1587326983779">
+    <state x="240" y="0" key="CommitChangelistDialog2" timestamp="1587377912576">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state x="240" y="0" key="CommitChangelistDialog2/0.0.1366.738@0.0.1366.738" timestamp="1587326983779" />
+    <state x="240" y="0" key="CommitChangelistDialog2/0.0.1366.738@0.0.1366.738" timestamp="1587377912576" />
     <state x="462" y="109" key="FileChooserDialogImpl" timestamp="1587120374789">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
     <state x="462" y="109" key="FileChooserDialogImpl/0.0.1366.738@0.0.1366.738" timestamp="1587120374789" />
-    <state width="1344" height="99" key="GridCell.Tab.0.bottom" timestamp="1587377674822">
+    <state width="1344" height="99" key="GridCell.Tab.0.bottom" timestamp="1587377808730">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="99" key="GridCell.Tab.0.bottom/0.0.1366.738@0.0.1366.738" timestamp="1587377674822" />
-    <state width="1344" height="99" key="GridCell.Tab.0.center" timestamp="1587377674822">
+    <state width="1344" height="99" key="GridCell.Tab.0.bottom/0.0.1366.738@0.0.1366.738" timestamp="1587377808730" />
+    <state width="1344" height="99" key="GridCell.Tab.0.center" timestamp="1587377808730">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="99" key="GridCell.Tab.0.center/0.0.1366.738@0.0.1366.738" timestamp="1587377674822" />
-    <state width="1344" height="99" key="GridCell.Tab.0.left" timestamp="1587377674822">
+    <state width="1344" height="99" key="GridCell.Tab.0.center/0.0.1366.738@0.0.1366.738" timestamp="1587377808730" />
+    <state width="1344" height="99" key="GridCell.Tab.0.left" timestamp="1587377808730">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="99" key="GridCell.Tab.0.left/0.0.1366.738@0.0.1366.738" timestamp="1587377674822" />
-    <state width="1344" height="99" key="GridCell.Tab.0.right" timestamp="1587377674822">
+    <state width="1344" height="99" key="GridCell.Tab.0.left/0.0.1366.738@0.0.1366.738" timestamp="1587377808730" />
+    <state width="1344" height="99" key="GridCell.Tab.0.right" timestamp="1587377808730">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="99" key="GridCell.Tab.0.right/0.0.1366.738@0.0.1366.738" timestamp="1587377674822" />
+    <state width="1344" height="99" key="GridCell.Tab.0.right/0.0.1366.738@0.0.1366.738" timestamp="1587377808730" />
     <state width="1344" height="208" key="GridCell.Tab.1.bottom" timestamp="1586351808917">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
