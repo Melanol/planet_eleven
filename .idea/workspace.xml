@@ -2,12 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="8699b466-fa9b-4e8c-b41f-e5bbe759696d" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/constants_and_utilities.py" beforeDir="false" afterPath="$PROJECT_DIR$/constants_and_utilities.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/todo.rtf" beforeDir="false" afterPath="$PROJECT_DIR$/docs/todo.rtf" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/planet_eleven.py" beforeDir="false" afterPath="$PROJECT_DIR$/planet_eleven.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources.py" beforeDir="false" afterPath="$PROJECT_DIR$/resources.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/weapons.py" beforeDir="false" afterPath="$PROJECT_DIR$/weapons.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -179,13 +177,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1566740526093</updated>
-    </task>
-    <task id="LOCAL-00213" summary="Buildings have hints">
-      <created>1576413329146</created>
-      <option name="number" value="00213" />
-      <option name="presentableId" value="LOCAL-00213" />
-      <option name="project" value="LOCAL" />
-      <updated>1576413329147</updated>
     </task>
     <task id="LOCAL-00214" summary="Revert here if minimap fix fails">
       <created>1576489327916</created>
@@ -523,7 +514,14 @@
       <option name="project" value="LOCAL" />
       <updated>1587309108118</updated>
     </task>
-    <option name="localTasksCounter" value="262" />
+    <task id="LOCAL-00262" summary="Bomb class">
+      <created>1587326990049</created>
+      <option name="number" value="00262" />
+      <option name="presentableId" value="LOCAL-00262" />
+      <option name="project" value="LOCAL" />
+      <updated>1587326990050</updated>
+    </task>
+    <option name="localTasksCounter" value="263" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -567,7 +565,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$" />
     </ignored-roots>
-    <MESSAGE value="Selected hp" />
     <MESSAGE value="Selected hp autoupdates + selected_icon disappears after the entity is no more" />
     <MESSAGE value="txt_out" />
     <MESSAGE value="Multiple inheritance for structures" />
@@ -592,7 +589,8 @@
     <MESSAGE value="Minimap click bug fixed" />
     <MESSAGE value="Attack and move commands work on the minimap" />
     <MESSAGE value="Control buttons for structures under construction are off" />
-    <option name="LAST_COMMIT_MESSAGE" value="Control buttons for structures under construction are off" />
+    <MESSAGE value="Bomb class" />
+    <option name="LAST_COMMIT_MESSAGE" value="Bomb class" />
   </component>
   <component name="WindowStateProjectService">
     <state x="137" y="23" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1586589784304">
@@ -603,30 +601,30 @@
       <screen x="0" y="0" width="1366" height="738" />
     </state>
     <state x="357" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.0.1366.738@0.0.1366.738" timestamp="1587063913382" />
-    <state x="240" y="0" key="CommitChangelistDialog2" timestamp="1587309100128">
+    <state x="240" y="0" key="CommitChangelistDialog2" timestamp="1587326983779">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state x="240" y="0" key="CommitChangelistDialog2/0.0.1366.738@0.0.1366.738" timestamp="1587309100128" />
+    <state x="240" y="0" key="CommitChangelistDialog2/0.0.1366.738@0.0.1366.738" timestamp="1587326983779" />
     <state x="462" y="109" key="FileChooserDialogImpl" timestamp="1587120374789">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
     <state x="462" y="109" key="FileChooserDialogImpl/0.0.1366.738@0.0.1366.738" timestamp="1587120374789" />
-    <state width="1344" height="143" key="GridCell.Tab.0.bottom" timestamp="1587326763474">
+    <state width="1344" height="99" key="GridCell.Tab.0.bottom" timestamp="1587377674822">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="143" key="GridCell.Tab.0.bottom/0.0.1366.738@0.0.1366.738" timestamp="1587326763474" />
-    <state width="1344" height="143" key="GridCell.Tab.0.center" timestamp="1587326763474">
+    <state width="1344" height="99" key="GridCell.Tab.0.bottom/0.0.1366.738@0.0.1366.738" timestamp="1587377674822" />
+    <state width="1344" height="99" key="GridCell.Tab.0.center" timestamp="1587377674822">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="143" key="GridCell.Tab.0.center/0.0.1366.738@0.0.1366.738" timestamp="1587326763474" />
-    <state width="1344" height="143" key="GridCell.Tab.0.left" timestamp="1587326763473">
+    <state width="1344" height="99" key="GridCell.Tab.0.center/0.0.1366.738@0.0.1366.738" timestamp="1587377674822" />
+    <state width="1344" height="99" key="GridCell.Tab.0.left" timestamp="1587377674822">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="143" key="GridCell.Tab.0.left/0.0.1366.738@0.0.1366.738" timestamp="1587326763473" />
-    <state width="1344" height="143" key="GridCell.Tab.0.right" timestamp="1587326763474">
+    <state width="1344" height="99" key="GridCell.Tab.0.left/0.0.1366.738@0.0.1366.738" timestamp="1587377674822" />
+    <state width="1344" height="99" key="GridCell.Tab.0.right" timestamp="1587377674822">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="143" key="GridCell.Tab.0.right/0.0.1366.738@0.0.1366.738" timestamp="1587326763474" />
+    <state width="1344" height="99" key="GridCell.Tab.0.right/0.0.1366.738@0.0.1366.738" timestamp="1587377674822" />
     <state width="1344" height="208" key="GridCell.Tab.1.bottom" timestamp="1586351808917">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
@@ -643,10 +641,10 @@
       <screen x="0" y="0" width="1366" height="738" />
     </state>
     <state width="1344" height="208" key="GridCell.Tab.1.right/0.0.1366.738@0.0.1366.738" timestamp="1586351808917" />
-    <state x="184" y="0" key="SettingsEditor" timestamp="1587325579002">
+    <state x="184" y="0" key="SettingsEditor" timestamp="1587366138664">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state x="184" y="0" key="SettingsEditor/0.0.1366.738@0.0.1366.738" timestamp="1587325579002" />
+    <state x="184" y="0" key="SettingsEditor/0.0.1366.738@0.0.1366.738" timestamp="1587366138664" />
     <state width="498" height="446" key="SwitcherDM" timestamp="1586675087110">
       <screen x="0" y="0" width="1366" height="738" />
     </state>

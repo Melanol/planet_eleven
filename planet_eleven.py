@@ -184,8 +184,9 @@ def order_unit(game_inst, struct, unit):
     owner = struct.owner
     # Queue is full
     if len(struct.prod_q) == 3:
-        game_inst.txt_out.text = "Queue is full"
-        game_inst.txt_out_upd_f = game_inst.f
+        if owner == game_inst.this_player:
+            game_inst.txt_out.text = "Queue is full"
+            game_inst.txt_out_upd_f = game_inst.f
         return
     # Enough minerals
     if owner.min_c - unit.cost >= 0:
@@ -197,13 +198,13 @@ def order_unit(game_inst, struct, unit):
         if selected == struct:
             game_inst.prod_bar_bg.visible = True
             game_inst.prod_bar.visible = True
-        if len(struct.prod_q) == 1:
-            struct.prod_start_f = game_inst.f
-            game_inst.prod_icon1.image = unit.icon
-        elif len(struct.prod_q) == 2:
-            game_inst.prod_icon2.image = unit.icon
-        else:
-            game_inst.prod_icon3.image = unit.icon
+            if len(struct.prod_q) == 1:
+                struct.prod_start_f = game_inst.f
+                game_inst.prod_icon1.image = unit.icon
+            elif len(struct.prod_q) == 2:
+                game_inst.prod_icon2.image = unit.icon
+            else:
+                game_inst.prod_icon3.image = unit.icon
     # Not enough minerals
     else:
         if owner == game_inst.this_player:
@@ -216,7 +217,7 @@ def building_spawn_unit(game_inst, struct):
         unit = struct.prod_q[0]
         struct.cur_max_prod_time = unit.build_time
         # Is it time to spawn?
-        if game_inst.f - struct.prod_start_f == struct.cur_max_prod_time:
+        if game_inst.f - struct.prod_start_f >= struct.cur_max_prod_time:
             if str(struct.prod_q[0]) not in LIST_OF_FLYING:
                 dict_to_check = g_pos_coord_d
             else:
@@ -263,13 +264,15 @@ def building_spawn_unit(game_inst, struct):
                     struct.anim.visible = False
                 if not struct.default_rp:
                     unit.move((struct.rp_x, struct.rp_y))
-                game_inst.prod_icon1.image = game_inst.prod_icon2.image
-                game_inst.prod_icon2.image = game_inst.prod_icon3.image
-                game_inst.prod_icon3.image = res.none_img
+                if struct.owner == game_inst.this_player:
+                    game_inst.prod_icon1.image = game_inst.prod_icon2.image
+                    game_inst.prod_icon2.image = game_inst.prod_icon3.image
+                    game_inst.prod_icon3.image = res.none_img
             else:
                 struct.prod_start_f += 1
-                game_inst.txt_out.text = "No place"
-                game_inst.txt_out_upd_f = game_inst.f
+                if struct.owner == game_inst.this_player:
+                    game_inst.txt_out.text = "No place"
+                    game_inst.txt_out_upd_f = game_inst.f
 
 
 def order_structure(game_inst, unit, struct, x, y):
@@ -319,7 +322,7 @@ class Struct(Sprite):
             n = int(self.width / PS // 2)
             d = self.width / PS // 2 * PS - PS / 2
             width = 2
-        print('d =', d, 'n =', n, 'width =', width)
+        # print('d =', d, 'n =', n, 'width =', width)
         x -= d
         y -= d
         self.blocks = [(x, y)]
@@ -406,7 +409,7 @@ class GuardianStructure:
 
 class Armory(Struct, GuardianStructure):
     cost = 200
-    build_time = 10
+    build_time = 60
 
     def __init__(self, game_inst, x, y, owner=None, skip_constr=False):
         if owner is None:
@@ -493,7 +496,7 @@ class OffensiveStruct(Struct):
 
 class Turret(OffensiveStruct, GuardianStructure):
     cost = 150
-    build_time = 10
+    build_time = 40
 
     def __init__(self, game_inst, x, y, owner=None, skip_constr=False):
         if owner is None:
@@ -538,10 +541,10 @@ def astar(map, start, end, acc_ends):
     start_node.g = start_node.f = 0
     end_node = Node(None, end)
     end_node.g = end_node.f = 0
-    print(acc_ends)
+    # print(acc_ends)
     acc_end_nodes = []
     for acc_end in acc_ends:
-        print(acc_end)
+        # print(acc_end)
         acc_end_nodes.append(Node(None, acc_end))
     # open_list is where you can go now
     open_list = [start_node]
@@ -570,16 +573,16 @@ def astar(map, start, end, acc_ends):
             return []
 
         # Return path
-        print("current_node.pos =", current_node.pos)
+        # print("current_node.pos =", current_node.pos)
         for node in acc_end_nodes:
-            print("node.pos =", node.pos)
+            # print("node.pos =", node.pos)
             if node == current_node:
-                print(1)
+                # print(1)
                 path = []
                 while current_node:
                     path.append(current_node.pos)
                     current_node = current_node.parent
-                print(2)
+                # print(2)
                 node_count = 0
                 return path[::-1]  # Return reversed path
 
@@ -652,7 +655,7 @@ def convert_c_to_simple(c):
 
 def find_path(start, end, is_flying):
     """Main path-finding function. Calls other PF functions."""
-    print('start =', start, 'end =', end)
+    # print('start =', start, 'end =', end)
     # Check end neighbors
     if not is_flying:
         selected_dict = g_pos_coord_d
@@ -705,16 +708,16 @@ def find_path(start, end, is_flying):
             if acc_ends:
                 break
             width += 1
-    print("acc_ends =", acc_ends)
+    # print("acc_ends =", acc_ends)
     start = convert_c_to_simple(start[0]), convert_c_to_simple(start[1])
     end = convert_c_to_simple(end[0]), convert_c_to_simple(end[1])
-    print('start =', start, 'end =', end)
+    # print('start =', start, 'end =', end)
     map = convert_map(selected_dict)
-    print('map converted to simple')
+    # print('map converted to simple')
     map[start[1]][start[0]] = 0
     map[end[1]][end[0]] = 0
     path = astar(map, start, end, acc_ends)
-    print('path =', path)
+    # print('path =', path)
     if not path:
         return []
     converted_path = []
@@ -722,7 +725,7 @@ def find_path(start, end, is_flying):
         x = x * PS + PS // 2
         y = y * PS + PS // 2
         converted_path.append((x, y))
-    print('converted_path =', converted_path)
+    # print('converted_path =', converted_path)
     return converted_path
 
 
@@ -864,7 +867,7 @@ class Unit(Sprite):
             self.dest_reached = True
             return
         if target:  # If we can reach there
-            print('target =', target)
+            # print('target =', target)
             self.target_x = target[0]
             self.target_y = target[1]
             self.pixel.x, self.pixel.y = to_minimap(self.target_x,
@@ -993,7 +996,7 @@ class Unit(Sprite):
 
 class Apocalypse(Unit):
     cost = 600
-    build_time = 10
+    build_time = 100
     icon = res.apocalypse_icon_img
 
     def __init__(self, game_inst, x, y, owner=None):
@@ -1003,7 +1006,7 @@ class Apocalypse(Unit):
                          res.apocalypse_team_color, res.apocalypse_icon_img,
                          flying=True,
                          vision_radius=6, hp=100, x=x, y=y, speed=1,
-                         weapon_type='bomb', damage=100, cooldown=200,
+                         weapon_type='projectile', damage=100, cooldown=200,
                          attacks_ground=True, attacks_air=False,
                          shadow_sprite=res.apocalypse_shadow_img,
                          cbs=game_inst.basic_unit_c_bs)
@@ -1011,7 +1014,7 @@ class Apocalypse(Unit):
 
 class Centurion(Unit):
     cost = 400
-    build_time = 10
+    build_time = 100
     icon = res.centurion_icon_img
 
     def __init__(self, game_inst, x, y, owner=None):
@@ -1029,7 +1032,7 @@ class Centurion(Unit):
 
 class Defiler(Unit):
     cost = 300
-    build_time = 10
+    build_time = 100
     icon = res.defiler_icon_img
 
     def __init__(self, game_inst, x, y, owner=None):
@@ -1038,7 +1041,7 @@ class Defiler(Unit):
         super().__init__(game_inst, owner, res.defiler_img,
                          res.defiler_team_color, res.defiler_icon_img,
                          flying=True,
-                         vision_radius=6, hp=70, x=x, y=y, speed=6,
+                         vision_radius=6, hp=70, x=x, y=y, speed=3,
                          weapon_type='instant', damage=10, cooldown=60,
                          attacks_ground=True, attacks_air=True,
                          shadow_sprite=res.defiler_shadow_img,
@@ -1056,7 +1059,7 @@ class Pioneer(Unit):
         super().__init__(game_inst, owner, res.pioneer_img,
                          res.pioneer_team_color, res.pioneer_icon_img,
                          flying=False,
-                         vision_radius=4, hp=10, x=x, y=y, speed=4,
+                         vision_radius=4, hp=10, x=x, y=y, speed=2,
                          weapon_type='none', damage=0, cooldown=0,
                          attacks_ground=False, attacks_air=False,
                          shadow_sprite=res.pioneer_shadow_img,
@@ -1132,7 +1135,7 @@ class Pioneer(Unit):
 
 class Wyrm(Unit):
     cost = 150
-    build_time = 10
+    build_time = 50
     icon = res.wyrm_icon_img
 
     def __init__(self, game_inst, x, y, owner=None):
@@ -1140,7 +1143,7 @@ class Wyrm(Unit):
             owner = game_inst.this_player
         super().__init__(game_inst, owner, res.wyrm_img,
                          res.wyrm_team_color, res.wyrm_icon_img, flying=False,
-                         vision_radius=3, hp=25, x=x, y=y, speed=7,
+                         vision_radius=3, hp=25, x=x, y=y, speed=3,
                          weapon_type='projectile', damage=5, cooldown=60,
                          attacks_ground=True, attacks_air=False,
                          shadow_sprite=res.wyrm_shadow_img,
@@ -1153,7 +1156,7 @@ class PlanetEleven(pyglet.window.Window):
                       double_buffer=True)
         super().__init__(width, height, title, config=conf)
         self.set_mouse_cursor(res.cursor)
-        self.show_fps = True
+        self.show_fps = False
         self.fps_display = pyglet.window.FPSDisplay(window=self)
         self.ui = []
         self.mouse_x = 0
@@ -1168,6 +1171,7 @@ class PlanetEleven(pyglet.window.Window):
         self.f = 0
         self.this_player = Player("player1")
         self.computer = Player("computer1")
+        self.computer.min_c = 50000
         self.computer.workers_count = 0
         self.dx = 0
         self.dy = 0
@@ -1400,16 +1404,9 @@ class PlanetEleven(pyglet.window.Window):
                         struct.prod_complete = True
                 except AttributeError:
                     pass
-            # # AI ordering units
-            # if self.f % 60 == 0:
-            #     for building in enemy_structs:
-            #         if isinstance(building, MechCenter):
-            #             if self.computer.workers_count < 6:
-            #                 order_unit(self, building, Pioneer)
-            #                 self.computer.workers_count += 1
-            #             else:
-            #                 order_unit(self, building, random.choice((Wyrm,
-            #                     Centurion, Defiler, Apocalypse)))
+            # AI
+            if self.f % 50 == 0:
+                self.ai()
             # Units
             # Gathering resources
             for worker in workers:
@@ -1418,7 +1415,7 @@ class PlanetEleven(pyglet.window.Window):
                         try:
                             if is_melee_dist(worker, worker.task_x,
                                              worker.task_y):
-                                print("melee dist")
+                                # print("melee dist")
                                 worker.gather()
                         except TypeError:
                             worker.clear_task()
@@ -1428,59 +1425,7 @@ class PlanetEleven(pyglet.window.Window):
                         owner.min_c += 0.03
                         if owner.name == 'player1':
                             self.update_min_c_label()
-            # AI gathering resources
-            # if self.f % 120 == 0:
-            #     try:
-            #         closest_min = minerals[0]
-            #         for worker in workers:
-            #             if all((not worker.is_gathering,
-            #                     worker.dest_reached,
-            #                     worker.owner.name == 'computer1')):
-            #                 dist_2_closest_min = dist(closest_min, worker)
-            #                 for mineral in minerals[1:]:
-            #                     dist_2_min = dist(mineral, worker)
-            #                     if dist_2_min < dist_2_closest_min:
-            #                         closest_min = mineral
-            #                         dist_2_closest_min = dist_2_min
-            #                 worker.move((closest_min.x, closest_min.y))
-            #                 worker.clear_task()
-            #                 print('go gather, lazy worker!')
-            #                 worker.mineral_to_gather = closest_min
-            #                 worker.task_x = closest_min.x
-            #                 worker.task_y = closest_min.y
-            #                 closest_min.workers.append(worker)
-            #     except IndexError:
-            #         pass
-            # AI sending units to attack:
-            # if self.f % 300 == 0:
-            #     for unit in enemy_units:
-            #         if unit.weapon_type != 'none' and not unit.has_target_p:
-            #             closest_enemy = None
-            #             closest_enemy_dist = None
-            #             for entity in our_units + our_structs:
-            #                 try:
-            #                     if not unit.attacks_air and entity.flying:
-            #                         continue
-            #                     if not unit.attacks_ground \
-            #                             and not entity.flying:
-            #                         continue
-            #                 except AttributeError:
-            #                     pass
-            #                 dist_to_enemy = dist(unit, entity)
-            #                 if not closest_enemy:
-            #                     closest_enemy = entity
-            #                     closest_enemy_dist = dist_to_enemy
-            #                 else:
-            #                     if dist_to_enemy < closest_enemy_dist:
-            #                         closest_enemy = entity
-            #                         closest_enemy_dist = dist_to_enemy
-            #             try:
-            #                 unit.move(round_coords(closest_enemy.x,
-            #                                        closest_enemy.y))
-            #                 unit.attack_moving = True
-            #             except AttributeError:
-            #                 pass
-            # Summon structures. TODO: Optimize
+            # Summon structures
             for worker in workers:
                 if worker.to_build:
                     if worker.to_build == 'mech_center':
@@ -1619,10 +1564,12 @@ class PlanetEleven(pyglet.window.Window):
                     # structures and the way enemy-finding workds
                     except KeyError:
                         try:
-                            g_pos_coord_d[(bomb.target_x - 16 ,
+                            g_pos_coord_d[(bomb.target_x - 16,
                                            bomb.target_y - 16)].hp -= bomb.damage
                         except AttributeError:
                             pass
+                    except AttributeError:  # For already dead? Errr
+                        pass
                     hit_anim = HitAnim(bomb.x, bomb.y)
                     hit_anim.color = (255, 200, 200)
                     delayed_del.append(bomb)
@@ -1851,8 +1798,9 @@ class PlanetEleven(pyglet.window.Window):
                             unit.spawn()
                     i += 1
             elif symbol == key.V:
-                print(lvb, bvb)
-                print(lvb % 32 == 0, bvb % 32 == 0)
+                pass
+                # print(lvb, bvb)
+                # print(lvb % 32 == 0, bvb % 32 == 0)
         # Menu
         else:
             if symbol == key.ESCAPE:
@@ -1967,13 +1915,21 @@ class PlanetEleven(pyglet.window.Window):
                         except AttributeError:
                             self.selected_hp.text = str(int(selected.hp))
                         # Production
-                        try:
-                            selected.prod_q[0]
-                            self.prod_bar_bg.visible = True
-                            self.prod_bar.visible = True
-                        except (AttributeError, IndexError):
-                            self.prod_bar_bg.visible = False
-                            self.prod_bar.visible = False
+                        if selected.owner.name == 'player1':
+                            try:
+                                selected.prod_q[0]
+                                self.prod_bar_bg.visible = True
+                                self.prod_bar.visible = True
+                                self.prod_icon1.visible = True
+                                self.prod_icon2.visible = True
+                                self.prod_icon3.visible = True
+                            # Not a structure or nothing in production
+                            except (AttributeError, IndexError):
+                                self.prod_bar_bg.visible = False
+                                self.prod_bar.visible = False
+                                self.prod_icon1.visible = False
+                                self.prod_icon2.visible = False
+                                self.prod_icon3.visible = False
                         # Control buttons
                         try:
                             if selected.owner.name == 'player1':
@@ -2006,7 +1962,7 @@ class PlanetEleven(pyglet.window.Window):
                                 selected.default_rp = True
                                 self.rp_spt.x = selected.x
                                 self.rp_spt.y = selected.y
-                            print('Rally set to ({}, {})'.format(x, y))
+                            # print('Rally set to ({}, {})'.format(x, y))
                         # A unit is selected
                         else:
                             if selected in our_units:
@@ -2026,7 +1982,7 @@ class PlanetEleven(pyglet.window.Window):
                                         obj = g_pos_coord_d[(x, y)]
                                         if str(type(obj)) == \
                                                 "<class '__main__.Mineral'>":
-                                            print('go gather, lazy worker!')
+                                            # print('go gather, lazy worker!')
                                             selected.mineral_to_gather = obj
                                             selected.task_x = obj.x
                                             selected.task_y = obj.y
@@ -2038,7 +1994,7 @@ class PlanetEleven(pyglet.window.Window):
                         # about 2 border pixels of the frame
                         x -= 19 // 2
                         y -= 14 // 2
-                        print('x =', x, 'y =', y)
+                        # print('x =', x, 'y =', y)
                         lvb = (x - MM0X) * PS
                         bvb = (y - MM0Y) * PS
                         self.update_viewport()
@@ -2065,7 +2021,7 @@ class PlanetEleven(pyglet.window.Window):
                                 selected.rp_y = y
                                 self.rp_spt.x = x
                                 self.rp_spt.y = y
-                                print('Rally set to ({}, {})'.format(x, y))
+                                # print('Rally set to ({}, {})'.format(x, y))
                 # Control panel other
                 else:
                     x, y = mc(x=x, y=y)
@@ -2447,6 +2403,67 @@ class PlanetEleven(pyglet.window.Window):
             self.prod_bar.scale_x = 1
         except (AttributeError, IndexError):
             return
+
+    def ai(self):
+        # AI ordering units
+        for struct in enemy_structs:
+            if isinstance(struct, MechCenter):
+                if self.computer.workers_count < 6:
+                    order_unit(self, struct, Pioneer)
+                    self.computer.workers_count += 1
+                else:
+                    order_unit(self, struct, random.choice((Wyrm, Centurion,
+                                                            Defiler, Apocalypse)))
+        # AI gathering resources
+        try:
+            closest_min = minerals[0]
+            for worker in workers:
+                if all((not worker.is_gathering,
+                        worker.dest_reached,
+                        worker.owner.name == 'computer1')):
+                    dist_2_closest_min = dist(closest_min, worker)
+                    for mineral in minerals[1:]:
+                        dist_2_min = dist(mineral, worker)
+                        if dist_2_min < dist_2_closest_min:
+                            closest_min = mineral
+                            dist_2_closest_min = dist_2_min
+                    worker.move((closest_min.x, closest_min.y))
+                    worker.clear_task()
+                    # print('go gather, lazy worker!')
+                    worker.mineral_to_gather = closest_min
+                    worker.task_x = closest_min.x
+                    worker.task_y = closest_min.y
+                    closest_min.workers.append(worker)
+        except IndexError:
+            pass
+        # AI sending units to attack:
+        for unit in enemy_units:
+            if unit.weapon_type != 'none' and not unit.has_target_p:
+                closest_enemy = None
+                closest_enemy_dist = None
+                for entity in our_units + our_structs:
+                    try:
+                        if not unit.attacks_air and entity.flying:
+                            continue
+                        if not unit.attacks_ground \
+                                and not entity.flying:
+                            continue
+                    except AttributeError:
+                        pass
+                    dist_to_enemy = dist(unit, entity)
+                    if not closest_enemy:
+                        closest_enemy = entity
+                        closest_enemy_dist = dist_to_enemy
+                    else:
+                        if dist_to_enemy < closest_enemy_dist:
+                            closest_enemy = entity
+                            closest_enemy_dist = dist_to_enemy
+                try:
+                    unit.move(round_coords(closest_enemy.x,
+                                           closest_enemy.y))
+                    unit.attack_moving = True
+                except AttributeError:
+                    pass
 
 
 def main():
