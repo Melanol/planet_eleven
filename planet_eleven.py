@@ -57,7 +57,8 @@ def to_minimap(x, y):  # unit.x and unit.y
 
 
 def mc(**kwargs):
-    """Modifies coords for different viewports. All clicks need this."""
+    """Modifies coords for different viewports. All clicks need this. Required for
+    game field, minimap, control panel."""
     if len(kwargs) == 1:
         try:
             return kwargs['x'] + lvb
@@ -1816,6 +1817,7 @@ class PlanetEleven(pyglet.window.Window):
             # Building location selection
             if self.build_loc_sel_phase:
                 # Game field
+                x, y = mc(x=x, y=y)
                 if x < SCREEN_W - 139:
                     x, y = round_coords(x, y)
                     if button == mouse.LEFT:
