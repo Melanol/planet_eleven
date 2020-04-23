@@ -1,7 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="8699b466-fa9b-4e8c-b41f-e5bbe759696d" name="Default Changelist" comment="" />
+    <list default="true" id="8699b466-fa9b-4e8c-b41f-e5bbe759696d" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ai.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/todo.rtf" beforeDir="false" afterPath="$PROJECT_DIR$/docs/todo.rtf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/shadow_maker.py" beforeDir="false" afterPath="$PROJECT_DIR$/shadow_maker.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/units/apocalypse/apocalypse.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/units/apocalypse/apocalypse.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/units/apocalypse/apocalypse.psd" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/units/apocalypse/apocalypse.psd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/units/apocalypse/apocalypse_icon.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/units/apocalypse/apocalypse_icon.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sprites/units/apocalypse/apocalypse_shadow.png" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/units/apocalypse/apocalypse_shadow.png" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -153,8 +162,8 @@
     <recent_temporary>
       <list>
         <item itemvalue="Python.planet_eleven" />
-        <item itemvalue="Python.long_line_finder" />
         <item itemvalue="Python.shadow_maker" />
+        <item itemvalue="Python.long_line_finder" />
       </list>
     </recent_temporary>
   </component>
@@ -172,13 +181,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1566740526093</updated>
-    </task>
-    <task id="LOCAL-00215" summary="Minimap fixed">
-      <created>1576513805870</created>
-      <option name="number" value="00215" />
-      <option name="presentableId" value="LOCAL-00215" />
-      <option name="project" value="LOCAL" />
-      <updated>1576513805870</updated>
     </task>
     <task id="LOCAL-00216" summary="Menu buttons added">
       <created>1576594829630</created>
@@ -516,7 +518,14 @@
       <option name="project" value="LOCAL" />
       <updated>1587377925418</updated>
     </task>
-    <option name="localTasksCounter" value="264" />
+    <task id="LOCAL-00264" summary="ai()">
+      <created>1587378172846</created>
+      <option name="number" value="00264" />
+      <option name="presentableId" value="LOCAL-00264" />
+      <option name="project" value="LOCAL" />
+      <updated>1587378172846</updated>
+    </task>
+    <option name="localTasksCounter" value="265" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -596,30 +605,30 @@
       <screen x="0" y="0" width="1366" height="738" />
     </state>
     <state x="357" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.0.1366.738@0.0.1366.738" timestamp="1587063913382" />
-    <state x="240" y="0" key="CommitChangelistDialog2" timestamp="1587377912576">
+    <state x="240" y="0" key="CommitChangelistDialog2" timestamp="1587378171355">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state x="240" y="0" key="CommitChangelistDialog2/0.0.1366.738@0.0.1366.738" timestamp="1587377912576" />
+    <state x="240" y="0" key="CommitChangelistDialog2/0.0.1366.738@0.0.1366.738" timestamp="1587378171355" />
     <state x="462" y="109" key="FileChooserDialogImpl" timestamp="1587120374789">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
     <state x="462" y="109" key="FileChooserDialogImpl/0.0.1366.738@0.0.1366.738" timestamp="1587120374789" />
-    <state width="1344" height="99" key="GridCell.Tab.0.bottom" timestamp="1587377808730">
+    <state width="1344" height="215" key="GridCell.Tab.0.bottom" timestamp="1587647274399">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="99" key="GridCell.Tab.0.bottom/0.0.1366.738@0.0.1366.738" timestamp="1587377808730" />
-    <state width="1344" height="99" key="GridCell.Tab.0.center" timestamp="1587377808730">
+    <state width="1344" height="215" key="GridCell.Tab.0.bottom/0.0.1366.738@0.0.1366.738" timestamp="1587647274399" />
+    <state width="1344" height="215" key="GridCell.Tab.0.center" timestamp="1587647274398">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="99" key="GridCell.Tab.0.center/0.0.1366.738@0.0.1366.738" timestamp="1587377808730" />
-    <state width="1344" height="99" key="GridCell.Tab.0.left" timestamp="1587377808730">
+    <state width="1344" height="215" key="GridCell.Tab.0.center/0.0.1366.738@0.0.1366.738" timestamp="1587647274398" />
+    <state width="1344" height="215" key="GridCell.Tab.0.left" timestamp="1587647274398">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="99" key="GridCell.Tab.0.left/0.0.1366.738@0.0.1366.738" timestamp="1587377808730" />
-    <state width="1344" height="99" key="GridCell.Tab.0.right" timestamp="1587377808730">
+    <state width="1344" height="215" key="GridCell.Tab.0.left/0.0.1366.738@0.0.1366.738" timestamp="1587647274398" />
+    <state width="1344" height="215" key="GridCell.Tab.0.right" timestamp="1587647274399">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="99" key="GridCell.Tab.0.right/0.0.1366.738@0.0.1366.738" timestamp="1587377808730" />
+    <state width="1344" height="215" key="GridCell.Tab.0.right/0.0.1366.738@0.0.1366.738" timestamp="1587647274399" />
     <state width="1344" height="208" key="GridCell.Tab.1.bottom" timestamp="1586351808917">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
@@ -636,6 +645,10 @@
       <screen x="0" y="0" width="1366" height="738" />
     </state>
     <state width="1344" height="208" key="GridCell.Tab.1.right/0.0.1366.738@0.0.1366.738" timestamp="1586351808917" />
+    <state x="506" y="70" key="RollbackChangesDialog" timestamp="1587378425977">
+      <screen x="0" y="0" width="1366" height="738" />
+    </state>
+    <state x="506" y="70" key="RollbackChangesDialog/0.0.1366.738@0.0.1366.738" timestamp="1587378425977" />
     <state x="184" y="0" key="SettingsEditor" timestamp="1587366138664">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
@@ -644,10 +657,10 @@
       <screen x="0" y="0" width="1366" height="738" />
     </state>
     <state width="498" height="446" key="SwitcherDM/0.0.1366.738@0.0.1366.738" timestamp="1586675087110" />
-    <state x="275" y="101" key="Vcs.Push.Dialog.v2" timestamp="1587139725155">
+    <state x="275" y="101" key="Vcs.Push.Dialog.v2" timestamp="1587378182208">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state x="275" y="101" key="Vcs.Push.Dialog.v2/0.0.1366.738@0.0.1366.738" timestamp="1587139725155" />
+    <state x="275" y="101" key="Vcs.Push.Dialog.v2/0.0.1366.738@0.0.1366.738" timestamp="1587378182208" />
     <state x="92" y="92" width="1182" height="554" key="com.intellij.history.integration.ui.views.FileHistoryDialog" timestamp="1587034165941">
       <screen x="0" y="0" width="1366" height="738" />
     </state>

@@ -1,7 +1,7 @@
 from PIL import Image
 
 
-path = "/sprites/units/apocalypse/apocalypse.png"
+path = "D:/PycharmProjects/planet_eleven/sprites/units/apocalypse/apocalypse.png"
 last_slash_i_reversed = path[::-1].index("/")
 folder = path[::-1][last_slash_i_reversed:][::-1]
 print("folder =", folder)

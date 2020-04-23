@@ -1405,8 +1405,8 @@ class PlanetEleven(pyglet.window.Window):
                 except AttributeError:
                     pass
             # AI
-            if self.f % 50 == 0:
-                self.ai()
+            # if self.f % 50 == 0:
+            #     self.ai()
             # Units
             # Gathering resources
             for worker in workers:
@@ -1930,6 +1930,12 @@ class PlanetEleven(pyglet.window.Window):
                                 self.prod_icon1.visible = False
                                 self.prod_icon2.visible = False
                                 self.prod_icon3.visible = False
+                        else:
+                            self.prod_bar_bg.visible = False
+                            self.prod_bar.visible = False
+                            self.prod_icon1.visible = False
+                            self.prod_icon2.visible = False
+                            self.prod_icon3.visible = False
                         # Control buttons
                         try:
                             if selected.owner.name == 'player1':
