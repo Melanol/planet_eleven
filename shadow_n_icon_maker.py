@@ -10,6 +10,10 @@ print("name =", name)
 im = Image.open(path)
 pixels = im.load()
 
+# Icon
+im.save(folder + name + "_icon.png")
+
+# Shadow
 for x in range(0, 32):
     for y in range(0, 32):
         if pixels[x, y][3] != 0:

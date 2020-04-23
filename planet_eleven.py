@@ -199,6 +199,9 @@ def order_unit(game_inst, struct, unit):
         if selected == struct:
             game_inst.prod_bar_bg.visible = True
             game_inst.prod_bar.visible = True
+            game_inst.prod_icon1.visible = True
+            game_inst.prod_icon2.visible = True
+            game_inst.prod_icon3.visible = True
             if len(struct.prod_q) == 1:
                 struct.prod_start_f = game_inst.f
                 game_inst.prod_icon1.image = unit.icon
@@ -833,7 +836,7 @@ class Unit(Sprite):
     def move(self, dest):
         """Called once by RMB or when a unit is created by a building with
         a non-default rally point."""
-        if self.attack_moving:  # Will not work for computer
+        if self.attack_moving and (self.x, self.y) in POS_COORDS:
             if self.owner.name == 'player1':
                 if closest_enemy_2_att(self, enemy_units + enemy_structs):
                     self.attack_moving = False
@@ -944,13 +947,13 @@ class Unit(Sprite):
 
     def shoot(self, f):
         if self.weapon_type == 'projectile':
-            projectile = Projectile(x=self.x, y=self.y, target_x=self.target_p.x,
-                                    target_y=self.target_p.y, damage=self.damage,
+            projectile = Projectile(x=self.x, y=self.y, target_px=self.target_p.x,
+                                    target_py=self.target_p.y, damage=self.damage,
                                     speed=10, target_obj=self.target_p)
             projectiles.append(projectile)
         elif self.weapon_type == 'bomb':
-            bomb = Bomb(x=self.x, y=self.y, target_x=self.target_p.x,
-                        target_y=self.target_p.y, damage=self.damage,
+            bomb = Bomb(x=self.x, y=self.y, target_px=self.target_p.x,
+                        target_py=self.target_p.y, damage=self.damage,
                         speed=2)
             bombs.append(bomb)
         else:  # Zap
@@ -1015,7 +1018,7 @@ class Apocalypse(Unit):
 
 class Centurion(Unit):
     cost = 400
-    build_time = 100
+    build_time = 10
     icon = res.centurion_icon_img
 
     def __init__(self, game_inst, x, y, owner=None):
@@ -1157,7 +1160,7 @@ class PlanetEleven(pyglet.window.Window):
                       double_buffer=True)
         super().__init__(width, height, title, config=conf)
         self.set_mouse_cursor(res.cursor)
-        self.show_fps = False
+        self.show_fps = True
         self.fps_display = pyglet.window.FPSDisplay(window=self)
         self.ui = []
         self.mouse_x = 0
@@ -1463,11 +1466,11 @@ class PlanetEleven(pyglet.window.Window):
                             self.sel_spt.y = unit.y
                     # Jump
                     else:
+                        unit.x = unit.target_x
+                        unit.y = unit.target_y
+                        unit.team_color.x = unit.target_x
+                        unit.team_color.y = unit.target_y
                         if not unit.move_interd:
-                            unit.x = unit.target_x
-                            unit.y = unit.target_y
-                            unit.team_color.x = unit.target_x
-                            unit.team_color.y = unit.target_y
                             if selected == unit:
                                 self.sel_spt.x = unit.x
                                 self.sel_spt.y = unit.y
@@ -1502,10 +1505,6 @@ class PlanetEleven(pyglet.window.Window):
                                     unit.update_move()
                         # Movement interrupted
                         else:
-                            unit.x = unit.target_x
-                            unit.y = unit.target_y
-                            unit.team_color.x = unit.target_x
-                            unit.team_color.y = unit.target_y
                             if not unit.flying:
                                 unit.shadow.x = unit.target_x + 3
                                 unit.shadow.y = unit.target_y - 3
@@ -1870,7 +1869,13 @@ class PlanetEleven(pyglet.window.Window):
                         return
                     x, y = round_coords(x, y)
                     selected.attack_moving = True
-                    selected.move((x, y))
+                    if selected.dest_reached:
+                        selected.move((x, y))
+                    # Movement interruption
+                    else:
+                        selected.move_interd = True
+                        selected.new_dest_x = x
+                        selected.new_dest_y = y
                     self.targeting_phase = False
                     self.set_mouse_cursor(res.cursor)
             # Normal phase

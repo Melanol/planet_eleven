@@ -1,0 +1,8 @@
+
+                    if selected.dest_reached:
+                        selected.move((x, y))
+                    # Movement interruption
+                    else:
+                        selected.move_interd = True
+                        selected.new_dest_x = x
+                        selected.new_dest_y = y
