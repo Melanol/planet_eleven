@@ -2103,7 +2103,7 @@ class PlanetEleven(pyglet.window.Window):
                                 pass
                             return
                         # Construct structures
-                        if str(type(selected)) == "<class '__main__.Pioneer'>":
+                        if isinstance(selected, Pioneer):
                             if self.armory_icon.x - 16 <= x <= \
                                     self.armory_icon.x + 16 and \
                                     self.armory_icon.y - 16 <= y <= \
@@ -2404,9 +2404,9 @@ class PlanetEleven(pyglet.window.Window):
             if not selected.prod_q:
                 selected.anim.visible = False
                 selected.prod_complete = True
+                self.prod_bar.scale_x = 1
             exec("self.prod_icon{}.image = res.none_img".format(
                 len(selected.prod_q) + 1))
-            self.prod_bar.scale_x = 1
         except (AttributeError, IndexError):
             return
 
