@@ -287,7 +287,14 @@ def order_structure(game_inst, unit, struct, x, y):
         unit.to_build = game_inst.to_build
         unit.task_x = game_inst.to_build_spt.x
         unit.task_y = game_inst.to_build_spt.y
-        unit.move((x, y))
+        # unit.move((x, y))
+        if unit.dest_reached:
+            unit.move((x, y))
+            # Movement interruption
+        else:
+            unit.move_interd = True
+            unit.new_dest_x = x
+            unit.new_dest_y = y
     else:
         if owner == game_inst.this_player:
             game_inst.txt_out.text = "Not enough minerals"
