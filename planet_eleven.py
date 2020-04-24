@@ -1075,7 +1075,7 @@ class Pioneer(Unit):
         super().__init__(game_inst, owner, res.pioneer_img,
                          res.pioneer_team_color, res.pioneer_icon_img,
                          flying=False,
-                         vision_radius=4, hp=10, x=x, y=y, speed=2,
+                         vision_radius=4, hp=10, x=x, y=y, speed=10,
                          weapon_type='none', w_img=res.zap_anim, damage=0,
                          cooldown=0,
                          attacks_ground=False, attacks_air=False,
@@ -1831,7 +1831,7 @@ class PlanetEleven(pyglet.window.Window):
             if self.build_loc_sel_phase:
                 # Game field
                 x, y = mc(x=x, y=y)
-                if x < SCREEN_W - 139:
+                if x < mc(x=SCREEN_W) - 139:
                     x, y = round_coords(x, y)
                     if button == mouse.LEFT:
                         if self.loc_clear:

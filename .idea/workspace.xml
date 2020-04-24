@@ -3,10 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="8699b466-fa9b-4e8c-b41f-e5bbe759696d" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/demos/videos n gifs/2.gif" beforeDir="false" afterPath="$PROJECT_DIR$/demos/videos n gifs/2.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/todo.rtf" beforeDir="false" afterPath="$PROJECT_DIR$/docs/todo.rtf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/planet_eleven.py" beforeDir="false" afterPath="$PROJECT_DIR$/planet_eleven.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sprites/units/apocalypse/apocalypse.psd" beforeDir="false" afterPath="$PROJECT_DIR$/sprites/units/apocalypse/apocalypse.psd" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -178,13 +174,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1566740526093</updated>
-    </task>
-    <task id="LOCAL-00221" summary="Code prettiness">
-      <created>1577303584092</created>
-      <option name="number" value="00221" />
-      <option name="presentableId" value="LOCAL-00221" />
-      <option name="project" value="LOCAL" />
-      <updated>1577303584092</updated>
     </task>
     <task id="LOCAL-00222" summary="Last commit before 0.3">
       <created>1577305789799</created>
@@ -522,7 +511,14 @@
       <option name="project" value="LOCAL" />
       <updated>1587675435143</updated>
     </task>
-    <option name="localTasksCounter" value="270" />
+    <task id="LOCAL-00270" summary="Demo video #2">
+      <created>1587730845224</created>
+      <option name="number" value="00270" />
+      <option name="presentableId" value="LOCAL-00270" />
+      <option name="project" value="LOCAL" />
+      <updated>1587730845231</updated>
+    </task>
+    <option name="localTasksCounter" value="271" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -566,7 +562,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$" />
     </ignored-roots>
-    <MESSAGE value="shadow_maker and allsubds for recourses" />
     <MESSAGE value="Unit team colors" />
     <MESSAGE value="Structure team colors" />
     <MESSAGE value="Shift bug fixed" />
@@ -591,7 +586,8 @@
     <MESSAGE value="Viewport construction bug fixed" />
     <MESSAGE value="Attack-move bug fixed" />
     <MESSAGE value="Construction mid-block bug fixed" />
-    <option name="LAST_COMMIT_MESSAGE" value="Construction mid-block bug fixed" />
+    <MESSAGE value="Demo video #2" />
+    <option name="LAST_COMMIT_MESSAGE" value="Demo video #2" />
   </component>
   <component name="WindowStateProjectService">
     <state x="137" y="23" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1586589784304">
@@ -602,10 +598,10 @@
       <screen x="0" y="0" width="1366" height="738" />
     </state>
     <state x="357" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.0.1366.738@0.0.1366.738" timestamp="1587063913382" />
-    <state x="240" y="0" key="CommitChangelistDialog2" timestamp="1587675430308">
+    <state x="240" y="0" key="CommitChangelistDialog2" timestamp="1587730828275">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state x="240" y="0" key="CommitChangelistDialog2/0.0.1366.738@0.0.1366.738" timestamp="1587675430308" />
+    <state x="240" y="0" key="CommitChangelistDialog2/0.0.1366.738@0.0.1366.738" timestamp="1587730828275" />
     <state x="462" y="109" key="FileChooserDialogImpl" timestamp="1587120374789">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
