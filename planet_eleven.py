@@ -9,8 +9,6 @@ from pyglet.window import mouse
 from pyglet.sprite import Sprite
 from weapons import *
 from constants_and_utilities import *
-
-
 from shadowandunittc import ShadowAndUnitTC
 
 lvb = 0
