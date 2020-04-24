@@ -51,7 +51,3 @@ for arr in rad_matx:
     i += 1
 
 # print('rad_clipped =', rad_clipped)
-lengths = []
-for arr in rad_clipped:
-    lengths.append(len(arr))
-# print(lengths)

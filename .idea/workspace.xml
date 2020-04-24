@@ -21,12 +21,8 @@
   <component name="ChangeListManager">
     <list default="true" id="8699b466-fa9b-4e8c-b41f-e5bbe759696d" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apocalypse_shadow.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/attack range.png" beforeDir="false" afterPath="$PROJECT_DIR$/attack range.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/enemy detection2.py" beforeDir="false" afterPath="$PROJECT_DIR$/enemy detection2.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pan_test.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ray_path_finding.py" beforeDir="false" afterPath="$PROJECT_DIR$/old/ray_path_finding.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/start_menu.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bb_enemy detection.py" beforeDir="false" afterPath="$PROJECT_DIR$/bb_enemy_detection.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/planet_eleven.py" beforeDir="false" afterPath="$PROJECT_DIR$/planet_eleven.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -85,8 +81,8 @@
       <recent name="D:\PycharmProjects\planet_eleven" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.bb_enemy detection">
-    <configuration name="bb_enemy detection" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+  <component name="RunManager" selected="Python.planet_eleven">
+    <configuration name="bb_enemy_detection" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="planet_eleven" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -98,7 +94,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="D:\PycharmProjects\planet_eleven\bb_enemy detection.py" />
+      <option name="SCRIPT_NAME" value="D:\PycharmProjects\planet_eleven\bb_enemy_detection.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -196,12 +192,12 @@
       <item itemvalue="Python.planet_eleven" />
       <item itemvalue="Python.test" />
       <item itemvalue="Python.shadow_n_icon_maker" />
-      <item itemvalue="Python.bb_enemy detection" />
+      <item itemvalue="Python.bb_enemy_detection" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.bb_enemy detection" />
         <item itemvalue="Python.planet_eleven" />
+        <item itemvalue="Python.bb_enemy_detection" />
         <item itemvalue="Python.shadow_n_icon_maker" />
         <item itemvalue="Python.long_line_finder" />
       </list>
@@ -221,20 +217,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1566740526093</updated>
-    </task>
-    <task id="LOCAL-00228" summary="Selected hp">
-      <created>1586327620936</created>
-      <option name="number" value="00228" />
-      <option name="presentableId" value="LOCAL-00228" />
-      <option name="project" value="LOCAL" />
-      <updated>1586327620936</updated>
-    </task>
-    <task id="LOCAL-00229" summary="Selected hp autoupdates + selected_icon disappears after the entity is no more">
-      <created>1586388900514</created>
-      <option name="number" value="00229" />
-      <option name="presentableId" value="LOCAL-00229" />
-      <option name="project" value="LOCAL" />
-      <updated>1586388900515</updated>
     </task>
     <task id="LOCAL-00230" summary="txt_out">
       <created>1586390947819</created>
@@ -565,7 +547,21 @@
       <option name="project" value="LOCAL" />
       <updated>1587745131003</updated>
     </task>
-    <option name="localTasksCounter" value="277" />
+    <task id="LOCAL-00277" summary="bb_enemy_detection.py">
+      <created>1587747750612</created>
+      <option name="number" value="00277" />
+      <option name="presentableId" value="LOCAL-00277" />
+      <option name="project" value="LOCAL" />
+      <updated>1587747750613</updated>
+    </task>
+    <task id="LOCAL-00278" summary="bb_enemy_detection.py">
+      <created>1587747779702</created>
+      <option name="number" value="00278" />
+      <option name="presentableId" value="LOCAL-00278" />
+      <option name="project" value="LOCAL" />
+      <updated>1587747779702</updated>
+    </task>
+    <option name="localTasksCounter" value="279" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -639,7 +635,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$" />
     </ignored-roots>
-    <MESSAGE value="Shift bug fixed" />
     <MESSAGE value="Icons" />
     <MESSAGE value="Half tiles" />
     <MESSAGE value="Instant weapon" />
@@ -664,7 +659,8 @@
     <MESSAGE value="Viewport construction bug fixed" />
     <MESSAGE value="Code splitting complete" />
     <MESSAGE value="Split reverted" />
-    <option name="LAST_COMMIT_MESSAGE" value="Split reverted" />
+    <MESSAGE value="bb_enemy_detection.py" />
+    <option name="LAST_COMMIT_MESSAGE" value="bb_enemy_detection.py" />
   </component>
   <component name="WindowStateProjectService">
     <state x="137" y="23" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1586589784304">
@@ -679,46 +675,46 @@
       <screen x="0" y="0" width="1366" height="738" />
     </state>
     <state x="413" y="115" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1366.738@0.0.1366.738" timestamp="1587744144923" />
-    <state x="240" y="0" key="CommitChangelistDialog2" timestamp="1587745118679">
+    <state x="240" y="0" key="CommitChangelistDialog2" timestamp="1587747774214">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state x="240" y="0" key="CommitChangelistDialog2/0.0.1366.738@0.0.1366.738" timestamp="1587745118679" />
+    <state x="240" y="0" key="CommitChangelistDialog2/0.0.1366.738@0.0.1366.738" timestamp="1587747774214" />
     <state x="462" y="109" key="FileChooserDialogImpl" timestamp="1587120374789">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
     <state x="462" y="109" key="FileChooserDialogImpl/0.0.1366.738@0.0.1366.738" timestamp="1587120374789" />
-    <state width="1344" height="206" key="GridCell.Tab.0.bottom" timestamp="1587747609562">
+    <state width="1344" height="131" key="GridCell.Tab.0.bottom" timestamp="1587751462886">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="206" key="GridCell.Tab.0.bottom/0.0.1366.738@0.0.1366.738" timestamp="1587747609562" />
-    <state width="1344" height="206" key="GridCell.Tab.0.center" timestamp="1587747609561">
+    <state width="1344" height="131" key="GridCell.Tab.0.bottom/0.0.1366.738@0.0.1366.738" timestamp="1587751462886" />
+    <state width="1344" height="131" key="GridCell.Tab.0.center" timestamp="1587751462886">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="206" key="GridCell.Tab.0.center/0.0.1366.738@0.0.1366.738" timestamp="1587747609561" />
-    <state width="1344" height="206" key="GridCell.Tab.0.left" timestamp="1587747609561">
+    <state width="1344" height="131" key="GridCell.Tab.0.center/0.0.1366.738@0.0.1366.738" timestamp="1587751462886" />
+    <state width="1344" height="131" key="GridCell.Tab.0.left" timestamp="1587751462885">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="206" key="GridCell.Tab.0.left/0.0.1366.738@0.0.1366.738" timestamp="1587747609561" />
-    <state width="1344" height="206" key="GridCell.Tab.0.right" timestamp="1587747609561">
+    <state width="1344" height="131" key="GridCell.Tab.0.left/0.0.1366.738@0.0.1366.738" timestamp="1587751462885" />
+    <state width="1344" height="131" key="GridCell.Tab.0.right" timestamp="1587751462886">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="206" key="GridCell.Tab.0.right/0.0.1366.738@0.0.1366.738" timestamp="1587747609561" />
-    <state width="1344" height="258" key="GridCell.Tab.1.bottom" timestamp="1587677565137">
+    <state width="1344" height="131" key="GridCell.Tab.0.right/0.0.1366.738@0.0.1366.738" timestamp="1587751462886" />
+    <state width="1344" height="306" key="GridCell.Tab.1.bottom" timestamp="1587750994453">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="258" key="GridCell.Tab.1.bottom/0.0.1366.738@0.0.1366.738" timestamp="1587677565137" />
-    <state width="1344" height="258" key="GridCell.Tab.1.center" timestamp="1587677565136">
+    <state width="1344" height="306" key="GridCell.Tab.1.bottom/0.0.1366.738@0.0.1366.738" timestamp="1587750994453" />
+    <state width="1344" height="306" key="GridCell.Tab.1.center" timestamp="1587750994453">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="258" key="GridCell.Tab.1.center/0.0.1366.738@0.0.1366.738" timestamp="1587677565136" />
-    <state width="1344" height="258" key="GridCell.Tab.1.left" timestamp="1587677565136">
+    <state width="1344" height="306" key="GridCell.Tab.1.center/0.0.1366.738@0.0.1366.738" timestamp="1587750994453" />
+    <state width="1344" height="306" key="GridCell.Tab.1.left" timestamp="1587750994453">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="258" key="GridCell.Tab.1.left/0.0.1366.738@0.0.1366.738" timestamp="1587677565136" />
-    <state width="1344" height="258" key="GridCell.Tab.1.right" timestamp="1587677565136">
+    <state width="1344" height="306" key="GridCell.Tab.1.left/0.0.1366.738@0.0.1366.738" timestamp="1587750994453" />
+    <state width="1344" height="306" key="GridCell.Tab.1.right" timestamp="1587750994453">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="258" key="GridCell.Tab.1.right/0.0.1366.738@0.0.1366.738" timestamp="1587677565136" />
+    <state width="1344" height="306" key="GridCell.Tab.1.right/0.0.1366.738@0.0.1366.738" timestamp="1587750994453" />
     <state x="506" y="70" key="RollbackChangesDialog" timestamp="1587743936819">
       <screen x="0" y="0" width="1366" height="738" />
     </state>

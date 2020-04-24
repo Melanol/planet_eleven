@@ -10,6 +10,7 @@ from pyglet.sprite import Sprite
 from weapons import *
 from constants_and_utilities import *
 from shadowandunittc import ShadowAndUnitTC
+from bb_enemy_detection import rad_clipped
 
 lvb = 0
 bvb = 0
@@ -17,7 +18,6 @@ bvb = 0
 POS_COORDS = []
 g_pos_coord_d = {}
 a_pos_coord_d = {}
-
 def gen_pos_coords():
     """Generates a field of allowed positional coords. Declared as a function
     for resetting these."""
@@ -33,9 +33,7 @@ def gen_pos_coords():
     a_pos_coord_d = {}
     for _x, _y in POS_COORDS:
         a_pos_coord_d[(_x, _y)] = None
-
 gen_pos_coords()
-
 
 def to_minimap(x, y):  # unit.x and unit.y
     """Converts global coords into minimap coords. For positioning minimap
@@ -50,7 +48,6 @@ def to_minimap(x, y):  # unit.x and unit.y
     y = MM0Y + y + bvb
     return x, y
 
-
 def mc(**kwargs):
     """Modifies coords for different viewports. All clicks need this. Required for
     game field, minimap, control panel."""
@@ -62,28 +59,14 @@ def mc(**kwargs):
     else:
         return kwargs['x'] + lvb, kwargs['y'] + bvb
 
-
 def closest_enemy_2_att(entity, enemy_entities):
-    closest_enemy = None
-    closest_enemy_dist = None
-    for enemy in enemy_entities:
-        try:
-            if not entity.attacks_air and enemy.flying:
-                continue
-            if not entity.attacks_ground and not enemy.flying:
-                continue
-        except AttributeError:
-            pass
-        dist_to_enemy = dist(enemy, entity)
-        if dist_to_enemy <= entity.shooting_radius:
-            if not closest_enemy:
-                closest_enemy = enemy
-                closest_enemy_dist = dist_to_enemy
-            else:
-                if dist_to_enemy < closest_enemy_dist:
-                    closest_enemy = enemy
-                    closest_enemy_dist = dist_to_enemy
-    return closest_enemy
+    x = entity.x
+    y = entity.y
+    for rad in rad_clipped[:entity.shooting_radius + 1]:
+        for coord in rad:
+            entity1 = g_pos_coord_d.get((x + coord[0] * 32, y + coord[1] * 32))
+            if entity1 in enemy_entities:
+                return entity1
 
 def update_shooting(game_inst, our_entities, enemy_entities):
     for entity in our_entities:
@@ -107,7 +90,7 @@ def update_shooting(game_inst, our_entities, enemy_entities):
                         entity.target_p_y = closest_enemy.y
                         entity.target_p.attackers.append(entity)
                 # Has target_p
-                elif dist(entity, entity.target_p) <= entity.shooting_radius:
+                elif dist(entity, entity.target_p) <= entity.shooting_radius * 32:
                     entity.shoot(game_inst.f)
                 else:
                     entity.has_target_p = False
@@ -454,7 +437,7 @@ class OffensiveStruct(Struct):
         super().__init__(game_inst, owner, img, team_color, icon, vision_radius,
                          hp, x, y)
         self.damage = damage
-        self.shooting_radius = vision_radius * 32
+        self.shooting_radius = vision_radius
         self.target_x = None
         self.target_y = None
         self.cooldown = cooldown
@@ -770,7 +753,7 @@ class Unit(Sprite):
         self.cooldown = cooldown
         self.attacks_ground = attacks_ground
         self.attacks_air = attacks_air
-        self.shooting_radius = vision_radius * 32
+        self.shooting_radius = vision_radius
         self.shadow_sprite = shadow_sprite
         self.cbs = cbs
 
