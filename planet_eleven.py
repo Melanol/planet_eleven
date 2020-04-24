@@ -1850,27 +1850,31 @@ class PlanetEleven(pyglet.window.Window):
                     # Game field
                     if x < mc(x=SCREEN_W) - 139:
                         x, y = round_coords(x, y)
+                        # On-entity attack command
                         target_p_found = False
                         if selected.attacks_air:
                             target_p = a_pos_coord_d[(x, y)]
-                            if target_p:
+                            if target_p and target_p != selected:
                                 target_p_found = True
                                 selected.has_target_p = True
                                 selected.target_p = target_p
                                 selected.target_p_x = x
                                 selected.target_p_y = y
                                 target_p.attackers.append(selected)
+                                self.targeting_phase = False
+                                self.set_mouse_cursor(res.cursor)
+                                return
                         if not target_p_found and selected.attacks_ground:
                             target_p = g_pos_coord_d[(x, y)]
-                            if target_p:
+                            if target_p and target_p != selected:
                                 selected.has_target_p = True
                                 selected.target_p = target_p
                                 selected.target_p_x = x
                                 selected.target_p_y = y
                                 target_p.attackers.append(selected)
-                        self.targeting_phase = False
-                        self.set_mouse_cursor(res.cursor)
-                        return
+                                self.targeting_phase = False
+                                self.set_mouse_cursor(res.cursor)
+                                return
                     # Minimap
                     elif MM0X <= x <= MM0X + 100 and MM0Y <= y <= MM0Y + 100:
                         x = (x - MM0X) * PS
