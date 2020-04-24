@@ -23,12 +23,12 @@ for r in range(1, max_rad + 1):
     for _ in range(width - 2):
         rad_arr.append((x, y))
         y -= 1
-    print('rad_arr =', rad_arr)
+    # print('rad_arr =', rad_arr)
     rad_matx.append(rad_arr)
 lengths = []
 for arr in rad_matx:
     lengths.append(len(arr))
-print('arr_2_print =', lengths)
+# print('arr_2_# print =', lengths)
 
 rad_clipped = []
 rad = 0
@@ -36,8 +36,8 @@ too_far = [[]]
 i = 0
 for arr in rad_matx:
     rad_arr = []
-    # print('rad =', rad)
-    print(i)
+    # # print('rad =', rad)
+    # print(i)
     inner_arr = []
     for coord in arr + too_far[i]:
         d = (coord[0] ** 2 + coord[1] ** 2) ** 0.5
@@ -50,8 +50,8 @@ for arr in rad_matx:
     rad += 1
     i += 1
 
-print('rad_clipped =', rad_clipped)
+# print('rad_clipped =', rad_clipped)
 lengths = []
 for arr in rad_clipped:
     lengths.append(len(arr))
-print(lengths)
+# print(lengths)
