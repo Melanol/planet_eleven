@@ -742,7 +742,8 @@ def find_path(start, end, is_flying):
 
 class Unit(Sprite):
     def __init__(self, game_inst, owner, img, team_color_img, icon, flying,
-                 vision_radius, hp, x, y, speed, weapon_type, damage, cooldown,
+                 vision_radius, hp, x, y, speed, weapon_type, w_img, damage,
+                 cooldown,
                  attacks_ground, attacks_air, shadow_sprite, cbs):
         self.game_inst = game_inst
         self.owner = owner
@@ -773,6 +774,7 @@ class Unit(Sprite):
         self.y = y
         self.speed = speed
         self.weapon_type = weapon_type
+        self.w_img = w_img
         self.damage = damage
         self.cooldown = cooldown
         self.attacks_ground = attacks_ground
@@ -955,8 +957,8 @@ class Unit(Sprite):
     def shoot(self, f):
         if self.weapon_type == 'projectile':
             projectile = Projectile(x=self.x, y=self.y, target_px=self.target_p.x,
-                                    target_py=self.target_p.y, damage=self.damage,
-                                    speed=10, target_obj=self.target_p)
+                target_py=self.target_p.y, damage=self.damage,
+                speed=10, target_obj=self.target_p, img=self.w_img)
             projectiles.append(projectile)
         elif self.weapon_type == 'bomb':
             bomb = Bomb(x=self.x, y=self.y, target_px=self.target_p.x,
@@ -1017,7 +1019,8 @@ class Apocalypse(Unit):
                          res.apocalypse_team_color, res.apocalypse_icon_img,
                          flying=True,
                          vision_radius=6, hp=100, x=x, y=y, speed=1,
-                         weapon_type='projectile', damage=100, cooldown=200,
+                         weapon_type='projectile', w_img=res.bomb_anim,
+                         damage=100, cooldown=200,
                          attacks_ground=True, attacks_air=False,
                          shadow_sprite=res.apocalypse_shadow_img,
                          cbs=game_inst.basic_unit_c_bs)
@@ -1035,7 +1038,8 @@ class Centurion(Unit):
                          res.centurion_team_color, res.centurion_icon_img,
                          flying=False,
                          vision_radius=6, hp=100, x=x, y=y, speed=1,
-                         weapon_type='projectile', damage=10, cooldown=120,
+                         weapon_type='projectile', w_img=res.laser_img,
+                         damage=10, cooldown=120,
                          attacks_ground=True, attacks_air=False,
                          shadow_sprite=res.centurion_shadow_img,
                          cbs=game_inst.basic_unit_c_bs)
@@ -1053,7 +1057,8 @@ class Defiler(Unit):
                          res.defiler_team_color, res.defiler_icon_img,
                          flying=True,
                          vision_radius=6, hp=70, x=x, y=y, speed=3,
-                         weapon_type='instant', damage=10, cooldown=60,
+                         weapon_type='instant', w_img=res.laser_img, damage=10,
+                         cooldown=60,
                          attacks_ground=True, attacks_air=True,
                          shadow_sprite=res.defiler_shadow_img,
                          cbs=game_inst.basic_unit_c_bs)
@@ -1071,7 +1076,8 @@ class Pioneer(Unit):
                          res.pioneer_team_color, res.pioneer_icon_img,
                          flying=False,
                          vision_radius=4, hp=10, x=x, y=y, speed=2,
-                         weapon_type='none', damage=0, cooldown=0,
+                         weapon_type='none', w_img=res.zap_anim, damage=0,
+                         cooldown=0,
                          attacks_ground=False, attacks_air=False,
                          shadow_sprite=res.pioneer_shadow_img,
                          cbs=game_inst.basic_unit_c_bs +
@@ -1155,7 +1161,8 @@ class Wyrm(Unit):
         super().__init__(game_inst, owner, res.wyrm_img,
                          res.wyrm_team_color, res.wyrm_icon_img, flying=False,
                          vision_radius=3, hp=25, x=x, y=y, speed=3,
-                         weapon_type='projectile', damage=5, cooldown=60,
+                         weapon_type='projectile', w_img=res.laser_img,
+                         damage=5, cooldown=60,
                          attacks_ground=True, attacks_air=False,
                          shadow_sprite=res.wyrm_shadow_img,
                          cbs=game_inst.basic_unit_c_bs)
@@ -1167,7 +1174,7 @@ class PlanetEleven(pyglet.window.Window):
                       double_buffer=True)
         super().__init__(width, height, title, config=conf)
         self.set_mouse_cursor(res.cursor)
-        self.show_fps = True
+        self.show_fps = False
         self.fps_display = pyglet.window.FPSDisplay(window=self)
         self.ui = []
         self.mouse_x = 0
