@@ -1,5 +1,4 @@
 from pyglet.sprite import Sprite
-import resources as res
 from weapons import *
 from constants_and_utilities import *
 

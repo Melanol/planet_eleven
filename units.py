@@ -1,9 +1,4 @@
-from pyglet.sprite import Sprite
-import resources as res
-from weapons import *
-from constants_and_utilities import *
 from shadowandunittc import ShadowAndUnitTC
-from classes import *
 from structs import *
 
 node_count = 0

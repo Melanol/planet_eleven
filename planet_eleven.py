@@ -7,8 +7,6 @@ from pyglet.gl import *
 from pyglet.window import key
 from pyglet.window import mouse
 
-from classes import *
-from structs import *
 from units import *
 
 

@@ -1,15 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="8699b466-fa9b-4e8c-b41f-e5bbe759696d" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/classes.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/structs.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/units.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/constants_and_utilities.py" beforeDir="false" afterPath="$PROJECT_DIR$/constants_and_utilities.py" afterDir="false" />
+    <list default="true" id="8699b466-fa9b-4e8c-b41f-e5bbe759696d" name="Default Changelist" comment="Code splitting complete">
+      <change beforePath="$PROJECT_DIR$/classes.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/todo.rtf" beforeDir="false" afterPath="$PROJECT_DIR$/docs/todo.rtf" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/planet_eleven.py" beforeDir="false" afterPath="$PROJECT_DIR$/planet_eleven.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/structs.py" beforeDir="false" afterPath="$PROJECT_DIR$/structs.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/units.py" beforeDir="false" afterPath="$PROJECT_DIR$/units.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -181,13 +178,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1566740526093</updated>
-    </task>
-    <task id="LOCAL-00224" summary="Holding SHIFT selects ground entities only">
-      <created>1586244235498</created>
-      <option name="number" value="00224" />
-      <option name="presentableId" value="LOCAL-00224" />
-      <option name="project" value="LOCAL" />
-      <updated>1586244235498</updated>
     </task>
     <task id="LOCAL-00225" summary="Fixed hotkey construction curcor bug for fullscreen">
       <created>1586318622793</created>
@@ -525,7 +515,14 @@
       <option name="project" value="LOCAL" />
       <updated>1587734605715</updated>
     </task>
-    <option name="localTasksCounter" value="273" />
+    <task id="LOCAL-00273" summary="Code splitting complete">
+      <created>1587743257506</created>
+      <option name="number" value="00273" />
+      <option name="presentableId" value="LOCAL-00273" />
+      <option name="project" value="LOCAL" />
+      <updated>1587743257506</updated>
+    </task>
+    <option name="localTasksCounter" value="274" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -569,7 +566,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$" />
     </ignored-roots>
-    <MESSAGE value="Unit team colors" />
     <MESSAGE value="Structure team colors" />
     <MESSAGE value="Shift bug fixed" />
     <MESSAGE value="Icons" />
@@ -594,7 +590,8 @@
     <MESSAGE value="Construction mid-block bug fixed" />
     <MESSAGE value="Demo video #2" />
     <MESSAGE value="Viewport construction bug fixed" />
-    <option name="LAST_COMMIT_MESSAGE" value="Viewport construction bug fixed" />
+    <MESSAGE value="Code splitting complete" />
+    <option name="LAST_COMMIT_MESSAGE" value="Code splitting complete" />
   </component>
   <component name="WindowStateProjectService">
     <state x="137" y="23" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1586589784304">
@@ -605,30 +602,30 @@
       <screen x="0" y="0" width="1366" height="738" />
     </state>
     <state x="357" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.0.1366.738@0.0.1366.738" timestamp="1587063913382" />
-    <state x="240" y="0" key="CommitChangelistDialog2" timestamp="1587734602832">
+    <state x="240" y="0" key="CommitChangelistDialog2" timestamp="1587743301876">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state x="240" y="0" key="CommitChangelistDialog2/0.0.1366.738@0.0.1366.738" timestamp="1587734602832" />
+    <state x="240" y="0" key="CommitChangelistDialog2/0.0.1366.738@0.0.1366.738" timestamp="1587743301876" />
     <state x="462" y="109" key="FileChooserDialogImpl" timestamp="1587120374789">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
     <state x="462" y="109" key="FileChooserDialogImpl/0.0.1366.738@0.0.1366.738" timestamp="1587120374789" />
-    <state width="1344" height="156" key="GridCell.Tab.0.bottom" timestamp="1587743111912">
+    <state width="1344" height="156" key="GridCell.Tab.0.bottom" timestamp="1587743578262">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="156" key="GridCell.Tab.0.bottom/0.0.1366.738@0.0.1366.738" timestamp="1587743111912" />
-    <state width="1344" height="156" key="GridCell.Tab.0.center" timestamp="1587743111911">
+    <state width="1344" height="156" key="GridCell.Tab.0.bottom/0.0.1366.738@0.0.1366.738" timestamp="1587743578262" />
+    <state width="1344" height="156" key="GridCell.Tab.0.center" timestamp="1587743578262">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="156" key="GridCell.Tab.0.center/0.0.1366.738@0.0.1366.738" timestamp="1587743111911" />
-    <state width="1344" height="156" key="GridCell.Tab.0.left" timestamp="1587743111911">
+    <state width="1344" height="156" key="GridCell.Tab.0.center/0.0.1366.738@0.0.1366.738" timestamp="1587743578262" />
+    <state width="1344" height="156" key="GridCell.Tab.0.left" timestamp="1587743578262">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="156" key="GridCell.Tab.0.left/0.0.1366.738@0.0.1366.738" timestamp="1587743111911" />
-    <state width="1344" height="156" key="GridCell.Tab.0.right" timestamp="1587743111911">
+    <state width="1344" height="156" key="GridCell.Tab.0.left/0.0.1366.738@0.0.1366.738" timestamp="1587743578262" />
+    <state width="1344" height="156" key="GridCell.Tab.0.right" timestamp="1587743578262">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="156" key="GridCell.Tab.0.right/0.0.1366.738@0.0.1366.738" timestamp="1587743111911" />
+    <state width="1344" height="156" key="GridCell.Tab.0.right/0.0.1366.738@0.0.1366.738" timestamp="1587743578262" />
     <state width="1344" height="258" key="GridCell.Tab.1.bottom" timestamp="1587677565137">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
