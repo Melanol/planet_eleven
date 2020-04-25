@@ -88,8 +88,7 @@ def update_shooting(game_inst, our_entities, enemy_entities):
         if entity.weapon_type != 'none' and entity.dest_reached:
             if not entity.on_cooldown:
                 if not entity.has_target_p:
-                    closest_enemy = closest_enemy_2_att(entity,
-                                                        enemy_entities)
+                    closest_enemy = closest_enemy_2_att(entity, enemy_entities)
                     if closest_enemy:
                         entity.has_target_p = True
                         entity.target_p = closest_enemy
@@ -146,7 +145,7 @@ class Explosion(Sprite):
 
 class Mineral(Sprite):
     def __init__(self, outer_instance, x, y, hp=5000):
-        super().__init__(img=res.mineral, x=x, y=y, batch=structures_batch)
+        super().__init__(res.mineral, x, y, batch=structures_batch)
         self.outer_instance = outer_instance
         self.workers = []
         self.hp = hp
@@ -194,7 +193,7 @@ def order_unit(game_inst, struct, unit):
                 game_inst.prod_icon3.image = unit.icon
     # Not enough minerals
     else:
-        if owner == game_inst.this_player:
+        if owner.name == "player1":
             game_inst.txt_out.text = "Not enough minerals"
             game_inst.txt_out_upd_f = game_inst.f
 
@@ -256,7 +255,7 @@ def struct_spawn_unit(game_inst, struct):
                     pass
             if place_found:
                 unit = struct.prod_q.pop(0)
-                unit = unit(game_inst, x=x, y=y, owner=struct.owner)
+                unit = unit(game_inst, x, y, struct.owner)
                 unit.spawn()
                 struct.prod_start_f += struct.cur_max_prod_time
                 if not struct.prod_q:
@@ -1103,17 +1102,17 @@ class Pioneer(Unit):
         self.dest_reached = True
         g_pos_coord_d[(self.target_x, self.target_y)] = None
         g_pos_coord_d[(self.x, self.y)] = self
-        if self.to_build == "armory":
+        if self.to_build is Armory:
             if not g_pos_coord_d[(self.task_x, self.task_y)]:
                 Armory(self.game_inst, self.task_x, self.task_y)
             else:
                 self.owner.min_c += Armory.cost
-        elif self.to_build == "turret":
+        elif self.to_build is Turret:
             if not g_pos_coord_d[(self.task_x, self.task_y)]:
                 Turret(self.game_inst, self.task_x, self.task_y)
             else:
                 self.owner.min_c += Turret.cost
-        elif self.to_build == "mech_center":
+        elif self.to_build is MechCenter:
             x = self.task_x - PS / 2
             y = self.task_y - PS / 2
             coords_to_check = [(x, y), (x + PS, y), (x + PS, y + PS),
@@ -1448,7 +1447,7 @@ class PlanetEleven(pyglet.window.Window):
             # Summon structures
             for worker in workers:
                 if worker.to_build:
-                    if worker.to_build == 'mech_center':
+                    if worker.to_build is MechCenter:
                         if is_2_melee_dist(worker, worker.task_x,
                                            worker.task_y):
                             worker.build()
@@ -1460,7 +1459,8 @@ class PlanetEleven(pyglet.window.Window):
                 for struct in guardian_dummies:
                     if struct.constr_f + struct.build_time <= self.f:
                         struct.constr_complete()
-                        self.cbs_2_render = struct.cbs
+                        if selected is struct:
+                            self.cbs_2_render = struct.cbs
                         delayed_del = (struct, guardian_dummies)
                 # Delayed del
                 try:
@@ -1474,7 +1474,7 @@ class PlanetEleven(pyglet.window.Window):
                     # Do not jump
                     if not unit.eta() <= 1:
                         unit.update()
-                        if selected == unit:
+                        if selected is unit:
                             self.sel_spt.x = unit.x
                             self.sel_spt.y = unit.y
                     # Jump
@@ -1484,7 +1484,7 @@ class PlanetEleven(pyglet.window.Window):
                         unit.team_color.x = unit.target_x
                         unit.team_color.y = unit.target_y
                         if not unit.move_interd:
-                            if selected == unit:
+                            if selected is unit:
                                 self.sel_spt.x = unit.x
                                 self.sel_spt.y = unit.y
                             if not unit.flying:
@@ -1605,7 +1605,7 @@ class PlanetEleven(pyglet.window.Window):
                             isinstance(entity, Pioneer):
                         self.computer.workers_count -= 1
                     entity.kill()
-                    if entity == selected:
+                    if entity is selected:
                         selected = None
 
             if self.f % 10 == 0:
@@ -1646,33 +1646,33 @@ class PlanetEleven(pyglet.window.Window):
     def on_key_press(self, symbol, modifiers):
         """Called whenever a key is pressed."""
         global selected, lvb, bvb
-        if symbol == key.F:
+        if symbol is key.F:
             if self.fullscreen:
                 self.set_fullscreen(False)
             else:
                 self.set_fullscreen(True)
         if not self.paused:
-            if symbol == key.F1:
+            if symbol is key.F1:
                 if not self.show_fps:
                     self.show_fps = True
                 else:
                     self.show_fps = False
-            elif symbol == key.F2:
+            elif symbol is key.F2:
                 self.save()
-            elif symbol == key.F3:
+            elif symbol is key.F3:
                 self.load()
-            elif symbol == key.F4:
+            elif symbol is key.F4:
                 # Removes FOW
                 self.npa[:, :, 3] = 0
                 self.mm_fow_ImageData.set_data('RGBA',
                     self.mm_fow_ImageData.width * 4, data=self.npa.tobytes())
-            elif symbol == key.F5:
+            elif symbol is key.F5:
                 self.this_player.min_c = 99999
                 self.update_min_c_label()
-            elif symbol == key.F6:
+            elif symbol is key.F6:
                 self.this_player.min_c = 0
                 self.update_min_c_label()
-            elif symbol == key.DELETE:
+            elif symbol is key.DELETE:
                 # Kill entity
                 if selected in our_units:
                     selected.kill()
@@ -1684,25 +1684,25 @@ class PlanetEleven(pyglet.window.Window):
                 elif selected in our_structs:
                     selected.kill()
                     selected = None
-            elif symbol == key.ESCAPE:
+            elif symbol is key.ESCAPE:
                 # Cancel command
                 self.build_loc_sel_phase = False
                 self.targeting_phase = False
                 self.m_targeting_phase = False
                 self.set_mouse_cursor(res.cursor)
-            elif symbol == key.LEFT:
+            elif symbol is key.LEFT:
                 lvb -= PS
                 self.update_viewport()
-            elif symbol == key.RIGHT:
+            elif symbol is key.RIGHT:
                 lvb += PS
                 self.update_viewport()
-            elif symbol == key.DOWN:
+            elif symbol is key.DOWN:
                 bvb -= PS
                 self.update_viewport()
-            elif symbol == key.UP:
+            elif symbol is key.UP:
                 bvb += PS
                 self.update_viewport()
-            elif symbol == key.Q:
+            elif symbol is key.Q:
                 # Move
                 if selected in our_units and selected.owner.name == "player1":
                     self.set_mouse_cursor(res.cursor_target)
@@ -1711,7 +1711,7 @@ class PlanetEleven(pyglet.window.Window):
                 # Build defiler
                 elif isinstance(selected, MechCenter):
                     order_unit(self, selected, Defiler)
-            elif symbol == key.W:
+            elif symbol is key.W:
                 # Stop
                 if selected in our_units:
                     try:
@@ -1721,7 +1721,7 @@ class PlanetEleven(pyglet.window.Window):
                 # Build centurion
                 elif isinstance(selected, MechCenter):
                     order_unit(self, selected, Centurion)
-            elif symbol == key.E:
+            elif symbol is key.E:
                 # Attack move
                 if selected in our_units:
                     try:
@@ -1734,27 +1734,27 @@ class PlanetEleven(pyglet.window.Window):
                 # Build wyrm
                 elif isinstance(selected, MechCenter):
                     order_unit(self, selected, Wyrm)
-            elif symbol == key.A:
+            elif symbol is key.A:
                 # Build armory
-                if str(type(selected)) == "<class '__main__.Pioneer'>":
+                if isinstance(selected, Pioneer):
                     self.to_build_spt.image = res.armory_img
                     self.to_build = Armory
                     self.hotkey_constr_cur_1b()
                 # Build apocalypse
                 elif isinstance(selected, MechCenter):
                     order_unit(self, selected, Apocalypse)
-            elif symbol == key.S:
+            elif symbol is key.S:
                 # Build turret
-                if str(type(selected)) == "<class '__main__.Pioneer'>":
+                if isinstance(selected, Pioneer):
                     self.to_build_spt.image = res.turret_icon_img
                     self.to_build = Turret
                     self.hotkey_constr_cur_1b()
                 # Build pioneer
                 elif isinstance(selected, MechCenter):
                     order_unit(self, selected, Pioneer)
-            elif symbol == key.D:
+            elif symbol is key.D:
                 # Build mech center
-                if str(type(selected)) == "<class '__main__.Pioneer'>":
+                if isinstance(selected, Pioneer):
                     self.to_build_spt.image = res.mech_center_img
                     self.build_loc_sel_phase = True
                     self.to_build = MechCenter
@@ -1788,9 +1788,9 @@ class PlanetEleven(pyglet.window.Window):
                     x += PS / 2
                     y += PS / 2
                     self.to_build_spt.x, self.to_build_spt.y = x, y
-            elif symbol == key.C:
+            elif symbol is key.C:
                 self.cancel_prod()
-            elif symbol == key.X:
+            elif symbol is key.X:
                 # Deletes all our units on the screen
                 coords_to_delete = []
                 yi = bvb + PS // 2
@@ -1800,9 +1800,9 @@ class PlanetEleven(pyglet.window.Window):
                         coords_to_delete.append((x, y))
                 for coord in coords_to_delete:
                     for unit in our_units:
-                        if g_pos_coord_d[coord[0], coord[1]] == unit:
+                        if g_pos_coord_d[coord[0], coord[1]] is unit:
                             unit.kill()
-            elif symbol == key.Z:
+            elif symbol is key.Z:
                 # Fills the entire map with wyrms
                 i = 0
                 for _key, value in g_pos_coord_d.items():
@@ -1811,13 +1811,13 @@ class PlanetEleven(pyglet.window.Window):
                             unit = Wyrm(self, _key[0], _key[1])
                             unit.spawn()
                     i += 1
-            elif symbol == key.V:
+            elif symbol is key.V:
                 pass
                 # print(lvb, bvb)
                 # print(lvb % 32 == 0, bvb % 32 == 0)
         # Menu
         else:
-            if symbol == key.ESCAPE:
+            if symbol is key.ESCAPE:
                 self.paused = False
 
     def on_mouse_press(self, x, y, button, modifiers):
@@ -2028,13 +2028,10 @@ class PlanetEleven(pyglet.window.Window):
                                 selected.has_target_p = False
                                 # Gathering
                                 if selected.path:
-                                    if str(type(selected)) == \
-                                            "<class '__main__.Pioneer'>":
+                                    if isinstance(selected, Pioneer):
                                         selected.clear_task()
                                         obj = g_pos_coord_d[(x, y)]
-                                        if str(type(obj)) == \
-                                                "<class '__main__.Mineral'>":
-                                            # print('go gather, lazy worker!')
+                                        if isinstance(obj, Mineral):
                                             selected.mineral_to_gather = obj
                                             selected.task_x = obj.x
                                             selected.task_y = obj.y
@@ -2057,7 +2054,7 @@ class PlanetEleven(pyglet.window.Window):
                         # A unit is selected
                         unit_found = False
                         for unit in our_units:
-                            if unit == selected:
+                            if unit is selected:
                                 unit_found = True
                                 if unit.dest_reached:
                                     unit.move((x, y))
@@ -2157,7 +2154,7 @@ class PlanetEleven(pyglet.window.Window):
                                 self.to_build_spt.image = res.armory_img
                                 self.to_build_spt.color = (0, 255, 0)
                                 self.build_loc_sel_phase = True
-                                self.to_build = "armory"
+                                self.to_build = Armory
                                 self.to_build_spt.x, self.to_build_spt.y = x, y
                             elif self.turret_icon.x - 16 <= x <= \
                                     self.turret_icon.x + 16 and \
@@ -2166,7 +2163,7 @@ class PlanetEleven(pyglet.window.Window):
                                 self.to_build_spt.image = res.turret_icon_img
                                 self.to_build_spt.color = (0, 255, 0)
                                 self.build_loc_sel_phase = True
-                                self.to_build = "turret"
+                                self.to_build = Turret
                                 self.to_build_spt.x, self.to_build_spt.y = x, y
                             elif self.mech_center_icon.x - 16 <= x <= \
                                     self.mech_center_icon.x + 16 and \
@@ -2175,7 +2172,7 @@ class PlanetEleven(pyglet.window.Window):
                                 self.to_build_spt.image = res.mech_center_img
                                 self.to_build_spt.color = (0, 255, 0)
                                 self.build_loc_sel_phase = True
-                                self.to_build = "mech_center"
+                                self.to_build = MechCenter
                                 self.to_build_spt.x, self.to_build_spt.y = x, y
         # Paused
         else:
@@ -2211,7 +2208,7 @@ class PlanetEleven(pyglet.window.Window):
         if not self.paused and self.build_loc_sel_phase:
             self.mouse_x = x
             self.mouse_y = y
-            if self.to_build == "mech_center":
+            if self.to_build is MechCenter:
                 x, y = round_coords(x, y)
                 self.to_build_spt.x = x + lvb + PS / 2
                 self.to_build_spt.y = y + bvb + PS / 2
@@ -2258,40 +2255,35 @@ class PlanetEleven(pyglet.window.Window):
             if isinstance(selected, MechCenter) and not selected.under_constr:
                 # Defiler
                 if CB_COORDS[0][0] - 16 <= x <= CB_COORDS[0][0] + \
-                        16 and CB_COORDS[0][1] - 16 <= y <= \
-                        CB_COORDS[0][1] + 16:
+                    16 and CB_COORDS[0][1] - 16 <= y <= CB_COORDS[0][1] + 16:
                     self.hint.image = res.hint_defiler
                     self.hint.x = x + lvb
                     self.hint.y = y + bvb
                     self.show_hint = True
                 # Centurion
                 elif CB_COORDS[1][0] - 16 <= x <= CB_COORDS[1][0] + \
-                        16 and CB_COORDS[1][1] - 16 <= y <= \
-                        CB_COORDS[1][1] + 16:
+                16 and CB_COORDS[1][1] - 16 <= y <= CB_COORDS[1][1] + 16:
                     self.hint.image = res.hint_centurion
                     self.hint.x = x + lvb
                     self.hint.y = y + bvb
                     self.show_hint = True
                 # Wyrm
                 elif CB_COORDS[2][0] - 16 <= x <= CB_COORDS[2][0] + \
-                        16 and CB_COORDS[2][1] - 16 <= y <= \
-                        CB_COORDS[2][1] + 16:
+                16 and CB_COORDS[2][1] - 16 <= y <= CB_COORDS[2][1] + 16:
                     self.hint.image = res.hint_wyrm
                     self.hint.x = x + lvb
                     self.hint.y = y + bvb
                     self.show_hint = True
                 # Apocalypse
                 elif CB_COORDS[3][0] - 16 <= x <= CB_COORDS[3][0] + \
-                        16 and CB_COORDS[3][1] - 16 <= y <= \
-                        CB_COORDS[3][1] + 16:
+                16 and CB_COORDS[3][1] - 16 <= y <= CB_COORDS[3][1] + 16:
                     self.hint.image = res.hint_apocalypse
                     self.hint.x = x + lvb
                     self.hint.y = y + bvb
                     self.show_hint = True
                 # Pioneer
                 elif CB_COORDS[4][0] - 16 <= x <= CB_COORDS[4][0] + \
-                        16 and CB_COORDS[4][1] - 16 <= y <= \
-                        CB_COORDS[4][1] + 16:
+                16 and CB_COORDS[4][1] - 16 <= y <= CB_COORDS[4][1] + 16:
                     self.hint.image = res.hint_pioneer
                     self.hint.x = x + lvb
                     self.hint.y = y + bvb
@@ -2301,23 +2293,20 @@ class PlanetEleven(pyglet.window.Window):
             elif isinstance(selected, Pioneer):
                 # Armory
                 if CB_COORDS[3][0] - 16 <= x <= CB_COORDS[3][0] + \
-                        16 and CB_COORDS[3][1] - 16 <= y <= \
-                        CB_COORDS[3][1] + 16:
+                16 and CB_COORDS[3][1] - 16 <= y <= CB_COORDS[3][1] + 16:
                     self.hint.image = res.hint_armory
                     self.hint.x = x + lvb
                     self.hint.y = y + bvb
                     self.show_hint = True
                     # Armory
                 elif CB_COORDS[4][0] - 16 <= x <= CB_COORDS[4][0] + \
-                        16 and CB_COORDS[4][1] - 16 <= y <= \
-                        CB_COORDS[4][1] + 16:
+                16 and CB_COORDS[4][1] - 16 <= y <= CB_COORDS[4][1] + 16:
                     self.hint.image = res.hint_turret
                     self.hint.x = x + lvb
                     self.hint.y = y + bvb
                     self.show_hint = True
                 elif CB_COORDS[5][0] - 16 <= x <= CB_COORDS[5][0] + \
-                        16 and CB_COORDS[5][1] - 16 <= y <= \
-                        CB_COORDS[5][1] + 16:
+                16 and CB_COORDS[5][1] - 16 <= y <= CB_COORDS[5][1] + 16:
                     self.hint.image = res.hint_mech_center
                     self.hint.x = x + lvb
                     self.hint.y = y + bvb
@@ -2362,7 +2351,6 @@ class PlanetEleven(pyglet.window.Window):
                     self.minimap_drugging = True
             # Minimap dragging
             else:
-                print(dx)
                 # dx /= 2
                 # dy /= 2
                 lvb += dx * PS
