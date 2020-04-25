@@ -407,7 +407,7 @@ class GuardianStructure:
         if not skip_constr:
             guardian_dummies.append(self)
             self.image = res.constr_dummy_anim
-            self.const_f = self.game_inst.f
+            self.constr_f = self.game_inst.f
             self.under_constr = True
         else:
             self.constr_complete()
@@ -424,6 +424,7 @@ class Armory(Struct, GuardianStructure):
                          res.armory_team_color, res.armory_icon_img,
                          vision_radius=2,  hp=100, x=x, y=y)
         super().gs_init(skip_constr)
+        self.cbs = None
 
 
 class MechCenter(Struct, ProductionStruct, GuardianStructure):
@@ -514,6 +515,7 @@ class Turret(OffensiveStruct, GuardianStructure):
                          vision_radius=5,
                          hp=100, x=x, y=y, damage=20, cooldown=60)
         super().gs_init(skip_constr)
+        self.cbs = None
 
     def constr_complete(self):
         self.under_constr = False
@@ -1452,13 +1454,10 @@ class PlanetEleven(pyglet.window.Window):
             # Finish summoning Guardian structures
             if self.f % 10 == 0:
                 for struct in guardian_dummies:
-                    try:
-                        if struct.const_f + struct.build_time <= \
-                                self.f:
-                            struct.constr_complete()
-                            delayed_del = (struct, guardian_dummies)
-                    except AttributeError:
-                        pass
+                    if struct.constr_f + struct.build_time <= self.f:
+                        struct.constr_complete()
+                        self.cbs_2_render = struct.cbs
+                        delayed_del = (struct, guardian_dummies)
                 # Delayed del
                 try:
                     del delayed_del[1][delayed_del[1].index(
