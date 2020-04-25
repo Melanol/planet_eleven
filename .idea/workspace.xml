@@ -21,7 +21,6 @@
   <component name="ChangeListManager">
     <list default="true" id="8699b466-fa9b-4e8c-b41f-e5bbe759696d" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/todo.rtf" beforeDir="false" afterPath="$PROJECT_DIR$/docs/todo.rtf" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/planet_eleven.py" beforeDir="false" afterPath="$PROJECT_DIR$/planet_eleven.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -218,13 +217,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1566740526093</updated>
-    </task>
-    <task id="LOCAL-00239" summary="Structure team colors">
-      <created>1586668882705</created>
-      <option name="number" value="00239" />
-      <option name="presentableId" value="LOCAL-00239" />
-      <option name="project" value="LOCAL" />
-      <updated>1586668882705</updated>
     </task>
     <task id="LOCAL-00240" summary="Shift bug fixed">
       <created>1586671943916</created>
@@ -562,7 +554,14 @@
       <option name="project" value="LOCAL" />
       <updated>1587826558476</updated>
     </task>
-    <option name="localTasksCounter" value="288" />
+    <task id="LOCAL-00288" summary="Revert here">
+      <created>1587846310113</created>
+      <option name="number" value="00288" />
+      <option name="presentableId" value="LOCAL-00288" />
+      <option name="project" value="LOCAL" />
+      <updated>1587846310113</updated>
+    </task>
+    <option name="localTasksCounter" value="289" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -636,7 +635,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$" />
     </ignored-roots>
-    <MESSAGE value="prod_structs" />
     <MESSAGE value="Struct.kill() modified" />
     <MESSAGE value="building_spawn_unit optimised" />
     <MESSAGE value="cancel_prod()" />
@@ -661,7 +659,8 @@
     <MESSAGE value="Selected info production bug fixed" />
     <MESSAGE value="Border spawning bug fixed" />
     <MESSAGE value="Hint bug fixed" />
-    <option name="LAST_COMMIT_MESSAGE" value="Hint bug fixed" />
+    <MESSAGE value="Revert here" />
+    <option name="LAST_COMMIT_MESSAGE" value="Revert here" />
   </component>
   <component name="WindowStateProjectService">
     <state x="137" y="23" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1587825002465">
@@ -676,10 +675,10 @@
       <screen x="0" y="0" width="1366" height="738" />
     </state>
     <state x="413" y="115" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1366.738@0.0.1366.738" timestamp="1587744144923" />
-    <state x="240" y="0" key="CommitChangelistDialog2" timestamp="1587826556146">
+    <state x="240" y="0" key="CommitChangelistDialog2" timestamp="1587846304216">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state x="240" y="0" key="CommitChangelistDialog2/0.0.1366.738@0.0.1366.738" timestamp="1587826556146" />
+    <state x="240" y="0" key="CommitChangelistDialog2/0.0.1366.738@0.0.1366.738" timestamp="1587846304216" />
     <state x="92" y="92" width="1182" height="554" key="DiffContextDialog" timestamp="1587826050284">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
@@ -688,22 +687,22 @@
       <screen x="0" y="0" width="1366" height="738" />
     </state>
     <state x="462" y="109" key="FileChooserDialogImpl/0.0.1366.738@0.0.1366.738" timestamp="1587120374789" />
-    <state width="1344" height="108" key="GridCell.Tab.0.bottom" timestamp="1587846166481">
+    <state width="1344" height="108" key="GridCell.Tab.0.bottom" timestamp="1587846273419">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="108" key="GridCell.Tab.0.bottom/0.0.1366.738@0.0.1366.738" timestamp="1587846166481" />
-    <state width="1344" height="108" key="GridCell.Tab.0.center" timestamp="1587846166480">
+    <state width="1344" height="108" key="GridCell.Tab.0.bottom/0.0.1366.738@0.0.1366.738" timestamp="1587846273419" />
+    <state width="1344" height="108" key="GridCell.Tab.0.center" timestamp="1587846273419">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="108" key="GridCell.Tab.0.center/0.0.1366.738@0.0.1366.738" timestamp="1587846166480" />
-    <state width="1344" height="108" key="GridCell.Tab.0.left" timestamp="1587846166480">
+    <state width="1344" height="108" key="GridCell.Tab.0.center/0.0.1366.738@0.0.1366.738" timestamp="1587846273419" />
+    <state width="1344" height="108" key="GridCell.Tab.0.left" timestamp="1587846273418">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="108" key="GridCell.Tab.0.left/0.0.1366.738@0.0.1366.738" timestamp="1587846166480" />
-    <state width="1344" height="108" key="GridCell.Tab.0.right" timestamp="1587846166481">
+    <state width="1344" height="108" key="GridCell.Tab.0.left/0.0.1366.738@0.0.1366.738" timestamp="1587846273418" />
+    <state width="1344" height="108" key="GridCell.Tab.0.right" timestamp="1587846273419">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="108" key="GridCell.Tab.0.right/0.0.1366.738@0.0.1366.738" timestamp="1587846166481" />
+    <state width="1344" height="108" key="GridCell.Tab.0.right/0.0.1366.738@0.0.1366.738" timestamp="1587846273419" />
     <state width="1344" height="306" key="GridCell.Tab.1.bottom" timestamp="1587763404431">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
