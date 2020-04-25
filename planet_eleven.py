@@ -28,11 +28,11 @@ def gen_pos_coords():
             POS_COORDS.append((xi * PS - PS / 2,
                                yi * PS - PS / 2))
     g_pos_coord_d = {}
-    for _x, _y in POS_COORDS:
-        g_pos_coord_d[(_x, _y)] = None
+    for x, y in POS_COORDS:
+        g_pos_coord_d[(x, y)] = None
     a_pos_coord_d = {}
-    for _x, _y in POS_COORDS:
-        a_pos_coord_d[(_x, _y)] = None
+    for x, y in POS_COORDS:
+        a_pos_coord_d[(x, y)] = None
 gen_pos_coords()
 
 def to_minimap(x, y):  # unit.x and unit.y
@@ -199,17 +199,17 @@ def order_unit(game_inst, struct, unit):
             game_inst.txt_out_upd_f = game_inst.f
 
 
-def building_spawn_unit(game_inst, struct):
+def struct_spawn_unit(game_inst, struct):
     if struct.prod_q:
         unit = struct.prod_q[0]
         struct.cur_max_prod_time = unit.build_time
-        # Is it time to spawn?
+        # Time to spawn?
         if game_inst.f - struct.prod_start_f >= struct.cur_max_prod_time:
             if str(struct.prod_q[0]) not in LIST_OF_FLYING:
                 dict_to_check = g_pos_coord_d
             else:
                 dict_to_check = a_pos_coord_d
-            # Searching for a place to build
+            # Searching for a place to spawn
             if struct.width == PS:
                 x = struct.x - PS
                 y = struct.y - PS
@@ -222,26 +222,38 @@ def building_spawn_unit(game_inst, struct):
             n = struct.width // PS + 2
             for i in range(n):
                 x = org_x + PS * i
-                if dict_to_check[(x, y)] is None:
-                    place_found = True
-                    break
+                try:
+                    if dict_to_check[(x, y)] is None:
+                        place_found = True
+                        break
+                except KeyError:
+                    pass
             for i in range(n):
                 y = org_y + PS * i
-                if dict_to_check[(x, y)] is None:
-                    place_found = True
-                    break
+                try:
+                    if dict_to_check[(x, y)] is None:
+                        place_found = True
+                        break
+                except KeyError:
+                    pass
             org_x = x
             for i in range(n):
                 x = org_x - PS * i
-                if dict_to_check[(x, y)] is None:
-                    place_found = True
-                    break
+                try:
+                    if dict_to_check[(x, y)] is None:
+                        place_found = True
+                        break
+                except KeyError:
+                    pass
             org_y = y
             for i in range(n):
                 y = org_y - PS * i
-                if dict_to_check[(x, y)] is None:
-                    place_found = True
-                    break
+                try:
+                    if dict_to_check[(x, y)] is None:
+                        place_found = True
+                        break
+                except KeyError:
+                    pass
             if place_found:
                 unit = struct.prod_q.pop(0)
                 unit = unit(game_inst, x=x, y=y, owner=struct.owner)
@@ -983,12 +995,12 @@ class Unit(Sprite):
                 del enemy_units[enemy_units.index(self)]
         self.pos_dict[(self.target_x, self.target_y)] = None
         Explosion(self.x, self.y, 0.25)
-        self.delete()
         try:
             del workers[workers.index(self)]
             self.zap_sprite.delete()
         except ValueError:
             pass
+        self.delete()
 
 
 class Apocalypse(Unit):
@@ -1041,7 +1053,7 @@ class Defiler(Unit):
                          res.defiler_team_color, res.defiler_icon_img,
                          flying=True,
                          vision_radius=6, hp=70, x=x, y=y, speed=3,
-                         weapon_type='instant', w_img=res.laser_img, damage=10,
+                         weapon_type='instant', w_img=res.laser_img, damage=30,
                          cooldown=10,
                          attacks_ground=True, attacks_air=True,
                          shadow_sprite=res.defiler_shadow_img,
@@ -1281,8 +1293,8 @@ class PlanetEleven(pyglet.window.Window):
         self.our_1st_base = MechCenter(self, PS * 7, PS * 8, skip_constr=True)
         selected = self.our_1st_base
         self.selected_icon.image = selected.icon
-        MechCenter(self, PS * 10, PS * 10, owner=self.computer, skip_constr=True)
-        MechCenter(self, PS * 50, PS * 50, owner=self.computer, skip_constr=True)
+        MechCenter(self, PS * 10, PS * 10, self.computer, skip_constr=True)
+        MechCenter(self, PS * 50, PS * 50, self.computer, skip_constr=True)
 
         self.sel_spt = Sprite(img=res.sel_img, x=self.our_1st_base.x,
                               y=self.our_1st_base.y)
@@ -1401,14 +1413,14 @@ class PlanetEleven(pyglet.window.Window):
             # Build units
             for struct in prod_structs:
                 try:
-                    building_spawn_unit(self, struct)
+                    struct_spawn_unit(self, struct)
                     if not struct.prod_q:
                         struct.prod_complete = True
                 except AttributeError:
                     pass
             # AI
-            if self.f % 50 == 0:
-                self.ai()
+            # if self.f % 50 == 0:
+            #     self.ai()
             # Units
             # Gathering resources
             for worker in workers:
@@ -1592,6 +1604,7 @@ class PlanetEleven(pyglet.window.Window):
                     entity.kill()
                     if entity == selected:
                         selected = None
+
             if self.f % 10 == 0:
                 # Update hp label
                 try:
@@ -1878,6 +1891,7 @@ class PlanetEleven(pyglet.window.Window):
                                 selected.target_p_x = x
                                 selected.target_p_y = y
                                 target_p.attackers.append(selected)
+
                         x, y = round_coords(x, y)
                         selected.attack_moving = True
                         if selected.dest_reached:

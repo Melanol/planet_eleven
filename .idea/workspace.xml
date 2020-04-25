@@ -23,6 +23,7 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/todo.rtf" beforeDir="false" afterPath="$PROJECT_DIR$/docs/todo.rtf" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/planet_eleven.py" beforeDir="false" afterPath="$PROJECT_DIR$/planet_eleven.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test.py" beforeDir="false" afterPath="$PROJECT_DIR$/test.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -166,7 +167,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="test" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="test" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="planet_eleven" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -178,7 +179,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="D:\PycharmProjects\planet_eleven\test.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/test.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -190,13 +191,14 @@
     <list>
       <item itemvalue="Python.long_line_finder" />
       <item itemvalue="Python.planet_eleven" />
-      <item itemvalue="Python.test" />
       <item itemvalue="Python.shadow_n_icon_maker" />
       <item itemvalue="Python.bb_enemy_detection" />
+      <item itemvalue="Python.test" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Python.planet_eleven" />
+        <item itemvalue="Python.test" />
         <item itemvalue="Python.bb_enemy_detection" />
         <item itemvalue="Python.shadow_n_icon_maker" />
         <item itemvalue="Python.long_line_finder" />
@@ -217,20 +219,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1566740526093</updated>
-    </task>
-    <task id="LOCAL-00233" summary="A lot of small things">
-      <created>1586527194670</created>
-      <option name="number" value="00233" />
-      <option name="presentableId" value="LOCAL-00233" />
-      <option name="project" value="LOCAL" />
-      <updated>1586527194670</updated>
-    </task>
-    <task id="LOCAL-00234" summary="Hotkeys">
-      <created>1586528904708</created>
-      <option name="number" value="00234" />
-      <option name="presentableId" value="LOCAL-00234" />
-      <option name="project" value="LOCAL" />
-      <updated>1586528904708</updated>
     </task>
     <task id="LOCAL-00235" summary="shadow_maker and allsubds for recourses">
       <created>1586595728775</created>
@@ -561,7 +549,21 @@
       <option name="project" value="LOCAL" />
       <updated>1587817251744</updated>
     </task>
-    <option name="localTasksCounter" value="282" />
+    <task id="LOCAL-00282" summary="Selected info production bug fixed">
+      <created>1587821895310</created>
+      <option name="number" value="00282" />
+      <option name="presentableId" value="LOCAL-00282" />
+      <option name="project" value="LOCAL" />
+      <updated>1587821895310</updated>
+    </task>
+    <task id="LOCAL-00283" summary="Selected info production bug fixed">
+      <created>1587821950490</created>
+      <option name="number" value="00283" />
+      <option name="presentableId" value="LOCAL-00283" />
+      <option name="project" value="LOCAL" />
+      <updated>1587821950490</updated>
+    </task>
+    <option name="localTasksCounter" value="284" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -635,7 +637,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$" />
     </ignored-roots>
-    <MESSAGE value="Movement bug fixed" />
     <MESSAGE value="Fixed a menu bug" />
     <MESSAGE value="prod_bar" />
     <MESSAGE value="prod_structs" />
@@ -660,13 +661,14 @@
     <MESSAGE value="bb_enemy_detection.py adopted" />
     <MESSAGE value="On-entity attack command works (only if the shooting radius)" />
     <MESSAGE value="Enemy detection bug fixed" />
-    <option name="LAST_COMMIT_MESSAGE" value="Enemy detection bug fixed" />
+    <MESSAGE value="Selected info production bug fixed" />
+    <option name="LAST_COMMIT_MESSAGE" value="Selected info production bug fixed" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="137" y="23" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1586589784304">
+    <state x="137" y="23" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1587825002465">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state x="137" y="23" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1366.738@0.0.1366.738" timestamp="1586589784304" />
+    <state x="137" y="23" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1366.738@0.0.1366.738" timestamp="1587825002465" />
     <state x="357" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog" timestamp="1587063913382">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
@@ -675,30 +677,30 @@
       <screen x="0" y="0" width="1366" height="738" />
     </state>
     <state x="413" y="115" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1366.738@0.0.1366.738" timestamp="1587744144923" />
-    <state x="240" y="0" key="CommitChangelistDialog2" timestamp="1587817243199">
+    <state x="240" y="0" key="CommitChangelistDialog2" timestamp="1587821942538">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state x="240" y="0" key="CommitChangelistDialog2/0.0.1366.738@0.0.1366.738" timestamp="1587817243199" />
+    <state x="240" y="0" key="CommitChangelistDialog2/0.0.1366.738@0.0.1366.738" timestamp="1587821942538" />
     <state x="462" y="109" key="FileChooserDialogImpl" timestamp="1587120374789">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
     <state x="462" y="109" key="FileChooserDialogImpl/0.0.1366.738@0.0.1366.738" timestamp="1587120374789" />
-    <state width="1344" height="131" key="GridCell.Tab.0.bottom" timestamp="1587821607556">
+    <state width="1344" height="197" key="GridCell.Tab.0.bottom" timestamp="1587824817340">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="131" key="GridCell.Tab.0.bottom/0.0.1366.738@0.0.1366.738" timestamp="1587821607556" />
-    <state width="1344" height="131" key="GridCell.Tab.0.center" timestamp="1587821607556">
+    <state width="1344" height="197" key="GridCell.Tab.0.bottom/0.0.1366.738@0.0.1366.738" timestamp="1587824817340" />
+    <state width="1344" height="197" key="GridCell.Tab.0.center" timestamp="1587824817340">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="131" key="GridCell.Tab.0.center/0.0.1366.738@0.0.1366.738" timestamp="1587821607556" />
-    <state width="1344" height="131" key="GridCell.Tab.0.left" timestamp="1587821607556">
+    <state width="1344" height="197" key="GridCell.Tab.0.center/0.0.1366.738@0.0.1366.738" timestamp="1587824817340" />
+    <state width="1344" height="197" key="GridCell.Tab.0.left" timestamp="1587824817340">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="131" key="GridCell.Tab.0.left/0.0.1366.738@0.0.1366.738" timestamp="1587821607556" />
-    <state width="1344" height="131" key="GridCell.Tab.0.right" timestamp="1587821607556">
+    <state width="1344" height="197" key="GridCell.Tab.0.left/0.0.1366.738@0.0.1366.738" timestamp="1587824817340" />
+    <state width="1344" height="197" key="GridCell.Tab.0.right" timestamp="1587824817340">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="131" key="GridCell.Tab.0.right/0.0.1366.738@0.0.1366.738" timestamp="1587821607556" />
+    <state width="1344" height="197" key="GridCell.Tab.0.right/0.0.1366.738@0.0.1366.738" timestamp="1587824817340" />
     <state width="1344" height="306" key="GridCell.Tab.1.bottom" timestamp="1587763404431">
       <screen x="0" y="0" width="1366" height="738" />
     </state>

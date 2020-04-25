@@ -1,3 +1,3 @@
-print('sdfsdfsdf sdfsdfsdfsdfsdfsdfsdfsdddddddddddddddddddddddddddddddddddddsdfsdfsdfddd')
-print()
-print('sdfsdfsdfsdfsdfsdf')
+d = {}
+if d.get(1) is None:
+    print(1)
