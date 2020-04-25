@@ -997,10 +997,14 @@ class Unit(Sprite):
                 del enemy_units[enemy_units.index(self)]
         self.pos_dict[(self.target_x, self.target_y)] = None
         Explosion(self.x, self.y, 0.25)
+        # Worker
         try:
+            if self.to_build:
+                self.owner.min_c += 1000
+                self.game_inst.update_min_c_label()
             del workers[workers.index(self)]
             self.zap_sprite.delete()
-        except ValueError:
+        except (AttributeError, ValueError):
             pass
         self.delete()
 
@@ -1172,7 +1176,7 @@ class PlanetEleven(pyglet.window.Window):
                       double_buffer=True)
         super().__init__(width, height, title, config=conf)
         self.set_mouse_cursor(res.cursor)
-        self.show_fps = False
+        self.show_fps = True
         self.fps_display = pyglet.window.FPSDisplay(window=self)
         self.ui = []
         self.mouse_x = 0
@@ -2333,10 +2337,10 @@ class PlanetEleven(pyglet.window.Window):
             if self.fullscreen:
                 x /= 2
                 y /= 2
-                dx /= 2
-                dy /= 2
+                # dx /= 2
+                # dy /= 2
             if not self.minimap_drugging:
-                # Game field
+                # Game field + MMB
                 if x < SCREEN_W - 139 and buttons == 2:
                     self.dx += dx * MMB_PAN_SPEED
                     self.dy += dy * MMB_PAN_SPEED
@@ -2358,15 +2362,15 @@ class PlanetEleven(pyglet.window.Window):
                             bvb -= PS
                             self.update_viewport()
                             self.dy -= self.dy
-                # Minimap
+                # Minimap + LMB or RMB
                 elif MM0X <= x <= MM0X + 100 and MM0Y <= y <= MM0Y + 100 \
-                        and buttons in [1, 2]:
+                        and buttons == 1:
                     self.minimap_drugging = True
-                    lvb += dx * PS
-                    bvb += dy * PS
-                    self.update_viewport()
             # Minimap dragging
             else:
+                print(dx)
+                # dx /= 2
+                # dy /= 2
                 lvb += dx * PS
                 bvb += dy * PS
                 self.update_viewport()
