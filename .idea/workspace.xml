@@ -19,9 +19,7 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8699b466-fa9b-4e8c-b41f-e5bbe759696d" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/planet_eleven.py" beforeDir="false" afterPath="$PROJECT_DIR$/planet_eleven.py" afterDir="false" />
-    </list>
+    <list default="true" id="8699b466-fa9b-4e8c-b41f-e5bbe759696d" name="Default Changelist" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -216,13 +214,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1566740526093</updated>
-    </task>
-    <task id="LOCAL-00243" summary="Half tiles">
-      <created>1586696109797</created>
-      <option name="number" value="00243" />
-      <option name="presentableId" value="LOCAL-00243" />
-      <option name="project" value="LOCAL" />
-      <updated>1586696109797</updated>
     </task>
     <task id="LOCAL-00244" summary="Half tiles">
       <created>1586696123038</created>
@@ -560,7 +551,14 @@
       <option name="project" value="LOCAL" />
       <updated>1587852816445</updated>
     </task>
-    <option name="localTasksCounter" value="292" />
+    <task id="LOCAL-00292" summary="Optimized structure ordering">
+      <created>1587853273914</created>
+      <option name="number" value="00292" />
+      <option name="presentableId" value="LOCAL-00292" />
+      <option name="project" value="LOCAL" />
+      <updated>1587853273920</updated>
+    </task>
+    <option name="localTasksCounter" value="293" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -674,10 +672,10 @@
       <screen x="0" y="0" width="1366" height="738" />
     </state>
     <state x="413" y="115" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1366.738@0.0.1366.738" timestamp="1587744144923" />
-    <state x="240" y="0" key="CommitChangelistDialog2" timestamp="1587852811667">
+    <state x="240" y="0" key="CommitChangelistDialog2" timestamp="1587853266948">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state x="240" y="0" key="CommitChangelistDialog2/0.0.1366.738@0.0.1366.738" timestamp="1587852811667" />
+    <state x="240" y="0" key="CommitChangelistDialog2/0.0.1366.738@0.0.1366.738" timestamp="1587853266948" />
     <state x="92" y="92" width="1182" height="554" key="DiffContextDialog" timestamp="1587826050284">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
