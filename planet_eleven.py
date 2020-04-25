@@ -2257,7 +2257,7 @@ class PlanetEleven(pyglet.window.Window):
                     self.loc_clear = True
         elif not self.paused:
             # Hits
-            if isinstance(selected, MechCenter):
+            if isinstance(selected, MechCenter) and not selected.under_constr:
                 # Defiler
                 if CB_COORDS[0][0] - 16 <= x <= CB_COORDS[0][0] + \
                         16 and CB_COORDS[0][1] - 16 <= y <= \
