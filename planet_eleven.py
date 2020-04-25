@@ -64,9 +64,16 @@ def closest_enemy_2_att(entity, enemy_entities):
     y = entity.y
     for rad in rad_clipped[:entity.shooting_radius + 1]:
         for coord in rad:
-            entity1 = g_pos_coord_d.get((x + coord[0] * 32, y + coord[1] * 32))
-            if entity1 in enemy_entities:
-                return entity1
+            if entity.attacks_air:
+                entity1 = a_pos_coord_d.get((x + coord[0] * 32,
+                                             y + coord[1] * 32))
+                if entity1 in enemy_entities:
+                    return entity1
+            if entity.attacks_ground:
+                entity1 = g_pos_coord_d.get((x + coord[0] * 32,
+                                             y + coord[1] * 32))
+                if entity1 in enemy_entities:
+                    return entity1
 
 def update_shooting(game_inst, our_entities, enemy_entities):
     for entity in our_entities:
@@ -1033,7 +1040,7 @@ class Defiler(Unit):
                          flying=True,
                          vision_radius=6, hp=70, x=x, y=y, speed=3,
                          weapon_type='instant', w_img=res.laser_img, damage=1,
-                         cooldown=1,
+                         cooldown=10,
                          attacks_ground=True, attacks_air=True,
                          shadow_sprite=res.defiler_shadow_img,
                          cbs=game_inst.basic_unit_c_bs)
@@ -1861,9 +1868,6 @@ class PlanetEleven(pyglet.window.Window):
                                 selected.target_p_x = x
                                 selected.target_p_y = y
                                 target_p.attackers.append(selected)
-                                self.targeting_phase = False
-                                self.set_mouse_cursor(res.cursor)
-                                return
                         if not target_p_found and selected.attacks_ground:
                             target_p = g_pos_coord_d[(x, y)]
                             if target_p and target_p != selected:
@@ -1872,26 +1876,34 @@ class PlanetEleven(pyglet.window.Window):
                                 selected.target_p_x = x
                                 selected.target_p_y = y
                                 target_p.attackers.append(selected)
-                                self.targeting_phase = False
-                                self.set_mouse_cursor(res.cursor)
-                                return
+                        x, y = round_coords(x, y)
+                        selected.attack_moving = True
+                        if selected.dest_reached:
+                            selected.move((x, y))
+                        # Movement interruption
+                        else:
+                            selected.move_interd = True
+                            selected.new_dest_x = x
+                            selected.new_dest_y = y
+                        self.targeting_phase = False
+                        self.set_mouse_cursor(res.cursor)
                     # Minimap
                     elif MM0X <= x <= MM0X + 100 and MM0Y <= y <= MM0Y + 100:
                         x = (x - MM0X) * PS
                         y = (y - MM0Y) * PS
+                        x, y = round_coords(x, y)
+                        selected.attack_moving = True
+                        if selected.dest_reached:
+                            selected.move((x, y))
+                        # Movement interruption
+                        else:
+                            selected.move_interd = True
+                            selected.new_dest_x = x
+                            selected.new_dest_y = y
+                        self.targeting_phase = False
+                        self.set_mouse_cursor(res.cursor)
                     else:
                         return
-                    x, y = round_coords(x, y)
-                    selected.attack_moving = True
-                    if selected.dest_reached:
-                        selected.move((x, y))
-                    # Movement interruption
-                    else:
-                        selected.move_interd = True
-                        selected.new_dest_x = x
-                        selected.new_dest_y = y
-                    self.targeting_phase = False
-                    self.set_mouse_cursor(res.cursor)
             # Normal phase
             else:
                 self.show_hint = False  # Fixes a bug with hints
