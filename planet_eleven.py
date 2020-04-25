@@ -179,7 +179,7 @@ def order_unit(game_inst, struct, unit):
         struct.prod_q.append(unit)
         struct.anim.visible = True
         struct.prod_complete = False
-        if selected == struct and owner.name == "player1":
+        if selected is struct and owner.name == "player1":
             game_inst.prod_bar_bg.visible = True
             game_inst.prod_bar.visible = True
             game_inst.prod_icon1.visible = True
@@ -263,13 +263,13 @@ def struct_spawn_unit(game_inst, struct):
                     struct.anim.visible = False
                 if not struct.default_rp:
                     unit.move((struct.rp_x, struct.rp_y))
-                if struct.owner == game_inst.this_player:
+                if struct.owner.name == "player1":
                     game_inst.prod_icon1.image = game_inst.prod_icon2.image
                     game_inst.prod_icon2.image = game_inst.prod_icon3.image
                     game_inst.prod_icon3.image = res.none_img
             else:
                 struct.prod_start_f += 1
-                if struct.owner == game_inst.this_player:
+                if struct.owner.name == "player1":
                     game_inst.txt_out.text = "No place"
                     game_inst.txt_out_upd_f = game_inst.f
 
@@ -291,7 +291,7 @@ def order_structure(game_inst, unit, struct, x, y):
             unit.new_dest_x = x
             unit.new_dest_y = y
     else:
-        if owner == game_inst.this_player:
+        if owner.name == "player1":
             game_inst.txt_out.text = "Not enough minerals"
             game_inst.txt_out_upd_f = game_inst.f
 
@@ -306,7 +306,7 @@ class Struct(Sprite):
                                  batch=ground_team_color_batch)
         self.team_color.visible = False
         self.icon = icon
-        if owner == game_inst.this_player:
+        if owner.name == "player1":
             self.team_color.color = OUR_TEAM_COLOR
             our_structs.append(self)
             minimap_pixel = res.mm_our_img
@@ -351,7 +351,7 @@ class Struct(Sprite):
                 g_pos_coord_d[(x, y)] = self
                 y -= PS
             width += 2
-        if self.owner == game_inst.this_player:
+        if self.owner.name == "player1":
             for block in self.blocks:
                 game_inst.update_fow(x=block[0], y=block[1],
                                      radius=vision_radius)
