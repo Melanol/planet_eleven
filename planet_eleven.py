@@ -168,7 +168,7 @@ def order_unit(game_inst, struct, unit):
     owner = struct.owner
     # Queue is full
     if len(struct.prod_q) == 3:
-        if owner == game_inst.this_player:
+        if owner.name == "player1":
             game_inst.txt_out.text = "Queue is full"
             game_inst.txt_out_upd_f = game_inst.f
         return
@@ -179,7 +179,7 @@ def order_unit(game_inst, struct, unit):
         struct.prod_q.append(unit)
         struct.anim.visible = True
         struct.prod_complete = False
-        if selected == struct:
+        if selected == struct and owner.name == "plaer1":
             game_inst.prod_bar_bg.visible = True
             game_inst.prod_bar.visible = True
             game_inst.prod_icon1.visible = True
@@ -457,6 +457,8 @@ class OffensiveStruct(Struct):
         self.target_p = None
         self.target_p_x = None
         self.target_p_y = None
+        self.attacks_ground = True
+        self.attacks_air = True
 
     def shoot(self, f):
         global projectiles
@@ -1039,7 +1041,7 @@ class Defiler(Unit):
                          res.defiler_team_color, res.defiler_icon_img,
                          flying=True,
                          vision_radius=6, hp=70, x=x, y=y, speed=3,
-                         weapon_type='instant', w_img=res.laser_img, damage=1,
+                         weapon_type='instant', w_img=res.laser_img, damage=10,
                          cooldown=10,
                          attacks_ground=True, attacks_air=True,
                          shadow_sprite=res.defiler_shadow_img,
