@@ -1103,17 +1103,17 @@ class Pioneer(Unit):
         self.dest_reached = True
         g_pos_coord_d[(self.target_x, self.target_y)] = None
         g_pos_coord_d[(self.x, self.y)] = self
-        if self.to_build == Armory:
+        if self.to_build == "armory":
             if not g_pos_coord_d[(self.task_x, self.task_y)]:
                 Armory(self.game_inst, self.task_x, self.task_y)
             else:
                 self.owner.min_c += Armory.cost
-        elif self.to_build == Turret:
+        elif self.to_build == "turret":
             if not g_pos_coord_d[(self.task_x, self.task_y)]:
                 Turret(self.game_inst, self.task_x, self.task_y)
             else:
                 self.owner.min_c += Turret.cost
-        elif self.to_build == MechCenter:
+        elif self.to_build == "mech_center":
             x = self.task_x - PS / 2
             y = self.task_y - PS / 2
             coords_to_check = [(x, y), (x + PS, y), (x + PS, y + PS),
@@ -1448,7 +1448,7 @@ class PlanetEleven(pyglet.window.Window):
             # Summon structures
             for worker in workers:
                 if worker.to_build:
-                    if worker.to_build == MechCenter:
+                    if worker.to_build == 'mech_center':
                         if is_2_melee_dist(worker, worker.task_x,
                                            worker.task_y):
                             worker.build()
@@ -2157,7 +2157,7 @@ class PlanetEleven(pyglet.window.Window):
                                 self.to_build_spt.image = res.armory_img
                                 self.to_build_spt.color = (0, 255, 0)
                                 self.build_loc_sel_phase = True
-                                self.to_build = Armory
+                                self.to_build = "armory"
                                 self.to_build_spt.x, self.to_build_spt.y = x, y
                             elif self.turret_icon.x - 16 <= x <= \
                                     self.turret_icon.x + 16 and \
@@ -2166,7 +2166,7 @@ class PlanetEleven(pyglet.window.Window):
                                 self.to_build_spt.image = res.turret_icon_img
                                 self.to_build_spt.color = (0, 255, 0)
                                 self.build_loc_sel_phase = True
-                                self.to_build = Turret
+                                self.to_build = "turret"
                                 self.to_build_spt.x, self.to_build_spt.y = x, y
                             elif self.mech_center_icon.x - 16 <= x <= \
                                     self.mech_center_icon.x + 16 and \
@@ -2175,7 +2175,7 @@ class PlanetEleven(pyglet.window.Window):
                                 self.to_build_spt.image = res.mech_center_img
                                 self.to_build_spt.color = (0, 255, 0)
                                 self.build_loc_sel_phase = True
-                                self.to_build = MechCenter
+                                self.to_build = "mech_center"
                                 self.to_build_spt.x, self.to_build_spt.y = x, y
         # Paused
         else:
@@ -2211,7 +2211,7 @@ class PlanetEleven(pyglet.window.Window):
         if not self.paused and self.build_loc_sel_phase:
             self.mouse_x = x
             self.mouse_y = y
-            if self.to_build == MechCenter:
+            if self.to_build == "mech_center":
                 x, y = round_coords(x, y)
                 self.to_build_spt.x = x + lvb + PS / 2
                 self.to_build_spt.y = y + bvb + PS / 2
