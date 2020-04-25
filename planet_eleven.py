@@ -179,7 +179,7 @@ def order_unit(game_inst, struct, unit):
         struct.prod_q.append(unit)
         struct.anim.visible = True
         struct.prod_complete = False
-        if selected == struct and owner.name == "plaer1":
+        if selected == struct and owner.name == "player1":
             game_inst.prod_bar_bg.visible = True
             game_inst.prod_bar.visible = True
             game_inst.prod_icon1.visible = True
