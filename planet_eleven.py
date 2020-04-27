@@ -1003,7 +1003,7 @@ class Unit(Sprite):
         # Worker
         try:
             if self.to_build:
-                self.owner.min_c += 1000
+                self.owner.min_c += self.to_build.cost
                 self.game_inst.update_min_c_label()
             del workers[workers.index(self)]
             self.zap_sprite.delete()
@@ -1080,7 +1080,7 @@ class Pioneer(Unit):
         super().__init__(game_inst, owner, res.pioneer_img,
                          res.pioneer_team_color, res.pioneer_icon_img,
                          flying=False,
-                         vision_rad=4, hp=10, x=x, y=y, speed=10,
+                         vision_rad=4, hp=10, x=x, y=y, speed=2,
                          weapon_type='none', w_img=res.zap_anim, damage=0,
                          cooldown=0,
                          attacks_ground=False, attacks_air=False,
@@ -1438,8 +1438,8 @@ class PlanetEleven(pyglet.window.Window):
                 except AttributeError:
                     pass
             # AI
-            if self.f % 50 == 0:
-                self.ai()
+            # if self.f % 50 == 0:
+            #     self.ai()
             # Units
             # Gathering resources
             for worker in workers:
@@ -2074,7 +2074,7 @@ class PlanetEleven(pyglet.window.Window):
                                 self.rp_spt.x = sel.x
                                 self.rp_spt.y = sel.y
                             # print('Rally set to ({}, {})'.format(x, y))
-                        # A unit is sel
+                        # A unit is selected
                         else:
                             if sel in our_units:
                                 if sel.dest_reached:
@@ -2084,6 +2084,13 @@ class PlanetEleven(pyglet.window.Window):
                                     sel.move_interd = True
                                     sel.new_dest_x = x
                                     sel.new_dest_y = y
+                                    # Refunding
+                                    try:
+                                        if sel.to_build:
+                                            sel.owner.min_c += sel.to_build.cost
+                                            self.update_min_c_label()
+                                    except AttributeError:
+                                        pass
                                 sel.has_target_p = False
                                 # Gathering
                                 if sel.path:
