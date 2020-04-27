@@ -1438,8 +1438,8 @@ class PlanetEleven(pyglet.window.Window):
                 except AttributeError:
                     pass
             # AI
-            # if self.f % 50 == 0:
-            #     self.ai()
+            if self.f % 50 == 0:
+                self.ai()
             # Units
             # Gathering resources
             for worker in workers:
@@ -1495,6 +1495,7 @@ class PlanetEleven(pyglet.window.Window):
                     else:
                         unit.x = unit.target_x
                         unit.y = unit.target_y
+                        unit.coords = ((unit.x, unit.y),)
                         unit.team_color.x = unit.target_x
                         unit.team_color.y = unit.target_y
                         if not unit.move_interd:
@@ -1893,6 +1894,29 @@ class PlanetEleven(pyglet.window.Window):
                                 sel.target_p_x = x
                                 sel.target_p_y = y
                                 target_p.attackers.append(sel)
+                                # Too far
+                                closest_coord = None
+                                closest_d = 10000
+                                for coord in target_p.coords:
+                                    d = ((sel.x-target_p.x) ** 2
+                                    + (sel.y-target_p.y) ** 2) ** 0.5
+                                    if d < closest_d:
+                                        closest_coord = coord
+                                        closest_d = d
+                                if sel.attack_rad * PS < closest_d:
+                                    closest_d = 10000
+                                    for coords in rad_clipped[sel.attack_rad]:
+                                        _x = coords[0]*32 + closest_coord[0]
+                                        _y = coords[1]*32 + closest_coord[1]
+                                        d = ((sel.x-_x) ** 2
+                                            + (sel.y-_y) ** 2) ** 0.5
+                                        if d < closest_d:
+                                            closest_d = d
+                                            x, y = _x, _y
+                                    sel.move((x, y))
+                                    self.targeting_phase = False
+                                    self.set_mouse_cursor(res.cursor)
+                                    return
                         if not target_p_found and sel.attacks_ground:
                             target_p = g_pos_coord_d[(x, y)]
                             if target_p and target_p != sel:
