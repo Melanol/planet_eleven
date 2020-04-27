@@ -1,3 +1,2 @@
-d = {}
-if d.get(1) is None:
-    print(1)
+a = ((52,),)
+print(a)

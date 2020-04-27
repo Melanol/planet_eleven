@@ -19,7 +19,14 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8699b466-fa9b-4e8c-b41f-e5bbe759696d" name="Default Changelist" comment="" />
+    <list default="true" id="8699b466-fa9b-4e8c-b41f-e5bbe759696d" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bb_enemy_detection.py" beforeDir="false" afterPath="$PROJECT_DIR$/bb_enemy_detection.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/todo.rtf" beforeDir="false" afterPath="$PROJECT_DIR$/docs/todo.rtf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/planet_eleven.py" beforeDir="false" afterPath="$PROJECT_DIR$/planet_eleven.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test.py" beforeDir="false" afterPath="$PROJECT_DIR$/test.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test_shadow.png" beforeDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -54,7 +61,7 @@
     <property name="last_opened_file_path" value="$PROJECT_DIR$/sprites/cp" />
     <property name="restartRequiresConfirmation" value="false" />
     <property name="run.code.analysis.last.selected.profile" value="aDefault" />
-    <property name="settings.editor.selected.configurable" value="Errors" />
+    <property name="settings.editor.selected.configurable" value="preferences.sourceCode" />
   </component>
   <component name="PyConsoleOptionsProvider">
     <option name="myPythonConsoleState">
@@ -193,10 +200,10 @@
     <recent_temporary>
       <list>
         <item itemvalue="Python.planet_eleven" />
+        <item itemvalue="Python.long_line_finder" />
         <item itemvalue="Python.test" />
         <item itemvalue="Python.bb_enemy_detection" />
         <item itemvalue="Python.shadow_n_icon_maker" />
-        <item itemvalue="Python.long_line_finder" />
       </list>
     </recent_temporary>
   </component>
@@ -214,13 +221,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1566740526093</updated>
-    </task>
-    <task id="LOCAL-00244" summary="Half tiles">
-      <created>1586696123038</created>
-      <option name="number" value="00244" />
-      <option name="presentableId" value="LOCAL-00244" />
-      <option name="project" value="LOCAL" />
-      <updated>1586696123038</updated>
     </task>
     <task id="LOCAL-00245" summary="Instant weapon">
       <created>1586942430803</created>
@@ -558,7 +558,14 @@
       <option name="project" value="LOCAL" />
       <updated>1587853273920</updated>
     </task>
-    <option name="localTasksCounter" value="293" />
+    <task id="LOCAL-00293" summary="Player names shortened">
+      <created>1587853768963</created>
+      <option name="number" value="00293" />
+      <option name="presentableId" value="LOCAL-00293" />
+      <option name="project" value="LOCAL" />
+      <updated>1587853768963</updated>
+    </task>
+    <option name="localTasksCounter" value="294" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -632,7 +639,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$" />
     </ignored-roots>
-    <MESSAGE value="building_spawn_unit optimised" />
     <MESSAGE value="cancel_prod()" />
     <MESSAGE value="Victory and defeat txt_out" />
     <MESSAGE value="Minimap click bug fixed" />
@@ -657,7 +663,8 @@
     <MESSAGE value="Hint bug fixed" />
     <MESSAGE value="Revert here" />
     <MESSAGE value="Optimized structure ordering" />
-    <option name="LAST_COMMIT_MESSAGE" value="Optimized structure ordering" />
+    <MESSAGE value="Player names shortened" />
+    <option name="LAST_COMMIT_MESSAGE" value="Player names shortened" />
   </component>
   <component name="WindowStateProjectService">
     <state x="137" y="23" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1587825002465">
@@ -672,10 +679,10 @@
       <screen x="0" y="0" width="1366" height="738" />
     </state>
     <state x="413" y="115" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1366.738@0.0.1366.738" timestamp="1587744144923" />
-    <state x="240" y="0" key="CommitChangelistDialog2" timestamp="1587853266948">
+    <state x="240" y="0" key="CommitChangelistDialog2" timestamp="1587853757390">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state x="240" y="0" key="CommitChangelistDialog2/0.0.1366.738@0.0.1366.738" timestamp="1587853266948" />
+    <state x="240" y="0" key="CommitChangelistDialog2/0.0.1366.738@0.0.1366.738" timestamp="1587853757390" />
     <state x="92" y="92" width="1182" height="554" key="DiffContextDialog" timestamp="1587826050284">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
@@ -684,22 +691,22 @@
       <screen x="0" y="0" width="1366" height="738" />
     </state>
     <state x="462" y="109" key="FileChooserDialogImpl/0.0.1366.738@0.0.1366.738" timestamp="1587120374789" />
-    <state width="1344" height="113" key="GridCell.Tab.0.bottom" timestamp="1587853249044">
+    <state width="1344" height="158" key="GridCell.Tab.0.bottom" timestamp="1588015765653">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="113" key="GridCell.Tab.0.bottom/0.0.1366.738@0.0.1366.738" timestamp="1587853249044" />
-    <state width="1344" height="113" key="GridCell.Tab.0.center" timestamp="1587853249044">
+    <state width="1344" height="158" key="GridCell.Tab.0.bottom/0.0.1366.738@0.0.1366.738" timestamp="1588015765653" />
+    <state width="1344" height="158" key="GridCell.Tab.0.center" timestamp="1588015765652">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="113" key="GridCell.Tab.0.center/0.0.1366.738@0.0.1366.738" timestamp="1587853249044" />
-    <state width="1344" height="113" key="GridCell.Tab.0.left" timestamp="1587853249044">
+    <state width="1344" height="158" key="GridCell.Tab.0.center/0.0.1366.738@0.0.1366.738" timestamp="1588015765652" />
+    <state width="1344" height="158" key="GridCell.Tab.0.left" timestamp="1588015765652">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="113" key="GridCell.Tab.0.left/0.0.1366.738@0.0.1366.738" timestamp="1587853249044" />
-    <state width="1344" height="113" key="GridCell.Tab.0.right" timestamp="1587853249044">
+    <state width="1344" height="158" key="GridCell.Tab.0.left/0.0.1366.738@0.0.1366.738" timestamp="1588015765652" />
+    <state width="1344" height="158" key="GridCell.Tab.0.right" timestamp="1588015765652">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="113" key="GridCell.Tab.0.right/0.0.1366.738@0.0.1366.738" timestamp="1587853249044" />
+    <state width="1344" height="158" key="GridCell.Tab.0.right/0.0.1366.738@0.0.1366.738" timestamp="1588015765652" />
     <state width="1344" height="306" key="GridCell.Tab.1.bottom" timestamp="1587763404431">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
@@ -720,10 +727,10 @@
       <screen x="0" y="0" width="1366" height="738" />
     </state>
     <state x="506" y="70" key="RollbackChangesDialog/0.0.1366.738@0.0.1366.738" timestamp="1587743936819" />
-    <state x="184" y="0" key="SettingsEditor" timestamp="1587742186238">
+    <state x="184" y="0" key="SettingsEditor" timestamp="1588014512783">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state x="184" y="0" key="SettingsEditor/0.0.1366.738@0.0.1366.738" timestamp="1587742186238" />
+    <state x="184" y="0" key="SettingsEditor/0.0.1366.738@0.0.1366.738" timestamp="1588014512783" />
     <state width="498" height="446" key="SwitcherDM" timestamp="1586675087110">
       <screen x="0" y="0" width="1366" height="738" />
     </state>

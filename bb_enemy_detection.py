@@ -1,3 +1,5 @@
+# The output of the module is rad_clipped
+
 rad_matx = [[(0, 0)]]
 max_rad = 10
 for r in range(1, max_rad + 1):
