@@ -1009,6 +1009,11 @@ class Unit(Sprite):
             self.zap_sprite.delete()
         except (AttributeError, ValueError):
             pass
+        if self is sel:
+            self.game_inst.build_loc_sel_phase = False
+            self.game_inst.m_targeting_phase = False
+            self.game_inst.targeting_phase = False
+            self.game_inst.set_mouse_cursor(res.cursor)
         self.delete()
 
 
@@ -1855,27 +1860,31 @@ class PlanetEleven(pyglet.window.Window):
                         self.build_loc_sel_phase = False
             # Movement target selection phase
             elif self.m_targeting_phase:
-                x, y = mc(x=x, y=y)
-                # Game field
-                if x < mc(x=SCREEN_W) - 139:
-                    pass
-                # Minimap
-                elif MM0X <= x <= MM0X + 100 and MM0Y <= y <= MM0Y + 100:
-                    x = (x - MM0X) * PS
-                    y = (y - MM0Y) * PS
+                if button == mouse.LEFT:
+                    x, y = mc(x=x, y=y)
+                    # Game field
+                    if x < mc(x=SCREEN_W) - 139:
+                        pass
+                    # Minimap
+                    elif MM0X <= x <= MM0X + 100 and MM0Y <= y <= MM0Y + 100:
+                        x = (x - MM0X) * PS
+                        y = (y - MM0Y) * PS
+                    else:
+                        return
+                    x, y = round_coords(x, y)
+                    if sel.dest_reached:
+                        sel.move((x, y))
+                    # Movement interruption
+                    else:
+                        sel.move_interd = True
+                        sel.new_dest_x = x
+                        sel.new_dest_y = y
+                    sel.has_target_p = False
+                    self.m_targeting_phase = False
+                    self.set_mouse_cursor(res.cursor)
                 else:
-                    return
-                x, y = round_coords(x, y)
-                if sel.dest_reached:
-                    sel.move((x, y))
-                # Movement interruption
-                else:
-                    sel.move_interd = True
-                    sel.new_dest_x = x
-                    sel.new_dest_y = y
-                sel.has_target_p = False
-                self.m_targeting_phase = False
-                self.set_mouse_cursor(res.cursor)
+                    self.m_targeting_phase = False
+                    self.set_mouse_cursor(res.cursor)
             # Targeting phase
             elif self.targeting_phase:
                 if button == mouse.LEFT:
@@ -1976,6 +1985,9 @@ class PlanetEleven(pyglet.window.Window):
                         self.set_mouse_cursor(res.cursor)
                     else:
                         return
+                else:
+                    self.targeting_phase = False
+                    self.set_mouse_cursor(res.cursor)
             # Normal phase
             else:
                 self.show_hint = False  # Fixes a bug with hints
@@ -2084,7 +2096,7 @@ class PlanetEleven(pyglet.window.Window):
                                     sel.move_interd = True
                                     sel.new_dest_x = x
                                     sel.new_dest_y = y
-                                    # Refunding
+                                    # Refunding structures
                                     try:
                                         if sel.to_build:
                                             sel.owner.min_c += sel.to_build.cost
