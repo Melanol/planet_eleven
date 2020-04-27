@@ -20,6 +20,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8699b466-fa9b-4e8c-b41f-e5bbe759696d" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/todo.rtf" beforeDir="false" afterPath="$PROJECT_DIR$/docs/todo.rtf" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/planet_eleven.py" beforeDir="false" afterPath="$PROJECT_DIR$/planet_eleven.py" afterDir="false" />
     </list>
@@ -217,13 +218,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1566740526093</updated>
-    </task>
-    <task id="LOCAL-00249" summary="prod_bar">
-      <created>1587056914808</created>
-      <option name="number" value="00249" />
-      <option name="presentableId" value="LOCAL-00249" />
-      <option name="project" value="LOCAL" />
-      <updated>1587056914809</updated>
     </task>
     <task id="LOCAL-00250" summary="prod_structs">
       <created>1587063304996</created>
@@ -561,7 +555,14 @@
       <option name="project" value="LOCAL" />
       <updated>1588019082699</updated>
     </task>
-    <option name="localTasksCounter" value="298" />
+    <task id="LOCAL-00298" summary="Phases fixed">
+      <created>1588019626280</created>
+      <option name="number" value="00298" />
+      <option name="presentableId" value="LOCAL-00298" />
+      <option name="project" value="LOCAL" />
+      <updated>1588019626280</updated>
+    </task>
+    <option name="localTasksCounter" value="299" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -635,7 +636,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$" />
     </ignored-roots>
-    <MESSAGE value="Attack and move commands work on the minimap" />
     <MESSAGE value="Control buttons for structures under construction are off" />
     <MESSAGE value="Bomb class" />
     <MESSAGE value="ai()" />
@@ -660,7 +660,8 @@
     <MESSAGE value="width added to entities" />
     <MESSAGE value="On-entity attack command" />
     <MESSAGE value="Refunding structures" />
-    <option name="LAST_COMMIT_MESSAGE" value="Refunding structures" />
+    <MESSAGE value="Phases fixed" />
+    <option name="LAST_COMMIT_MESSAGE" value="Phases fixed" />
   </component>
   <component name="WindowStateProjectService">
     <state x="137" y="23" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1587825002465">
@@ -675,10 +676,10 @@
       <screen x="0" y="0" width="1366" height="738" />
     </state>
     <state x="413" y="115" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1366.738@0.0.1366.738" timestamp="1587744144923" />
-    <state x="240" y="0" key="CommitChangelistDialog2" timestamp="1588019076005">
+    <state x="240" y="0" key="CommitChangelistDialog2" timestamp="1588019619292">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state x="240" y="0" key="CommitChangelistDialog2/0.0.1366.738@0.0.1366.738" timestamp="1588019076005" />
+    <state x="240" y="0" key="CommitChangelistDialog2/0.0.1366.738@0.0.1366.738" timestamp="1588019619292" />
     <state x="92" y="92" width="1182" height="554" key="DiffContextDialog" timestamp="1587826050284">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
@@ -687,38 +688,38 @@
       <screen x="0" y="0" width="1366" height="738" />
     </state>
     <state x="462" y="109" key="FileChooserDialogImpl/0.0.1366.738@0.0.1366.738" timestamp="1587120374789" />
-    <state width="1344" height="92" key="GridCell.Tab.0.bottom" timestamp="1588019501409">
+    <state width="1344" height="164" key="GridCell.Tab.0.bottom" timestamp="1588021542993">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="92" key="GridCell.Tab.0.bottom/0.0.1366.738@0.0.1366.738" timestamp="1588019501409" />
-    <state width="1344" height="92" key="GridCell.Tab.0.center" timestamp="1588019501409">
+    <state width="1344" height="164" key="GridCell.Tab.0.bottom/0.0.1366.738@0.0.1366.738" timestamp="1588021542993" />
+    <state width="1344" height="164" key="GridCell.Tab.0.center" timestamp="1588021542993">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="92" key="GridCell.Tab.0.center/0.0.1366.738@0.0.1366.738" timestamp="1588019501409" />
-    <state width="1344" height="92" key="GridCell.Tab.0.left" timestamp="1588019501408">
+    <state width="1344" height="164" key="GridCell.Tab.0.center/0.0.1366.738@0.0.1366.738" timestamp="1588021542993" />
+    <state width="1344" height="164" key="GridCell.Tab.0.left" timestamp="1588021542993">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="92" key="GridCell.Tab.0.left/0.0.1366.738@0.0.1366.738" timestamp="1588019501408" />
-    <state width="1344" height="92" key="GridCell.Tab.0.right" timestamp="1588019501409">
+    <state width="1344" height="164" key="GridCell.Tab.0.left/0.0.1366.738@0.0.1366.738" timestamp="1588021542993" />
+    <state width="1344" height="164" key="GridCell.Tab.0.right" timestamp="1588021542993">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="92" key="GridCell.Tab.0.right/0.0.1366.738@0.0.1366.738" timestamp="1588019501409" />
-    <state width="1344" height="306" key="GridCell.Tab.1.bottom" timestamp="1587763404431">
+    <state width="1344" height="164" key="GridCell.Tab.0.right/0.0.1366.738@0.0.1366.738" timestamp="1588021542993" />
+    <state width="1344" height="201" key="GridCell.Tab.1.bottom" timestamp="1588021202363">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="306" key="GridCell.Tab.1.bottom/0.0.1366.738@0.0.1366.738" timestamp="1587763404431" />
-    <state width="1344" height="306" key="GridCell.Tab.1.center" timestamp="1587763404431">
+    <state width="1344" height="201" key="GridCell.Tab.1.bottom/0.0.1366.738@0.0.1366.738" timestamp="1588021202363" />
+    <state width="1344" height="201" key="GridCell.Tab.1.center" timestamp="1588021202362">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="306" key="GridCell.Tab.1.center/0.0.1366.738@0.0.1366.738" timestamp="1587763404431" />
-    <state width="1344" height="306" key="GridCell.Tab.1.left" timestamp="1587763404431">
+    <state width="1344" height="201" key="GridCell.Tab.1.center/0.0.1366.738@0.0.1366.738" timestamp="1588021202362" />
+    <state width="1344" height="201" key="GridCell.Tab.1.left" timestamp="1588021202362">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="306" key="GridCell.Tab.1.left/0.0.1366.738@0.0.1366.738" timestamp="1587763404431" />
-    <state width="1344" height="306" key="GridCell.Tab.1.right" timestamp="1587763404431">
+    <state width="1344" height="201" key="GridCell.Tab.1.left/0.0.1366.738@0.0.1366.738" timestamp="1588021202362" />
+    <state width="1344" height="201" key="GridCell.Tab.1.right" timestamp="1588021202363">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="306" key="GridCell.Tab.1.right/0.0.1366.738@0.0.1366.738" timestamp="1587763404431" />
+    <state width="1344" height="201" key="GridCell.Tab.1.right/0.0.1366.738@0.0.1366.738" timestamp="1588021202363" />
     <state x="506" y="70" key="RollbackChangesDialog" timestamp="1587743936819">
       <screen x="0" y="0" width="1366" height="738" />
     </state>

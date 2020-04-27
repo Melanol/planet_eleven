@@ -791,6 +791,7 @@ class Unit(Sprite):
         self.dest_y = None
         self.velocity_x = 0
         self.velocity_y = 0
+        self.path = []
 
         self.has_target_p = False
         self.target_p = None
@@ -846,6 +847,7 @@ class Unit(Sprite):
     def move(self, dest):
         """Called once by RMB or when a unit is created by a building with
         a non-default rally point."""
+        # Attack move
         if self.attack_moving and (self.x, self.y) in POS_COORDS:
             if self.owner.name == 'p1':
                 if closest_enemy_2_att(self, enemy_units + enemy_structs):
@@ -1691,6 +1693,8 @@ class PlanetEleven(pyglet.window.Window):
             elif symbol is key.F6:
                 self.this_player.min_c = 0
                 self.update_min_c_label()
+            elif symbol is key.F7:
+                print('type(sel) =', type(sel))
             elif symbol is key.DELETE:
                 # Kill entity
                 if sel in our_units:
@@ -2105,8 +2109,8 @@ class PlanetEleven(pyglet.window.Window):
                                         pass
                                 sel.has_target_p = False
                                 # Gathering
-                                if sel.path:
-                                    if isinstance(sel, Pioneer):
+                                if isinstance(sel, Pioneer):
+                                    if sel.path or is_melee_dist(sel, x, y):
                                         sel.clear_task()
                                         obj = g_pos_coord_d[(x, y)]
                                         if isinstance(obj, Mineral):
