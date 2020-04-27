@@ -157,7 +157,7 @@ class Mineral(Sprite):
     def kill(self):
         for worker in self.workers:
             worker.clear_task()
-            worker.stop_move()
+            worker.stop()
         g_pos_coord_d[(self.x, self.y)] = None
         self.delete()
 
@@ -983,11 +983,15 @@ class Unit(Sprite):
         self.cooldown_started = f
 
 
-    def stop_move(self):
-        """Stops movement."""
+    def stop(self):
         if not self.dest_reached:
             self.dest_x = self.target_x
             self.dest_y = self.target_y
+        # Worker
+        try:
+            self.clear_task()
+        except AttributeError:
+            pass
 
     def kill(self, delay_del=False):
         self.pixel.delete()
@@ -1737,10 +1741,7 @@ class PlanetEleven(pyglet.window.Window):
             elif symbol is key.W:
                 # Stop
                 if sel in our_units:
-                    try:
-                        sel.stop_move()
-                    except AttributeError:
-                        pass
+                    sel.stop()
                 # Build centurion
                 elif isinstance(sel, MechCenter):
                     order_unit(self, sel, Centurion)
@@ -2212,7 +2213,7 @@ class PlanetEleven(pyglet.window.Window):
                         # Stop
                         if self.stop_b.x - 16 <= x <= self.stop_b.x + 16 and \
                                 self.stop_b.y - 16 <= y <= self.stop_b.y + 16:
-                            sel.stop_move()
+                            sel.stop()
                             return
                         # Attack
                         if self.attack_b.x - 16 <= x <= self.attack_b.x + 16 \
