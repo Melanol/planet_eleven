@@ -1,2 +1,2 @@
-a = ((52,),)
-print(a)
+b = b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
+print(b.decode())

@@ -982,7 +982,6 @@ class Unit(Sprite):
         self.on_cooldown = True
         self.cooldown_started = f
 
-
     def stop(self):
         if not self.dest_reached:
             self.dest_x = self.target_x
@@ -1186,6 +1185,7 @@ class Wyrm(Unit):
 
 class PlanetEleven(pyglet.window.Window):
     def __init__(self, width, height, title):
+        global sel
         conf = Config(sample_buffers=1, samples=4, depth_size=16,
                       double_buffer=True)
         super().__init__(width, height, title, config=conf)
@@ -1197,9 +1197,6 @@ class PlanetEleven(pyglet.window.Window):
         self.mouse_y = 0
         self.show_hint = False
         self.menu_bg = UI(self, res.menu_bg, 0, 0)
-
-    def setup(self):
-        global sel
         self.paused = False
         self.options = False
         self.f = 0
@@ -2591,7 +2588,6 @@ class PlanetEleven(pyglet.window.Window):
 
 def main():
     game_window = PlanetEleven(SCREEN_W, SCREEN_H, SCREEN_TITLE)
-    game_window.setup()
     pyglet.clock.schedule_interval(game_window.update, 1 / 60)
     pyglet.app.run()
 
