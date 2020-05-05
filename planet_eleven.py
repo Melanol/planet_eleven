@@ -1,5 +1,7 @@
 import random
 import sys
+import socket
+import threading
 import numpy as np
 import win32api
 
@@ -167,7 +169,7 @@ def order_unit(game_inst, struct, unit):
     owner = struct.owner
     # Queue is full
     if len(struct.prod_q) == 3:
-        if owner.name == "p1":
+        if owner is game_inst.this_player:
             game_inst.txt_out.text = "Queue is full"
             game_inst.txt_out_upd_f = game_inst.f
         return
@@ -178,7 +180,7 @@ def order_unit(game_inst, struct, unit):
         struct.prod_q.append(unit)
         struct.anim.visible = True
         struct.prod_complete = False
-        if sel is struct and owner.name == "p1":
+        if sel is struct and owner is game_inst.this_player:
             game_inst.prod_bar_bg.visible = True
             game_inst.prod_bar.visible = True
             game_inst.prod_icon1.visible = True
@@ -193,7 +195,7 @@ def order_unit(game_inst, struct, unit):
                 game_inst.prod_icon3.image = unit.icon
     # Not enough minerals
     else:
-        if owner.name == "p1":
+        if owner is game_inst.this_player:
             game_inst.txt_out.text = "Not enough minerals"
             game_inst.txt_out_upd_f = game_inst.f
 
@@ -262,13 +264,13 @@ def struct_spawn_unit(game_inst, struct):
                     struct.anim.visible = False
                 if not struct.default_rp:
                     unit.move((struct.rp_x, struct.rp_y))
-                if struct.owner.name == "p1":
+                if struct.owner is game_inst.this_player:
                     game_inst.prod_icon1.image = game_inst.prod_icon2.image
                     game_inst.prod_icon2.image = game_inst.prod_icon3.image
                     game_inst.prod_icon3.image = res.none_img
             else:
                 struct.prod_start_f += 1
-                if struct.owner.name == "p1":
+                if struct.owner is game_inst.this_player:
                     game_inst.txt_out.text = "No place"
                     game_inst.txt_out_upd_f = game_inst.f
 
@@ -290,7 +292,7 @@ def order_structure(game_inst, unit, struct, x, y):
             unit.new_dest_x = x
             unit.new_dest_y = y
     else:
-        if owner.name == "p1":
+        if owner is game_inst.this_player:
             game_inst.txt_out.text = "Not enough minerals"
             game_inst.txt_out_upd_f = game_inst.f
 
@@ -310,7 +312,7 @@ class Struct(Sprite):
         else:
             self.coords = ((x - PS/2, y + PS/2), (x + PS/2, y + PS/2),
                            (x - PS/2, y - PS/2), (x + PS/2, y - PS/2))
-        if owner.name == "p1":
+        if owner is game_inst.this_player:
             self.team_color.color = OUR_TEAM_COLOR
             our_structs.append(self)
             minimap_pixel = res.mm_our_img
@@ -355,7 +357,7 @@ class Struct(Sprite):
                 g_pos_coord_d[(x, y)] = self
                 y -= PS
             width += 2
-        if self.owner.name == "p1":
+        if self.owner is game_inst.this_player:
             for block in self.blocks:
                 game_inst.update_fow(x=block[0], y=block[1],
                                      radius=vision_rad)
@@ -447,7 +449,7 @@ class MechCenter(Struct, ProductionStruct, GuardianStructure):
                     game_inst.wyrm_b, game_inst.apocalypse_b,
                     game_inst.pioneer_b, game_inst.cancel_b]
         self.is_big = True
-        if owner.name == 'p1':
+        if owner is self.game_inst.this_player:
             self.anim = Sprite(img=res.anim, x=x, y=y, batch=ground_units_batch)
         else:
             self.anim = Sprite(img=res.anim_enemy, x=x, y=y,
@@ -496,7 +498,7 @@ class OffensiveStruct(Struct):
         for attacker in self.attackers:
             attacker.has_target_p = False
         if not delay_del:
-            if self.owner.name == 'p1':
+            if self.owner is self.game_inst.this_player:
                 del our_structs[our_structs.index(self)]
             else:
                 del enemy_structs[enemy_structs.index(self)]
@@ -752,7 +754,7 @@ class Unit(Sprite):
                                           ground_team_color_batch)
         self.icon = icon
         self.coords = ((x, y),)
-        if owner.name == 'p1':
+        if owner is game_inst.this_player:
             self.team_color.color = OUR_TEAM_COLOR
             our_units.append(self)
         else:
@@ -809,7 +811,7 @@ class Unit(Sprite):
 
         # Minimap pixel and fow
         pixel_minimap_coords = to_minimap(self.x, self.y)
-        if self.owner.name == 'p1':
+        if self.owner is self.game_inst.this_player:
             pixel = res.mm_our_img
             self.game_inst.update_fow(self.x, self.y, self.vision_rad)
         else:
@@ -849,7 +851,7 @@ class Unit(Sprite):
         a non-default rally point."""
         # Attack move
         if self.attack_moving and (self.x, self.y) in POS_COORDS:
-            if self.owner.name == 'p1':
+            if self.owner is self.game_inst.this_player:
                 if closest_enemy_2_att(self, enemy_units + enemy_structs):
                     self.attack_moving = False
                     self.dest_reached = True
@@ -899,14 +901,17 @@ class Unit(Sprite):
         self.rotation = -math.degrees(angle) + 90
         self.velocity_x = math.cos(angle) * self.speed
         self.velocity_y = math.sin(angle) * self.speed
+        self.pos_dict[(self.x, self.y)] = None
+        self.pos_dict[(self.target_x, self.target_y)] = self
+        msg_2_send = f"{self.x} {self.y} {self.target_x} {self.target_y}"
+        self.game_inst.conn.sendall(msg_2_send.encode())
+
         self.team_color.rotation = -math.degrees(angle) + 90
         self.team_color.velocity_x = math.cos(angle) * self.speed
         self.team_color.velocity_y = math.sin(angle) * self.speed
         self.shadow.rotation = -math.degrees(angle) + 90
         self.shadow.velocity_x = math.cos(angle) * self.speed
         self.shadow.velocity_y = math.sin(angle) * self.speed
-        self.pos_dict[(self.x, self.y)] = None
-        self.pos_dict[(self.target_x, self.target_y)] = self
 
     def eta(self):
         """Estimated time of arrival to the target location (not dest)."""
@@ -999,7 +1004,7 @@ class Unit(Sprite):
         for attacker in self.attackers:
             attacker.has_target_p = False
         if not delay_del:
-            if self.owner.name == 'p1':
+            if self.owner is self.game_inst.this_player:
                 del our_units[our_units.index(self)]
             else:
                 del enemy_units[enemy_units.index(self)]
@@ -1200,10 +1205,21 @@ class PlanetEleven(pyglet.window.Window):
         self.paused = False
         self.options = False
         self.f = 0
-        self.this_player = Player("p1")
-        self.computer = Player("c1")
-        self.computer.min_c = 50000
-        self.computer.workers_count = 0
+        host = "127.0.0.1"
+        port = 12345
+        self.conn = socket.socket()
+        self.conn.connect((host, port))
+        self.user_input = False
+        self.msg_2_send = "Empty message"
+        counter = self.conn.recv(1024).decode()
+        if counter == "1":
+            self.this_player = Player("p1")
+            self.other_player = Player("p2")
+        elif counter == "2":
+            self.this_player = Player("p2")
+            self.other_player = Player("p1")
+        # self.other_player.min_c = 50000
+        # self.other_player.workers_count = 0
         self.dx = 0
         self.dy = 0
         self.minimap_drugging = False
@@ -1294,8 +1310,7 @@ class PlanetEleven(pyglet.window.Window):
                                CB_COORDS[3][0], CB_COORDS[3][1])
         self.pioneer_b = UI(self, res.pioneer_img, CB_COORDS[4][0],
                             CB_COORDS[4][1])
-
-        # Spawn buildings and minerals
+        # Spawn minerals
         Mineral(self, PS / 2 + PS * 4, PS / 2 + PS * 7)
         Mineral(self, PS / 2 + PS * 4,  PS / 2 + PS * 8)
         Mineral(self, PS / 2 + PS * 6, PS / 2 + PS * 4)
@@ -1307,21 +1322,17 @@ class PlanetEleven(pyglet.window.Window):
         Mineral(self, PS / 2 + PS * 52, PS / 2 + PS * 46)
         Mineral(self, PS / 2 + PS * 46, PS / 2 + PS * 46)
         Mineral(self, PS / 2 + PS * 46, PS / 2 + PS * 48)
-        self.our_1st_base = MechCenter(self, PS * 7, PS * 8, skip_constr=True)
+        # Spawn structures
+        if self.this_player.name == "p1":
+            x1, y1 = PS * 7, PS * 8
+            x2, y2 = PS * 9, PS * 10
+        elif self.this_player.name == "p2":
+            x1, y1 = PS * 9, PS * 10
+            x2, y2 = PS * 7, PS * 8
+        self.our_1st_base = MechCenter(self, x1, y1, skip_constr=True)
+        MechCenter(self, x2, y2, skip_constr=True, owner=self.other_player)
         sel = self.our_1st_base
         self.sel_icon.image = sel.icon
-        MechCenter(self, PS * 10, PS * 10, self.computer, skip_constr=True)
-        MechCenter(self, PS * 50, PS * 50, self.computer, skip_constr=True)
-        Armory(self, PS / 2 + PS * 11, PS / 2 + PS * 11, self.computer,
-               skip_constr=True)
-        Armory(self, PS / 2 + PS * 12, PS / 2 + PS * 11, self.computer,
-               skip_constr=True)
-        Armory(self, PS / 2 + PS * 13, PS / 2 + PS * 11, self.computer,
-               skip_constr=True)
-        Armory(self, PS / 2 + PS * 14, PS / 2 + PS * 11, self.computer,
-               skip_constr=True)
-        Armory(self, PS / 2 + PS * 20, PS / 2 + PS * 20, self.computer,
-               skip_constr=True)
 
         self.sel_spt = Sprite(img=res.sel_img, x=self.our_1st_base.x,
                               y=self.our_1st_base.y)
@@ -1336,7 +1347,14 @@ class PlanetEleven(pyglet.window.Window):
         self.to_build_spt.color = (0, 255, 0)
 
         # Spawn units. Have to spawn them right here. I don't remember why.
-        Pioneer(self, PS / 2 + PS * 8, PS / 2 + PS * 6).spawn()
+        if self.this_player.name == "p1":
+            x1, y1 = PS / 2 + PS * 8, PS / 2 + PS * 6
+            x2, y2 = PS / 2 + PS * 10, PS / 2 + PS * 6
+        elif self.this_player.name == "p2":
+            x1, y1 = PS / 2 + PS * 10, PS / 2 + PS * 6
+            x2, y2 = PS / 2 + PS * 8, PS / 2 + PS * 6
+        Pioneer(self, x1, y1).spawn()
+        Pioneer(self, x2, y2, owner=self.other_player).spawn()
 
     def on_draw(self):
         """
@@ -1464,7 +1482,7 @@ class PlanetEleven(pyglet.window.Window):
                         worker.mineral_to_gather.hp -= 0.03
                         owner = worker.owner
                         owner.min_c += 0.03
-                        if owner.name == 'p1':
+                        if owner is self.game_inst.this_player:
                             self.update_min_c_label()
             # Summon structures
             for worker in workers:
@@ -1523,7 +1541,7 @@ class PlanetEleven(pyglet.window.Window):
                                 unit.dest_reached = True
                             else:
                                 if unit.attack_moving:
-                                    if unit.owner.name == 'p1':
+                                    if unit.owner is self.this_player:
                                         if closest_enemy_2_att(unit,
                                                 enemy_units + enemy_structs):
                                             unit.dest_reached = True
@@ -1624,8 +1642,8 @@ class PlanetEleven(pyglet.window.Window):
             for entity in our_structs + our_units + \
                           enemy_structs + enemy_units:
                 if entity.hp <= 0:
-                    if entity.owner.name == 'c1' and isinstance(entity, Pioneer):
-                        self.computer.workers_count -= 1
+                    # if entity.owner.name == 'p2' and isinstance(entity, Pioneer):
+                    #     self.other_player.workers_count -= 1
                     entity.kill()
                     if entity is sel:
                         sel = None
@@ -1728,7 +1746,7 @@ class PlanetEleven(pyglet.window.Window):
                 self.update_viewport()
             elif symbol is key.Q:
                 # Move
-                if sel in our_units and sel.owner.name == "p1":
+                if sel in our_units and sel.owner is self.this_player:
                     self.set_mouse_cursor(res.cursor_target)
                     self.m_targeting_phase = True
                     return
@@ -1747,7 +1765,7 @@ class PlanetEleven(pyglet.window.Window):
                 if sel in our_units:
                     try:
                         if sel.weapon_type != 'none':
-                            if sel.owner.name == 'p1':
+                            if sel.owner is self.this_player:
                                 self.set_mouse_cursor(res.cursor_target)
                             self.targeting_phase = True
                     except AttributeError:
@@ -2034,7 +2052,7 @@ class PlanetEleven(pyglet.window.Window):
                         except AttributeError:
                             self.sel_hp.text = str(int(sel.hp))
                         # Production
-                        if sel.owner.name == 'p1':
+                        if sel.owner is self.this_player:
                             try:
                                 sel.prod_q[0]
                                 self.prod_bar_bg.visible = True
@@ -2057,7 +2075,7 @@ class PlanetEleven(pyglet.window.Window):
                             self.prod_icon3.visible = False
                         # Control buttons
                         try:
-                            if sel.owner.name == 'p1':
+                            if sel.owner is self.this_player:
                                 try:
                                     if not sel.under_constr:
                                         self.cbs_2_render = sel.cbs
@@ -2218,7 +2236,7 @@ class PlanetEleven(pyglet.window.Window):
                                 self.attack_b.y + 16:
                             try:
                                 if sel.weapon_type != 'none':
-                                    if sel.owner.name == 'p1':
+                                    if sel.owner is self.this_player:
                                         self.set_mouse_cursor(
                                             res.cursor_target)
                                     self.targeting_phase = True
@@ -2528,9 +2546,9 @@ class PlanetEleven(pyglet.window.Window):
         # AI ordering units
         for struct in enemy_structs:
             if isinstance(struct, MechCenter):
-                if self.computer.workers_count < 6:
+                if self.other_player.workers_count < 6:
                     order_unit(self, struct, Pioneer)
-                    self.computer.workers_count += 1
+                    self.other_player.workers_count += 1
                 else:
                     order_unit(self, struct, random.choice((Wyrm, Centurion,
                                                             Defiler, Apocalypse)))
@@ -2540,7 +2558,7 @@ class PlanetEleven(pyglet.window.Window):
             for worker in workers:
                 if all((not worker.is_gathering,
                         worker.dest_reached,
-                        worker.owner.name == 'c1')):
+                        worker.owner.name == 'p2')):
                     dist_2_closest_min = dist(closest_min, worker)
                     for mineral in minerals[1:]:
                         dist_2_min = dist(mineral, worker)
@@ -2585,9 +2603,19 @@ class PlanetEleven(pyglet.window.Window):
                 except AttributeError:
                     pass
 
+    def incoming_msg(self):
+        while True:
+            print("Waiting for message")
+            msg = [int(float(x)) for x in self.conn.recv(1024).decode().split()]
+            print("received_msg =", msg)
+            unit = g_pos_coord_d[(msg[0], msg[1])]
+            unit.move((msg[2], msg[3]))
+
 
 def main():
     game_window = PlanetEleven(SCREEN_W, SCREEN_H, SCREEN_TITLE)
+    inc_msg_thread = threading.Thread(target=game_window.incoming_msg)
+    inc_msg_thread.start()
     pyglet.clock.schedule_interval(game_window.update, 1 / 60)
     pyglet.app.run()
 

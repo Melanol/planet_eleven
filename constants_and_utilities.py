@@ -12,10 +12,6 @@ PS = 32
 selected = None
 MMB_PAN_SPEED = 4
 TXT_OUT_DECAY = 60
-# LEFT_SCREEN_SCROLL_ZONE = (0, POS_SPACE)
-# BOTTOM_SCREEN_SCROLL_ZONE = (0, POS_SPACE)
-# RIGHT_SCREEN_SCROLL_ZONE = (16 * POS_SPACE, 17 * POS_SPACE)
-# TOP_SCREEN_SCROLL_ZONE = (11 * POS_SPACE, 12 * POS_SPACE)
 
 CP_CENTER_X = SCREEN_W - 139 + 139 / 2
 MM0X = CP_CENTER_X - 50
@@ -53,10 +49,7 @@ arr.append(non_transparent_row)
 image = png.from_array(arr, mode='LA')
 image.save('sprites/mm_cam_frame.png')
 
-DISTANCE_PER_JUMP = (2 * PS ** 2) ** 0.5
-
 OUR_TEAM_COLOR = (14, 241, 237)
-# OUR_TEAM_COLOR = (0, 0, 0)
 ENEMY_TEAM_COLOR = (255, 88, 140)
 
 menu_b_batch = pyglet.graphics.Batch()
@@ -73,17 +66,7 @@ ground_shadows_batch = pyglet.graphics.Batch()
 air_shadows_batch = pyglet.graphics.Batch()
 explosions_batch = pyglet.graphics.Batch()
 
-minerals = []
-LIST_OF_FLYING = ["<class '__main__.Defiler'>",
-                  "<class '__main__.Apocalypse'>"]
-our_units = []
-workers = []
-our_structs = []
-enemy_structs = []
-prod_structs = []
-offensive_structs = []
 guardian_dummies = []
-enemy_units = []
 
 minimap_fow_x = MM0X - 1
 minimap_fow_y = MM0Y - 1

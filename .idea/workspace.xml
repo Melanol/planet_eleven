@@ -20,9 +20,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8699b466-fa9b-4e8c-b41f-e5bbe759696d" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/client.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/server.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/constants_and_utilities.py" beforeDir="false" afterPath="$PROJECT_DIR$/constants_and_utilities.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/planet_eleven.py" beforeDir="false" afterPath="$PROJECT_DIR$/planet_eleven.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test.py" beforeDir="false" afterPath="$PROJECT_DIR$/test.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -39,7 +41,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="master" />
+        <entry key="$PROJECT_DIR$" value="0.3" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -124,7 +126,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="planet_eleven" type="PythonConfigurationType" factoryName="Python" temporary="true">
+    <configuration name="planet_eleven" type="PythonConfigurationType" factoryName="Python" singleton="false" temporary="true">
       <module name="planet_eleven" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -145,7 +147,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="shadow_n_icon_maker" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="server" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="planet_eleven" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -157,7 +159,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="D:\PycharmProjects\planet_eleven\shadow_n_icon_maker.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/server.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -191,16 +193,16 @@
       <item itemvalue="Python.bb_enemy_detection" />
       <item itemvalue="Python.long_line_finder" />
       <item itemvalue="Python.planet_eleven" />
-      <item itemvalue="Python.shadow_n_icon_maker" />
+      <item itemvalue="Python.server" />
       <item itemvalue="Python.test" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Python.planet_eleven" />
+        <item itemvalue="Python.server" />
         <item itemvalue="Python.long_line_finder" />
         <item itemvalue="Python.test" />
         <item itemvalue="Python.bb_enemy_detection" />
-        <item itemvalue="Python.shadow_n_icon_maker" />
       </list>
     </recent_temporary>
   </component>
@@ -218,13 +220,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1566740526093</updated>
-    </task>
-    <task id="LOCAL-00252" summary="building_spawn_unit optimised">
-      <created>1587117640107</created>
-      <option name="number" value="00252" />
-      <option name="presentableId" value="LOCAL-00252" />
-      <option name="project" value="LOCAL" />
-      <updated>1587117640108</updated>
     </task>
     <task id="LOCAL-00253" summary="building_spawn_unit optimised">
       <created>1587119223258</created>
@@ -562,7 +557,14 @@
       <option name="project" value="LOCAL" />
       <updated>1588022157251</updated>
     </task>
-    <option name="localTasksCounter" value="301" />
+    <task id="LOCAL-00301" summary="Got rid of setup()">
+      <created>1588268349157</created>
+      <option name="number" value="00301" />
+      <option name="presentableId" value="LOCAL-00301" />
+      <option name="project" value="LOCAL" />
+      <updated>1588268349159</updated>
+    </task>
+    <option name="localTasksCounter" value="302" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -636,7 +638,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$" />
     </ignored-roots>
-    <MESSAGE value="ai()" />
     <MESSAGE value="Production icon bug fixed" />
     <MESSAGE value="Production bar bug fixed" />
     <MESSAGE value="Attack-move bug fixed" />
@@ -661,13 +662,14 @@
     <MESSAGE value="Phases fixed" />
     <MESSAGE value="Fixed workers not being able to gather minerals close to their spawn location" />
     <MESSAGE value="stop() stops mining" />
-    <option name="LAST_COMMIT_MESSAGE" value="stop() stops mining" />
+    <MESSAGE value="Got rid of setup()" />
+    <option name="LAST_COMMIT_MESSAGE" value="Got rid of setup()" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="137" y="23" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1588108050775">
+    <state x="137" y="23" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1588649477915">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state x="137" y="23" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1366.738@0.0.1366.738" timestamp="1588108050775" />
+    <state x="137" y="23" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1366.738@0.0.1366.738" timestamp="1588649477915" />
     <state x="357" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog" timestamp="1587063913382">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
@@ -676,10 +678,10 @@
       <screen x="0" y="0" width="1366" height="738" />
     </state>
     <state x="413" y="115" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1366.738@0.0.1366.738" timestamp="1587744144923" />
-    <state x="240" y="0" key="CommitChangelistDialog2" timestamp="1588022152160">
+    <state x="240" y="0" key="CommitChangelistDialog2" timestamp="1588268343300">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state x="240" y="0" key="CommitChangelistDialog2/0.0.1366.738@0.0.1366.738" timestamp="1588022152160" />
+    <state x="240" y="0" key="CommitChangelistDialog2/0.0.1366.738@0.0.1366.738" timestamp="1588268343300" />
     <state x="92" y="92" width="1182" height="554" key="DiffContextDialog" timestamp="1587826050284">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
@@ -688,22 +690,22 @@
       <screen x="0" y="0" width="1366" height="738" />
     </state>
     <state x="462" y="109" key="FileChooserDialogImpl/0.0.1366.738@0.0.1366.738" timestamp="1588106968117" />
-    <state width="1344" height="132" key="GridCell.Tab.0.bottom" timestamp="1588115706864">
+    <state width="1344" height="132" key="GridCell.Tab.0.bottom" timestamp="1588713737362">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="132" key="GridCell.Tab.0.bottom/0.0.1366.738@0.0.1366.738" timestamp="1588115706864" />
-    <state width="1344" height="132" key="GridCell.Tab.0.center" timestamp="1588115706864">
+    <state width="1344" height="132" key="GridCell.Tab.0.bottom/0.0.1366.738@0.0.1366.738" timestamp="1588713737362" />
+    <state width="1344" height="132" key="GridCell.Tab.0.center" timestamp="1588713737361">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="132" key="GridCell.Tab.0.center/0.0.1366.738@0.0.1366.738" timestamp="1588115706864" />
-    <state width="1344" height="132" key="GridCell.Tab.0.left" timestamp="1588115706863">
+    <state width="1344" height="132" key="GridCell.Tab.0.center/0.0.1366.738@0.0.1366.738" timestamp="1588713737361" />
+    <state width="1344" height="132" key="GridCell.Tab.0.left" timestamp="1588713737361">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="132" key="GridCell.Tab.0.left/0.0.1366.738@0.0.1366.738" timestamp="1588115706863" />
-    <state width="1344" height="132" key="GridCell.Tab.0.right" timestamp="1588115706864">
+    <state width="1344" height="132" key="GridCell.Tab.0.left/0.0.1366.738@0.0.1366.738" timestamp="1588713737361" />
+    <state width="1344" height="132" key="GridCell.Tab.0.right" timestamp="1588713737361">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="132" key="GridCell.Tab.0.right/0.0.1366.738@0.0.1366.738" timestamp="1588115706864" />
+    <state width="1344" height="132" key="GridCell.Tab.0.right/0.0.1366.738@0.0.1366.738" timestamp="1588713737361" />
     <state width="1344" height="201" key="GridCell.Tab.1.bottom" timestamp="1588039641489">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
@@ -736,10 +738,10 @@
       <screen x="0" y="0" width="1366" height="738" />
     </state>
     <state x="92" y="92" width="1182" height="554" key="VCS.FileHistoryDialog/0.0.1366.738@0.0.1366.738" timestamp="1587744110719" />
-    <state x="275" y="101" key="Vcs.Push.Dialog.v2" timestamp="1588018057177">
+    <state x="275" y="101" key="Vcs.Push.Dialog.v2" timestamp="1588649725038">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state x="275" y="101" key="Vcs.Push.Dialog.v2/0.0.1366.738@0.0.1366.738" timestamp="1588018057177" />
+    <state x="275" y="101" key="Vcs.Push.Dialog.v2/0.0.1366.738@0.0.1366.738" timestamp="1588649725038" />
     <state x="92" y="92" width="1182" height="554" maximized="true" key="com.intellij.history.integration.ui.views.FileHistoryDialog" timestamp="1587853253335">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
@@ -748,6 +750,10 @@
       <screen x="0" y="0" width="1366" height="738" />
     </state>
     <state x="492" y="282" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1366.738@0.0.1366.738" timestamp="1586937427759" />
+    <state x="346" y="59" width="672" height="678" key="search.everywhere.popup" timestamp="1588719181490">
+      <screen x="0" y="0" width="1366" height="738" />
+    </state>
+    <state x="346" y="59" width="672" height="678" key="search.everywhere.popup/0.0.1366.738@0.0.1366.738" timestamp="1588719181490" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
