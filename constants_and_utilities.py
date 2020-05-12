@@ -71,11 +71,6 @@ guardian_dummies = []
 minimap_fow_x = MM0X - 1
 minimap_fow_y = MM0Y - 1
 
-
-def dist(obj1, obj2):
-    return ((obj1.x - obj2.x) ** 2 + (obj1.y - obj2.y) ** 2) ** 0.5
-
-
 def round_coords(x, y):
     """Receives mouse clicks. Returns closest positional coords."""
     global left_view_border, bottom_view_border
@@ -96,22 +91,3 @@ def round_coords(x, y):
     if sel_y < 0:
         sel_y += PS
     return sel_x, sel_y
-
-
-def is_melee_dist(unit, target_x, target_y):
-    """Checks if a unit is in the 8 neighboring blocks of the target object.
-    Used for melee interaction."""
-    if abs(unit.x - target_x) == PS:
-        if abs(unit.y - target_y) == PS or unit.y == target_y:
-            return True
-    elif unit.x == target_x and abs(unit.y - target_y) == PS:
-        return True
-    return False
-
-
-def is_2_melee_dist(unit, target_x, target_y):
-    """Similar to is_melee_dist(), but for buildings 2 blocks wide."""
-    if abs(unit.x - target_x) <= PS * 1.5:
-        if abs(unit.y - target_y) <= PS * 1.5:
-            return True
-    return False

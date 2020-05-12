@@ -1,2 +1,2 @@
-b = b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
-print(b.decode())
+exec("import math")
+print(globals())
