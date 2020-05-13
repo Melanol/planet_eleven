@@ -419,7 +419,7 @@ class GuardianStructure:
 
 class Armory(Struct, GuardianStructure):
     cost = 200
-    build_time = 60
+    build_time = 600
 
     def __init__(self, game_inst, x, y, owner=None, skip_constr=False):
         if owner is None:
@@ -433,7 +433,7 @@ class Armory(Struct, GuardianStructure):
 
 class MechCenter(Struct, ProductionStruct, GuardianStructure):
     cost = 500
-    build_time = 100
+    build_time = 1000
 
     def __init__(self, game_inst, x, y, owner=None, skip_constr=False):
         if owner is None:
@@ -509,7 +509,7 @@ class OffensiveStruct(Struct):
 
 class Turret(OffensiveStruct, GuardianStructure):
     cost = 150
-    build_time = 40
+    build_time = 1200
 
     def __init__(self, game_inst, x, y, owner=None, skip_constr=False):
         if owner is None:
@@ -1024,7 +1024,7 @@ class Unit(Sprite):
 
 class Apocalypse(Unit):
     cost = 600
-    build_time = 1
+    build_time = 600
     icon = res.apocalypse_icon_img
 
     def __init__(self, game_inst, x, y, owner=None):
@@ -1043,7 +1043,7 @@ class Apocalypse(Unit):
 
 class Centurion(Unit):
     cost = 400
-    build_time = 1
+    build_time = 600
     icon = res.centurion_icon_img
 
     def __init__(self, game_inst, x, y, owner=None):
@@ -1062,7 +1062,7 @@ class Centurion(Unit):
 
 class Defiler(Unit):
     cost = 300
-    build_time = 1
+    build_time = 500
     icon = res.defiler_icon_img
 
     def __init__(self, game_inst, x, y, owner=None):
@@ -1072,7 +1072,7 @@ class Defiler(Unit):
                          res.defiler_team_color, res.defiler_icon_img,
                          flying=True,
                          vision_rad=6, hp=70, x=x, y=y, speed=3,
-                         weapon_type='instant', w_img=res.laser_img, damage=1,
+                         weapon_type='instant', w_img=res.laser_img, damage=40,
                          cooldown=10,
                          attacks_ground=True, attacks_air=True,
                          shadow_sprite=res.defiler_shadow_img,
@@ -1081,7 +1081,7 @@ class Defiler(Unit):
 
 class Pioneer(Unit):
     cost = 50
-    build_time = 1
+    build_time = 500
     icon = res.pioneer_icon_img
 
     def __init__(self, game_inst, x, y, owner=None):
@@ -1167,7 +1167,7 @@ class Pioneer(Unit):
 
 class Wyrm(Unit):
     cost = 150
-    build_time = 1
+    build_time = 400
     icon = res.wyrm_icon_img
 
     def __init__(self, game_inst, x, y, owner=None):
@@ -1177,7 +1177,7 @@ class Wyrm(Unit):
                          res.wyrm_team_color, res.wyrm_icon_img, flying=False,
                          vision_rad=3, hp=25, x=x, y=y, speed=3,
                          weapon_type='projectile', w_img=res.laser_img,
-                         damage=5, cooldown=60,
+                         damage=5, cooldown=20,
                          attacks_ground=True, attacks_air=False,
                          shadow_sprite=res.wyrm_shadow_img,
                          cbs=game_inst.basic_unit_c_bs)
@@ -1310,18 +1310,7 @@ class PlanetEleven(pyglet.window.Window):
         self.our_1st_base = MechCenter(self, PS * 7, PS * 8, skip_constr=True)
         sel = self.our_1st_base
         self.sel_icon.image = sel.icon
-        MechCenter(self, PS * 10, PS * 10, self.computer, skip_constr=True)
         MechCenter(self, PS * 50, PS * 50, self.computer, skip_constr=True)
-        Armory(self, PS / 2 + PS * 11, PS / 2 + PS * 11, self.computer,
-               skip_constr=True)
-        Armory(self, PS / 2 + PS * 12, PS / 2 + PS * 11, self.computer,
-               skip_constr=True)
-        Armory(self, PS / 2 + PS * 13, PS / 2 + PS * 11, self.computer,
-               skip_constr=True)
-        Armory(self, PS / 2 + PS * 14, PS / 2 + PS * 11, self.computer,
-               skip_constr=True)
-        Armory(self, PS / 2 + PS * 20, PS / 2 + PS * 20, self.computer,
-               skip_constr=True)
 
         self.sel_spt = Sprite(img=res.sel_img, x=self.our_1st_base.x,
                               y=self.our_1st_base.y)
@@ -1446,8 +1435,8 @@ class PlanetEleven(pyglet.window.Window):
                 except AttributeError:
                     pass
             # AI
-            # if self.f % 50 == 0:
-            #     self.ai()
+            if self.f % 50 == 0:
+                self.ai()
             # Units
             # Gathering resources
             for worker in workers:

@@ -22,7 +22,6 @@
     <list default="true" id="8699b466-fa9b-4e8c-b41f-e5bbe759696d" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/planet_eleven.py" beforeDir="false" afterPath="$PROJECT_DIR$/planet_eleven.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test.py" beforeDir="false" afterPath="$PROJECT_DIR$/test.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -124,7 +123,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="planet_eleven" type="PythonConfigurationType" factoryName="Python" temporary="true">
+    <configuration name="planet_eleven" type="PythonConfigurationType" factoryName="Python" singleton="false" temporary="true">
       <module name="planet_eleven" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -197,10 +196,10 @@
     <recent_temporary>
       <list>
         <item itemvalue="Python.planet_eleven" />
-        <item itemvalue="Python.long_line_finder" />
         <item itemvalue="Python.test" />
-        <item itemvalue="Python.bb_enemy_detection" />
         <item itemvalue="Python.shadow_n_icon_maker" />
+        <item itemvalue="Python.long_line_finder" />
+        <item itemvalue="Python.bb_enemy_detection" />
       </list>
     </recent_temporary>
   </component>
@@ -676,10 +675,10 @@
       <screen x="0" y="0" width="1366" height="738" />
     </state>
     <state x="413" y="115" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1366.738@0.0.1366.738" timestamp="1587744144923" />
-    <state x="240" y="0" key="CommitChangelistDialog2" timestamp="1588022152160">
+    <state x="240" y="0" key="CommitChangelistDialog2" timestamp="1589340556203">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state x="240" y="0" key="CommitChangelistDialog2/0.0.1366.738@0.0.1366.738" timestamp="1588022152160" />
+    <state x="240" y="0" key="CommitChangelistDialog2/0.0.1366.738@0.0.1366.738" timestamp="1589340556203" />
     <state x="92" y="92" width="1182" height="554" key="DiffContextDialog" timestamp="1587826050284">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
@@ -688,22 +687,22 @@
       <screen x="0" y="0" width="1366" height="738" />
     </state>
     <state x="462" y="109" key="FileChooserDialogImpl/0.0.1366.738@0.0.1366.738" timestamp="1588106968117" />
-    <state width="1344" height="132" key="GridCell.Tab.0.bottom" timestamp="1588115706864">
+    <state width="1344" height="145" key="GridCell.Tab.0.bottom" timestamp="1589340439260">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="132" key="GridCell.Tab.0.bottom/0.0.1366.738@0.0.1366.738" timestamp="1588115706864" />
-    <state width="1344" height="132" key="GridCell.Tab.0.center" timestamp="1588115706864">
+    <state width="1344" height="145" key="GridCell.Tab.0.bottom/0.0.1366.738@0.0.1366.738" timestamp="1589340439260" />
+    <state width="1344" height="145" key="GridCell.Tab.0.center" timestamp="1589340439260">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="132" key="GridCell.Tab.0.center/0.0.1366.738@0.0.1366.738" timestamp="1588115706864" />
-    <state width="1344" height="132" key="GridCell.Tab.0.left" timestamp="1588115706863">
+    <state width="1344" height="145" key="GridCell.Tab.0.center/0.0.1366.738@0.0.1366.738" timestamp="1589340439260" />
+    <state width="1344" height="145" key="GridCell.Tab.0.left" timestamp="1589340439259">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="132" key="GridCell.Tab.0.left/0.0.1366.738@0.0.1366.738" timestamp="1588115706863" />
-    <state width="1344" height="132" key="GridCell.Tab.0.right" timestamp="1588115706864">
+    <state width="1344" height="145" key="GridCell.Tab.0.left/0.0.1366.738@0.0.1366.738" timestamp="1589340439259" />
+    <state width="1344" height="145" key="GridCell.Tab.0.right" timestamp="1589340439260">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="132" key="GridCell.Tab.0.right/0.0.1366.738@0.0.1366.738" timestamp="1588115706864" />
+    <state width="1344" height="145" key="GridCell.Tab.0.right/0.0.1366.738@0.0.1366.738" timestamp="1589340439260" />
     <state width="1344" height="201" key="GridCell.Tab.1.bottom" timestamp="1588039641489">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
