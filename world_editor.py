@@ -58,56 +58,6 @@ def mc(**kwargs):
     else:
         return kwargs['x'] + lvb, kwargs['y'] + bvb
 
-def closest_enemy_2_att(entity, enemy_entities):
-    x = entity.x
-    y = entity.y
-    for rad in rad_clipped[:entity.attack_rad + 1]:
-        for coord in rad:
-            if entity.attacks_air:
-                entity1 = a_pos_coord_d.get((x + coord[0] * 32,
-                                             y + coord[1] * 32))
-                if entity1 in enemy_entities:
-                    return entity1
-            if entity.attacks_ground:
-                entity1 = g_pos_coord_d.get((x + coord[0] * 32,
-                                             y + coord[1] * 32))
-                if entity1 in enemy_entities:
-                    return entity1
-
-def update_shooting(game_inst, our_entities, enemy_entities):
-    for entity in our_entities:
-        try:  # For shooting structures
-            entity.weapon_type
-            entity.dest_reached
-        except AttributeError:
-            if entity.under_constr:
-                return
-            entity.weapon_type = 'projectile'
-            entity.dest_reached = True
-        if entity.weapon_type != 'none' and entity.dest_reached:
-            if not entity.on_cooldown:
-                if not entity.has_target_p:
-                    closest_enemy = closest_enemy_2_att(entity, enemy_entities)
-                    if closest_enemy:
-                        entity.has_target_p = True
-                        entity.target_p = closest_enemy
-                        entity.target_p_x = closest_enemy.x
-                        entity.target_p_y = closest_enemy.y
-                        entity.target_p.attackers.append(entity)
-                # Has target_p
-                elif dist(entity, entity.target_p) <= entity.attack_rad * 32:
-                    entity.shoot(game_inst.f)
-                else:
-                    entity.has_target_p = False
-                    entity.target_p.attackers.remove(entity)
-                    entity.target_p = None
-                    entity.target_p_x = None
-                    entity.target_p_y = None
-            else:
-                if (game_inst.f - entity.cooldown_started) % \
-                        entity.cooldown == 0:
-                    entity.on_cooldown = False
-
 class UI(Sprite):
     """This class is used for UI elements that need to be relocated when
     a player moves the viewport."""
@@ -133,1076 +83,23 @@ class Player:
         self.min_c = 5000
         self.name = name
 
-class HitAnim(Sprite):
-    def __init__(self, x, y):
-        super().__init__(res.hit_anim, x, y, batch=explosions_batch)
-
-class Explosion(Sprite):
-    def __init__(self, x, y, scale=1):
-        super().__init__(res.explosion_anim, x, y, batch=explosions_batch)
-        self.scale = scale
-
-class Mineral(Sprite):
-    def __init__(self, outer_instance, x, y, hp=5000):
-        super().__init__(res.mineral, x, y, batch=structures_batch)
-        self.outer_instance = outer_instance
-        self.workers = []
-        self.hp = hp
-        self.cbs = None
-        self.icon = res.mineral
-        minerals.append(self)
-        g_pos_coord_d[(x, y)] = self
-
-    def kill(self):
-        for worker in self.workers:
-            worker.clear_task()
-            worker.stop()
-        g_pos_coord_d[(self.x, self.y)] = None
-        self.delete()
-
-
-def order_unit(game_inst, struct, unit):
-    """Orders units in structures. Checks if you have enough minerals."""
-    owner = struct.owner
-    # Queue is full
-    if len(struct.prod_q) == 3:
-        if owner.name == "p1":
-            game_inst.txt_out.text = "Queue is full"
-            game_inst.txt_out_upd_f = game_inst.f
-        return
-    # Enough minerals
-    if owner.min_c - unit.cost >= 0:
-        owner.min_c -= unit.cost
-        game_inst.update_min_c_label()
-        struct.prod_q.append(unit)
-        struct.anim.visible = True
-        struct.prod_complete = False
-        if sel is struct and owner.name == "p1":
-            game_inst.prod_bar_bg.visible = True
-            game_inst.prod_bar.visible = True
-            game_inst.prod_icon1.visible = True
-            game_inst.prod_icon2.visible = True
-            game_inst.prod_icon3.visible = True
-            if len(struct.prod_q) == 1:
-                struct.prod_start_f = game_inst.f
-                game_inst.prod_icon1.image = unit.icon
-            elif len(struct.prod_q) == 2:
-                game_inst.prod_icon2.image = unit.icon
-            else:
-                game_inst.prod_icon3.image = unit.icon
-    # Not enough minerals
-    else:
-        if owner.name == "p1":
-            game_inst.txt_out.text = "Not enough minerals"
-            game_inst.txt_out_upd_f = game_inst.f
-
-
-def struct_spawn_unit(game_inst, struct):
-    if struct.prod_q:
-        unit = struct.prod_q[0]
-        struct.cur_max_prod_time = unit.build_time
-        # Time to spawn?
-        if game_inst.f - struct.prod_start_f >= struct.cur_max_prod_time:
-            if str(struct.prod_q[0]) not in LIST_OF_FLYING:
-                dict_to_check = g_pos_coord_d
-            else:
-                dict_to_check = a_pos_coord_d
-            # Searching for a place to spawn
-            if struct.width == PS:
-                x = struct.x - PS
-                y = struct.y - PS
-            else:
-                x = struct.x - PS * 1.5
-                y = struct.y - PS * 1.5
-            org_x = x
-            org_y = y
-            place_found = False
-            n = struct.width // PS + 2
-            for i in range(n):
-                x = org_x + PS * i
-                try:
-                    if dict_to_check[(x, y)] is None:
-                        place_found = True
-                        break
-                except KeyError:
-                    pass
-            for i in range(n):
-                y = org_y + PS * i
-                try:
-                    if dict_to_check[(x, y)] is None:
-                        place_found = True
-                        break
-                except KeyError:
-                    pass
-            org_x = x
-            for i in range(n):
-                x = org_x - PS * i
-                try:
-                    if dict_to_check[(x, y)] is None:
-                        place_found = True
-                        break
-                except KeyError:
-                    pass
-            org_y = y
-            for i in range(n):
-                y = org_y - PS * i
-                try:
-                    if dict_to_check[(x, y)] is None:
-                        place_found = True
-                        break
-                except KeyError:
-                    pass
-            if place_found:
-                unit = struct.prod_q.pop(0)
-                unit = unit(game_inst, x, y, struct.owner)
-                unit.spawn()
-                struct.prod_start_f += struct.cur_max_prod_time
-                if not struct.prod_q:
-                    struct.anim.visible = False
-                if not struct.default_rp:
-                    unit.move((struct.rp_x, struct.rp_y))
-                if struct.owner.name == "p1":
-                    game_inst.prod_icon1.image = game_inst.prod_icon2.image
-                    game_inst.prod_icon2.image = game_inst.prod_icon3.image
-                    game_inst.prod_icon3.image = res.none_img
-            else:
-                struct.prod_start_f += 1
-                if struct.owner.name == "p1":
-                    game_inst.txt_out.text = "No place"
-                    game_inst.txt_out_upd_f = game_inst.f
-
-
-def order_structure(game_inst, unit, struct, x, y):
-    owner = unit.owner
-    if owner.min_c - struct.cost >= 0:
-        owner.min_c -= struct.cost
-        game_inst.update_min_c_label()
-        unit.to_build = game_inst.to_build
-        unit.task_x = game_inst.to_build_spt.x
-        unit.task_y = game_inst.to_build_spt.y
-        # unit.move((x, y))
-        if unit.dest_reached:
-            unit.move((x, y))
-            # Movement interruption
-        else:
-            unit.move_interd = True
-            unit.new_dest_x = x
-            unit.new_dest_y = y
-    else:
-        if owner.name == "p1":
-            game_inst.txt_out.text = "Not enough minerals"
-            game_inst.txt_out_upd_f = game_inst.f
-
-
-class Struct(Sprite):
-    """This is what I call buildings. __init__ == spawn()"""
-
-    def __init__(self, game_inst, owner, img, team_color_img, icon, vision_rad,
-                 hp, x, y, width):
-        self.owner = owner
-        self.team_color = Sprite(team_color_img, x, y,
-                                 batch=ground_team_color_batch)
-        self.team_color.visible = False
-        self.icon = icon
-        if width == 1:
-            self.coords = ((x, y),)
-        else:
-            self.coords = ((x - PS/2, y + PS/2), (x + PS/2, y + PS/2),
-                           (x - PS/2, y - PS/2), (x + PS/2, y - PS/2))
-        if owner.name == "p1":
-            self.team_color.color = OUR_TEAM_COLOR
-            our_structs.append(self)
-            minimap_pixel = res.mm_our_img
-            game_inst.update_fow(x=x, y=y, radius=vision_rad)
-        else:
-            self.team_color.color = ENEMY_TEAM_COLOR
-            enemy_structs.append(self)
-            minimap_pixel = res.mm_enemy_img
-        super().__init__(img, x, y, batch=structures_batch)
-        self.completed_image = img
-        self.game_inst = game_inst
-        self.max_hp = hp
-        self.hp = hp
-        if self.width / 32 % 2 == 1:
-            d = self.width / PS // 2 * PS
-            n = self.width // PS
-            width = 1
-        else:
-            n = int(self.width / PS // 2)
-            d = self.width / PS // 2 * PS - PS / 2
-            width = 2
-        # print('d =', d, 'n =', n, 'width =', width)
-        x -= d
-        y -= d
-        self.blocks = [(x, y)]
-        for _ in range(n):
-            for _ in range(width):
-                self.blocks.append((x, y))
-                g_pos_coord_d[(x, y)] = self
-                x += PS
-            x -= PS
-            for _ in range(width - 1):
-                y += PS
-                self.blocks.append((x, y))
-                g_pos_coord_d[(x, y)] = self
-            for _ in range(width - 1):
-                x -= PS
-                self.blocks.append((x, y))
-                g_pos_coord_d[(x, y)] = self
-            for _ in range(width - 2):
-                self.blocks.append((x, y))
-                g_pos_coord_d[(x, y)] = self
-                y -= PS
-            width += 2
-        if self.owner.name == "p1":
-            for block in self.blocks:
-                game_inst.update_fow(x=block[0], y=block[1],
-                                     radius=vision_rad)
-        self.default_rp = True
-        self.attackers = []
-
-        pixel_minimap_coords = to_minimap(self.x, self.y)
-        self.pixel = Sprite(img=minimap_pixel,
-                            x=pixel_minimap_coords[0],
-                            y=pixel_minimap_coords[1],
-                            batch=minimap_pixels_batch)
-
-    def kill(self, delay_del=False):
-        global our_structs, enemy_structs
-        for block in self.blocks:
-            g_pos_coord_d[(block[0], block[1])] = None
-        self.team_color.delete()
-        self.pixel.delete()
-        if not delay_del:
-            for arr in (our_structs, enemy_structs, prod_structs):
-                try:
-                    arr.remove(self)
-                except ValueError:
-                    pass
-        for attacker in self.attackers:
-            attacker.has_target_p = False
-        try:
-            self.anim.delete()
-        except AttributeError:
-            pass
-        Explosion(self.x, self.y, self.width / PS / 2)
-        self.delete()
-
-    def constr_complete(self):
-        self.under_constr = False
-        self.image = self.completed_image
-        self.team_color.visible = True
-
-
-class ProductionStruct:
-    def ps_init(self):
-        prod_structs.append(self)
-        self.rp_x = self.x
-        self.rp_y = self.y
-        self.prod_q = []
-        self.cur_max_prod_time = None
-        self.prod_complete = True
-        self.prod_start_f = 0
-
-
-class GuardianStructure:
-    def gs_init(self, skip_constr):
-        if not skip_constr:
-            guardian_dummies.append(self)
-            self.image = res.constr_dummy_anim
-            self.constr_f = self.game_inst.f
-            self.under_constr = True
-        else:
-            self.constr_complete()
-
-
-class Armory(Struct, GuardianStructure):
-    cost = 200
-    build_time = 600
-
-    def __init__(self, game_inst, x, y, owner=None, skip_constr=False):
-        if owner is None:
-            owner = game_inst.this_player
-        super().__init__(game_inst, owner, res.armory_img,
-                         res.armory_team_color, res.armory_icon_img,
-                         vision_rad=2,  hp=100, x=x, y=y, width=1)
-        super().gs_init(skip_constr)
-        self.cbs = None
-
-
-class MechCenter(Struct, ProductionStruct, GuardianStructure):
-    cost = 500
-    build_time = 1000
-
-    def __init__(self, game_inst, x, y, owner=None, skip_constr=False):
-        if owner is None:
-            owner = game_inst.this_player
-        super().__init__(game_inst, owner, res.mech_center_img,
-                         res.mech_center_team_color, res.mech_center_icon_img,
-                         x=x, y=y, hp=1500, vision_rad=4, width=2)
-        super().ps_init()
-        super().gs_init(skip_constr)
-        self.cbs = [game_inst.defiler_b, game_inst.centurion_b,
-                    game_inst.wyrm_b, game_inst.apocalypse_b,
-                    game_inst.pioneer_b, game_inst.cancel_b]
-        self.is_big = True
-        if owner.name == 'p1':
-            self.anim = Sprite(img=res.anim, x=x, y=y, batch=ground_units_batch)
-        else:
-            self.anim = Sprite(img=res.anim_enemy, x=x, y=y,
-                               batch=ground_units_batch)
-        self.anim.visible = False
-
-
-class OffensiveStruct(Struct):
-    def __init__(self, game_inst, owner, img, team_color, icon, vision_rad, hp,
-                 x, y, damage, cooldown, width):
-        super().__init__(game_inst, owner, img, team_color, icon, vision_rad,
-                         hp, x, y, width)
-        self.damage = damage
-        self.attack_rad = vision_rad
-        self.target_x = None
-        self.target_y = None
-        self.cooldown = cooldown
-        self.on_cooldown = False
-        self.cooldown_started = None
-        offensive_structs.append(self)
-        self.projectile_sprite = res.laser_img
-        self.projectile_speed = 5
-        self.has_target_p = False
-        self.target_p = None
-        self.target_p_x = None
-        self.target_p_y = None
-        self.attacks_ground = True
-        self.attacks_air = True
-
-    def shoot(self, f):
-        global projectiles
-        projectile = Projectile(self.x, self.y, self.target_p.x,
-                                self.target_p.y, self.damage,
-                                self.projectile_speed, self.target_p,
-                                res.plasma_anim)
-        x_diff = self.target_p.x - self.x
-        y_diff = self.target_p.y - self.y
-        self.on_cooldown = True
-        self.cooldown_started = f
-        projectiles.append(projectile)
-
-    def kill(self, delay_del=False):
-        global g_pos_coord_d, our_structs, enemy_structs
-        g_pos_coord_d[(self.x, self.y)] = None
-        self.pixel.delete()
-        for attacker in self.attackers:
-            attacker.has_target_p = False
-        if not delay_del:
-            if self.owner.name == 'p1':
-                del our_structs[our_structs.index(self)]
-            else:
-                del enemy_structs[enemy_structs.index(self)]
-        del offensive_structs[offensive_structs.index(self)]
-        self.plasma_spt.delete()
-        self.team_color.delete()
-        Explosion(self.x, self.y, self.width / PS / 2)
-        self.delete()
-
-
-class Turret(OffensiveStruct, GuardianStructure):
-    cost = 150
-    build_time = 1200
-
-    def __init__(self, game_inst, x, y, owner=None, skip_constr=False):
-        if owner is None:
-            owner = game_inst.this_player
-        super().__init__(game_inst, owner, res.turret_img,
-                         res.turret_team_color, res.turret_icon_img,
-                         vision_rad=5,
-                         hp=100, x=x, y=y, damage=20, cooldown=60, width=1)
-        super().gs_init(skip_constr)
-        self.cbs = None
-
-    def constr_complete(self):
-        self.under_constr = False
-        self.image = self.completed_image
-        self.team_color.visible = True
-
-        self.plasma_spt = Sprite(res.plasma_anim, self.x, self.y,
-                                 batch=ground_units_batch)
-
-
-node_count = 0
-def astar(map, start, end, acc_ends):
-    """A* pathfinding. acc_ends are other acceptable end coords that are used
-    when we cannot reach the exact end."""
-    global node_count
-
-    class Node:
-        def __init__(self, parent=None, pos=None):
-            global node_count
-            node_count += 1
-            self.parent = parent
-            self.pos = pos
-            self.g = 0
-            self.f = 0
-
-        def __eq__(self, other):
-            return self.pos == other.pos
-
-    # Create start, end, and acc_ends nodes
-    start_node = Node(None, start)
-    start_node.g = start_node.f = 0
-    end_node = Node(None, end)
-    end_node.g = end_node.f = 0
-    # print(acc_ends)
-    acc_end_nodes = []
-    for acc_end in acc_ends:
-        # print(acc_end)
-        acc_end_nodes.append(Node(None, acc_end))
-    # open_list is where you can go now
-    open_list = [start_node]
-    # closed_list is where we already were
-    closed_list = []
-
-    max_nodes = ((start[0] + end[0]) ** 2 + (
-            start[1] + end[1]) ** 2) ** 0.5 * 7
-
-    # Loop until you find the end
-    while len(open_list) > 0:
-        # Get the current node. Which is the node with lowest f of the entire
-        # open_list
-        current_node = open_list[0]
-        current_index = 0
-        for index, item in enumerate(open_list):
-            if item.f < current_node.f:
-                current_node = item
-                current_index = index
-
-        # Pop current off open_list, add to closed list
-        closed_list.append(open_list.pop(current_index))
-
-        if node_count > max_nodes:
-            node_count = 0
-            return []
-
-        # Return path
-        # print("current_node.pos =", current_node.pos)
-        for node in acc_end_nodes:
-            # print("node.pos =", node.pos)
-            if node == current_node:
-                # print(1)
-                path = []
-                while current_node:
-                    path.append(current_node.pos)
-                    current_node = current_node.parent
-                # print(2)
-                node_count = 0
-                return path[::-1]  # Return reversed path
-
-        # Generate children
-        children = []
-        for new_pos in [(0, -1), (0, 1), (-1, 0), (1, 0), (-1, -1), (-1, 1),
-                        (1, -1), (1, 1)]:  # Adjacent squares
-
-            # Get node position
-            node_pos = (
-                current_node.pos[0] + new_pos[0],
-                current_node.pos[1] + new_pos[1])
-
-            # Make sure within range
-            if node_pos[0] > len(map[0]) - 1 or node_pos[0] < 0 \
-                    or node_pos[1] > len(map) - 1 or node_pos[1] < 0:
-                continue
-
-            # Make sure walkable terrain
-            if map[node_pos[1]][node_pos[0]] != 0:
-                continue
-
-            # Create new node
-            new_node = Node(current_node, node_pos)
-
-            # Append
-            children.append(new_node)
-
-        # Loop through children
-        for child in children:
-
-            # Child is already in the open list
-            if child in open_list:
-                continue
-
-            # Child is on the closed list
-            if child in closed_list:
-                continue
-
-            # Create the f, g, and h values
-            child.g = current_node.g + 1
-            child.f = child.g + (child.pos[0] - end_node.pos[0]) ** 2 + (
-                    child.pos[1] - end_node.pos[1]) ** 2
-
-            # Add the child to the open list
-            open_list.append(child)
-
-
-def convert_map(pos_coords_dict):
-    """Converts the map for path-finding."""
-    new_map = []
-    i = 1
-    row = []
-    for x, y in POS_COORDS:
-        if pos_coords_dict[(x, y)]:
-            row.append(1)
-        else:
-            row.append(0)
-        if i % 100 == 0:
-            new_map.append(row)
-            row = []
-        i += 1
-    return new_map
-
-
-def convert_c_to_simple(c):
-    """Called by find_path() only."""
-    return int((c - PS // 2) // PS)
-
-
-def find_path(start, end, is_flying):
-    """Main path-finding function. Calls other PF functions."""
-    # print('start =', start, 'end =', end)
-    # Check end neighbors
-    if not is_flying:
-        sel_dict = g_pos_coord_d
-    else:
-        sel_dict = a_pos_coord_d
-    if sel_dict[(end[0], end[1])] is None:
-        acc_ends = [(convert_c_to_simple(end[0]), convert_c_to_simple(end[1]))]
-    else:
-        width = 3
-        while True:
-            acc_ends = []
-            dx = dy = -PS
-            for i in range(width):
-                coord = (end[0] + dx, end[1] + dy)
-                try:
-                    if sel_dict[coord] is None:
-                        acc_ends.append((convert_c_to_simple(coord[0]),
-                                         convert_c_to_simple(coord[1])))
-                except KeyError:  # Out of the map borders
-                    pass
-                dx += PS
-            dx -= PS
-            for i in range(width - 1):
-                dy += PS
-                coord = (end[0] + dx, end[1] + dy)
-                try:
-                    if sel_dict[coord] is None:
-                        acc_ends.append((convert_c_to_simple(coord[0]),
-                                         convert_c_to_simple(coord[1])))
-                except KeyError:  # Out of the map borders
-                    pass
-            for i in range(width - 1):
-                dx -= PS
-                coord = (end[0] + dx, end[1] + dy)
-                try:
-                    if sel_dict[coord] is None:
-                        acc_ends.append((convert_c_to_simple(coord[0]),
-                                         convert_c_to_simple(coord[1])))
-                except KeyError:  # Out of the map borders
-                    pass
-            for i in range(width - 2):
-                dy -= PS
-                coord = (end[0] + dx, end[1] + dy)
-                try:
-                    if sel_dict[coord] is None:
-                        acc_ends.append((convert_c_to_simple(coord[0]),
-                                         convert_c_to_simple(coord[1])))
-                except KeyError:  # Out of the map borders
-                    pass
-            if acc_ends:
-                break
-            width += 1
-    # print("acc_ends =", acc_ends)
-    start = convert_c_to_simple(start[0]), convert_c_to_simple(start[1])
-    end = convert_c_to_simple(end[0]), convert_c_to_simple(end[1])
-    # print('start =', start, 'end =', end)
-    map = convert_map(sel_dict)
-    # print('map converted to simple')
-    map[start[1]][start[0]] = 0
-    map[end[1]][end[0]] = 0
-    path = astar(map, start, end, acc_ends)
-    # print('path =', path)
-    if not path:
-        return []
-    converted_path = []
-    for x, y in path:
-        x = x * PS + PS // 2
-        y = y * PS + PS // 2
-        converted_path.append((x, y))
-    # print('converted_path =', converted_path)
-    return converted_path
-
-
-class Unit(Sprite):
-    def __init__(self, game_inst, owner, img, team_color_img, icon, flying,
-                 vision_rad, hp, x, y, speed, weapon_type, w_img, damage,
-                 cooldown,
-                 attacks_ground, attacks_air, shadow_sprite, cbs):
-        self.game_inst = game_inst
-        self.owner = owner
-        self.team_color = ShadowAndUnitTC(team_color_img, x, y,
-                                          ground_team_color_batch)
-        self.icon = icon
-        self.coords = ((x, y),)
-        if owner.name == 'p1':
-            self.team_color.color = OUR_TEAM_COLOR
-            our_units.append(self)
-        else:
-            self.team_color.color = ENEMY_TEAM_COLOR
-            enemy_units.append(self)
-        self.flying = flying
-        if not self.flying:
-            self.pos_dict = g_pos_coord_d
-            batch = ground_units_batch
-        else:
-            self.pos_dict = a_pos_coord_d
-            batch = air_batch
-            self.team_color.batch = air_team_color_batch
-        super().__init__(img, x, y, batch=batch)
-        self.vision_rad = vision_rad
-        self.attack_rad = vision_rad
-        self.attacks_ground = attacks_ground
-        self.attacks_air = attacks_air
-        self.max_hp = hp
-        self.hp = hp
-        self.x = x
-        self.y = y
-        self.speed = speed
-        self.weapon_type = weapon_type
-        self.w_img = w_img
-        self.damage = damage
-        self.cooldown = cooldown
-        self.shadow_sprite = shadow_sprite
-        self.cbs = cbs
-
-        self.dest_reached = True
-        self.move_interd = False
-        self.target_x = x
-        self.target_y = y
-        self.dest_x = None
-        self.dest_y = None
-        self.velocity_x = 0
-        self.velocity_y = 0
-        self.path = []
-
-        self.has_target_p = False
-        self.target_p = None
-        self.target_p_x = None
-        self.target_p_y = None
-        self.on_cooldown = False
-        self.cooldown_started = None
-        self.attackers = []
-        self.attack_moving = False
-
-    def spawn(self):
-        """Creates a unit at it's predefined self.x and self.y. Does not move
-        it to the rally point."""
-        self.pos_dict[(self.x, self.y)] = self
-
-        # Minimap pixel and fow
-        pixel_minimap_coords = to_minimap(self.x, self.y)
-        if self.owner.name == 'p1':
-            pixel = res.mm_our_img
-            self.game_inst.update_fow(self.x, self.y, self.vision_rad)
-        else:
-            pixel = res.mm_enemy_img
-        self.pixel = Sprite(img=pixel, x=pixel_minimap_coords[0],
-                            y=pixel_minimap_coords[1],
-                            batch=minimap_pixels_batch)
-
-        # Shadow
-        if self.flying:
-            self.shadow = ShadowAndUnitTC(img=self.shadow_sprite, x=self.x + 10,
-                                          y=self.y - 10)
-            self.shadow.batch = air_shadows_batch
-        else:
-            self.shadow = ShadowAndUnitTC(img=self.shadow_sprite, x=self.x + 3,
-                                          y=self.y - 3)
-            self.shadow.batch = ground_shadows_batch
-
-    def update(self):
-        """Updates position and shadow."""
-        self.x, self.y = self.x + self.velocity_x, self.y + self.velocity_y
-        self.team_color.update()
-        self.shadow.update()
-
-    def rotate(self, x, y):
-        """Rotates a unit in the direction of his task(mining, building,
-        etc.)"""
-        diff_x = x - self.x
-        diff_y = y - self.y
-        angle = math.atan2(diff_y, diff_x)  # Rad
-        self.rotation = -math.degrees(angle) + 90
-        self.team_color.rotation = -math.degrees(angle) + 90
-        self.shadow.rotation = -math.degrees(angle) + 90
-
-    def move(self, dest):
-        """Called once by RMB or when a unit is created by a building with
-        a non-default rally point."""
-        # Attack move
-        if self.attack_moving and (self.x, self.y) in POS_COORDS:
-            if self.owner.name == 'p1':
-                if closest_enemy_2_att(self, enemy_units + enemy_structs):
-                    self.attack_moving = False
-                    self.dest_reached = True
-                    return
-            else:
-                if closest_enemy_2_att(self, our_units + our_structs):
-                    self.attack_moving = False
-                    self.dest_reached = True
-                    return
-        # Not moving: same coords
-        if self.x == dest[0] and self.y == dest[1]:
-            self.dest_reached = True
-            return
-
-        # Not moving: melee distance and dest occupied
-        if is_melee_dist(self, dest[0], dest[1]) and \
-                self.pos_dict[(dest[0], dest[1])]:
-            self.dest_reached = True
-            return
-        # Moving or just rotating
-        self.dest_reached = False
-        self.dest_x, self.dest_y = dest[0], dest[1]
-
-        self.pfi = 1  # 0 creates a bug of rotating to math degree of 0
-        # because the 0 element in path is the starting location
-        self.path = find_path((self.x, self.y), (self.dest_x, self.dest_y),
-                              self.flying)
-        try:
-            target = self.path[self.pfi]
-        except IndexError:
-            self.dest_reached = True
-            return
-        if target:  # If we can reach there
-            # print('target =', target)
-            self.target_x = target[0]
-            self.target_y = target[1]
-            self.pixel.x, self.pixel.y = to_minimap(self.target_x,
-                                                    self.target_y)
-        # Not moving
-        else:
-            self.dest_reached = True
-            self.pos_dict[(self.x, self.y)] = self
-            return
-        diff_x = self.target_x - self.x
-        diff_y = self.target_y - self.y
-        angle = math.atan2(diff_y, diff_x)  # Rad
-        self.rotation = -math.degrees(angle) + 90
-        self.velocity_x = math.cos(angle) * self.speed
-        self.velocity_y = math.sin(angle) * self.speed
-        self.team_color.rotation = -math.degrees(angle) + 90
-        self.team_color.velocity_x = math.cos(angle) * self.speed
-        self.team_color.velocity_y = math.sin(angle) * self.speed
-        self.shadow.rotation = -math.degrees(angle) + 90
-        self.shadow.velocity_x = math.cos(angle) * self.speed
-        self.shadow.velocity_y = math.sin(angle) * self.speed
-        self.pos_dict[(self.x, self.y)] = None
-        self.pos_dict[(self.target_x, self.target_y)] = self
-
-    def eta(self):
-        """Estimated time of arrival to the target location (not dest)."""
-        dist_to_target = ((self.target_x - self.x) ** 2 + (
-                self.target_y - self.y) ** 2) ** 0.5
-        return dist_to_target / self.speed
-
-    def update_move(self):
-        """Called by update to move to the next point."""
-        self.pfi += 1
-        diff_x = self.dest_x - self.x
-        diff_y = self.dest_y - self.y
-        angle = math.atan2(diff_y, diff_x)  # Rad
-        d_angle = math.degrees(angle)
-        self.rotation = -d_angle + 90
-        self.team_color.rotation = -math.degrees(angle) + 90
-        self.shadow.rotation = -math.degrees(angle) + 90
-        try:
-            next_target = self.path[self.pfi]
-        except IndexError:
-            self.dest_reached = True
-            return
-        if self.pos_dict[
-            (next_target[0], next_target[1])]:  # Obstruction detected
-            self.move((self.dest_x, self.dest_y))
-            return
-        if next_target:  # Moving
-            self.pos_dict[(self.x, self.y)] = None
-            self.target_x = next_target[0]
-            self.target_y = next_target[1]
-            self.pixel.x, self.pixel.y = to_minimap(self.target_x,
-                                                    self.target_y)
-            self.pos_dict[(self.target_x, self.target_y)] = self
-            diff_x = self.target_x - self.x
-            diff_y = self.target_y - self.y
-            angle = math.atan2(diff_y, diff_x)  # Rad
-            d_angle = math.degrees(angle)
-            self.rotation = -d_angle + 90
-            self.velocity_x = math.cos(angle) * self.speed
-            self.velocity_y = math.sin(angle) * self.speed
-            self.team_color.rotation = -math.degrees(angle) + 90
-            self.team_color.velocity_x = math.cos(angle) * self.speed
-            self.team_color.velocity_y = math.sin(angle) * self.speed
-            self.shadow.rotation = -math.degrees(angle) + 90
-            self.shadow.velocity_x = math.cos(angle) * self.speed
-            self.shadow.velocity_y = math.sin(angle) * self.speed
-        else:
-            self.pos_dict[(self.x, self.y)] = self
-            self.dest_reached = True
-
-    def shoot(self, f):
-        if self.weapon_type == 'projectile':
-            projectile = Projectile(x=self.x, y=self.y, target_px=self.target_p.x,
-                target_py=self.target_p.y, damage=self.damage,
-                speed=10, target_obj=self.target_p, img=self.w_img)
-            projectiles.append(projectile)
-        elif self.weapon_type == 'bomb':
-            bomb = Bomb(x=self.x, y=self.y, target_px=self.target_p.x,
-                        target_py=self.target_p.y, damage=self.damage,
-                        speed=2)
-            bombs.append(bomb)
-        else:  # Zap
-            self.target_p.hp -= self.damage
-            Zap(self.x, self.y, self.target_p.x, self.target_p.y,
-                self.game_inst.f)
-            HitAnim(self.target_p.x, self.target_p.y)
-        x_diff = self.target_p.x - self.x
-        y_diff = self.target_p.y - self.y
-        angle = -math.degrees(math.atan2(y_diff, x_diff)) + 90
-        self.rotation = angle
-        self.team_color.rotation = angle
-        self.shadow.rotation = angle
-        self.on_cooldown = True
-        self.cooldown_started = f
-
-    def stop(self):
-        if not self.dest_reached:
-            self.dest_x = self.target_x
-            self.dest_y = self.target_y
-        # Worker
-        try:
-            self.clear_task()
-        except AttributeError:
-            pass
-
-    def kill(self, delay_del=False):
-        self.pixel.delete()
-        self.team_color.delete()
-        self.shadow.delete()
-        for attacker in self.attackers:
-            attacker.has_target_p = False
-        if not delay_del:
-            if self.owner.name == 'p1':
-                del our_units[our_units.index(self)]
-            else:
-                del enemy_units[enemy_units.index(self)]
-        self.pos_dict[(self.target_x, self.target_y)] = None
-        Explosion(self.x, self.y, 0.25)
-        # Worker
-        try:
-            if self.to_build:
-                self.owner.min_c += self.to_build.cost
-                self.game_inst.update_min_c_label()
-            del workers[workers.index(self)]
-            self.zap_sprite.delete()
-        except (AttributeError, ValueError):
-            pass
-        if self is sel:
-            self.game_inst.build_loc_sel_phase = False
-            self.game_inst.m_targeting_phase = False
-            self.game_inst.targeting_phase = False
-            self.game_inst.set_mouse_cursor(res.cursor)
-        self.delete()
-
-
-class Apocalypse(Unit):
-    cost = 600
-    build_time = 600
-    icon = res.apocalypse_icon_img
-
-    def __init__(self, game_inst, x, y, owner=None):
-        if owner is None:
-            owner = game_inst.this_player
-        super().__init__(game_inst, owner, res.apocalypse_img,
-                         res.apocalypse_team_color, res.apocalypse_icon_img,
-                         flying=True,
-                         vision_rad=6, hp=100, x=x, y=y, speed=1,
-                         weapon_type='projectile', w_img=res.bomb_anim,
-                         damage=100, cooldown=200,
-                         attacks_ground=True, attacks_air=False,
-                         shadow_sprite=res.apocalypse_shadow_img,
-                         cbs=game_inst.basic_unit_c_bs)
-
-
-class Centurion(Unit):
-    cost = 400
-    build_time = 600
-    icon = res.centurion_icon_img
-
-    def __init__(self, game_inst, x, y, owner=None):
-        if owner is None:
-            owner = game_inst.this_player
-        super().__init__(game_inst, owner, res.centurion_img,
-                         res.centurion_team_color, res.centurion_icon_img,
-                         flying=False,
-                         vision_rad=6, hp=100, x=x, y=y, speed=1,
-                         weapon_type='projectile', w_img=res.laser_img,
-                         damage=30, cooldown=120,
-                         attacks_ground=True, attacks_air=False,
-                         shadow_sprite=res.centurion_shadow_img,
-                         cbs=game_inst.basic_unit_c_bs)
-
-
-class Defiler(Unit):
-    cost = 300
-    build_time = 500
-    icon = res.defiler_icon_img
-
-    def __init__(self, game_inst, x, y, owner=None):
-        if owner is None:
-            owner = game_inst.this_player
-        super().__init__(game_inst, owner, res.defiler_img,
-                         res.defiler_team_color, res.defiler_icon_img,
-                         flying=True,
-                         vision_rad=6, hp=70, x=x, y=y, speed=3,
-                         weapon_type='instant', w_img=res.laser_img, damage=40,
-                         cooldown=10,
-                         attacks_ground=True, attacks_air=True,
-                         shadow_sprite=res.defiler_shadow_img,
-                         cbs=game_inst.basic_unit_c_bs)
-
-
-class Pioneer(Unit):
-    cost = 50
-    build_time = 500
-    icon = res.pioneer_icon_img
-
-    def __init__(self, game_inst, x, y, owner=None):
-        if owner is None:
-            owner = game_inst.this_player
-        super().__init__(game_inst, owner, res.pioneer_img,
-                         res.pioneer_team_color, res.pioneer_icon_img,
-                         flying=False,
-                         vision_rad=4, hp=10, x=x, y=y, speed=2,
-                         weapon_type='none', w_img=res.zap_anim, damage=0,
-                         cooldown=0,
-                         attacks_ground=False, attacks_air=False,
-                         shadow_sprite=res.pioneer_shadow_img,
-                         cbs=game_inst.basic_unit_c_bs +
-                                      [game_inst.armory_icon] +
-                                      [game_inst.turret_icon] +
-                                      [game_inst.mech_center_icon])
-        workers.append(self)
-        self.to_build = None
-        self.mineral_to_gather = None
-        self.task_x = None
-        self.task_y = None
-        self.is_gathering = False
-        self.zap_sprite = Sprite(res.zap_anim, self.x, self.y,
-                                 batch=weapons_batch)
-        self.zap_sprite.visible = False
-
-    def build(self):
-        self.mineral_to_gather = None
-        self.is_gathering = False
-        self.zap_sprite.visible = False
-        self.dest_reached = True
-        g_pos_coord_d[(self.target_x, self.target_y)] = None
-        g_pos_coord_d[(self.x, self.y)] = self
-        if self.to_build is Armory:
-            if not g_pos_coord_d[(self.task_x, self.task_y)]:
-                Armory(self.game_inst, self.task_x, self.task_y)
-            else:
-                self.owner.min_c += Armory.cost
-        elif self.to_build is Turret:
-            if not g_pos_coord_d[(self.task_x, self.task_y)]:
-                Turret(self.game_inst, self.task_x, self.task_y)
-            else:
-                self.owner.min_c += Turret.cost
-        elif self.to_build is MechCenter:
-            x = self.task_x - PS / 2
-            y = self.task_y - PS / 2
-            coords_to_check = [(x, y), (x + PS, y), (x + PS, y + PS),
-                               (x, y + PS)]
-            no_place = False
-            for c in coords_to_check:
-                if g_pos_coord_d[(c[0], c[1])]:
-                    no_place = True
-                    break
-            if no_place is False:
-                MechCenter(self.game_inst, self.task_x, self.task_y)
-            else:
-                self.owner.min_c += MechCenter.cost
-        self.to_build = None
-
-    def gather(self):
-        self.rotate(self.mineral_to_gather.x, self.mineral_to_gather.y)
-        self.is_gathering = True
-        self.zap_sprite.x = self.x
-        self.zap_sprite.y = self.y
-        diff_x = self.task_x - self.x
-        diff_y = self.task_y - self.y
-        _dist = (diff_x ** 2 + diff_y ** 2) ** 0.5
-        self.zap_sprite.scale_x = _dist / PS
-        angle = math.atan2(diff_y, diff_x)  # Rad
-        self.zap_sprite.rotation = -math.degrees(angle)
-        self.zap_sprite.visible = True
-        self.cycle_started = self.game_inst.f
-
-    def clear_task(self):
-        self.to_build = None
-        self.mineral_to_gather = None
-        self.task_x = None
-        self.task_y = None
-        self.is_gathering = False
-        self.zap_sprite.visible = False
-
-
-class Wyrm(Unit):
-    cost = 150
-    build_time = 400
-    icon = res.wyrm_icon_img
-
-    def __init__(self, game_inst, x, y, owner=None):
-        if owner is None:
-            owner = game_inst.this_player
-        super().__init__(game_inst, owner, res.wyrm_img,
-                         res.wyrm_team_color, res.wyrm_icon_img, flying=False,
-                         vision_rad=3, hp=25, x=x, y=y, speed=3,
-                         weapon_type='projectile', w_img=res.laser_img,
-                         damage=5, cooldown=20,
-                         attacks_ground=True, attacks_air=False,
-                         shadow_sprite=res.wyrm_shadow_img,
-                         cbs=game_inst.basic_unit_c_bs)
-
 
 class WorldEditor(pyglet.window.Window):
     def __init__(self, width, height, title):
         global sel
+        sel = None
         conf = Config(sample_buffers=1, samples=4, depth_size=16,
                       double_buffer=True)
         super().__init__(width, height, title, config=conf)
         self.set_mouse_cursor(res.cursor)
-        self.show_fps = True
-        self.fps_display = pyglet.window.FPSDisplay(window=self)
         self.ui = []
         self.mouse_x = 0
         self.mouse_y = 0
         self.show_hint = False
         self.menu_bg = UI(self, res.menu_bg, 0, 0)
-        self.paused = False
         self.options = False
+        self.cbs_2_render = None
         self.f = 0
-        self.this_player = Player("p1")
-        self.computer = Player("c1")
-        self.computer.min_c = 50000
-        self.computer.workers_count = 0
         self.dx = 0
         self.dy = 0
         self.minimap_drugging = False
@@ -1218,16 +115,6 @@ class WorldEditor(pyglet.window.Window):
         self.mm_textured_bg = UI(self, res.mm_textured_bg_img, MM0X, MM0Y)
         self.mm_cam_frame_spt = Sprite(res.mm_cam_frame_img, MM0X - 1,
                                        MM0Y - 1)
-        self.mm_fow_img = pyglet.image.load('sprites/mm/mm_fow.png')
-        self.mm_fow_ImageData = self.mm_fow_img.get_image_data()
-        self.npa = np.fromstring(self.mm_fow_ImageData.get_data(
-            'RGBA', self.mm_fow_ImageData.width * 4), dtype=np.uint8)
-        self.npa = self.npa.reshape((102, 102, 4))
-        self.min_c_label = pyglet.text.Label(
-            str(self.this_player.min_c), x=SCREEN_W - 180,
-            y=SCREEN_H - 20, anchor_x='center', anchor_y='center')
-        self.mineral_small = UI(self, res.mineral_small, x=SCREEN_W - 210,
-            y=SCREEN_H - 20)
         self.sel_icon = UI(self, res.none_img, CB_COORDS[0][0],
                                 SCREEN_H - 72)
         self.sel_hp = pyglet.text.Label('', x=CB_COORDS[1][0] - 15,
@@ -1237,27 +124,11 @@ class WorldEditor(pyglet.window.Window):
         self.txt_out = pyglet.text.Label('', x=SCREEN_W / 2 - 50, y=100,
                 anchor_x='center', anchor_y='center', font_size=8)
         self.txt_out_upd_f = None
-        self.prod_bar_bg = UI(self, res.prod_bar_bg_img, CP_CENTER_X,
-                              SCREEN_H - 93)
-        self.prod_bar_bg.visible = False
-        self.prod_bar = UI(self, res.prod_bar_img, SCREEN_W - 120, SCREEN_H - 94)
-        self.prod_bar.visible = False
-        self.prod_icon1 = UI(self, res.none_img, CB_COORDS[0][0], SCREEN_H - 110)
-        self.prod_icon2 = UI(self, res.none_img, CB_COORDS[1][0], SCREEN_H - 110)
-        self.prod_icon3 = UI(self, res.none_img, CB_COORDS[2][0], SCREEN_H - 110)
 
         # Hints
         self.hint = UI(self, res.hint_defiler, 100, 100)
 
         # Menu
-        self.resume_b = UI(self, res.resume_img, SCREEN_W / 2, 300,
-                           batch=menu_b_batch)
-        self.save_b = UI(self, res.save_img, SCREEN_W / 2, 280,
-                         batch=menu_b_batch)
-        self.load_b = UI(self, res.load_img, SCREEN_W / 2, 260,
-                         batch=menu_b_batch)
-        self.restart_b = UI(self, res.restart_img, SCREEN_W / 2, 240,
-                            batch=menu_b_batch)
         self.options_b = UI(self, res.options_img, SCREEN_W / 2, 220,
                             batch=menu_b_batch)
         self.exit_b = UI(self, res.exit_img, SCREEN_W / 2, 200,
@@ -1275,14 +146,6 @@ class WorldEditor(pyglet.window.Window):
                               CB_COORDS[4][1])
         self.mech_center_icon = UI(self, res.mech_center_icon_img,
                                    CB_COORDS[5][0], CB_COORDS[5][1])
-        self.move_b = UI(self, res.move_img, CB_COORDS[0][0],
-                         CB_COORDS[0][1])
-        self.stop_b = UI(self, res.stop_img, CB_COORDS[1][0],
-                         CB_COORDS[1][1])
-        self.attack_b = UI(self, res.attack_img, CB_COORDS[2][0],
-                           CB_COORDS[2][1])
-        self.cancel_b = UI(self, res.cancel_img, CB_COORDS[8][0],
-                           CB_COORDS[8][1])
         self.defiler_b = UI(self, res.defiler_img, CB_COORDS[0][0],
                             CB_COORDS[0][1])
         self.centurion_b = UI(self, res.centurion_img,
@@ -1293,38 +156,6 @@ class WorldEditor(pyglet.window.Window):
                                CB_COORDS[3][0], CB_COORDS[3][1])
         self.pioneer_b = UI(self, res.pioneer_img, CB_COORDS[4][0],
                             CB_COORDS[4][1])
-
-        # Spawn buildings and minerals
-        Mineral(self, PS / 2 + PS * 4, PS / 2 + PS * 7)
-        Mineral(self, PS / 2 + PS * 4,  PS / 2 + PS * 8)
-        Mineral(self, PS / 2 + PS * 6, PS / 2 + PS * 4)
-        Mineral(self, PS / 2 + PS * 7, PS / 2 + PS * 3)
-        Mineral(self, PS / 2 + PS * 10, PS / 2 + PS * 4)
-        Mineral(self, PS / 2 + PS * 11, PS / 2 + PS * 4)
-
-        Mineral(self, PS / 2 + PS * 52, PS / 2 + PS * 47)
-        Mineral(self, PS / 2 + PS * 52, PS / 2 + PS * 46)
-        Mineral(self, PS / 2 + PS * 46, PS / 2 + PS * 46)
-        Mineral(self, PS / 2 + PS * 46, PS / 2 + PS * 48)
-        self.our_1st_base = MechCenter(self, PS * 7, PS * 8, skip_constr=True)
-        sel = self.our_1st_base
-        self.sel_icon.image = sel.icon
-        MechCenter(self, PS * 50, PS * 50, self.computer, skip_constr=True)
-
-        self.sel_spt = Sprite(img=res.sel_img, x=self.our_1st_base.x,
-                              y=self.our_1st_base.y)
-        self.sel_big_spt = Sprite(img=res.sel_big_img, x=self.our_1st_base.x,
-                                  y=self.our_1st_base.y)
-        self.rp_spt = Sprite(img=res.rp_img, x=self.our_1st_base.rp_x,
-                             y=self.our_1st_base.rp_y)
-
-        self.basic_unit_c_bs = [self.move_b, self.stop_b, self.attack_b]
-        self.cbs_2_render = self.our_1st_base.cbs
-        self.to_build_spt = Sprite(img=res.armory_img, x=-100, y=-100)
-        self.to_build_spt.color = (0, 255, 0)
-
-        # Spawn units. Have to spawn them right here. I don't remember why.
-        Pioneer(self, PS / 2 + PS * 8, PS / 2 + PS * 6).spawn()
 
     def on_draw(self):
         """
@@ -1343,315 +174,56 @@ class WorldEditor(pyglet.window.Window):
         # Clear window with ClearColor
         glClear(GL_COLOR_BUFFER_BIT)
 
-        # Me playing with OpenGL
-        # glViewport(0, 0, SCREEN_WIDTH - 179, SCREEN_HEIGHT)
-
         # Set orthographic projection matrix
         glOrtho(lvb, lvb + SCREEN_W, bvb, bvb + SCREEN_H, 1, -1)
 
-        if not self.paused:
-            self.terrain.draw()
-            ground_shadows_batch.draw()
-            structures_batch.draw()
-            ground_units_batch.draw()
-            ground_team_color_batch.draw()
-            weapons_batch.draw()
-            explosions_batch.draw()
-            air_shadows_batch.draw()
-            air_batch.draw()
-            air_team_color_batch.draw()
-            if sel:
-                try:
-                    sel.is_big
-                    self.sel_big_spt.draw()
-                except AttributeError:
-                    self.sel_spt.draw()
+        self.terrain.draw()
+        ground_shadows_batch.draw()
+        structures_batch.draw()
+        ground_units_batch.draw()
+        ground_team_color_batch.draw()
+        weapons_batch.draw()
+        air_shadows_batch.draw()
+        air_batch.draw()
+        air_team_color_batch.draw()
+        if sel:
+            try:
+                sel.is_big
+                self.sel_big_spt.draw()
+            except AttributeError:
+                self.sel_spt.draw()
 
-            glEnable(GL_BLEND)
-            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
-            self.fow_texture = self.mm_fow_img.get_texture()
-            self.fow_texture.width = 3264
-            self.fow_texture.height = 3264
-            self.fow_texture.blit(-32, -32)
-            utilities_batch.draw()
-            if self.build_loc_sel_phase:
-                self.to_build_spt.draw()
-            self.cp_spt.draw()
-            self.menu_b.draw()
-            self.sel_frame_cp.draw()
-            self.sel_icon.draw()
-            self.prod_bar_bg.draw()
-            self.prod_bar.draw()
-            self.prod_icon1.draw()
-            self.prod_icon2.draw()
-            self.prod_icon3.draw()
-            self.sel_hp.draw()
-            self.cp_b_bg.draw()
-            self.mm_textured_bg.draw()
-            minimap_pixels_batch.draw()
+        glEnable(GL_BLEND)
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
+        utilities_batch.draw()
+        if self.build_loc_sel_phase:
+            self.to_build_spt.draw()
+        self.cp_spt.draw()
+        self.menu_b.draw()
+        self.sel_frame_cp.draw()
+        self.sel_icon.draw()
+        self.sel_hp.draw()
+        self.cp_b_bg.draw()
+        self.mm_textured_bg.draw()
+        minimap_pixels_batch.draw()
 
-            if self.cbs_2_render:
-                for button in self.cbs_2_render:
-                    button.draw()
-                if sel in our_structs and sel \
-                        not in offensive_structs:
-                    self.rp_spt.draw()
+        if self.cbs_2_render:
+            for button in self.cbs_2_render:
+                button.draw()
+            if sel in our_structs and sel \
+                    not in offensive_structs:
+                self.rp_spt.draw()
 
-            self.fow_texture.width = 102
-            self.fow_texture.height = 102
-            self.fow_texture.blit(minimap_fow_x, minimap_fow_y)
-
-            self.mm_cam_frame_spt.draw()
-            self.min_c_label.draw()
-            self.mineral_small.draw()
-            if self.show_fps:
-                self.fps_display.draw()
-
-            if self.show_hint:
-                self.hint.draw()
-            self.txt_out.draw()
-        else:
-            self.menu_bg.draw()
-            if self.options:
-                options_batch.draw()
-                check_batch.draw()
-            else:
-                menu_b_batch.draw()
+        self.mm_cam_frame_spt.draw()
+        if self.show_hint:
+            self.hint.draw()
+        self.txt_out.draw()
 
         # Remove default modelview matrix
         glPopMatrix()
 
     def update(self, delta_time):
-        global sel
-        if not self.paused:
-            self.f += 1
-            # Build units
-            for struct in prod_structs:
-                try:
-                    struct_spawn_unit(self, struct)
-                    if not struct.prod_q:
-                        struct.prod_complete = True
-                except AttributeError:
-                    pass
-            # AI
-            if self.f % 50 == 0:
-                self.ai()
-            # Units
-            # Gathering resources
-            for worker in workers:
-                if worker.mineral_to_gather and worker.dest_reached:
-                    if not worker.is_gathering:
-                        try:
-                            if is_melee_dist(worker, worker.task_x,
-                                             worker.task_y):
-                                # print("melee dist")
-                                worker.gather()
-                        except TypeError:
-                            worker.clear_task()
-                    else:
-                        worker.mineral_to_gather.hp -= 0.03
-                        owner = worker.owner
-                        owner.min_c += 0.03
-                        if owner.name == 'p1':
-                            self.update_min_c_label()
-            # Summon structures
-            for worker in workers:
-                if worker.to_build:
-                    if worker.to_build is MechCenter:
-                        if is_2_melee_dist(worker, worker.task_x,
-                                           worker.task_y):
-                            worker.build()
-                    else:
-                        if is_melee_dist(worker, worker.task_x, worker.task_y):
-                            worker.build()
-            # Finish summoning Guardian structures
-            if self.f % 10 == 0:
-                for struct in guardian_dummies:
-                    if struct.constr_f + struct.build_time <= self.f:
-                        struct.constr_complete()
-                        if sel is struct:
-                            self.cbs_2_render = struct.cbs
-                        delayed_del = (struct, guardian_dummies)
-                # Delayed del
-                try:
-                    del delayed_del[1][delayed_del[1].index(
-                        delayed_del[0])]
-                except:
-                    pass
-            # Movement
-            for unit in our_units + enemy_units:
-                if not unit.dest_reached:
-                    # Do not jump
-                    if not unit.eta() <= 1:
-                        unit.update()
-                        if sel is unit:
-                            self.sel_spt.x = unit.x
-                            self.sel_spt.y = unit.y
-                    # Jump
-                    else:
-                        unit.x = unit.target_x
-                        unit.y = unit.target_y
-                        unit.coords = ((unit.x, unit.y),)
-                        unit.team_color.x = unit.target_x
-                        unit.team_color.y = unit.target_y
-                        if not unit.move_interd:
-                            if sel is unit:
-                                self.sel_spt.x = unit.x
-                                self.sel_spt.y = unit.y
-                            if not unit.flying:
-                                unit.shadow.x = unit.target_x + 3
-                                unit.shadow.y = unit.target_y - 3
-                            else:
-                                unit.shadow.x = unit.target_x + 10
-                                unit.shadow.y = unit.target_y - 10
-                            unit.pos_dict[
-                                (unit.target_x, unit.target_y)] = unit
-                            if unit.x == unit.dest_x and unit.y == \
-                                    unit.dest_y:
-                                unit.dest_reached = True
-                            else:
-                                if unit.attack_moving:
-                                    if unit.owner.name == 'p1':
-                                        if closest_enemy_2_att(unit,
-                                                enemy_units + enemy_structs):
-                                            unit.dest_reached = True
-                                            unit.attack_moving = False
-                                        else:
-                                            unit.update_move()
-                                    else:
-                                        if closest_enemy_2_att(unit,
-                                                our_units + our_structs):
-                                            unit.dest_reached = True
-                                            unit.attack_moving = False
-                                        else:
-                                            unit.update_move()
-                                else:
-                                    unit.update_move()
-                        # Movement interrupted
-                        else:
-                            if not unit.flying:
-                                unit.shadow.x = unit.target_x + 3
-                                unit.shadow.y = unit.target_y - 3
-                                g_pos_coord_d[(unit.target_x, unit.target_y)] \
-                                    = unit
-                            else:
-                                unit.shadow.x = unit.target_x + 10
-                                unit.shadow.y = unit.target_y - 10
-                                a_pos_coord_d[(unit.target_x, unit.target_y)] \
-                                    = unit
-                            unit.dest_reached = True
-                            unit.move((unit.new_dest_x, unit.new_dest_y))
-                            unit.move_interd = False
-                        if unit in our_units:
-                            self.update_fow(unit.x, unit.y, unit.vision_rad)
-                else:
-                    try:
-                        unit.to_build = None
-                        unit.task_x = None
-                        unit.task_y = None
-                    except AttributeError:
-                        pass
-            # Shooting
-            update_shooting(self, offensive_structs + our_units,
-                                enemy_structs + enemy_units)
-            update_shooting(self, enemy_units, our_structs + our_units)
-            # Projectiles
-            delayed_del = []
-            for i, projectile in enumerate(projectiles):
-                if not projectile.eta() <= 1:
-                    projectile.update()
-                else:  # Hit!
-                    projectile.target_obj.hp -= projectile.damage
-                    HitAnim(projectile.x, projectile.y)
-                    delayed_del.append(projectile)
-            for projectile in delayed_del:
-                projectiles.remove(projectile)
-                projectile.delete()
-            # Zaps
-            delayed_del = []
-            for zap in zaps:
-                if zap.f_started + ZAPS_LAST_F <= self.f:
-                    delayed_del.append(zap)
-            for zap in delayed_del:
-                zaps.remove(zap)
-                zap.delete()
-            # Bombs
-            delayed_del = []
-            for i, bomb in enumerate(bombs):
-                if not bomb.eta() <= 1:
-                    bomb.update()
-                else:  # Hit!
-                    try:
-                        g_pos_coord_d[(bomb.target_x, bomb.target_y)].hp -= \
-                            bomb.damage
-                    # This is because of 2-block-wide
-                    # structures and the way enemy-finding workds
-                    except KeyError:
-                        try:
-                            g_pos_coord_d[(bomb.target_x - 16,
-                                           bomb.target_y - 16)].hp -= bomb.damage
-                        except AttributeError:
-                            pass
-                    except AttributeError:  # For already dead? Errr
-                        pass
-                    hit_anim = HitAnim(bomb.x, bomb.y)
-                    hit_anim.color = (255, 200, 200)
-                    delayed_del.append(bomb)
-            for bomb in delayed_del:
-                bombs.remove(bomb)
-                bomb.delete()
-            # Destroying minerals
-            minerals_to_del = []
-            for mineral in minerals:
-                if mineral.hp <= 0:
-                    mineral.kill()
-                    minerals_to_del.append(mineral)
-            for mineral in minerals_to_del:
-                minerals.remove(mineral)
-            # Destroying targets
-            for entity in our_structs + our_units + \
-                          enemy_structs + enemy_units:
-                if entity.hp <= 0:
-                    if entity.owner.name == 'c1' and isinstance(entity, Pioneer):
-                        self.computer.workers_count -= 1
-                    entity.kill()
-                    if entity is sel:
-                        sel = None
-
-            if self.f % 10 == 0:
-                # Update hp label
-                try:
-                    sel.max_hp
-                    self.sel_hp.text = str(int(sel.hp)) + '/' + \
-                                            str(sel.max_hp)
-                except AttributeError:
-                    try:
-                        self.sel_hp.text = str(int(sel.hp))
-                    except AttributeError:  # The entity is no more
-                        self.sel_icon.image = res.none_img
-                        self.sel_hp.text = ''
-                # Reset txt_out
-                if self.txt_out_upd_f:
-                    if self.f >= self.txt_out_upd_f + TXT_OUT_DECAY:
-                        self.txt_out.text = ''
-                        self.txt_out_upd_f = None
-                # Production bar
-                try:
-                    if not sel.prod_complete:
-                        self.prod_bar.scale_x = (self.f - sel.prod_start_f) \
-                        * 100 / sel.cur_max_prod_time + 1
-                    else:
-                        self.prod_bar_bg.visible = False
-                        self.prod_bar.visible = False
-                except (AttributeError, TypeError):
-                    pass
-        if self.f % 50 == 0:
-            if not enemy_structs:
-                self.txt_out.text = "Victory"
-                self.txt_out_upd_f = self.f
-            elif not our_structs:
-                self.txt_out.text = "Defeat"
-                self.txt_out_upd_f = self.f
+        pass
 
     def on_key_press(self, symbol, modifiers):
         """Called whenever a key is pressed."""
@@ -1835,33 +407,119 @@ class WorldEditor(pyglet.window.Window):
         if self.fullscreen:
             x //= 2
             y //= 2
-        if not self.paused:
-            # Building location selection
-            if self.build_loc_sel_phase:
-                # Game field
+        # Building location selection
+        if self.build_loc_sel_phase:
+            # Game field
+            x, y = mc(x=x, y=y)
+            if x < mc(x=SCREEN_W) - 139:
+                x, y = round_coords(x, y)
+                if button == mouse.LEFT:
+                    if self.loc_clear:
+                        order_structure(self, sel, self.to_build, x, y)
+                        self.build_loc_sel_phase = False
+                elif button == mouse.RIGHT:
+                    self.build_loc_sel_phase = False
+        # Movement target selection phase
+        elif self.m_targeting_phase:
+            if button == mouse.LEFT:
                 x, y = mc(x=x, y=y)
+                # Game field
+                if x < mc(x=SCREEN_W) - 139:
+                    pass
+                # Minimap
+                elif MM0X <= x <= MM0X + 100 and MM0Y <= y <= MM0Y + 100:
+                    x = (x - MM0X) * PS
+                    y = (y - MM0Y) * PS
+                else:
+                    return
+                x, y = round_coords(x, y)
+                if sel.dest_reached:
+                    sel.move((x, y))
+                # Movement interruption
+                else:
+                    sel.move_interd = True
+                    sel.new_dest_x = x
+                    sel.new_dest_y = y
+                sel.has_target_p = False
+                self.m_targeting_phase = False
+                self.set_mouse_cursor(res.cursor)
+            else:
+                self.m_targeting_phase = False
+                self.set_mouse_cursor(res.cursor)
+        # Targeting phase
+        elif self.targeting_phase:
+            if button == mouse.LEFT:
+                x, y = mc(x=x, y=y)
+                # Game field
                 if x < mc(x=SCREEN_W) - 139:
                     x, y = round_coords(x, y)
-                    if button == mouse.LEFT:
-                        if self.loc_clear:
-                            order_structure(self, sel, self.to_build, x, y)
-                            self.build_loc_sel_phase = False
-                    elif button == mouse.RIGHT:
-                        self.build_loc_sel_phase = False
-            # Movement target selection phase
-            elif self.m_targeting_phase:
-                if button == mouse.LEFT:
-                    x, y = mc(x=x, y=y)
-                    # Game field
-                    if x < mc(x=SCREEN_W) - 139:
-                        pass
-                    # Minimap
-                    elif MM0X <= x <= MM0X + 100 and MM0Y <= y <= MM0Y + 100:
-                        x = (x - MM0X) * PS
-                        y = (y - MM0Y) * PS
-                    else:
-                        return
-                    x, y = round_coords(x, y)
+                    # On-entity attack command
+                    target_p_found = False
+                    if sel.attacks_air:
+                        target_p = a_pos_coord_d[(x, y)]
+                        if target_p and target_p != sel:
+                            target_p_found = True
+                            sel.has_target_p = True
+                            sel.target_p = target_p
+                            sel.target_p_x = x
+                            sel.target_p_y = y
+                            target_p.attackers.append(sel)
+                            # Too far
+                            closest_coord = None
+                            closest_d = 10000
+                            for coord in target_p.coords:
+                                d = ((sel.x-target_p.x) ** 2
+                                + (sel.y-target_p.y) ** 2) ** 0.5
+                                if d < closest_d:
+                                    closest_coord = coord
+                                    closest_d = d
+                            if sel.attack_rad * PS < closest_d:
+                                closest_d = 10000
+                                for coords in rad_clipped[sel.attack_rad]:
+                                    _x = coords[0]*32 + closest_coord[0]
+                                    _y = coords[1]*32 + closest_coord[1]
+                                    d = ((sel.x-_x) ** 2
+                                        + (sel.y-_y) ** 2) ** 0.5
+                                    if d < closest_d:
+                                        closest_d = d
+                                        x, y = _x, _y
+                                sel.move((x, y))
+                                self.targeting_phase = False
+                                self.set_mouse_cursor(res.cursor)
+                                return
+                    if not target_p_found and sel.attacks_ground:
+                        target_p = g_pos_coord_d[(x, y)]
+                        if target_p and target_p != sel:
+                            sel.has_target_p = True
+                            sel.target_p = target_p
+                            sel.target_p_x = x
+                            sel.target_p_y = y
+                            target_p.attackers.append(sel)
+                            # Too far
+                            closest_coord = None
+                            closest_d = 10000
+                            for coord in target_p.coords:
+                                d = ((sel.x-target_p.x) ** 2
+                                + (sel.y-target_p.y) ** 2) ** 0.5
+                                if d < closest_d:
+                                    closest_coord = coord
+                                    closest_d = d
+                            if sel.attack_rad * PS < closest_d:
+                                closest_d = 10000
+                                for coords in rad_clipped[sel.attack_rad]:
+                                    _x = coords[0]*32 + closest_coord[0]
+                                    _y = coords[1]*32 + closest_coord[1]
+                                    d = ((sel.x-_x) ** 2
+                                        + (sel.y-_y) ** 2) ** 0.5
+                                    if d < closest_d:
+                                        closest_d = d
+                                        x, y = _x, _y
+                                sel.move((x, y))
+                                self.targeting_phase = False
+                                self.set_mouse_cursor(res.cursor)
+                                return
+
+                    sel.attack_moving = True
                     if sel.dest_reached:
                         sel.move((x, y))
                     # Movement interruption
@@ -1869,141 +527,43 @@ class WorldEditor(pyglet.window.Window):
                         sel.move_interd = True
                         sel.new_dest_x = x
                         sel.new_dest_y = y
-                    sel.has_target_p = False
-                    self.m_targeting_phase = False
-                    self.set_mouse_cursor(res.cursor)
-                else:
-                    self.m_targeting_phase = False
-                    self.set_mouse_cursor(res.cursor)
-            # Targeting phase
-            elif self.targeting_phase:
-                if button == mouse.LEFT:
-                    x, y = mc(x=x, y=y)
-                    # Game field
-                    if x < mc(x=SCREEN_W) - 139:
-                        x, y = round_coords(x, y)
-                        # On-entity attack command
-                        target_p_found = False
-                        if sel.attacks_air:
-                            target_p = a_pos_coord_d[(x, y)]
-                            if target_p and target_p != sel:
-                                target_p_found = True
-                                sel.has_target_p = True
-                                sel.target_p = target_p
-                                sel.target_p_x = x
-                                sel.target_p_y = y
-                                target_p.attackers.append(sel)
-                                # Too far
-                                closest_coord = None
-                                closest_d = 10000
-                                for coord in target_p.coords:
-                                    d = ((sel.x-target_p.x) ** 2
-                                    + (sel.y-target_p.y) ** 2) ** 0.5
-                                    if d < closest_d:
-                                        closest_coord = coord
-                                        closest_d = d
-                                if sel.attack_rad * PS < closest_d:
-                                    closest_d = 10000
-                                    for coords in rad_clipped[sel.attack_rad]:
-                                        _x = coords[0]*32 + closest_coord[0]
-                                        _y = coords[1]*32 + closest_coord[1]
-                                        d = ((sel.x-_x) ** 2
-                                            + (sel.y-_y) ** 2) ** 0.5
-                                        if d < closest_d:
-                                            closest_d = d
-                                            x, y = _x, _y
-                                    sel.move((x, y))
-                                    self.targeting_phase = False
-                                    self.set_mouse_cursor(res.cursor)
-                                    return
-                        if not target_p_found and sel.attacks_ground:
-                            target_p = g_pos_coord_d[(x, y)]
-                            if target_p and target_p != sel:
-                                sel.has_target_p = True
-                                sel.target_p = target_p
-                                sel.target_p_x = x
-                                sel.target_p_y = y
-                                target_p.attackers.append(sel)
-                                # Too far
-                                closest_coord = None
-                                closest_d = 10000
-                                for coord in target_p.coords:
-                                    d = ((sel.x-target_p.x) ** 2
-                                    + (sel.y-target_p.y) ** 2) ** 0.5
-                                    if d < closest_d:
-                                        closest_coord = coord
-                                        closest_d = d
-                                if sel.attack_rad * PS < closest_d:
-                                    closest_d = 10000
-                                    for coords in rad_clipped[sel.attack_rad]:
-                                        _x = coords[0]*32 + closest_coord[0]
-                                        _y = coords[1]*32 + closest_coord[1]
-                                        d = ((sel.x-_x) ** 2
-                                            + (sel.y-_y) ** 2) ** 0.5
-                                        if d < closest_d:
-                                            closest_d = d
-                                            x, y = _x, _y
-                                    sel.move((x, y))
-                                    self.targeting_phase = False
-                                    self.set_mouse_cursor(res.cursor)
-                                    return
-
-                        sel.attack_moving = True
-                        if sel.dest_reached:
-                            sel.move((x, y))
-                        # Movement interruption
-                        else:
-                            sel.move_interd = True
-                            sel.new_dest_x = x
-                            sel.new_dest_y = y
-                        self.targeting_phase = False
-                        self.set_mouse_cursor(res.cursor)
-                    # Minimap
-                    elif MM0X <= x <= MM0X + 100 and MM0Y <= y <= MM0Y + 100:
-                        x = (x - MM0X) * PS
-                        y = (y - MM0Y) * PS
-                        x, y = round_coords(x, y)
-                        sel.attack_moving = True
-                        if sel.dest_reached:
-                            sel.move((x, y))
-                        # Movement interruption
-                        else:
-                            sel.move_interd = True
-                            sel.new_dest_x = x
-                            sel.new_dest_y = y
-                        self.targeting_phase = False
-                        self.set_mouse_cursor(res.cursor)
-                    else:
-                        return
-                else:
                     self.targeting_phase = False
                     self.set_mouse_cursor(res.cursor)
-            # Normal phase
-            else:
-                self.show_hint = False  # Fixes a bug with hints
-                # Game field
-                if x < SCREEN_W - 139:
+                # Minimap
+                elif MM0X <= x <= MM0X + 100 and MM0Y <= y <= MM0Y + 100:
+                    x = (x - MM0X) * PS
+                    y = (y - MM0Y) * PS
                     x, y = round_coords(x, y)
-                    x, y = mc(x=x, y=y)
-                    if button == mouse.LEFT:
-                        # Selection
-                        if not bin(modifiers)[-1] == '1':  # Shift is pressed
-                            to_be_sel = a_pos_coord_d[(x, y)]
-                            if to_be_sel:  # Air unit found
-                                sel = to_be_sel
-                                self.sel_spt.x = x
-                                self.sel_spt.y = y
-                            else:
-                                to_be_sel = g_pos_coord_d[(x, y)]
-                                if to_be_sel:
-                                    try:
-                                        to_be_sel.is_big
-                                        self.sel_big_spt.x = to_be_sel.x
-                                        self.sel_big_spt.y = to_be_sel.y
-                                    except AttributeError:
-                                        self.sel_spt.x = x
-                                        self.sel_spt.y = y
-                                    sel = to_be_sel
+                    sel.attack_moving = True
+                    if sel.dest_reached:
+                        sel.move((x, y))
+                    # Movement interruption
+                    else:
+                        sel.move_interd = True
+                        sel.new_dest_x = x
+                        sel.new_dest_y = y
+                    self.targeting_phase = False
+                    self.set_mouse_cursor(res.cursor)
+                else:
+                    return
+            else:
+                self.targeting_phase = False
+                self.set_mouse_cursor(res.cursor)
+        # Normal phase
+        else:
+            self.show_hint = False  # Fixes a bug with hints
+            # Game field
+            if x < SCREEN_W - 139:
+                x, y = round_coords(x, y)
+                x, y = mc(x=x, y=y)
+                if button == mouse.LEFT:
+                    # Selection
+                    if not bin(modifiers)[-1] == '1':  # Shift is pressed
+                        to_be_sel = a_pos_coord_d[(x, y)]
+                        if to_be_sel:  # Air unit found
+                            sel = to_be_sel
+                            self.sel_spt.x = x
+                            self.sel_spt.y = y
                         else:
                             to_be_sel = g_pos_coord_d[(x, y)]
                             if to_be_sel:
@@ -2015,265 +575,229 @@ class WorldEditor(pyglet.window.Window):
                                     self.sel_spt.x = x
                                     self.sel_spt.y = y
                                 sel = to_be_sel
+                    else:
+                        to_be_sel = g_pos_coord_d[(x, y)]
+                        if to_be_sel:
+                            try:
+                                to_be_sel.is_big
+                                self.sel_big_spt.x = to_be_sel.x
+                                self.sel_big_spt.y = to_be_sel.y
+                            except AttributeError:
+                                self.sel_spt.x = x
+                                self.sel_spt.y = y
+                            sel = to_be_sel
+                    if sel:
                         self.sel_icon.image = sel.icon
                         try:
                             self.sel_hp.text = str(int(sel.hp)) \
                                 + '/' + str(sel.max_hp)
                         except AttributeError:
                             self.sel_hp.text = str(int(sel.hp))
-                        # Production
+                    # Control buttons
+                    try:
                         if sel.owner.name == 'p1':
                             try:
-                                sel.prod_q[0]
-                                self.prod_bar_bg.visible = True
-                                self.prod_bar.visible = True
-                                self.prod_icon1.visible = True
-                                self.prod_icon2.visible = True
-                                self.prod_icon3.visible = True
-                            # Not a structure or nothing in production
-                            except (AttributeError, IndexError):
-                                self.prod_bar_bg.visible = False
-                                self.prod_bar.visible = False
-                                self.prod_icon1.visible = False
-                                self.prod_icon2.visible = False
-                                self.prod_icon3.visible = False
-                        else:
-                            self.prod_bar_bg.visible = False
-                            self.prod_bar.visible = False
-                            self.prod_icon1.visible = False
-                            self.prod_icon2.visible = False
-                            self.prod_icon3.visible = False
-                        # Control buttons
-                        try:
-                            if sel.owner.name == 'p1':
-                                try:
-                                    if not sel.under_constr:
-                                        self.cbs_2_render = sel.cbs
-                                    else:
-                                        self.cbs_2_render = None
-                                except AttributeError:
+                                if not sel.under_constr:
                                     self.cbs_2_render = sel.cbs
-                            else:
-                                self.cbs_2_render = None
-                        except AttributeError:  # For minerals
+                                else:
+                                    self.cbs_2_render = None
+                            except AttributeError:
+                                self.cbs_2_render = sel.cbs
+                        else:
                             self.cbs_2_render = None
+                    except AttributeError:  # For minerals
+                        self.cbs_2_render = None
+                    try:
+                        self.rp_spt.x = sel.rp_x
+                        self.rp_spt.y = sel.rp_y
+                    except AttributeError:
+                        pass
+                elif button == mouse.RIGHT:
+                    # Rally point
+                    if sel in our_structs:
+                        if g_pos_coord_d[x, y] != sel:
+                            sel.rp_x = x
+                            sel.rp_y = y
+                            sel.default_rp = False
+                            self.rp_spt.x = x
+                            self.rp_spt.y = y
+                        else:
+                            sel.default_rp = True
+                            self.rp_spt.x = sel.x
+                            self.rp_spt.y = sel.y
+                        # print('Rally set to ({}, {})'.format(x, y))
+                    # A unit is selected
+                    else:
+                        if sel in our_units:
+                            if sel.dest_reached:
+                                sel.move((x, y))
+                            # Movement interruption
+                            else:
+                                sel.move_interd = True
+                                sel.new_dest_x = x
+                                sel.new_dest_y = y
+                                # Refunding structures
+                                try:
+                                    if sel.to_build:
+                                        sel.owner.min_c += sel.to_build.cost
+                                        self.update_min_c_label()
+                                except AttributeError:
+                                    pass
+                            sel.has_target_p = False
+                            # Gathering
+                            if isinstance(sel, Pioneer):
+                                if sel.path or is_melee_dist(sel, x, y):
+                                    sel.clear_task()
+                                    obj = g_pos_coord_d[(x, y)]
+                                    if isinstance(obj, Mineral):
+                                        sel.mineral_to_gather = obj
+                                        sel.task_x = obj.x
+                                        sel.task_y = obj.y
+                                        obj.workers.append(sel)
+            # Minimap
+            elif MM0X <= x <= MM0X + 100 and MM0Y <= y <= MM0Y + 100:
+                if button == mouse.LEFT:
+                    # The viewport is 17x12 blocks. This +2 is
+                    # about 2 border pixels of the frame
+                    x -= 19 // 2
+                    y -= 14 // 2
+                    # print('x =', x, 'y =', y)
+                    lvb = (x - MM0X) * PS
+                    bvb = (y - MM0Y) * PS
+                    self.update_viewport()
+                elif button == mouse.RIGHT:
+                    x = (x - MM0X) * PS
+                    y = (y - MM0Y) * PS
+                    x, y = round_coords(x, y)
+                    # A unit is sel
+                    unit_found = False
+                    for unit in our_units:
+                        if unit is sel:
+                            unit_found = True
+                            if unit.dest_reached:
+                                unit.move((x, y))
+                            else:  # Movement interruption
+                                unit.dest_x = unit.target_x
+                                unit.dest_y = unit.target_y
+                                unit.move_interd = True
+                                unit.new_dest_x = x
+                                unit.new_dest_y = y
+                    if not unit_found:
+                        if sel in our_structs:
+                            sel.rp_x = x
+                            sel.rp_y = y
+                            self.rp_spt.x = x
+                            self.rp_spt.y = y
+                            # print('Rally set to ({}, {})'.format(x, y))
+            # Control panel other
+            else:
+                x, y = mc(x=x, y=y)
+                w = self.menu_b.width
+                h = self.menu_b.height
+                if self.menu_b.x - w // 2 <= x <= \
+                        self.menu_b.x + w // 2 and \
+                        self.menu_b.y - h // 2 <= y <= \
+                        self.menu_b.y + h // 2:
+                    self.paused = True
+                    return
+                # Build units
+                if sel in our_structs and not sel.under_constr:
+                    # Create defiler
+                    if self.defiler_b.x - 16 <= x <= \
+                            self.defiler_b.x + 16 and \
+                            self.defiler_b.y - 16 <= y <= \
+                            self.defiler_b.y + 16:
+                        order_unit(self, sel, Defiler)
+                    # Create centurion
+                    elif self.centurion_b.x - 16 <= x <= \
+                            self.centurion_b.x + 16 and \
+                            self.centurion_b.y - 16 <= y <= \
+                            self.centurion_b.y + 16:
+                        order_unit(self, sel, Centurion)
+                    # Create wyrm
+                    elif self.wyrm_b.x - 16 <= x <= \
+                            self.wyrm_b.x + 16 and \
+                            self.wyrm_b.y - 16 <= y <= \
+                            self.wyrm_b.y + 16:
+                        order_unit(self, sel, Wyrm)
+                    # Create apocalypse
+                    elif self.apocalypse_b.x - 16 <= x <= \
+                            self.apocalypse_b.x + 16 and \
+                            self.apocalypse_b.y - 16 <= y <= \
+                            self.apocalypse_b.y + 16:
+                        order_unit(self, sel, Apocalypse)
+                    # Create pioneer
+                    elif self.pioneer_b.x - 16 <= x <= \
+                            self.pioneer_b.x + 16 and \
+                            self.pioneer_b.y - 16 <= y <= \
+                            self.pioneer_b.y + 16:
+                        order_unit(self, sel, Pioneer)
+                    # Cancel last order
+                    elif self.cancel_b.x - 16 <= x <= \
+                            self.cancel_b.x + 16 and \
+                            self.cancel_b.y - 16 <= y <= \
+                            self.cancel_b.y + 16:
+                        self.cancel_prod()
+                elif sel in our_units:
+                    # Move
+                    if self.move_b.x - 16 <= x <= self.move_b.x + 16 and \
+                            self.move_b.y - 16 <= y <= self.move_b.y + 16:
+                        self.set_mouse_cursor(res.cursor_target)
+                        self.m_targeting_phase = True
+                        return
+                    # Stop
+                    if self.stop_b.x - 16 <= x <= self.stop_b.x + 16 and \
+                            self.stop_b.y - 16 <= y <= self.stop_b.y + 16:
+                        sel.stop()
+                        return
+                    # Attack
+                    if self.attack_b.x - 16 <= x <= self.attack_b.x + 16 \
+                            and self.attack_b.y - 16 <= y <= \
+                            self.attack_b.y + 16:
                         try:
-                            self.rp_spt.x = sel.rp_x
-                            self.rp_spt.y = sel.rp_y
+                            if sel.weapon_type != 'none':
+                                if sel.owner.name == 'p1':
+                                    self.set_mouse_cursor(
+                                        res.cursor_target)
+                                self.targeting_phase = True
                         except AttributeError:
                             pass
-                    elif button == mouse.RIGHT:
-                        # Rally point
-                        if sel in our_structs:
-                            if g_pos_coord_d[x, y] != sel:
-                                sel.rp_x = x
-                                sel.rp_y = y
-                                sel.default_rp = False
-                                self.rp_spt.x = x
-                                self.rp_spt.y = y
-                            else:
-                                sel.default_rp = True
-                                self.rp_spt.x = sel.x
-                                self.rp_spt.y = sel.y
-                            # print('Rally set to ({}, {})'.format(x, y))
-                        # A unit is selected
-                        else:
-                            if sel in our_units:
-                                if sel.dest_reached:
-                                    sel.move((x, y))
-                                # Movement interruption
-                                else:
-                                    sel.move_interd = True
-                                    sel.new_dest_x = x
-                                    sel.new_dest_y = y
-                                    # Refunding structures
-                                    try:
-                                        if sel.to_build:
-                                            sel.owner.min_c += sel.to_build.cost
-                                            self.update_min_c_label()
-                                    except AttributeError:
-                                        pass
-                                sel.has_target_p = False
-                                # Gathering
-                                if isinstance(sel, Pioneer):
-                                    if sel.path or is_melee_dist(sel, x, y):
-                                        sel.clear_task()
-                                        obj = g_pos_coord_d[(x, y)]
-                                        if isinstance(obj, Mineral):
-                                            sel.mineral_to_gather = obj
-                                            sel.task_x = obj.x
-                                            sel.task_y = obj.y
-                                            obj.workers.append(sel)
-                # Minimap
-                elif MM0X <= x <= MM0X + 100 and MM0Y <= y <= MM0Y + 100:
-                    if button == mouse.LEFT:
-                        # The viewport is 17x12 blocks. This +2 is
-                        # about 2 border pixels of the frame
-                        x -= 19 // 2
-                        y -= 14 // 2
-                        # print('x =', x, 'y =', y)
-                        lvb = (x - MM0X) * PS
-                        bvb = (y - MM0Y) * PS
-                        self.update_viewport()
-                    elif button == mouse.RIGHT:
-                        x = (x - MM0X) * PS
-                        y = (y - MM0Y) * PS
-                        x, y = round_coords(x, y)
-                        # A unit is sel
-                        unit_found = False
-                        for unit in our_units:
-                            if unit is sel:
-                                unit_found = True
-                                if unit.dest_reached:
-                                    unit.move((x, y))
-                                else:  # Movement interruption
-                                    unit.dest_x = unit.target_x
-                                    unit.dest_y = unit.target_y
-                                    unit.move_interd = True
-                                    unit.new_dest_x = x
-                                    unit.new_dest_y = y
-                        if not unit_found:
-                            if sel in our_structs:
-                                sel.rp_x = x
-                                sel.rp_y = y
-                                self.rp_spt.x = x
-                                self.rp_spt.y = y
-                                # print('Rally set to ({}, {})'.format(x, y))
-                # Control panel other
-                else:
-                    x, y = mc(x=x, y=y)
-                    w = self.menu_b.width
-                    h = self.menu_b.height
-                    if self.menu_b.x - w // 2 <= x <= \
-                            self.menu_b.x + w // 2 and \
-                            self.menu_b.y - h // 2 <= y <= \
-                            self.menu_b.y + h // 2:
-                        self.paused = True
                         return
-                    # Build units
-                    if sel in our_structs and not sel.under_constr:
-                        # Create defiler
-                        if self.defiler_b.x - 16 <= x <= \
-                                self.defiler_b.x + 16 and \
-                                self.defiler_b.y - 16 <= y <= \
-                                self.defiler_b.y + 16:
-                            order_unit(self, sel, Defiler)
-                        # Create centurion
-                        elif self.centurion_b.x - 16 <= x <= \
-                                self.centurion_b.x + 16 and \
-                                self.centurion_b.y - 16 <= y <= \
-                                self.centurion_b.y + 16:
-                            order_unit(self, sel, Centurion)
-                        # Create wyrm
-                        elif self.wyrm_b.x - 16 <= x <= \
-                                self.wyrm_b.x + 16 and \
-                                self.wyrm_b.y - 16 <= y <= \
-                                self.wyrm_b.y + 16:
-                            order_unit(self, sel, Wyrm)
-                        # Create apocalypse
-                        elif self.apocalypse_b.x - 16 <= x <= \
-                                self.apocalypse_b.x + 16 and \
-                                self.apocalypse_b.y - 16 <= y <= \
-                                self.apocalypse_b.y + 16:
-                            order_unit(self, sel, Apocalypse)
-                        # Create pioneer
-                        elif self.pioneer_b.x - 16 <= x <= \
-                                self.pioneer_b.x + 16 and \
-                                self.pioneer_b.y - 16 <= y <= \
-                                self.pioneer_b.y + 16:
-                            order_unit(self, sel, Pioneer)
-                        # Cancel last order
-                        elif self.cancel_b.x - 16 <= x <= \
-                                self.cancel_b.x + 16 and \
-                                self.cancel_b.y - 16 <= y <= \
-                                self.cancel_b.y + 16:
-                            self.cancel_prod()
-                    elif sel in our_units:
-                        # Move
-                        if self.move_b.x - 16 <= x <= self.move_b.x + 16 and \
-                                self.move_b.y - 16 <= y <= self.move_b.y + 16:
-                            self.set_mouse_cursor(res.cursor_target)
-                            self.m_targeting_phase = True
-                            return
-                        # Stop
-                        if self.stop_b.x - 16 <= x <= self.stop_b.x + 16 and \
-                                self.stop_b.y - 16 <= y <= self.stop_b.y + 16:
-                            sel.stop()
-                            return
-                        # Attack
-                        if self.attack_b.x - 16 <= x <= self.attack_b.x + 16 \
-                                and self.attack_b.y - 16 <= y <= \
-                                self.attack_b.y + 16:
-                            try:
-                                if sel.weapon_type != 'none':
-                                    if sel.owner.name == 'p1':
-                                        self.set_mouse_cursor(
-                                            res.cursor_target)
-                                    self.targeting_phase = True
-                            except AttributeError:
-                                pass
-                            return
-                        # Construct structures
-                        if isinstance(sel, Pioneer):
-                            if self.armory_icon.x - 16 <= x <= \
-                                    self.armory_icon.x + 16 and \
-                                    self.armory_icon.y - 16 <= y <= \
-                                    self.armory_icon.y + 16:
-                                self.to_build_spt.image = res.armory_img
-                                self.to_build_spt.color = (0, 255, 0)
-                                self.build_loc_sel_phase = True
-                                self.to_build = Armory
-                                self.to_build_spt.x, self.to_build_spt.y = x, y
-                            elif self.turret_icon.x - 16 <= x <= \
-                                    self.turret_icon.x + 16 and \
-                                    self.turret_icon.y - 16 <= y <= \
-                                    self.turret_icon.y + 16:
-                                self.to_build_spt.image = res.turret_icon_img
-                                self.to_build_spt.color = (0, 255, 0)
-                                self.build_loc_sel_phase = True
-                                self.to_build = Turret
-                                self.to_build_spt.x, self.to_build_spt.y = x, y
-                            elif self.mech_center_icon.x - 16 <= x <= \
-                                    self.mech_center_icon.x + 16 and \
-                                    self.mech_center_icon.y - 16 <= y <= \
-                                    self.mech_center_icon.y + 16:
-                                self.to_build_spt.image = res.mech_center_img
-                                self.to_build_spt.color = (0, 255, 0)
-                                self.build_loc_sel_phase = True
-                                self.to_build = MechCenter
-                                self.to_build_spt.x, self.to_build_spt.y = x, y
-        # Paused
-        else:
-            x, y = mc(x=x, y=y)
-            if self.options:
-                if self.fullscreen_c.x - 8 <= x <= self.fullscreen_c.x + 8 \
-                    and \
-                   self.fullscreen_c.y - 8 <= y <= self.fullscreen_c.y + 8:
-                    if self.fullscreen:
-                        self.set_fullscreen(False)
-                        self.fullscreen_c.check.visible = False
-                    else:
-                        self.set_fullscreen(True)
-                        self.fullscreen_c.check.visible = True
-                elif self.back_b.x - 25.5 <= x <= self.back_b.x + 25.5 and \
-                        self.back_b.y - 8 <= y <= self.back_b.y + 8:
-                    self.options = False
-            else:
-                if self.resume_b.x - 48 <= x <= self.resume_b.x + 48 and \
-                   self.resume_b.y - 8 <= y <= self.resume_b.y + 8:
-                    self.paused = False
-                elif self.options_b.x - 48 <= x <= self.options_b.x + 48 and \
-                     self.options_b.y - 8 <= y <= self.options_b.y + 8:
-                    self.options = True
-                elif self.exit_b.x - 48 <= x <= self.exit_b.x + 48 and \
-                     self.exit_b.y - 8 <= y <= self.exit_b.y + 8:
-                    sys.exit()
+                    # Construct structures
+                    if isinstance(sel, Pioneer):
+                        if self.armory_icon.x - 16 <= x <= \
+                                self.armory_icon.x + 16 and \
+                                self.armory_icon.y - 16 <= y <= \
+                                self.armory_icon.y + 16:
+                            self.to_build_spt.image = res.armory_img
+                            self.to_build_spt.color = (0, 255, 0)
+                            self.build_loc_sel_phase = True
+                            self.to_build = Armory
+                            self.to_build_spt.x, self.to_build_spt.y = x, y
+                        elif self.turret_icon.x - 16 <= x <= \
+                                self.turret_icon.x + 16 and \
+                                self.turret_icon.y - 16 <= y <= \
+                                self.turret_icon.y + 16:
+                            self.to_build_spt.image = res.turret_icon_img
+                            self.to_build_spt.color = (0, 255, 0)
+                            self.build_loc_sel_phase = True
+                            self.to_build = Turret
+                            self.to_build_spt.x, self.to_build_spt.y = x, y
+                        elif self.mech_center_icon.x - 16 <= x <= \
+                                self.mech_center_icon.x + 16 and \
+                                self.mech_center_icon.y - 16 <= y <= \
+                                self.mech_center_icon.y + 16:
+                            self.to_build_spt.image = res.mech_center_img
+                            self.to_build_spt.color = (0, 255, 0)
+                            self.build_loc_sel_phase = True
+                            self.to_build = MechCenter
+                            self.to_build_spt.x, self.to_build_spt.y = x, y
 
     def on_mouse_motion(self, x, y, dx, dy):
         if self.fullscreen:
             x /= 2
             y /= 2
-        if not self.paused and self.build_loc_sel_phase:
+        if self.build_loc_sel_phase:
             self.mouse_x = x
             self.mouse_y = y
             if self.to_build is MechCenter:
@@ -2318,112 +842,48 @@ class WorldEditor(pyglet.window.Window):
                 else:
                     self.to_build_spt.color = (0, 255, 0)
                     self.loc_clear = True
-        elif not self.paused:
-            # Hits
-            if isinstance(sel, MechCenter) and not sel.under_constr:
-                # Defiler
-                if CB_COORDS[0][0] - 16 <= x <= CB_COORDS[0][0] + \
-                    16 and CB_COORDS[0][1] - 16 <= y <= CB_COORDS[0][1] + 16:
-                    self.hint.image = res.hint_defiler
-                    self.hint.x = x + lvb
-                    self.hint.y = y + bvb
-                    self.show_hint = True
-                # Centurion
-                elif CB_COORDS[1][0] - 16 <= x <= CB_COORDS[1][0] + \
-                16 and CB_COORDS[1][1] - 16 <= y <= CB_COORDS[1][1] + 16:
-                    self.hint.image = res.hint_centurion
-                    self.hint.x = x + lvb
-                    self.hint.y = y + bvb
-                    self.show_hint = True
-                # Wyrm
-                elif CB_COORDS[2][0] - 16 <= x <= CB_COORDS[2][0] + \
-                16 and CB_COORDS[2][1] - 16 <= y <= CB_COORDS[2][1] + 16:
-                    self.hint.image = res.hint_wyrm
-                    self.hint.x = x + lvb
-                    self.hint.y = y + bvb
-                    self.show_hint = True
-                # Apocalypse
-                elif CB_COORDS[3][0] - 16 <= x <= CB_COORDS[3][0] + \
-                16 and CB_COORDS[3][1] - 16 <= y <= CB_COORDS[3][1] + 16:
-                    self.hint.image = res.hint_apocalypse
-                    self.hint.x = x + lvb
-                    self.hint.y = y + bvb
-                    self.show_hint = True
-                # Pioneer
-                elif CB_COORDS[4][0] - 16 <= x <= CB_COORDS[4][0] + \
-                16 and CB_COORDS[4][1] - 16 <= y <= CB_COORDS[4][1] + 16:
-                    self.hint.image = res.hint_pioneer
-                    self.hint.x = x + lvb
-                    self.hint.y = y + bvb
-                    self.show_hint = True
-                else:
-                    self.show_hint = False
-            elif isinstance(sel, Pioneer):
-                # Armory
-                if CB_COORDS[3][0] - 16 <= x <= CB_COORDS[3][0] + \
-                16 and CB_COORDS[3][1] - 16 <= y <= CB_COORDS[3][1] + 16:
-                    self.hint.image = res.hint_armory
-                    self.hint.x = x + lvb
-                    self.hint.y = y + bvb
-                    self.show_hint = True
-                    # Armory
-                elif CB_COORDS[4][0] - 16 <= x <= CB_COORDS[4][0] + \
-                16 and CB_COORDS[4][1] - 16 <= y <= CB_COORDS[4][1] + 16:
-                    self.hint.image = res.hint_turret
-                    self.hint.x = x + lvb
-                    self.hint.y = y + bvb
-                    self.show_hint = True
-                elif CB_COORDS[5][0] - 16 <= x <= CB_COORDS[5][0] + \
-                16 and CB_COORDS[5][1] - 16 <= y <= CB_COORDS[5][1] + 16:
-                    self.hint.image = res.hint_mech_center
-                    self.hint.x = x + lvb
-                    self.hint.y = y + bvb
-                    self.show_hint = True
-                else:
-                    self.show_hint = False
 
     def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
         global lvb, bvb
-        if not self.paused:
-            if self.fullscreen:
-                x /= 2
-                y /= 2
-                # dx /= 2
-                # dy /= 2
-            if not self.minimap_drugging:
-                # Game field + MMB
-                if x < SCREEN_W - 139 and buttons == 2:
-                    self.dx += dx * MMB_PAN_SPEED
-                    self.dy += dy * MMB_PAN_SPEED
-                    if abs(self.dx) >= PS:
-                        if self.dx < 0:
-                            lvb += PS
-                            self.update_viewport()
-                            self.dx -= self.dx
-                        else:
-                            lvb -= PS
-                            self.update_viewport()
-                            self.dx -= self.dx
-                    if abs(self.dy) >= PS:
-                        if self.dy < 0:
-                            bvb += PS
-                            self.update_viewport()
-                            self.dy -= self.dy
-                        else:
-                            bvb -= PS
-                            self.update_viewport()
-                            self.dy -= self.dy
-                # Minimap + LMB or RMB
-                elif MM0X <= x <= MM0X + 100 and MM0Y <= y <= MM0Y + 100 \
-                        and buttons == 1:
-                    self.minimap_drugging = True
-            # Minimap dragging
-            else:
-                # dx /= 2
-                # dy /= 2
-                lvb += dx * PS
-                bvb += dy * PS
-                self.update_viewport()
+        if self.fullscreen:
+            x /= 2
+            y /= 2
+            # dx /= 2
+            # dy /= 2
+        if not self.minimap_drugging:
+            # Game field + MMB
+            if x < SCREEN_W - 139 and buttons == 2:
+                self.dx += dx * MMB_PAN_SPEED
+                self.dy += dy * MMB_PAN_SPEED
+                if abs(self.dx) >= PS:
+                    if self.dx < 0:
+                        lvb += PS
+                        self.update_viewport()
+                        self.dx -= self.dx
+                    else:
+                        lvb -= PS
+                        self.update_viewport()
+                        self.dx -= self.dx
+                if abs(self.dy) >= PS:
+                    if self.dy < 0:
+                        bvb += PS
+                        self.update_viewport()
+                        self.dy -= self.dy
+                    else:
+                        bvb -= PS
+                        self.update_viewport()
+                        self.dy -= self.dy
+            # Minimap + LMB or RMB
+            elif MM0X <= x <= MM0X + 100 and MM0Y <= y <= MM0Y + 100 \
+                    and buttons == 1:
+                self.minimap_drugging = True
+        # Minimap dragging
+        else:
+            # dx /= 2
+            # dy /= 2
+            lvb += dx * PS
+            bvb += dy * PS
+            self.update_viewport()
 
     def on_mouse_release(self, x, y, button, modifiers):
         self.minimap_drugging = False
@@ -2450,8 +910,6 @@ class WorldEditor(pyglet.window.Window):
         for el in self.ui:
             el.x = el.org_x + lvb
             el.y = el.org_y + bvb
-        self.min_c_label.x = SCREEN_W - 180 + lvb
-        self.min_c_label.y = SCREEN_H - 20 + bvb
         self.sel_hp.x = CB_COORDS[1][0] - 15 + lvb
         self.sel_hp.y = SCREEN_H - 72 + bvb
         self.txt_out.x = SCREEN_W / 2 - 50 + lvb

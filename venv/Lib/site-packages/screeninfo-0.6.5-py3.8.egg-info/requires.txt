@@ -1,0 +1,5 @@
+dataclasses
+
+[:sys_platform == "darwin"]
+Cython
+pyobjus

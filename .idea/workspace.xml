@@ -20,6 +20,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8699b466-fa9b-4e8c-b41f-e5bbe759696d" name="Default Changelist" comment="Removed pyglet's Atlas border modifications (they fixed it)">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/world_editor.py" beforeDir="false" afterPath="$PROJECT_DIR$/world_editor.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -218,13 +219,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1566740526093</updated>
-    </task>
-    <task id="LOCAL-00257" summary="Victory and defeat txt_out">
-      <created>1587139491454</created>
-      <option name="number" value="00257" />
-      <option name="presentableId" value="LOCAL-00257" />
-      <option name="project" value="LOCAL" />
-      <updated>1587139491454</updated>
     </task>
     <task id="LOCAL-00258" summary="Victory and defeat txt_out">
       <created>1587139573243</created>
@@ -562,7 +556,14 @@
       <option name="project" value="LOCAL" />
       <updated>1594248316370</updated>
     </task>
-    <option name="localTasksCounter" value="306" />
+    <task id="LOCAL-00306" summary="Removed pyglet's Atlas border modifications (they fixed it)">
+      <created>1594248616161</created>
+      <option name="number" value="00306" />
+      <option name="presentableId" value="LOCAL-00306" />
+      <option name="project" value="LOCAL" />
+      <updated>1594248616161</updated>
+    </task>
+    <option name="localTasksCounter" value="307" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -688,22 +689,22 @@
       <screen x="0" y="0" width="1366" height="738" />
     </state>
     <state x="503" y="132" key="FileChooserDialogImpl/0.0.1366.738@0.0.1366.738" timestamp="1594241023744" />
-    <state width="1344" height="141" key="GridCell.Tab.0.bottom" timestamp="1594247281433">
+    <state width="1344" height="144" key="GridCell.Tab.0.bottom" timestamp="1594250482977">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="141" key="GridCell.Tab.0.bottom/0.0.1366.738@0.0.1366.738" timestamp="1594247281433" />
-    <state width="1344" height="141" key="GridCell.Tab.0.center" timestamp="1594247281433">
+    <state width="1344" height="144" key="GridCell.Tab.0.bottom/0.0.1366.738@0.0.1366.738" timestamp="1594250482977" />
+    <state width="1344" height="144" key="GridCell.Tab.0.center" timestamp="1594250482977">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="141" key="GridCell.Tab.0.center/0.0.1366.738@0.0.1366.738" timestamp="1594247281433" />
-    <state width="1344" height="141" key="GridCell.Tab.0.left" timestamp="1594247281433">
+    <state width="1344" height="144" key="GridCell.Tab.0.center/0.0.1366.738@0.0.1366.738" timestamp="1594250482977" />
+    <state width="1344" height="144" key="GridCell.Tab.0.left" timestamp="1594250482977">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="141" key="GridCell.Tab.0.left/0.0.1366.738@0.0.1366.738" timestamp="1594247281433" />
-    <state width="1344" height="141" key="GridCell.Tab.0.right" timestamp="1594247281433">
+    <state width="1344" height="144" key="GridCell.Tab.0.left/0.0.1366.738@0.0.1366.738" timestamp="1594250482977" />
+    <state width="1344" height="144" key="GridCell.Tab.0.right" timestamp="1594250482977">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="141" key="GridCell.Tab.0.right/0.0.1366.738@0.0.1366.738" timestamp="1594247281433" />
+    <state width="1344" height="144" key="GridCell.Tab.0.right/0.0.1366.738@0.0.1366.738" timestamp="1594250482977" />
     <state width="1344" height="201" key="GridCell.Tab.1.bottom" timestamp="1588039641489">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
