@@ -20,8 +20,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8699b466-fa9b-4e8c-b41f-e5bbe759696d" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/planet_eleven.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/planet_eleven.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_12_05_2020_06_38_[Default_Changelist]/shelved.patch" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_12_05_2020_06_38__Default_Changelist_.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/planet_eleven.py" beforeDir="false" afterPath="$PROJECT_DIR$/planet_eleven.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -38,7 +41,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="master" />
+        <entry key="$PROJECT_DIR$" value="0.3" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -53,11 +56,13 @@
   </component>
   <component name="PropertiesComponent">
     <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../networkTutrorial" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="restartRequiresConfirmation" value="false" />
     <property name="run.code.analysis.last.selected.profile" value="aDefault" />
-    <property name="settings.editor.selected.configurable" value="preferences.sourceCode" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="PyConsoleOptionsProvider">
     <option name="myPythonConsoleState">
@@ -217,13 +222,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1566740526093</updated>
-    </task>
-    <task id="LOCAL-00252" summary="building_spawn_unit optimised">
-      <created>1587117640107</created>
-      <option name="number" value="00252" />
-      <option name="presentableId" value="LOCAL-00252" />
-      <option name="project" value="LOCAL" />
-      <updated>1587117640108</updated>
     </task>
     <task id="LOCAL-00253" summary="building_spawn_unit optimised">
       <created>1587119223258</created>
@@ -561,7 +559,14 @@
       <option name="project" value="LOCAL" />
       <updated>1588022157251</updated>
     </task>
-    <option name="localTasksCounter" value="301" />
+    <task id="LOCAL-00301" summary="0.4">
+      <created>1589340581932</created>
+      <option name="number" value="00301" />
+      <option name="presentableId" value="LOCAL-00301" />
+      <option name="project" value="LOCAL" />
+      <updated>1589340581934</updated>
+    </task>
+    <option name="localTasksCounter" value="302" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -635,7 +640,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$" />
     </ignored-roots>
-    <MESSAGE value="ai()" />
     <MESSAGE value="Production icon bug fixed" />
     <MESSAGE value="Production bar bug fixed" />
     <MESSAGE value="Attack-move bug fixed" />
@@ -660,7 +664,8 @@
     <MESSAGE value="Phases fixed" />
     <MESSAGE value="Fixed workers not being able to gather minerals close to their spawn location" />
     <MESSAGE value="stop() stops mining" />
-    <option name="LAST_COMMIT_MESSAGE" value="stop() stops mining" />
+    <MESSAGE value="0.4" />
+    <option name="LAST_COMMIT_MESSAGE" value="0.4" />
   </component>
   <component name="WindowStateProjectService">
     <state x="137" y="23" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1588108050775">
@@ -675,34 +680,34 @@
       <screen x="0" y="0" width="1366" height="738" />
     </state>
     <state x="413" y="115" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1366.738@0.0.1366.738" timestamp="1587744144923" />
-    <state x="240" y="0" key="CommitChangelistDialog2" timestamp="1589340556203">
+    <state x="240" y="0" key="CommitChangelistDialog2" timestamp="1589340574517">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state x="240" y="0" key="CommitChangelistDialog2/0.0.1366.738@0.0.1366.738" timestamp="1589340556203" />
+    <state x="240" y="0" key="CommitChangelistDialog2/0.0.1366.738@0.0.1366.738" timestamp="1589340574517" />
     <state x="92" y="92" width="1182" height="554" key="DiffContextDialog" timestamp="1587826050284">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
     <state x="92" y="92" width="1182" height="554" key="DiffContextDialog/0.0.1366.738@0.0.1366.738" timestamp="1587826050284" />
-    <state x="462" y="109" key="FileChooserDialogImpl" timestamp="1588106968117">
+    <state x="503" y="132" key="FileChooserDialogImpl" timestamp="1594241023744">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state x="462" y="109" key="FileChooserDialogImpl/0.0.1366.738@0.0.1366.738" timestamp="1588106968117" />
-    <state width="1344" height="145" key="GridCell.Tab.0.bottom" timestamp="1589340439260">
+    <state x="503" y="132" key="FileChooserDialogImpl/0.0.1366.738@0.0.1366.738" timestamp="1594241023744" />
+    <state width="1344" height="297" key="GridCell.Tab.0.bottom" timestamp="1594242926589">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="145" key="GridCell.Tab.0.bottom/0.0.1366.738@0.0.1366.738" timestamp="1589340439260" />
-    <state width="1344" height="145" key="GridCell.Tab.0.center" timestamp="1589340439260">
+    <state width="1344" height="297" key="GridCell.Tab.0.bottom/0.0.1366.738@0.0.1366.738" timestamp="1594242926589" />
+    <state width="1344" height="297" key="GridCell.Tab.0.center" timestamp="1594242926589">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="145" key="GridCell.Tab.0.center/0.0.1366.738@0.0.1366.738" timestamp="1589340439260" />
-    <state width="1344" height="145" key="GridCell.Tab.0.left" timestamp="1589340439259">
+    <state width="1344" height="297" key="GridCell.Tab.0.center/0.0.1366.738@0.0.1366.738" timestamp="1594242926589" />
+    <state width="1344" height="297" key="GridCell.Tab.0.left" timestamp="1594242926588">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="145" key="GridCell.Tab.0.left/0.0.1366.738@0.0.1366.738" timestamp="1589340439259" />
-    <state width="1344" height="145" key="GridCell.Tab.0.right" timestamp="1589340439260">
+    <state width="1344" height="297" key="GridCell.Tab.0.left/0.0.1366.738@0.0.1366.738" timestamp="1594242926588" />
+    <state width="1344" height="297" key="GridCell.Tab.0.right" timestamp="1594242926589">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="145" key="GridCell.Tab.0.right/0.0.1366.738@0.0.1366.738" timestamp="1589340439260" />
+    <state width="1344" height="297" key="GridCell.Tab.0.right/0.0.1366.738@0.0.1366.738" timestamp="1594242926589" />
     <state width="1344" height="201" key="GridCell.Tab.1.bottom" timestamp="1588039641489">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
@@ -723,10 +728,10 @@
       <screen x="0" y="0" width="1366" height="738" />
     </state>
     <state x="506" y="70" key="RollbackChangesDialog/0.0.1366.738@0.0.1366.738" timestamp="1587743936819" />
-    <state x="184" y="0" key="SettingsEditor" timestamp="1588014512783">
+    <state x="252" y="0" key="SettingsEditor" timestamp="1594243222072">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state x="184" y="0" key="SettingsEditor/0.0.1366.738@0.0.1366.738" timestamp="1588014512783" />
+    <state x="252" y="0" key="SettingsEditor/0.0.1366.738@0.0.1366.738" timestamp="1594243222072" />
     <state width="498" height="446" key="SwitcherDM" timestamp="1586675087110">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
@@ -735,10 +740,10 @@
       <screen x="0" y="0" width="1366" height="738" />
     </state>
     <state x="92" y="92" width="1182" height="554" key="VCS.FileHistoryDialog/0.0.1366.738@0.0.1366.738" timestamp="1587744110719" />
-    <state x="275" y="101" key="Vcs.Push.Dialog.v2" timestamp="1588018057177">
+    <state x="275" y="101" key="Vcs.Push.Dialog.v2" timestamp="1589340583636">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state x="275" y="101" key="Vcs.Push.Dialog.v2/0.0.1366.738@0.0.1366.738" timestamp="1588018057177" />
+    <state x="275" y="101" key="Vcs.Push.Dialog.v2/0.0.1366.738@0.0.1366.738" timestamp="1589340583636" />
     <state x="92" y="92" width="1182" height="554" maximized="true" key="com.intellij.history.integration.ui.views.FileHistoryDialog" timestamp="1587853253335">
       <screen x="0" y="0" width="1366" height="738" />
     </state>

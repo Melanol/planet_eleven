@@ -1,17 +1,6 @@
 import os
 
 from pyglet.gl import *
-from pyglet.image.atlas import TextureAtlas
-
-
-class BorderedTextureAtlas(TextureAtlas):
-    def add(self, img):
-        x, y = self.allocator.alloc(img.width+2, img.height+2)
-        self.texture.blit_into(img, x+1, y+1, 0)
-        return self.texture.get_region(x+1, y+1, img.width, img.height)
-
-
-pyglet.image.atlas.TextureAtlas = BorderedTextureAtlas
 
 
 def center_load(_str):
