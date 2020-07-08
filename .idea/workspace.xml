@@ -19,12 +19,10 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8699b466-fa9b-4e8c-b41f-e5bbe759696d" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/planet_eleven.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/planet_eleven.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_12_05_2020_06_38_[Default_Changelist]/shelved.patch" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_12_05_2020_06_38__Default_Changelist_.xml" beforeDir="false" />
+    <list default="true" id="8699b466-fa9b-4e8c-b41f-e5bbe759696d" name="Default Changelist" comment="Removed pyglet's Atlas border modifications (they fixed it)">
+      <change afterPath="$PROJECT_DIR$/world_editor.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/todo.rtf" beforeDir="false" afterPath="$PROJECT_DIR$/docs/todo.rtf" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -85,28 +83,7 @@
       <recent name="D:\PycharmProjects\planet_eleven" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.planet_eleven">
-    <configuration name="bb_enemy_detection" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="planet_eleven" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="D:\PycharmProjects\planet_eleven\bb_enemy_detection.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
+  <component name="RunManager" selected="Python.world_editor">
     <configuration name="long_line_finder" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="planet_eleven" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -191,20 +168,41 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="world_editor" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="planet_eleven" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/world_editor.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <list>
-      <item itemvalue="Python.bb_enemy_detection" />
       <item itemvalue="Python.long_line_finder" />
       <item itemvalue="Python.planet_eleven" />
       <item itemvalue="Python.shadow_n_icon_maker" />
       <item itemvalue="Python.test" />
+      <item itemvalue="Python.world_editor" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.world_editor" />
         <item itemvalue="Python.planet_eleven" />
         <item itemvalue="Python.test" />
         <item itemvalue="Python.shadow_n_icon_maker" />
         <item itemvalue="Python.long_line_finder" />
-        <item itemvalue="Python.bb_enemy_detection" />
       </list>
     </recent_temporary>
   </component>
@@ -222,27 +220,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1566740526093</updated>
-    </task>
-    <task id="LOCAL-00253" summary="building_spawn_unit optimised">
-      <created>1587119223258</created>
-      <option name="number" value="00253" />
-      <option name="presentableId" value="LOCAL-00253" />
-      <option name="project" value="LOCAL" />
-      <updated>1587119223259</updated>
-    </task>
-    <task id="LOCAL-00254" summary="cancel_prod()">
-      <created>1587130464845</created>
-      <option name="number" value="00254" />
-      <option name="presentableId" value="LOCAL-00254" />
-      <option name="project" value="LOCAL" />
-      <updated>1587130464846</updated>
-    </task>
-    <task id="LOCAL-00255" summary="cancel_prod()">
-      <created>1587130474019</created>
-      <option name="number" value="00255" />
-      <option name="presentableId" value="LOCAL-00255" />
-      <option name="project" value="LOCAL" />
-      <updated>1587130474019</updated>
     </task>
     <task id="LOCAL-00256" summary="Victory and defeat txt_out">
       <created>1587131522967</created>
@@ -566,7 +543,28 @@
       <option name="project" value="LOCAL" />
       <updated>1589340581934</updated>
     </task>
-    <option name="localTasksCounter" value="302" />
+    <task id="LOCAL-00302" summary="Removed pyglet's Atlas border modifications (they fixed it)">
+      <created>1594243360326</created>
+      <option name="number" value="00302" />
+      <option name="presentableId" value="LOCAL-00302" />
+      <option name="project" value="LOCAL" />
+      <updated>1594243360327</updated>
+    </task>
+    <task id="LOCAL-00303" summary="Removed pyglet's Atlas border modifications (they fixed it)">
+      <created>1594243437113</created>
+      <option name="number" value="00303" />
+      <option name="presentableId" value="LOCAL-00303" />
+      <option name="project" value="LOCAL" />
+      <updated>1594243437114</updated>
+    </task>
+    <task id="LOCAL-00304" summary="Removed pyglet's Atlas border modifications (they fixed it)">
+      <created>1594243444561</created>
+      <option name="number" value="00304" />
+      <option name="presentableId" value="LOCAL-00304" />
+      <option name="project" value="LOCAL" />
+      <updated>1594243444561</updated>
+    </task>
+    <option name="localTasksCounter" value="305" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -640,7 +638,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$" />
     </ignored-roots>
-    <MESSAGE value="Production icon bug fixed" />
     <MESSAGE value="Production bar bug fixed" />
     <MESSAGE value="Attack-move bug fixed" />
     <MESSAGE value="Construction mid-block bug fixed" />
@@ -665,7 +662,8 @@
     <MESSAGE value="Fixed workers not being able to gather minerals close to their spawn location" />
     <MESSAGE value="stop() stops mining" />
     <MESSAGE value="0.4" />
-    <option name="LAST_COMMIT_MESSAGE" value="0.4" />
+    <MESSAGE value="Removed pyglet's Atlas border modifications (they fixed it)" />
+    <option name="LAST_COMMIT_MESSAGE" value="Removed pyglet's Atlas border modifications (they fixed it)" />
   </component>
   <component name="WindowStateProjectService">
     <state x="137" y="23" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1588108050775">
@@ -692,22 +690,22 @@
       <screen x="0" y="0" width="1366" height="738" />
     </state>
     <state x="503" y="132" key="FileChooserDialogImpl/0.0.1366.738@0.0.1366.738" timestamp="1594241023744" />
-    <state width="1344" height="297" key="GridCell.Tab.0.bottom" timestamp="1594242926589">
+    <state width="1344" height="141" key="GridCell.Tab.0.bottom" timestamp="1594247281433">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="297" key="GridCell.Tab.0.bottom/0.0.1366.738@0.0.1366.738" timestamp="1594242926589" />
-    <state width="1344" height="297" key="GridCell.Tab.0.center" timestamp="1594242926589">
+    <state width="1344" height="141" key="GridCell.Tab.0.bottom/0.0.1366.738@0.0.1366.738" timestamp="1594247281433" />
+    <state width="1344" height="141" key="GridCell.Tab.0.center" timestamp="1594247281433">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="297" key="GridCell.Tab.0.center/0.0.1366.738@0.0.1366.738" timestamp="1594242926589" />
-    <state width="1344" height="297" key="GridCell.Tab.0.left" timestamp="1594242926588">
+    <state width="1344" height="141" key="GridCell.Tab.0.center/0.0.1366.738@0.0.1366.738" timestamp="1594247281433" />
+    <state width="1344" height="141" key="GridCell.Tab.0.left" timestamp="1594247281433">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="297" key="GridCell.Tab.0.left/0.0.1366.738@0.0.1366.738" timestamp="1594242926588" />
-    <state width="1344" height="297" key="GridCell.Tab.0.right" timestamp="1594242926589">
+    <state width="1344" height="141" key="GridCell.Tab.0.left/0.0.1366.738@0.0.1366.738" timestamp="1594247281433" />
+    <state width="1344" height="141" key="GridCell.Tab.0.right" timestamp="1594247281433">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="297" key="GridCell.Tab.0.right/0.0.1366.738@0.0.1366.738" timestamp="1594242926589" />
+    <state width="1344" height="141" key="GridCell.Tab.0.right/0.0.1366.738@0.0.1366.738" timestamp="1594247281433" />
     <state width="1344" height="201" key="GridCell.Tab.1.bottom" timestamp="1588039641489">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
@@ -740,14 +738,18 @@
       <screen x="0" y="0" width="1366" height="738" />
     </state>
     <state x="92" y="92" width="1182" height="554" key="VCS.FileHistoryDialog/0.0.1366.738@0.0.1366.738" timestamp="1587744110719" />
-    <state x="275" y="101" key="Vcs.Push.Dialog.v2" timestamp="1589340583636">
+    <state x="275" y="101" key="Vcs.Push.Dialog.v2" timestamp="1594243485426">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state x="275" y="101" key="Vcs.Push.Dialog.v2/0.0.1366.738@0.0.1366.738" timestamp="1589340583636" />
+    <state x="275" y="101" key="Vcs.Push.Dialog.v2/0.0.1366.738@0.0.1366.738" timestamp="1594243485426" />
     <state x="92" y="92" width="1182" height="554" maximized="true" key="com.intellij.history.integration.ui.views.FileHistoryDialog" timestamp="1587853253335">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
     <state x="92" y="92" width="1182" height="554" maximized="true" key="com.intellij.history.integration.ui.views.FileHistoryDialog/0.0.1366.738@0.0.1366.738" timestamp="1587853253335" />
+    <state x="507" y="102" key="com.intellij.openapi.vcs.changes.SpecificFilesViewDialog" timestamp="1594243286945">
+      <screen x="0" y="0" width="1366" height="738" />
+    </state>
+    <state x="507" y="102" key="com.intellij.openapi.vcs.changes.SpecificFilesViewDialog/0.0.1366.738@0.0.1366.738" timestamp="1594243286945" />
     <state x="492" y="282" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1586937427759">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
