@@ -83,6 +83,245 @@ class Player:
         self.min_c = 5000
         self.name = name
 
+entities = []
+class Entity(Sprite):
+    def __init__(self, name, x, y, batch):
+        entities.append(self)
+        self.name = name
+        super().__init__(res.mineral, x, y, batch=batch)
+
+def build_structure(game_inst, struct, x, y):
+    struct(game_inst, x, y, skip_constr=True)
+
+class Struct(Sprite):
+    """This is what I call buildings. __init__ == spawn()"""
+
+    def __init__(self, game_inst, owner, img, team_color_img, icon, vision_rad,
+                 hp, x, y, width):
+        self.owner = owner
+        self.team_color = Sprite(team_color_img, x, y,
+                                 batch=ground_team_color_batch)
+        self.team_color.visible = False
+        self.icon = icon
+        if width == 1:
+            self.coords = ((x, y),)
+        else:
+            self.coords = ((x - PS/2, y + PS/2), (x + PS/2, y + PS/2),
+                           (x - PS/2, y - PS/2), (x + PS/2, y - PS/2))
+        if owner.name == "p1":
+            self.team_color.color = OUR_TEAM_COLOR
+            our_structs.append(self)
+            minimap_pixel = res.mm_our_img
+        else:
+            self.team_color.color = ENEMY_TEAM_COLOR
+            enemy_structs.append(self)
+            minimap_pixel = res.mm_enemy_img
+        super().__init__(img, x, y, batch=structures_batch)
+        self.completed_image = img
+        self.game_inst = game_inst
+        self.max_hp = hp
+        self.hp = hp
+        if self.width / 32 % 2 == 1:
+            d = self.width / PS // 2 * PS
+            n = self.width // PS
+            width = 1
+        else:
+            n = int(self.width / PS // 2)
+            d = self.width / PS // 2 * PS - PS / 2
+            width = 2
+        # print('d =', d, 'n =', n, 'width =', width)
+        x -= d
+        y -= d
+        self.blocks = [(x, y)]
+        for _ in range(n):
+            for _ in range(width):
+                self.blocks.append((x, y))
+                g_pos_coord_d[(x, y)] = self
+                x += PS
+            x -= PS
+            for _ in range(width - 1):
+                y += PS
+                self.blocks.append((x, y))
+                g_pos_coord_d[(x, y)] = self
+            for _ in range(width - 1):
+                x -= PS
+                self.blocks.append((x, y))
+                g_pos_coord_d[(x, y)] = self
+            for _ in range(width - 2):
+                self.blocks.append((x, y))
+                g_pos_coord_d[(x, y)] = self
+                y -= PS
+            width += 2
+        self.default_rp = True
+        self.attackers = []
+
+        pixel_minimap_coords = to_minimap(self.x, self.y)
+        self.pixel = Sprite(img=minimap_pixel,
+                            x=pixel_minimap_coords[0],
+                            y=pixel_minimap_coords[1],
+                            batch=minimap_pixels_batch)
+
+    def kill(self, delay_del=False):
+        global our_structs, enemy_structs
+        for block in self.blocks:
+            g_pos_coord_d[(block[0], block[1])] = None
+        self.team_color.delete()
+        self.pixel.delete()
+        if not delay_del:
+            for arr in (our_structs, enemy_structs, prod_structs):
+                try:
+                    arr.remove(self)
+                except ValueError:
+                    pass
+        for attacker in self.attackers:
+            attacker.has_target_p = False
+        try:
+            self.anim.delete()
+        except AttributeError:
+            pass
+        Explosion(self.x, self.y, self.width / PS / 2)
+        self.delete()
+
+    def constr_complete(self):
+        self.under_constr = False
+        self.image = self.completed_image
+        self.team_color.visible = True
+
+
+class ProductionStruct:
+    def ps_init(self):
+        prod_structs.append(self)
+        self.rp_x = self.x
+        self.rp_y = self.y
+        self.prod_q = []
+        self.cur_max_prod_time = None
+        self.prod_complete = True
+        self.prod_start_f = 0
+
+
+class GuardianStructure:
+    def gs_init(self, skip_constr):
+        if not skip_constr:
+            guardian_dummies.append(self)
+            self.image = res.constr_dummy_anim
+            self.constr_f = self.game_inst.f
+            self.under_constr = True
+        else:
+            self.constr_complete()
+
+
+class Armory(Struct, GuardianStructure):
+    cost = 200
+    build_time = 600
+
+    def __init__(self, game_inst, x, y, owner=None, skip_constr=False):
+        if owner is None:
+            owner = game_inst.this_player
+        super().__init__(game_inst, owner, res.armory_img,
+                         res.armory_team_color, res.armory_icon_img,
+                         vision_rad=2,  hp=100, x=x, y=y, width=1)
+        super().gs_init(skip_constr)
+        self.cbs = None
+
+
+class MechCenter(Struct, ProductionStruct, GuardianStructure):
+    cost = 500
+    build_time = 1000
+
+    def __init__(self, game_inst, x, y, owner=None, skip_constr=False):
+        if owner is None:
+            owner = game_inst.this_player
+        super().__init__(game_inst, owner, res.mech_center_img,
+                         res.mech_center_team_color, res.mech_center_icon_img,
+                         x=x, y=y, hp=1500, vision_rad=4, width=2)
+        super().ps_init()
+        super().gs_init(skip_constr)
+        self.cbs = [game_inst.defiler_b, game_inst.centurion_b,
+                    game_inst.wyrm_b, game_inst.apocalypse_b,
+                    game_inst.pioneer_b, game_inst.cancel_b]
+        self.is_big = True
+        if owner.name == 'p1':
+            self.anim = Sprite(img=res.anim, x=x, y=y, batch=ground_units_batch)
+        else:
+            self.anim = Sprite(img=res.anim_enemy, x=x, y=y,
+                               batch=ground_units_batch)
+        self.anim.visible = False
+
+
+class OffensiveStruct(Struct):
+    def __init__(self, game_inst, owner, img, team_color, icon, vision_rad, hp,
+                 x, y, damage, cooldown, width):
+        super().__init__(game_inst, owner, img, team_color, icon, vision_rad,
+                         hp, x, y, width)
+        self.damage = damage
+        self.attack_rad = vision_rad
+        self.target_x = None
+        self.target_y = None
+        self.cooldown = cooldown
+        self.on_cooldown = False
+        self.cooldown_started = None
+        offensive_structs.append(self)
+        self.projectile_sprite = res.laser_img
+        self.projectile_speed = 5
+        self.has_target_p = False
+        self.target_p = None
+        self.target_p_x = None
+        self.target_p_y = None
+        self.attacks_ground = True
+        self.attacks_air = True
+
+    def shoot(self, f):
+        global projectiles
+        projectile = Projectile(self.x, self.y, self.target_p.x,
+                                self.target_p.y, self.damage,
+                                self.projectile_speed, self.target_p,
+                                res.plasma_anim)
+        x_diff = self.target_p.x - self.x
+        y_diff = self.target_p.y - self.y
+        self.on_cooldown = True
+        self.cooldown_started = f
+        projectiles.append(projectile)
+
+    def kill(self, delay_del=False):
+        global g_pos_coord_d, our_structs, enemy_structs
+        g_pos_coord_d[(self.x, self.y)] = None
+        self.pixel.delete()
+        for attacker in self.attackers:
+            attacker.has_target_p = False
+        if not delay_del:
+            if self.owner.name == 'p1':
+                del our_structs[our_structs.index(self)]
+            else:
+                del enemy_structs[enemy_structs.index(self)]
+        del offensive_structs[offensive_structs.index(self)]
+        self.plasma_spt.delete()
+        self.team_color.delete()
+        Explosion(self.x, self.y, self.width / PS / 2)
+        self.delete()
+
+
+class Turret(OffensiveStruct, GuardianStructure):
+    cost = 150
+    build_time = 1200
+
+    def __init__(self, game_inst, x, y, owner=None, skip_constr=False):
+        if owner is None:
+            owner = game_inst.this_player
+        super().__init__(game_inst, owner, res.turret_img,
+                         res.turret_team_color, res.turret_icon_img,
+                         vision_rad=5,
+                         hp=100, x=x, y=y, damage=20, cooldown=60, width=1)
+        super().gs_init(skip_constr)
+        self.cbs = None
+
+    def constr_complete(self):
+        self.under_constr = False
+        self.image = self.completed_image
+        self.team_color.visible = True
+
+        self.plasma_spt = Sprite(res.plasma_anim, self.x, self.y,
+                                 batch=ground_units_batch)
+
 
 class WorldEditor(pyglet.window.Window):
     def __init__(self, width, height, title):
@@ -93,12 +332,13 @@ class WorldEditor(pyglet.window.Window):
         super().__init__(width, height, title, config=conf)
         self.set_mouse_cursor(res.cursor)
         self.ui = []
+        self.this_player = Player("p1")
+        self.computer = Player("c1")
         self.mouse_x = 0
         self.mouse_y = 0
         self.show_hint = False
         self.menu_bg = UI(self, res.menu_bg, 0, 0)
         self.options = False
-        self.cbs_2_render = None
         self.f = 0
         self.dx = 0
         self.dy = 0
@@ -156,6 +396,9 @@ class WorldEditor(pyglet.window.Window):
                                CB_COORDS[3][0], CB_COORDS[3][1])
         self.pioneer_b = UI(self, res.pioneer_img, CB_COORDS[4][0],
                             CB_COORDS[4][1])
+        self.cbs_2_render = [self.armory_icon, self.turret_icon]
+        self.to_build_spt = Sprite(img=res.armory_img, x=-100, y=-100)
+        self.to_build_spt.color = (0, 255, 0)
 
     def on_draw(self):
         """
@@ -233,173 +476,8 @@ class WorldEditor(pyglet.window.Window):
                 self.set_fullscreen(False)
             else:
                 self.set_fullscreen(True)
-        if not self.paused:
-            if symbol is key.F1:
-                if not self.show_fps:
-                    self.show_fps = True
-                else:
-                    self.show_fps = False
-            elif symbol is key.F2:
-                self.save()
-            elif symbol is key.F3:
-                self.load()
-            elif symbol is key.F4:
-                # Removes FOW
-                self.npa[:, :, 3] = 0
-                self.mm_fow_ImageData.set_data('RGBA',
-                    self.mm_fow_ImageData.width * 4, data=self.npa.tobytes())
-            elif symbol is key.F5:
-                self.this_player.min_c = 99999
-                self.update_min_c_label()
-            elif symbol is key.F6:
-                self.this_player.min_c = 0
-                self.update_min_c_label()
-            elif symbol is key.F7:
-                print('type(sel) =', type(sel))
-            elif symbol is key.DELETE:
-                # Kill entity
-                if sel in our_units:
-                    sel.kill()
-                    if sel.flying:
-                        a_pos_coord_d[(self.sel_spt.x, self.sel_spt.y)] = None
-                    else:
-                        g_pos_coord_d[(self.sel_spt.x, self.sel_spt.y)] = None
-                    sel = None
-                elif sel in our_structs:
-                    sel.kill()
-                    sel = None
-            elif symbol is key.ESCAPE:
-                # Cancel command
-                self.build_loc_sel_phase = False
-                self.targeting_phase = False
-                self.m_targeting_phase = False
-                self.set_mouse_cursor(res.cursor)
-            elif symbol is key.LEFT:
-                lvb -= PS
-                self.update_viewport()
-            elif symbol is key.RIGHT:
-                lvb += PS
-                self.update_viewport()
-            elif symbol is key.DOWN:
-                bvb -= PS
-                self.update_viewport()
-            elif symbol is key.UP:
-                bvb += PS
-                self.update_viewport()
-            elif symbol is key.Q:
-                # Move
-                if sel in our_units and sel.owner.name == "p1":
-                    self.set_mouse_cursor(res.cursor_target)
-                    self.m_targeting_phase = True
-                    return
-                # Build defiler
-                elif isinstance(sel, MechCenter):
-                    order_unit(self, sel, Defiler)
-            elif symbol is key.W:
-                # Stop
-                if sel in our_units:
-                    sel.stop()
-                # Build centurion
-                elif isinstance(sel, MechCenter):
-                    order_unit(self, sel, Centurion)
-            elif symbol is key.E:
-                # Attack move
-                if sel in our_units:
-                    try:
-                        if sel.weapon_type != 'none':
-                            if sel.owner.name == 'p1':
-                                self.set_mouse_cursor(res.cursor_target)
-                            self.targeting_phase = True
-                    except AttributeError:
-                        pass
-                # Build wyrm
-                elif isinstance(sel, MechCenter):
-                    order_unit(self, sel, Wyrm)
-            elif symbol is key.A:
-                # Build armory
-                if isinstance(sel, Pioneer):
-                    self.to_build_spt.image = res.armory_img
-                    self.to_build = Armory
-                    self.hotkey_constr_cur_1b()
-                # Build apocalypse
-                elif isinstance(sel, MechCenter):
-                    order_unit(self, sel, Apocalypse)
-            elif symbol is key.S:
-                # Build turret
-                if isinstance(sel, Pioneer):
-                    self.to_build_spt.image = res.turret_icon_img
-                    self.to_build = Turret
-                    self.hotkey_constr_cur_1b()
-                # Build pioneer
-                elif isinstance(sel, MechCenter):
-                    order_unit(self, sel, Pioneer)
-            elif symbol is key.D:
-                # Build mech center
-                if isinstance(sel, Pioneer):
-                    self.to_build_spt.image = res.mech_center_img
-                    self.build_loc_sel_phase = True
-                    self.to_build = MechCenter
-                    x, y = win32api.GetCursorPos()
-                    x, y = x / 2, y / 2
-                    y = SCREEN_H - y
-                    x, y = mc(x=x, y=y)
-                    x, y = round_coords(x, y)
-                    s_x = int((x - 16) / 32) + 1
-                    s_y = int((y - 16) / 32) + 1
-                    s_coords_to_check = [(s_x, s_y), (s_x + 1, s_y),
-                                         (s_x + 1, s_y + 1), (s_x, s_y + 1)]
-                    no_place = False
-                    for c in s_coords_to_check:
-                        if self.npa[c[1], c[0], 3] != 0:
-                            no_place = True
-                            break
-                    if no_place is False:
-                        coords_to_check = [(x, y), (x + PS, y),
-                                           (x + PS, y + PS), (x, y + PS)]
-                        for c in coords_to_check:
-                            if g_pos_coord_d[c[0], c[1]]:
-                                no_place = True
-                                break
-                    if no_place:
-                        self.to_build_spt.color = (255, 0, 0)
-                        self.loc_clear = False
-                    else:
-                        self.loc_clear = True
-                        self.to_build_spt.color = (0, 255, 0)
-                    x += PS / 2
-                    y += PS / 2
-                    self.to_build_spt.x, self.to_build_spt.y = x, y
-            elif symbol is key.C:
-                self.cancel_prod()
-            elif symbol is key.X:
-                # Deletes all our units on the screen
-                coords_to_delete = []
-                yi = bvb + PS // 2
-                for y in range(yi, yi + 12 * PS, PS):
-                    xi = lvb + PS // 2
-                    for x in range(xi, xi + 17 * PS, PS):
-                        coords_to_delete.append((x, y))
-                for coord in coords_to_delete:
-                    for unit in our_units:
-                        if g_pos_coord_d[coord[0], coord[1]] is unit:
-                            unit.kill()
-            elif symbol is key.Z:
-                # Fills the entire map with wyrms
-                i = 0
-                for _key, value in g_pos_coord_d.items():
-                    if i % 1 == 0:
-                        if value is None:
-                            unit = Wyrm(self, _key[0], _key[1])
-                            unit.spawn()
-                    i += 1
-            elif symbol is key.V:
-                pass
-                # print(lvb, bvb)
-                # print(lvb % 32 == 0, bvb % 32 == 0)
-        # Menu
-        else:
-            if symbol is key.ESCAPE:
-                self.paused = False
+        elif symbol is key.H:
+            print(structures_batch._draw_list)
 
     def on_mouse_press(self, x, y, button, modifiers):
         """Don't play with mc(), globals"""
@@ -415,143 +493,12 @@ class WorldEditor(pyglet.window.Window):
                 x, y = round_coords(x, y)
                 if button == mouse.LEFT:
                     if self.loc_clear:
-                        order_structure(self, sel, self.to_build, x, y)
+                        build_structure(self, self.to_build, x, y)
                         self.build_loc_sel_phase = False
                 elif button == mouse.RIGHT:
                     self.build_loc_sel_phase = False
-        # Movement target selection phase
-        elif self.m_targeting_phase:
-            if button == mouse.LEFT:
-                x, y = mc(x=x, y=y)
-                # Game field
-                if x < mc(x=SCREEN_W) - 139:
-                    pass
-                # Minimap
-                elif MM0X <= x <= MM0X + 100 and MM0Y <= y <= MM0Y + 100:
-                    x = (x - MM0X) * PS
-                    y = (y - MM0Y) * PS
-                else:
-                    return
-                x, y = round_coords(x, y)
-                if sel.dest_reached:
-                    sel.move((x, y))
-                # Movement interruption
-                else:
-                    sel.move_interd = True
-                    sel.new_dest_x = x
-                    sel.new_dest_y = y
-                sel.has_target_p = False
-                self.m_targeting_phase = False
-                self.set_mouse_cursor(res.cursor)
-            else:
-                self.m_targeting_phase = False
-                self.set_mouse_cursor(res.cursor)
-        # Targeting phase
-        elif self.targeting_phase:
-            if button == mouse.LEFT:
-                x, y = mc(x=x, y=y)
-                # Game field
-                if x < mc(x=SCREEN_W) - 139:
-                    x, y = round_coords(x, y)
-                    # On-entity attack command
-                    target_p_found = False
-                    if sel.attacks_air:
-                        target_p = a_pos_coord_d[(x, y)]
-                        if target_p and target_p != sel:
-                            target_p_found = True
-                            sel.has_target_p = True
-                            sel.target_p = target_p
-                            sel.target_p_x = x
-                            sel.target_p_y = y
-                            target_p.attackers.append(sel)
-                            # Too far
-                            closest_coord = None
-                            closest_d = 10000
-                            for coord in target_p.coords:
-                                d = ((sel.x-target_p.x) ** 2
-                                + (sel.y-target_p.y) ** 2) ** 0.5
-                                if d < closest_d:
-                                    closest_coord = coord
-                                    closest_d = d
-                            if sel.attack_rad * PS < closest_d:
-                                closest_d = 10000
-                                for coords in rad_clipped[sel.attack_rad]:
-                                    _x = coords[0]*32 + closest_coord[0]
-                                    _y = coords[1]*32 + closest_coord[1]
-                                    d = ((sel.x-_x) ** 2
-                                        + (sel.y-_y) ** 2) ** 0.5
-                                    if d < closest_d:
-                                        closest_d = d
-                                        x, y = _x, _y
-                                sel.move((x, y))
-                                self.targeting_phase = False
-                                self.set_mouse_cursor(res.cursor)
-                                return
-                    if not target_p_found and sel.attacks_ground:
-                        target_p = g_pos_coord_d[(x, y)]
-                        if target_p and target_p != sel:
-                            sel.has_target_p = True
-                            sel.target_p = target_p
-                            sel.target_p_x = x
-                            sel.target_p_y = y
-                            target_p.attackers.append(sel)
-                            # Too far
-                            closest_coord = None
-                            closest_d = 10000
-                            for coord in target_p.coords:
-                                d = ((sel.x-target_p.x) ** 2
-                                + (sel.y-target_p.y) ** 2) ** 0.5
-                                if d < closest_d:
-                                    closest_coord = coord
-                                    closest_d = d
-                            if sel.attack_rad * PS < closest_d:
-                                closest_d = 10000
-                                for coords in rad_clipped[sel.attack_rad]:
-                                    _x = coords[0]*32 + closest_coord[0]
-                                    _y = coords[1]*32 + closest_coord[1]
-                                    d = ((sel.x-_x) ** 2
-                                        + (sel.y-_y) ** 2) ** 0.5
-                                    if d < closest_d:
-                                        closest_d = d
-                                        x, y = _x, _y
-                                sel.move((x, y))
-                                self.targeting_phase = False
-                                self.set_mouse_cursor(res.cursor)
-                                return
-
-                    sel.attack_moving = True
-                    if sel.dest_reached:
-                        sel.move((x, y))
-                    # Movement interruption
-                    else:
-                        sel.move_interd = True
-                        sel.new_dest_x = x
-                        sel.new_dest_y = y
-                    self.targeting_phase = False
-                    self.set_mouse_cursor(res.cursor)
-                # Minimap
-                elif MM0X <= x <= MM0X + 100 and MM0Y <= y <= MM0Y + 100:
-                    x = (x - MM0X) * PS
-                    y = (y - MM0Y) * PS
-                    x, y = round_coords(x, y)
-                    sel.attack_moving = True
-                    if sel.dest_reached:
-                        sel.move((x, y))
-                    # Movement interruption
-                    else:
-                        sel.move_interd = True
-                        sel.new_dest_x = x
-                        sel.new_dest_y = y
-                    self.targeting_phase = False
-                    self.set_mouse_cursor(res.cursor)
-                else:
-                    return
-            else:
-                self.targeting_phase = False
-                self.set_mouse_cursor(res.cursor)
         # Normal phase
         else:
-            self.show_hint = False  # Fixes a bug with hints
             # Game field
             if x < SCREEN_W - 139:
                 x, y = round_coords(x, y)
@@ -613,47 +560,7 @@ class WorldEditor(pyglet.window.Window):
                     except AttributeError:
                         pass
                 elif button == mouse.RIGHT:
-                    # Rally point
-                    if sel in our_structs:
-                        if g_pos_coord_d[x, y] != sel:
-                            sel.rp_x = x
-                            sel.rp_y = y
-                            sel.default_rp = False
-                            self.rp_spt.x = x
-                            self.rp_spt.y = y
-                        else:
-                            sel.default_rp = True
-                            self.rp_spt.x = sel.x
-                            self.rp_spt.y = sel.y
-                        # print('Rally set to ({}, {})'.format(x, y))
-                    # A unit is selected
-                    else:
-                        if sel in our_units:
-                            if sel.dest_reached:
-                                sel.move((x, y))
-                            # Movement interruption
-                            else:
-                                sel.move_interd = True
-                                sel.new_dest_x = x
-                                sel.new_dest_y = y
-                                # Refunding structures
-                                try:
-                                    if sel.to_build:
-                                        sel.owner.min_c += sel.to_build.cost
-                                        self.update_min_c_label()
-                                except AttributeError:
-                                    pass
-                            sel.has_target_p = False
-                            # Gathering
-                            if isinstance(sel, Pioneer):
-                                if sel.path or is_melee_dist(sel, x, y):
-                                    sel.clear_task()
-                                    obj = g_pos_coord_d[(x, y)]
-                                    if isinstance(obj, Mineral):
-                                        sel.mineral_to_gather = obj
-                                        sel.task_x = obj.x
-                                        sel.task_y = obj.y
-                                        obj.workers.append(sel)
+                    pass
             # Minimap
             elif MM0X <= x <= MM0X + 100 and MM0Y <= y <= MM0Y + 100:
                 if button == mouse.LEFT:
@@ -666,29 +573,7 @@ class WorldEditor(pyglet.window.Window):
                     bvb = (y - MM0Y) * PS
                     self.update_viewport()
                 elif button == mouse.RIGHT:
-                    x = (x - MM0X) * PS
-                    y = (y - MM0Y) * PS
-                    x, y = round_coords(x, y)
-                    # A unit is sel
-                    unit_found = False
-                    for unit in our_units:
-                        if unit is sel:
-                            unit_found = True
-                            if unit.dest_reached:
-                                unit.move((x, y))
-                            else:  # Movement interruption
-                                unit.dest_x = unit.target_x
-                                unit.dest_y = unit.target_y
-                                unit.move_interd = True
-                                unit.new_dest_x = x
-                                unit.new_dest_y = y
-                    if not unit_found:
-                        if sel in our_structs:
-                            sel.rp_x = x
-                            sel.rp_y = y
-                            self.rp_spt.x = x
-                            self.rp_spt.y = y
-                            # print('Rally set to ({}, {})'.format(x, y))
+                    pass
             # Control panel other
             else:
                 x, y = mc(x=x, y=y)
@@ -698,7 +583,6 @@ class WorldEditor(pyglet.window.Window):
                         self.menu_b.x + w // 2 and \
                         self.menu_b.y - h // 2 <= y <= \
                         self.menu_b.y + h // 2:
-                    self.paused = True
                     return
                 # Build units
                 if sel in our_structs and not sel.under_constr:
@@ -738,60 +622,35 @@ class WorldEditor(pyglet.window.Window):
                             self.cancel_b.y - 16 <= y <= \
                             self.cancel_b.y + 16:
                         self.cancel_prod()
-                elif sel in our_units:
-                    # Move
-                    if self.move_b.x - 16 <= x <= self.move_b.x + 16 and \
-                            self.move_b.y - 16 <= y <= self.move_b.y + 16:
-                        self.set_mouse_cursor(res.cursor_target)
-                        self.m_targeting_phase = True
-                        return
-                    # Stop
-                    if self.stop_b.x - 16 <= x <= self.stop_b.x + 16 and \
-                            self.stop_b.y - 16 <= y <= self.stop_b.y + 16:
-                        sel.stop()
-                        return
-                    # Attack
-                    if self.attack_b.x - 16 <= x <= self.attack_b.x + 16 \
-                            and self.attack_b.y - 16 <= y <= \
-                            self.attack_b.y + 16:
-                        try:
-                            if sel.weapon_type != 'none':
-                                if sel.owner.name == 'p1':
-                                    self.set_mouse_cursor(
-                                        res.cursor_target)
-                                self.targeting_phase = True
-                        except AttributeError:
-                            pass
-                        return
+                else:
                     # Construct structures
-                    if isinstance(sel, Pioneer):
-                        if self.armory_icon.x - 16 <= x <= \
-                                self.armory_icon.x + 16 and \
-                                self.armory_icon.y - 16 <= y <= \
-                                self.armory_icon.y + 16:
-                            self.to_build_spt.image = res.armory_img
-                            self.to_build_spt.color = (0, 255, 0)
-                            self.build_loc_sel_phase = True
-                            self.to_build = Armory
-                            self.to_build_spt.x, self.to_build_spt.y = x, y
-                        elif self.turret_icon.x - 16 <= x <= \
-                                self.turret_icon.x + 16 and \
-                                self.turret_icon.y - 16 <= y <= \
-                                self.turret_icon.y + 16:
-                            self.to_build_spt.image = res.turret_icon_img
-                            self.to_build_spt.color = (0, 255, 0)
-                            self.build_loc_sel_phase = True
-                            self.to_build = Turret
-                            self.to_build_spt.x, self.to_build_spt.y = x, y
-                        elif self.mech_center_icon.x - 16 <= x <= \
-                                self.mech_center_icon.x + 16 and \
-                                self.mech_center_icon.y - 16 <= y <= \
-                                self.mech_center_icon.y + 16:
-                            self.to_build_spt.image = res.mech_center_img
-                            self.to_build_spt.color = (0, 255, 0)
-                            self.build_loc_sel_phase = True
-                            self.to_build = MechCenter
-                            self.to_build_spt.x, self.to_build_spt.y = x, y
+                    if self.armory_icon.x - 16 <= x <= \
+                            self.armory_icon.x + 16 and \
+                            self.armory_icon.y - 16 <= y <= \
+                            self.armory_icon.y + 16:
+                        self.to_build_spt.image = res.armory_img
+                        self.to_build_spt.color = (0, 255, 0)
+                        self.build_loc_sel_phase = True
+                        self.to_build = Armory
+                        self.to_build_spt.x, self.to_build_spt.y = x, y
+                    elif self.turret_icon.x - 16 <= x <= \
+                            self.turret_icon.x + 16 and \
+                            self.turret_icon.y - 16 <= y <= \
+                            self.turret_icon.y + 16:
+                        self.to_build_spt.image = res.turret_icon_img
+                        self.to_build_spt.color = (0, 255, 0)
+                        self.build_loc_sel_phase = True
+                        self.to_build = Turret
+                        self.to_build_spt.x, self.to_build_spt.y = x, y
+                    elif self.mech_center_icon.x - 16 <= x <= \
+                            self.mech_center_icon.x + 16 and \
+                            self.mech_center_icon.y - 16 <= y <= \
+                            self.mech_center_icon.y + 16:
+                        self.to_build_spt.image = res.mech_center_img
+                        self.to_build_spt.color = (0, 255, 0)
+                        self.build_loc_sel_phase = True
+                        self.to_build = MechCenter
+                        self.to_build_spt.x, self.to_build_spt.y = x, y
 
     def on_mouse_motion(self, x, y, dx, dy):
         if self.fullscreen:
@@ -800,7 +659,7 @@ class WorldEditor(pyglet.window.Window):
         if self.build_loc_sel_phase:
             self.mouse_x = x
             self.mouse_y = y
-            if self.to_build is MechCenter:
+            if self.to_build == "MechCenter":
                 x, y = round_coords(x, y)
                 self.to_build_spt.x = x + lvb + PS / 2
                 self.to_build_spt.y = y + bvb + PS / 2
@@ -835,8 +694,7 @@ class WorldEditor(pyglet.window.Window):
                 x, y = mc(x=x, y=y)
                 x = int((x - 16) / 32) + 1
                 y = int((y - 16) / 32) + 1
-                if g_pos_coord_d[self.to_build_spt.x, self.to_build_spt.y] or \
-                        self.npa[y, x, 3] != 0:
+                if g_pos_coord_d[self.to_build_spt.x, self.to_build_spt.y]:
                     self.to_build_spt.color = (255, 0, 0)
                     self.loc_clear = False
                 else:

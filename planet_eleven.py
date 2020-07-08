@@ -1821,10 +1821,6 @@ class PlanetEleven(pyglet.window.Window):
                             unit = Wyrm(self, _key[0], _key[1])
                             unit.spawn()
                     i += 1
-            elif symbol is key.V:
-                pass
-                # print(lvb, bvb)
-                # print(lvb % 32 == 0, bvb % 32 == 0)
         # Menu
         else:
             if symbol is key.ESCAPE:
