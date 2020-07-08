@@ -20,9 +20,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8699b466-fa9b-4e8c-b41f-e5bbe759696d" name="Default Changelist" comment="Removed pyglet's Atlas border modifications (they fixed it)">
-      <change afterPath="$PROJECT_DIR$/world_editor.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/todo.rtf" beforeDir="false" afterPath="$PROJECT_DIR$/docs/todo.rtf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/world_editor.py" beforeDir="false" afterPath="$PROJECT_DIR$/world_editor.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -220,13 +218,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1566740526093</updated>
-    </task>
-    <task id="LOCAL-00256" summary="Victory and defeat txt_out">
-      <created>1587131522967</created>
-      <option name="number" value="00256" />
-      <option name="presentableId" value="LOCAL-00256" />
-      <option name="project" value="LOCAL" />
-      <updated>1587131522967</updated>
     </task>
     <task id="LOCAL-00257" summary="Victory and defeat txt_out">
       <created>1587139491454</created>
@@ -564,7 +555,14 @@
       <option name="project" value="LOCAL" />
       <updated>1594243444561</updated>
     </task>
-    <option name="localTasksCounter" value="305" />
+    <task id="LOCAL-00305" summary="Removed pyglet's Atlas border modifications (they fixed it)">
+      <created>1594248316370</created>
+      <option name="number" value="00305" />
+      <option name="presentableId" value="LOCAL-00305" />
+      <option name="project" value="LOCAL" />
+      <updated>1594248316370</updated>
+    </task>
+    <option name="localTasksCounter" value="306" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
