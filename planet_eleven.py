@@ -336,7 +336,7 @@ class Struct(Sprite):
         else:
             self.coords = ((x - PS/2, y + PS/2), (x + PS/2, y + PS/2),
                            (x - PS/2, y - PS/2), (x + PS/2, y - PS/2))
-        if owner is self.game_inst.this_player:
+        if owner is game_inst.this_player:
             self.team_color.color = OUR_TEAM_COLOR
             minimap_pixel = res.mm_our_img
             game_inst.update_fow(x=x, y=y, radius=vision_rad)
@@ -2544,7 +2544,7 @@ class PlanetEleven(pyglet.window.Window):
 
     def ai(self):
         # AI ordering units
-        for struct in enemy_structs:
+        for struct in self.computer.structs:
             if isinstance(struct, MechCenter):
                 if self.computer.workers_count < 6:
                     order_unit(self, struct, Pioneer)
