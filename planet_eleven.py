@@ -400,7 +400,7 @@ class Struct(Sprite):
         self.team_color.delete()
         self.pixel.delete()
         if not delay_del:
-            for arr in [p.structs for p in players] + prod_structs:
+            for arr in [p.structs for p in players] + [prod_structs]:
                 try:
                     arr.remove(self)
                 except ValueError:
