@@ -76,14 +76,10 @@ explosions_batch = pyglet.graphics.Batch()
 minerals = []
 LIST_OF_FLYING = ["<class '__main__.Defiler'>",
                   "<class '__main__.Apocalypse'>"]
-our_units = []
 workers = []
-our_structs = []
-enemy_structs = []
 prod_structs = []
 offensive_structs = []
 guardian_dummies = []
-enemy_units = []
 
 minimap_fow_x = MM0X - 1
 minimap_fow_y = MM0Y - 1

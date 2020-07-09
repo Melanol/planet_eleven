@@ -60,7 +60,10 @@ def mc(**kwargs):
     else:
         return kwargs['x'] + lvb, kwargs['y'] + bvb
 
-def closest_enemy_2_att(entity, enemy_entities):
+def closest_enemy_2_att(entity):
+    enemy_entities = []
+    for enemy in entity.owner.enemies:
+        enemy_entities += enemy.units + enemy.structs
     x = entity.x
     y = entity.y
     for rad in rad_clipped[:entity.attack_rad + 1]:
@@ -89,7 +92,7 @@ def update_shooting(game_inst, our_entities, enemy_entities):
         if entity.weapon_type != 'none' and entity.dest_reached:
             if not entity.on_cooldown:
                 if not entity.has_target_p:
-                    closest_enemy = closest_enemy_2_att(entity, enemy_entities)
+                    closest_enemy = closest_enemy_2_att(entity)
                     if closest_enemy:
                         entity.has_target_p = True
                         entity.target_p = closest_enemy
@@ -130,11 +133,17 @@ class CheckB(Sprite):
         if not checked:
             self.check.visible = False
 
+players = []
 class Player:
     def __init__(self, name):
-        self.min_c = 5000
+        players.append(self)
+        self.min_c = 50 * starting_mins_mult
         self.name = name
         self.tech = []
+        self.structs = []
+        self.units = []
+        self.allies = []
+        self.enemies = []
 
     def add_tech(self, tech):
         if tech not in self.tech:
@@ -327,15 +336,15 @@ class Struct(Sprite):
         else:
             self.coords = ((x - PS/2, y + PS/2), (x + PS/2, y + PS/2),
                            (x - PS/2, y - PS/2), (x + PS/2, y - PS/2))
-        if owner.name == "p1":
+        if owner is self.game_inst.this_player:
             self.team_color.color = OUR_TEAM_COLOR
-            our_structs.append(self)
             minimap_pixel = res.mm_our_img
             game_inst.update_fow(x=x, y=y, radius=vision_rad)
         else:
             self.team_color.color = ENEMY_TEAM_COLOR
-            enemy_structs.append(self)
             minimap_pixel = res.mm_enemy_img
+        self.owner.structs.append(self)
+
         super().__init__(img, x, y, batch=structures_batch)
         self.completed_image = img
         self.game_inst = game_inst
@@ -386,13 +395,12 @@ class Struct(Sprite):
                             batch=minimap_pixels_batch)
 
     def kill(self, delay_del=False):
-        global our_structs, enemy_structs
         for block in self.blocks:
             g_pos_coord_d[(block[0], block[1])] = None
         self.team_color.delete()
         self.pixel.delete()
         if not delay_del:
-            for arr in (our_structs, enemy_structs, prod_structs):
+            for arr in [p.structs for p in players] + prod_structs:
                 try:
                     arr.remove(self)
                 except ValueError:
@@ -435,6 +443,7 @@ class GuardianStructure:
 
 
 class Armory(Struct, GuardianStructure):
+    is_tech = True
     cost = 200
     build_time = 600 / build_speed
 
@@ -446,7 +455,7 @@ class Armory(Struct, GuardianStructure):
                          vision_rad=2,  hp=100, x=x, y=y, width=1)
         super().gs_init(skip_constr)
         self.cbs = None
-        owner.tech.append(Armory)
+        owner.add_tech(Armory)
 
 
 class MechCenter(Struct, ProductionStruct, GuardianStructure):
@@ -508,16 +517,12 @@ class OffensiveStruct(Struct):
         projectiles.append(projectile)
 
     def kill(self, delay_del=False):
-        global g_pos_coord_d, our_structs, enemy_structs
         g_pos_coord_d[(self.x, self.y)] = None
         self.pixel.delete()
         for attacker in self.attackers:
             attacker.has_target_p = False
         if not delay_del:
-            if self.owner.name == 'p1':
-                del our_structs[our_structs.index(self)]
-            else:
-                del enemy_structs[enemy_structs.index(self)]
+            self.owner.structs.remove(self)
         del offensive_structs[offensive_structs.index(self)]
         self.plasma_spt.delete()
         self.team_color.delete()
@@ -771,10 +776,9 @@ class Unit(Sprite):
         self.coords = ((x, y),)
         if owner.name == 'p1':
             self.team_color.color = OUR_TEAM_COLOR
-            our_units.append(self)
         else:
             self.team_color.color = ENEMY_TEAM_COLOR
-            enemy_units.append(self)
+        self.owner.units.append(self)
         self.flying = flying
         if not self.flying:
             self.pos_dict = g_pos_coord_d
@@ -866,21 +870,17 @@ class Unit(Sprite):
         a non-default rally point."""
         # Attack move
         if self.attack_moving and (self.x, self.y) in POS_COORDS:
-            if self.owner.name == 'p1':
-                if closest_enemy_2_att(self, enemy_units + enemy_structs):
-                    self.attack_moving = False
-                    self.dest_reached = True
-                    return
-            else:
-                if closest_enemy_2_att(self, our_units + our_structs):
-                    self.attack_moving = False
-                    self.dest_reached = True
-                    return
+            enemy_entities = []
+            for enemy in self.owner.enemies:
+                enemy_entities += enemy.units + enemy.structs
+            if closest_enemy_2_att(self):
+                self.attack_moving = False
+                self.dest_reached = True
+                return
         # Not moving: same coords
         if self.x == dest[0] and self.y == dest[1]:
             self.dest_reached = True
             return
-
         # Not moving: melee distance and dest occupied
         if is_melee_dist(self, dest[0], dest[1]) and \
                 self.pos_dict[(dest[0], dest[1])]:
@@ -1016,10 +1016,7 @@ class Unit(Sprite):
         for attacker in self.attackers:
             attacker.has_target_p = False
         if not delay_del:
-            if self.owner.name == 'p1':
-                del our_units[our_units.index(self)]
-            else:
-                del enemy_units[enemy_units.index(self)]
+            self.owner.units.remove(self)
         self.pos_dict[(self.target_x, self.target_y)] = None
         Explosion(self.x, self.y, 0.25)
         # Worker
@@ -1224,7 +1221,8 @@ class PlanetEleven(pyglet.window.Window):
         self.f = 0
         self.this_player = Player("p1")
         self.computer = Player("c1")
-        self.computer.min_c = 50000
+        self.this_player.enemies.append(self.computer)
+        self.computer.enemies.append(self.this_player)
         self.computer.workers_count = 0
         self.dx = 0
         self.dy = 0
@@ -1416,8 +1414,8 @@ class PlanetEleven(pyglet.window.Window):
             if self.cbs_2_render:
                 for button in self.cbs_2_render:
                     button.draw()
-                if sel in our_structs and sel \
-                        not in offensive_structs:
+                if sel in self.this_player.structs \
+                        and sel not in offensive_structs:
                     self.rp_spt.draw()
 
             self.fow_texture.width = 102
@@ -1502,7 +1500,10 @@ class PlanetEleven(pyglet.window.Window):
                 except:
                     pass
             # Movement
-            for unit in our_units + enemy_units:
+            units = []
+            for player in players:
+                units += player.units
+            for unit in units:
                 if not unit.dest_reached:
                     # Do not jump
                     if not unit.eta() <= 1:
@@ -1534,20 +1535,11 @@ class PlanetEleven(pyglet.window.Window):
                                 unit.dest_reached = True
                             else:
                                 if unit.attack_moving:
-                                    if unit.owner.name == 'p1':
-                                        if closest_enemy_2_att(unit,
-                                                enemy_units + enemy_structs):
-                                            unit.dest_reached = True
-                                            unit.attack_moving = False
-                                        else:
-                                            unit.update_move()
+                                    if closest_enemy_2_att(unit):
+                                        unit.dest_reached = True
+                                        unit.attack_moving = False
                                     else:
-                                        if closest_enemy_2_att(unit,
-                                                our_units + our_structs):
-                                            unit.dest_reached = True
-                                            unit.attack_moving = False
-                                        else:
-                                            unit.update_move()
+                                        unit.update_move()
                                 else:
                                     unit.update_move()
                         # Movement interrupted
@@ -1635,8 +1627,21 @@ class PlanetEleven(pyglet.window.Window):
             for entity in our_structs + our_units + \
                           enemy_structs + enemy_units:
                 if entity.hp <= 0:
-                    if entity.owner.name == 'c1' and isinstance(entity, Pioneer):
+                    owner = entity.owner
+                    if owner.name == 'c1' and isinstance(entity, Pioneer):
                         self.computer.workers_count -= 1
+                    try:
+                        entity.is_tech
+                        if owner.name == 'p1':
+                            cls = type(entity)
+                            c = 0
+                            for el in our_structs:
+                                if type(el) is cls:
+                                    c += 1
+                            if c is 1:
+                                owner.tech.remove(cls)
+                    except AttributeError:
+                        pass
                     entity.kill()
                     if entity is sel:
                         sel = None

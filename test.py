@@ -1,2 +1,6 @@
-b = b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
-print(b.decode())
+arr = [(1, 1), (2, 2)]
+def kill():
+    del arr[0]
+
+kill()
+print(arr)

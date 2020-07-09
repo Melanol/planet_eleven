@@ -20,11 +20,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8699b466-fa9b-4e8c-b41f-e5bbe759696d" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/debug.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/constants_and_utilities.py" beforeDir="false" afterPath="$PROJECT_DIR$/constants_and_utilities.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/debug.py" beforeDir="false" afterPath="$PROJECT_DIR$/debug.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/todo.rtf" beforeDir="false" afterPath="$PROJECT_DIR$/docs/todo.rtf" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/planet_eleven.py" beforeDir="false" afterPath="$PROJECT_DIR$/planet_eleven.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/world_editor.py" beforeDir="false" afterPath="$PROJECT_DIR$/world_editor.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test.py" beforeDir="false" afterPath="$PROJECT_DIR$/test.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -85,7 +86,7 @@
       <recent name="D:\PycharmProjects\planet_eleven" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.planet_eleven">
+  <component name="RunManager" selected="Python.test">
     <configuration name="long_line_finder" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="planet_eleven" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -200,9 +201,9 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.test" />
         <item itemvalue="Python.planet_eleven" />
         <item itemvalue="Python.world_editor" />
-        <item itemvalue="Python.test" />
         <item itemvalue="Python.shadow_n_icon_maker" />
         <item itemvalue="Python.long_line_finder" />
       </list>
@@ -222,13 +223,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1566740526093</updated>
-    </task>
-    <task id="LOCAL-00260" summary="Attack and move commands work on the minimap">
-      <created>1587143892690</created>
-      <option name="number" value="00260" />
-      <option name="presentableId" value="LOCAL-00260" />
-      <option name="project" value="LOCAL" />
-      <updated>1587143892690</updated>
     </task>
     <task id="LOCAL-00261" summary="Control buttons for structures under construction are off">
       <created>1587309108117</created>
@@ -566,7 +560,14 @@
       <option name="project" value="LOCAL" />
       <updated>1594248274118</updated>
     </task>
-    <option name="localTasksCounter" value="309" />
+    <task id="LOCAL-00309" summary="Unit requirements">
+      <created>1594258649837</created>
+      <option name="number" value="00309" />
+      <option name="presentableId" value="LOCAL-00309" />
+      <option name="project" value="LOCAL" />
+      <updated>1594258649839</updated>
+    </task>
+    <option name="localTasksCounter" value="310" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -640,7 +641,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$" />
     </ignored-roots>
-    <MESSAGE value="Construction mid-block bug fixed" />
     <MESSAGE value="Demo video #2" />
     <MESSAGE value="Viewport construction bug fixed" />
     <MESSAGE value="Code splitting complete" />
@@ -665,7 +665,8 @@
     <MESSAGE value="Removed pyglet's Atlas border modifications (they fixed it)" />
     <MESSAGE value="world_editor shows no errors" />
     <MESSAGE value="More work on world_editor" />
-    <option name="LAST_COMMIT_MESSAGE" value="More work on world_editor" />
+    <MESSAGE value="Unit requirements" />
+    <option name="LAST_COMMIT_MESSAGE" value="Unit requirements" />
   </component>
   <component name="WindowStateProjectService">
     <state x="137" y="23" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1588108050775">
@@ -680,10 +681,10 @@
       <screen x="0" y="0" width="1366" height="738" />
     </state>
     <state x="413" y="115" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1366.738@0.0.1366.738" timestamp="1587744144923" />
-    <state x="240" y="0" key="CommitChangelistDialog2" timestamp="1594248273530">
+    <state x="240" y="0" key="CommitChangelistDialog2" timestamp="1594258643087">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state x="240" y="0" key="CommitChangelistDialog2/0.0.1366.738@0.0.1366.738" timestamp="1594248273530" />
+    <state x="240" y="0" key="CommitChangelistDialog2/0.0.1366.738@0.0.1366.738" timestamp="1594258643087" />
     <state x="92" y="92" width="1182" height="554" key="DiffContextDialog" timestamp="1587826050284">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
@@ -692,22 +693,22 @@
       <screen x="0" y="0" width="1366" height="738" />
     </state>
     <state x="503" y="132" key="FileChooserDialogImpl/0.0.1366.738@0.0.1366.738" timestamp="1594241023744" />
-    <state width="1344" height="144" key="GridCell.Tab.0.bottom" timestamp="1594258609448">
+    <state width="1344" height="71" key="GridCell.Tab.0.bottom" timestamp="1594264802574">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="144" key="GridCell.Tab.0.bottom/0.0.1366.738@0.0.1366.738" timestamp="1594258609448" />
-    <state width="1344" height="144" key="GridCell.Tab.0.center" timestamp="1594258609447">
+    <state width="1344" height="71" key="GridCell.Tab.0.bottom/0.0.1366.738@0.0.1366.738" timestamp="1594264802574" />
+    <state width="1344" height="71" key="GridCell.Tab.0.center" timestamp="1594264802574">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="144" key="GridCell.Tab.0.center/0.0.1366.738@0.0.1366.738" timestamp="1594258609447" />
-    <state width="1344" height="144" key="GridCell.Tab.0.left" timestamp="1594258609447">
+    <state width="1344" height="71" key="GridCell.Tab.0.center/0.0.1366.738@0.0.1366.738" timestamp="1594264802574" />
+    <state width="1344" height="71" key="GridCell.Tab.0.left" timestamp="1594264802574">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="144" key="GridCell.Tab.0.left/0.0.1366.738@0.0.1366.738" timestamp="1594258609447" />
-    <state width="1344" height="144" key="GridCell.Tab.0.right" timestamp="1594258609448">
+    <state width="1344" height="71" key="GridCell.Tab.0.left/0.0.1366.738@0.0.1366.738" timestamp="1594264802574" />
+    <state width="1344" height="71" key="GridCell.Tab.0.right" timestamp="1594264802574">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="144" key="GridCell.Tab.0.right/0.0.1366.738@0.0.1366.738" timestamp="1594258609448" />
+    <state width="1344" height="71" key="GridCell.Tab.0.right/0.0.1366.738@0.0.1366.738" timestamp="1594264802574" />
     <state width="1344" height="201" key="GridCell.Tab.1.bottom" timestamp="1588039641489">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
