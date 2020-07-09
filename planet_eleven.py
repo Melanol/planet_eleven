@@ -79,7 +79,7 @@ def closest_enemy_2_att(entity):
                 if entity1 in enemy_entities:
                     return entity1
 
-def update_shooting(game_inst, our_entities, enemy_entities):
+def update_shooting(game_inst, our_entities):
     for entity in our_entities:
         try:  # For shooting structures
             entity.weapon_type
@@ -1557,7 +1557,7 @@ class PlanetEleven(pyglet.window.Window):
                             unit.dest_reached = True
                             unit.move((unit.new_dest_x, unit.new_dest_y))
                             unit.move_interd = False
-                        if unit in our_units:
+                        if unit in self.this_player.units:
                             self.update_fow(unit.x, unit.y, unit.vision_rad)
                 else:
                     try:
@@ -1567,9 +1567,8 @@ class PlanetEleven(pyglet.window.Window):
                     except AttributeError:
                         pass
             # Shooting
-            update_shooting(self, offensive_structs + our_units,
-                                enemy_structs + enemy_units)
-            update_shooting(self, enemy_units, our_structs + our_units)
+            for player in players:
+                update_shooting(self, player.units)  # TODO: add shooting buildings
             # Projectiles
             delayed_del = []
             for i, projectile in enumerate(projectiles):
@@ -1624,8 +1623,10 @@ class PlanetEleven(pyglet.window.Window):
             for mineral in minerals_to_del:
                 minerals.remove(mineral)
             # Destroying targets
-            for entity in our_structs + our_units + \
-                          enemy_structs + enemy_units:
+            entities = []
+            for player in players:
+                entities += player.units + player.structs
+            for entity in entities:
                 if entity.hp <= 0:
                     owner = entity.owner
                     if owner.name == 'c1' and isinstance(entity, Pioneer):
@@ -1635,7 +1636,7 @@ class PlanetEleven(pyglet.window.Window):
                         if owner.name == 'p1':
                             cls = type(entity)
                             c = 0
-                            for el in our_structs:
+                            for el in self.this_player.structs:
                                 if type(el) is cls:
                                     c += 1
                             if c is 1:
@@ -1674,10 +1675,13 @@ class PlanetEleven(pyglet.window.Window):
                 except (AttributeError, TypeError):
                     pass
         if self.f % 50 == 0:
+            enemy_structs = []
+            for enemy in self.this_player.enemies:
+                enemy_structs += enemy.structs
             if not enemy_structs:
                 self.txt_out.text = "Victory"
                 self.txt_out_upd_f = self.f
-            elif not our_structs:
+            elif not self.this_player.structs:
                 self.txt_out.text = "Defeat"
                 self.txt_out_upd_f = self.f
 
@@ -1714,14 +1718,14 @@ class PlanetEleven(pyglet.window.Window):
                 print('type(sel) =', type(sel))
             elif symbol is key.DELETE:
                 # Kill entity
-                if sel in our_units:
+                if sel in self.this_player.units:
                     sel.kill()
                     if sel.flying:
                         a_pos_coord_d[(self.sel_spt.x, self.sel_spt.y)] = None
                     else:
                         g_pos_coord_d[(self.sel_spt.x, self.sel_spt.y)] = None
                     sel = None
-                elif sel in our_structs:
+                elif sel in self.this_player.structs:
                     sel.kill()
                     sel = None
             elif symbol is key.ESCAPE:
@@ -1744,7 +1748,7 @@ class PlanetEleven(pyglet.window.Window):
                 self.update_viewport()
             elif symbol is key.Q:
                 # Move
-                if sel in our_units and sel.owner.name == "p1":
+                if sel in self.this_player.units and sel.owner.name == "p1":
                     self.set_mouse_cursor(res.cursor_target)
                     self.m_targeting_phase = True
                     return
@@ -1753,14 +1757,14 @@ class PlanetEleven(pyglet.window.Window):
                     order_unit(self, sel, Defiler)
             elif symbol is key.W:
                 # Stop
-                if sel in our_units:
+                if sel in self.this_player.units:
                     sel.stop()
                 # Build centurion
                 elif isinstance(sel, MechCenter):
                     order_unit(self, sel, Centurion)
             elif symbol is key.E:
                 # Attack move
-                if sel in our_units:
+                if sel in self.this_player.units:
                     try:
                         if sel.weapon_type != 'none':
                             if sel.owner.name == 'p1':
@@ -1836,7 +1840,7 @@ class PlanetEleven(pyglet.window.Window):
                     for x in range(xi, xi + 17 * PS, PS):
                         coords_to_delete.append((x, y))
                 for coord in coords_to_delete:
-                    for unit in our_units:
+                    for unit in self.this_player.units:
                         if g_pos_coord_d[coord[0], coord[1]] is unit:
                             unit.kill()
             elif symbol is key.Z:
@@ -2088,7 +2092,7 @@ class PlanetEleven(pyglet.window.Window):
                             pass
                     elif button == mouse.RIGHT:
                         # Rally point
-                        if sel in our_structs:
+                        if sel in self.this_player.structs:
                             if g_pos_coord_d[x, y] != sel:
                                 sel.rp_x = x
                                 sel.rp_y = y
@@ -2102,7 +2106,7 @@ class PlanetEleven(pyglet.window.Window):
                             # print('Rally set to ({}, {})'.format(x, y))
                         # A unit is selected
                         else:
-                            if sel in our_units:
+                            if sel in self.this_player.units:
                                 if sel.dest_reached:
                                     sel.move((x, y))
                                 # Movement interruption
@@ -2145,7 +2149,7 @@ class PlanetEleven(pyglet.window.Window):
                         x, y = round_coords(x, y)
                         # A unit is sel
                         unit_found = False
-                        for unit in our_units:
+                        for unit in self.this_player.units:
                             if unit is sel:
                                 unit_found = True
                                 if unit.dest_reached:
@@ -2157,7 +2161,7 @@ class PlanetEleven(pyglet.window.Window):
                                     unit.new_dest_x = x
                                     unit.new_dest_y = y
                         if not unit_found:
-                            if sel in our_structs:
+                            if sel in self.this_player.structs:
                                 sel.rp_x = x
                                 sel.rp_y = y
                                 self.rp_spt.x = x
@@ -2175,7 +2179,7 @@ class PlanetEleven(pyglet.window.Window):
                         self.paused = True
                         return
                     # Build units
-                    if sel in our_structs and not sel.under_constr:
+                    if sel in self.this_player.structs and not sel.under_constr:
                         # Create defiler
                         if self.defiler_b.x - 16 <= x <= \
                                 self.defiler_b.x + 16 and \
@@ -2212,7 +2216,7 @@ class PlanetEleven(pyglet.window.Window):
                                 self.cancel_b.y - 16 <= y <= \
                                 self.cancel_b.y + 16:
                             self.cancel_prod()
-                    elif sel in our_units:
+                    elif sel in self.this_player.units:
                         # Move
                         if self.move_b.x - 16 <= x <= self.move_b.x + 16 and \
                                 self.move_b.y - 16 <= y <= self.move_b.y + 16:
@@ -2480,8 +2484,10 @@ class PlanetEleven(pyglet.window.Window):
         self.sel_hp.y = SCREEN_H - 72 + bvb
         self.txt_out.x = SCREEN_W / 2 - 50 + lvb
         self.txt_out.y = 100 + bvb
-        for entity in our_structs + our_units \
-                      + enemy_structs + enemy_units:
+        entities = []
+        for player in players:
+            entities += player.units + player.structs
+        for entity in entities:
             entity.pixel.x, entity.pixel.y = to_minimap(entity.x, entity.y)
         self.mm_cam_frame_spt.x, self.mm_cam_frame_spt.y = to_minimap(lvb, bvb)
         self.mm_cam_frame_spt.x -= 1
@@ -2569,11 +2575,11 @@ class PlanetEleven(pyglet.window.Window):
         except IndexError:
             pass
         # AI sending units to attack:
-        for unit in enemy_units:
+        for unit in self.computer.units:
             if unit.weapon_type != 'none' and not unit.has_target_p:
                 closest_enemy = None
                 closest_enemy_dist = None
-                for entity in our_units + our_structs:
+                for entity in self.this_player.units + self.this_player.structs:
                     try:
                         if not unit.attacks_air and entity.flying:
                             continue
