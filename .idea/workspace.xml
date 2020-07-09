@@ -19,8 +19,11 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8699b466-fa9b-4e8c-b41f-e5bbe759696d" name="Default Changelist" comment="Removed pyglet's Atlas border modifications (they fixed it)">
+    <list default="true" id="8699b466-fa9b-4e8c-b41f-e5bbe759696d" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/debug.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/todo.rtf" beforeDir="false" afterPath="$PROJECT_DIR$/docs/todo.rtf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/planet_eleven.py" beforeDir="false" afterPath="$PROJECT_DIR$/planet_eleven.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/world_editor.py" beforeDir="false" afterPath="$PROJECT_DIR$/world_editor.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -82,7 +85,7 @@
       <recent name="D:\PycharmProjects\planet_eleven" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.world_editor">
+  <component name="RunManager" selected="Python.planet_eleven">
     <configuration name="long_line_finder" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="planet_eleven" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -197,8 +200,8 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.world_editor" />
         <item itemvalue="Python.planet_eleven" />
+        <item itemvalue="Python.world_editor" />
         <item itemvalue="Python.test" />
         <item itemvalue="Python.shadow_n_icon_maker" />
         <item itemvalue="Python.long_line_finder" />
@@ -219,20 +222,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1566740526093</updated>
-    </task>
-    <task id="LOCAL-00258" summary="Victory and defeat txt_out">
-      <created>1587139573243</created>
-      <option name="number" value="00258" />
-      <option name="presentableId" value="LOCAL-00258" />
-      <option name="project" value="LOCAL" />
-      <updated>1587139573243</updated>
-    </task>
-    <task id="LOCAL-00259" summary="Minimap click bug fixed">
-      <created>1587139713203</created>
-      <option name="number" value="00259" />
-      <option name="presentableId" value="LOCAL-00259" />
-      <option name="project" value="LOCAL" />
-      <updated>1587139713203</updated>
     </task>
     <task id="LOCAL-00260" summary="Attack and move commands work on the minimap">
       <created>1587143892690</created>
@@ -563,7 +552,21 @@
       <option name="project" value="LOCAL" />
       <updated>1594248616161</updated>
     </task>
-    <option name="localTasksCounter" value="307" />
+    <task id="LOCAL-00307" summary="world_editor shows no errors">
+      <created>1594250687176</created>
+      <option name="number" value="00307" />
+      <option name="presentableId" value="LOCAL-00307" />
+      <option name="project" value="LOCAL" />
+      <updated>1594250687176</updated>
+    </task>
+    <task id="LOCAL-00308" summary="More work on world_editor">
+      <created>1594248274118</created>
+      <option name="number" value="00308" />
+      <option name="presentableId" value="LOCAL-00308" />
+      <option name="project" value="LOCAL" />
+      <updated>1594248274118</updated>
+    </task>
+    <option name="localTasksCounter" value="309" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -637,8 +640,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$" />
     </ignored-roots>
-    <MESSAGE value="Production bar bug fixed" />
-    <MESSAGE value="Attack-move bug fixed" />
     <MESSAGE value="Construction mid-block bug fixed" />
     <MESSAGE value="Demo video #2" />
     <MESSAGE value="Viewport construction bug fixed" />
@@ -662,7 +663,9 @@
     <MESSAGE value="stop() stops mining" />
     <MESSAGE value="0.4" />
     <MESSAGE value="Removed pyglet's Atlas border modifications (they fixed it)" />
-    <option name="LAST_COMMIT_MESSAGE" value="Removed pyglet's Atlas border modifications (they fixed it)" />
+    <MESSAGE value="world_editor shows no errors" />
+    <MESSAGE value="More work on world_editor" />
+    <option name="LAST_COMMIT_MESSAGE" value="More work on world_editor" />
   </component>
   <component name="WindowStateProjectService">
     <state x="137" y="23" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1588108050775">
@@ -677,10 +680,10 @@
       <screen x="0" y="0" width="1366" height="738" />
     </state>
     <state x="413" y="115" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1366.738@0.0.1366.738" timestamp="1587744144923" />
-    <state x="240" y="0" key="CommitChangelistDialog2" timestamp="1589340574517">
+    <state x="240" y="0" key="CommitChangelistDialog2" timestamp="1594248273530">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state x="240" y="0" key="CommitChangelistDialog2/0.0.1366.738@0.0.1366.738" timestamp="1589340574517" />
+    <state x="240" y="0" key="CommitChangelistDialog2/0.0.1366.738@0.0.1366.738" timestamp="1594248273530" />
     <state x="92" y="92" width="1182" height="554" key="DiffContextDialog" timestamp="1587826050284">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
@@ -689,22 +692,22 @@
       <screen x="0" y="0" width="1366" height="738" />
     </state>
     <state x="503" y="132" key="FileChooserDialogImpl/0.0.1366.738@0.0.1366.738" timestamp="1594241023744" />
-    <state width="1344" height="144" key="GridCell.Tab.0.bottom" timestamp="1594250482977">
+    <state width="1344" height="144" key="GridCell.Tab.0.bottom" timestamp="1594258609448">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="144" key="GridCell.Tab.0.bottom/0.0.1366.738@0.0.1366.738" timestamp="1594250482977" />
-    <state width="1344" height="144" key="GridCell.Tab.0.center" timestamp="1594250482977">
+    <state width="1344" height="144" key="GridCell.Tab.0.bottom/0.0.1366.738@0.0.1366.738" timestamp="1594258609448" />
+    <state width="1344" height="144" key="GridCell.Tab.0.center" timestamp="1594258609447">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="144" key="GridCell.Tab.0.center/0.0.1366.738@0.0.1366.738" timestamp="1594250482977" />
-    <state width="1344" height="144" key="GridCell.Tab.0.left" timestamp="1594250482977">
+    <state width="1344" height="144" key="GridCell.Tab.0.center/0.0.1366.738@0.0.1366.738" timestamp="1594258609447" />
+    <state width="1344" height="144" key="GridCell.Tab.0.left" timestamp="1594258609447">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="144" key="GridCell.Tab.0.left/0.0.1366.738@0.0.1366.738" timestamp="1594250482977" />
-    <state width="1344" height="144" key="GridCell.Tab.0.right" timestamp="1594250482977">
+    <state width="1344" height="144" key="GridCell.Tab.0.left/0.0.1366.738@0.0.1366.738" timestamp="1594258609447" />
+    <state width="1344" height="144" key="GridCell.Tab.0.right" timestamp="1594258609448">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state width="1344" height="144" key="GridCell.Tab.0.right/0.0.1366.738@0.0.1366.738" timestamp="1594250482977" />
+    <state width="1344" height="144" key="GridCell.Tab.0.right/0.0.1366.738@0.0.1366.738" timestamp="1594258609448" />
     <state width="1344" height="201" key="GridCell.Tab.1.bottom" timestamp="1588039641489">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
@@ -737,10 +740,10 @@
       <screen x="0" y="0" width="1366" height="738" />
     </state>
     <state x="92" y="92" width="1182" height="554" key="VCS.FileHistoryDialog/0.0.1366.738@0.0.1366.738" timestamp="1587744110719" />
-    <state x="275" y="101" key="Vcs.Push.Dialog.v2" timestamp="1594243485426">
+    <state x="275" y="101" key="Vcs.Push.Dialog.v2" timestamp="1594250722157">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state x="275" y="101" key="Vcs.Push.Dialog.v2/0.0.1366.738@0.0.1366.738" timestamp="1594243485426" />
+    <state x="275" y="101" key="Vcs.Push.Dialog.v2/0.0.1366.738@0.0.1366.738" timestamp="1594250722157" />
     <state x="92" y="92" width="1182" height="554" maximized="true" key="com.intellij.history.integration.ui.views.FileHistoryDialog" timestamp="1587853253335">
       <screen x="0" y="0" width="1366" height="738" />
     </state>

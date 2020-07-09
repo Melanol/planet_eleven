@@ -7,6 +7,7 @@ from pyglet.gl import *
 from pyglet.window import key
 from pyglet.window import mouse
 from pyglet.sprite import Sprite
+from debug import *
 from weapons import *
 from constants_and_utilities import *
 from shadowandunittc import ShadowAndUnitTC
@@ -133,6 +134,14 @@ class Player:
     def __init__(self, name):
         self.min_c = 5000
         self.name = name
+        self.tech = []
+
+    def add_tech(self, tech):
+        if tech not in self.tech:
+            self.tech.append(tech)
+
+    def remove_tech(self, tech):
+        pass
 
 class HitAnim(Sprite):
     def __init__(self, x, y):
@@ -165,6 +174,14 @@ class Mineral(Sprite):
 def order_unit(game_inst, struct, unit):
     """Orders units in structures. Checks if you have enough minerals."""
     owner = struct.owner
+    # Requirements
+    if unit.reqs:
+        for req in unit.reqs:
+            if req not in owner.tech:
+                if owner.name == "p1":
+                    game_inst.txt_out.text = "Requirements not met"
+                    game_inst.txt_out_upd_f = game_inst.f
+                return
     # Queue is full
     if len(struct.prod_q) == 3:
         if owner.name == "p1":
@@ -419,7 +436,7 @@ class GuardianStructure:
 
 class Armory(Struct, GuardianStructure):
     cost = 200
-    build_time = 600
+    build_time = 600 / build_speed
 
     def __init__(self, game_inst, x, y, owner=None, skip_constr=False):
         if owner is None:
@@ -429,11 +446,12 @@ class Armory(Struct, GuardianStructure):
                          vision_rad=2,  hp=100, x=x, y=y, width=1)
         super().gs_init(skip_constr)
         self.cbs = None
+        owner.tech.append(Armory)
 
 
 class MechCenter(Struct, ProductionStruct, GuardianStructure):
     cost = 500
-    build_time = 1000
+    build_time = 1000 / build_speed
 
     def __init__(self, game_inst, x, y, owner=None, skip_constr=False):
         if owner is None:
@@ -509,7 +527,7 @@ class OffensiveStruct(Struct):
 
 class Turret(OffensiveStruct, GuardianStructure):
     cost = 150
-    build_time = 1200
+    build_time = 1200 / build_speed
 
     def __init__(self, game_inst, x, y, owner=None, skip_constr=False):
         if owner is None:
@@ -744,8 +762,7 @@ def find_path(start, end, is_flying):
 class Unit(Sprite):
     def __init__(self, game_inst, owner, img, team_color_img, icon, flying,
                  vision_rad, hp, x, y, speed, weapon_type, w_img, damage,
-                 cooldown,
-                 attacks_ground, attacks_air, shadow_sprite, cbs):
+                 cooldown, attacks_ground, attacks_air, shadow_sprite, cbs):
         self.game_inst = game_inst
         self.owner = owner
         self.team_color = ShadowAndUnitTC(team_color_img, x, y,
@@ -1023,8 +1040,9 @@ class Unit(Sprite):
 
 
 class Apocalypse(Unit):
+    reqs = (Armory,)
     cost = 600
-    build_time = 600
+    build_time = 600 / build_speed
     icon = res.apocalypse_icon_img
 
     def __init__(self, game_inst, x, y, owner=None):
@@ -1042,8 +1060,9 @@ class Apocalypse(Unit):
 
 
 class Centurion(Unit):
+    reqs = (Armory,)
     cost = 400
-    build_time = 600
+    build_time = 600 / build_speed
     icon = res.centurion_icon_img
 
     def __init__(self, game_inst, x, y, owner=None):
@@ -1061,8 +1080,9 @@ class Centurion(Unit):
 
 
 class Defiler(Unit):
+    reqs = None
     cost = 300
-    build_time = 500
+    build_time = 500 / build_speed
     icon = res.defiler_icon_img
 
     def __init__(self, game_inst, x, y, owner=None):
@@ -1080,8 +1100,9 @@ class Defiler(Unit):
 
 
 class Pioneer(Unit):
+    reqs = None
     cost = 50
-    build_time = 500
+    build_time = 500 / build_speed
     icon = res.pioneer_icon_img
 
     def __init__(self, game_inst, x, y, owner=None):
@@ -1166,8 +1187,9 @@ class Pioneer(Unit):
 
 
 class Wyrm(Unit):
+    reqs = None
     cost = 150
-    build_time = 400
+    build_time = 400 / build_speed
     icon = res.wyrm_icon_img
 
     def __init__(self, game_inst, x, y, owner=None):
@@ -1435,7 +1457,7 @@ class PlanetEleven(pyglet.window.Window):
                 except AttributeError:
                     pass
             # AI
-            if self.f % 50 == 0:
+            if self.f % 50 == 0 and ai:
                 self.ai()
             # Units
             # Gathering resources

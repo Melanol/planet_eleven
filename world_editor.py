@@ -80,23 +80,14 @@ class CheckB(Sprite):
 
 class Player:
     def __init__(self, name):
-        self.min_c = 5000
         self.name = name
 
 entities = []
-class Entity(Sprite):
-    def __init__(self, name, x, y, batch):
-        entities.append(self)
-        self.name = name
-        super().__init__(res.mineral, x, y, batch=batch)
-
 def build_structure(game_inst, struct, x, y):
     struct(game_inst, x, y, skip_constr=True)
 
 class Struct(Sprite):
-    """This is what I call buildings. __init__ == spawn()"""
-
-    def __init__(self, game_inst, owner, img, team_color_img, icon, vision_rad,
+    def __init__(self, game_inst, owner, img, team_color_img, icon,
                  hp, x, y, width):
         self.owner = owner
         self.team_color = Sprite(team_color_img, x, y,
@@ -179,13 +170,7 @@ class Struct(Sprite):
             self.anim.delete()
         except AttributeError:
             pass
-        Explosion(self.x, self.y, self.width / PS / 2)
         self.delete()
-
-    def constr_complete(self):
-        self.under_constr = False
-        self.image = self.completed_image
-        self.team_color.visible = True
 
 
 class ProductionStruct:
@@ -296,7 +281,6 @@ class OffensiveStruct(Struct):
         del offensive_structs[offensive_structs.index(self)]
         self.plasma_spt.delete()
         self.team_color.delete()
-        Explosion(self.x, self.y, self.width / PS / 2)
         self.delete()
 
 
@@ -396,7 +380,11 @@ class WorldEditor(pyglet.window.Window):
                                CB_COORDS[3][0], CB_COORDS[3][1])
         self.pioneer_b = UI(self, res.pioneer_img, CB_COORDS[4][0],
                             CB_COORDS[4][1])
+
         self.cbs_2_render = [self.armory_icon, self.turret_icon]
+
+        self.sel_spt = Sprite(img=res.sel_img, x=-100, y=-100)
+        self.sel_big_spt = Sprite(img=res.sel_big_img, x=-100, y=-100)
         self.to_build_spt = Sprite(img=res.armory_img, x=-100, y=-100)
         self.to_build_spt.color = (0, 255, 0)
 
@@ -453,9 +441,6 @@ class WorldEditor(pyglet.window.Window):
         if self.cbs_2_render:
             for button in self.cbs_2_render:
                 button.draw()
-            if sel in our_structs and sel \
-                    not in offensive_structs:
-                self.rp_spt.draw()
 
         self.mm_cam_frame_spt.draw()
         if self.show_hint:
@@ -476,8 +461,8 @@ class WorldEditor(pyglet.window.Window):
                 self.set_fullscreen(False)
             else:
                 self.set_fullscreen(True)
-        elif symbol is key.H:
-            print(structures_batch._draw_list)
+        elif symbol is key.DELETE:
+            sel.kill()
 
     def on_mouse_press(self, x, y, button, modifiers):
         """Don't play with mc(), globals"""
@@ -494,7 +479,6 @@ class WorldEditor(pyglet.window.Window):
                 if button == mouse.LEFT:
                     if self.loc_clear:
                         build_structure(self, self.to_build, x, y)
-                        self.build_loc_sel_phase = False
                 elif button == mouse.RIGHT:
                     self.build_loc_sel_phase = False
         # Normal phase
@@ -540,25 +524,6 @@ class WorldEditor(pyglet.window.Window):
                                 + '/' + str(sel.max_hp)
                         except AttributeError:
                             self.sel_hp.text = str(int(sel.hp))
-                    # Control buttons
-                    try:
-                        if sel.owner.name == 'p1':
-                            try:
-                                if not sel.under_constr:
-                                    self.cbs_2_render = sel.cbs
-                                else:
-                                    self.cbs_2_render = None
-                            except AttributeError:
-                                self.cbs_2_render = sel.cbs
-                        else:
-                            self.cbs_2_render = None
-                    except AttributeError:  # For minerals
-                        self.cbs_2_render = None
-                    try:
-                        self.rp_spt.x = sel.rp_x
-                        self.rp_spt.y = sel.rp_y
-                    except AttributeError:
-                        pass
                 elif button == mouse.RIGHT:
                     pass
             # Minimap
@@ -584,73 +549,34 @@ class WorldEditor(pyglet.window.Window):
                         self.menu_b.y - h // 2 <= y <= \
                         self.menu_b.y + h // 2:
                     return
-                # Build units
-                if sel in our_structs and not sel.under_constr:
-                    # Create defiler
-                    if self.defiler_b.x - 16 <= x <= \
-                            self.defiler_b.x + 16 and \
-                            self.defiler_b.y - 16 <= y <= \
-                            self.defiler_b.y + 16:
-                        order_unit(self, sel, Defiler)
-                    # Create centurion
-                    elif self.centurion_b.x - 16 <= x <= \
-                            self.centurion_b.x + 16 and \
-                            self.centurion_b.y - 16 <= y <= \
-                            self.centurion_b.y + 16:
-                        order_unit(self, sel, Centurion)
-                    # Create wyrm
-                    elif self.wyrm_b.x - 16 <= x <= \
-                            self.wyrm_b.x + 16 and \
-                            self.wyrm_b.y - 16 <= y <= \
-                            self.wyrm_b.y + 16:
-                        order_unit(self, sel, Wyrm)
-                    # Create apocalypse
-                    elif self.apocalypse_b.x - 16 <= x <= \
-                            self.apocalypse_b.x + 16 and \
-                            self.apocalypse_b.y - 16 <= y <= \
-                            self.apocalypse_b.y + 16:
-                        order_unit(self, sel, Apocalypse)
-                    # Create pioneer
-                    elif self.pioneer_b.x - 16 <= x <= \
-                            self.pioneer_b.x + 16 and \
-                            self.pioneer_b.y - 16 <= y <= \
-                            self.pioneer_b.y + 16:
-                        order_unit(self, sel, Pioneer)
-                    # Cancel last order
-                    elif self.cancel_b.x - 16 <= x <= \
-                            self.cancel_b.x + 16 and \
-                            self.cancel_b.y - 16 <= y <= \
-                            self.cancel_b.y + 16:
-                        self.cancel_prod()
-                else:
-                    # Construct structures
-                    if self.armory_icon.x - 16 <= x <= \
-                            self.armory_icon.x + 16 and \
-                            self.armory_icon.y - 16 <= y <= \
-                            self.armory_icon.y + 16:
-                        self.to_build_spt.image = res.armory_img
-                        self.to_build_spt.color = (0, 255, 0)
-                        self.build_loc_sel_phase = True
-                        self.to_build = Armory
-                        self.to_build_spt.x, self.to_build_spt.y = x, y
-                    elif self.turret_icon.x - 16 <= x <= \
-                            self.turret_icon.x + 16 and \
-                            self.turret_icon.y - 16 <= y <= \
-                            self.turret_icon.y + 16:
-                        self.to_build_spt.image = res.turret_icon_img
-                        self.to_build_spt.color = (0, 255, 0)
-                        self.build_loc_sel_phase = True
-                        self.to_build = Turret
-                        self.to_build_spt.x, self.to_build_spt.y = x, y
-                    elif self.mech_center_icon.x - 16 <= x <= \
-                            self.mech_center_icon.x + 16 and \
-                            self.mech_center_icon.y - 16 <= y <= \
-                            self.mech_center_icon.y + 16:
-                        self.to_build_spt.image = res.mech_center_img
-                        self.to_build_spt.color = (0, 255, 0)
-                        self.build_loc_sel_phase = True
-                        self.to_build = MechCenter
-                        self.to_build_spt.x, self.to_build_spt.y = x, y
+                # Construct structures
+                if self.armory_icon.x - 16 <= x <= \
+                        self.armory_icon.x + 16 and \
+                        self.armory_icon.y - 16 <= y <= \
+                        self.armory_icon.y + 16:
+                    self.to_build_spt.image = res.armory_img
+                    self.to_build_spt.color = (0, 255, 0)
+                    self.build_loc_sel_phase = True
+                    self.to_build = Armory
+                    self.to_build_spt.x, self.to_build_spt.y = x, y
+                elif self.turret_icon.x - 16 <= x <= \
+                        self.turret_icon.x + 16 and \
+                        self.turret_icon.y - 16 <= y <= \
+                        self.turret_icon.y + 16:
+                    self.to_build_spt.image = res.turret_icon_img
+                    self.to_build_spt.color = (0, 255, 0)
+                    self.build_loc_sel_phase = True
+                    self.to_build = Turret
+                    self.to_build_spt.x, self.to_build_spt.y = x, y
+                elif self.mech_center_icon.x - 16 <= x <= \
+                        self.mech_center_icon.x + 16 and \
+                        self.mech_center_icon.y - 16 <= y <= \
+                        self.mech_center_icon.y + 16:
+                    self.to_build_spt.image = res.mech_center_img
+                    self.to_build_spt.color = (0, 255, 0)
+                    self.build_loc_sel_phase = True
+                    self.to_build = MechCenter
+                    self.to_build_spt.x, self.to_build_spt.y = x, y
 
     def on_mouse_motion(self, x, y, dx, dy):
         if self.fullscreen:
@@ -802,7 +728,7 @@ class WorldEditor(pyglet.window.Window):
 
 
 def main():
-    game_window = WorldEditor(SCREEN_W, SCREEN_H, SCREEN_TITLE)
+    game_window = WorldEditor(SCREEN_W, SCREEN_H, "Word Editor")
     pyglet.clock.schedule_interval(game_window.update, 1 / 60)
     pyglet.app.run()
 
